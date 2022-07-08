@@ -7,6 +7,77 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade text-start modal-primary" id="sanctionShowModal" tabindex="-1" aria-labelledby="sanctionShowLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-extra-wide">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="sanctionShowLabel">{{ sanctionActive?.title }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="sanctionShowClose"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>{{ collection?.messages?.key }}</th>
+                                            <th>{{ collection?.messages?.value }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ collection?.messages?.id }}</td>
+                                            <td>{{ sanctionActive?.id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.createdAt }}</td>
+                                            <td>{{ sanctionActive?.created_at_for_humans }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.title }}</td>
+                                            <td>{{ sanctionActive?.title }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.dpa }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-start">
+                                                    <div v-if="sanctionActive?.dpa?.country != undefined" class="col-2">
+                                                        <img :src="`/images/flags/svg/${sanctionActive?.dpa?.country?.code}.svg`" style="width: 30px" />
+                                                    </div>
+                                                    <div class="col-10 align-items-center">
+                                                        <p class="mx-0 my-0">{{ sanctionActive?.dpa?.name }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.fine }}</td>
+                                            <td>{{ sanctionActive?.fine ? parseInt(sanctionActive?.fine)+' '+(sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : '') : '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.startedOn }}</td>
+                                            <td>{{ sanctionActive?.started_at_for_humans }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.decidedOn }}</td>
+                                            <td>{{ sanctionActive?.decided_at_for_humans }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.publishedOn }}</td>
+                                            <td>{{ sanctionActive?.published_at_for_humans }}</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" @click="sanctionShowClose">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -16,6 +87,7 @@ export default {
         return {
             dataTable: null,
             collection: null,
+            sanctionActive: null,
         };
     },
     methods: {
@@ -79,18 +151,18 @@ export default {
                         render: function (data, type, full, meta) {
                             // has image?
                             let r = `
-                            <div class="row d-flex align-items-center justify-content-start">
-                                <div class="col-1">
+                            <div class="d-flex align-items-center justify-content-start">
+                                <div class="col-2">
                             `;
                             if (full.dpa.country) {
                                 r += `
-                                <img src='/images/flags/svg/${full.dpa?.country?.code}.svg' width="40px"/>
+                                <img src='/images/flags/svg/${full.dpa?.country?.code}.svg' width="100%"/>
                                 `;
                             }
                             r += `
                                 </div>
-                                <div class="col-10 align-items-center">
-                                    <p class="mx-0 my-0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${full.dpa?.name}</p>
+                                <div class="col-10 align-items-center px-1">
+                                    <p class="mx-0 my-0">${full.dpa?.name}</p>
                                 </div>
                             </row>`;
                             return r;
@@ -122,7 +194,7 @@ export default {
                             } else {
                                 let r = ``;
                                 if (full.fine) {
-                                    r = `<p>${parseInt(full.fine)} ${full.currency?.symbol}</p>`;
+                                    r = `<p>${parseInt(full.fine)} ${full.currency?.symbol ? full.currency?.symbol : ''}</p>`;
                                 }
                                 return r;
                             }
@@ -242,6 +314,14 @@ export default {
                     console.log(error);
                     console.log(error.response);
                 });
+        },
+        sanctionShow(id) {
+            let y = this.collection?.sanctions?.filter((x) => x.id == id);
+            this.sanctionActive = y[0];
+            $("#sanctionShowModal").modal("show");
+        },
+        sanctionShowClose() {
+            $("#sanctionShowModal").modal("hide");
         },
     },
     mounted() {

@@ -25,7 +25,12 @@ class SanctionUpdateRequest extends FormRequest
     {
         return [
             //
+            'started_at' => 'nullable|sometimes|date',
             'decided_at' => 'nullable|sometimes|date',
+            'published_at' => 'nullable|sometimes|date',
+            'fine' => 'nullable|sometimes|numeric',
+            'currency_id' => 'nullable|sometimes|exists:currencies,id'
+
         ];
     }
 }

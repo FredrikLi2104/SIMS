@@ -57,6 +57,21 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
+                                        <label class="form-label" for="started_at">@lang('messages.startedOn') [@lang('messages.optional')]</label>
+                                        <input type="text" name="started_at" id="started_at" class="form-control flatpickr-basic @error('started_at') is-invalid @enderror" placeholder="YYYY-MM-DD" value="{{ $sanction->started_at }}" />
+                                        @error('started_at')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="started_at_parsed">@lang('messages.decidedOn') @lang('messages.apiParsed')</label>
+                                        <input type="text" id="started_at_parsed" class="form-control @error('started_at_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['started_at'] }}" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-1">
                                         <label class="form-label" for="decided_at">@lang('messages.decidedOn') [@lang('messages.optional')]</label>
                                         <input type="text" name="decided_at" id="decided_at" class="form-control flatpickr-basic @error('decided_at') is-invalid @enderror" placeholder="YYYY-MM-DD" value="{{ $sanction->decided_at }}" />
                                         @error('decided_at')
@@ -70,9 +85,24 @@
                                         <input type="text" id="decided_at_parsed" class="form-control @error('decided_at_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['decided_at'] }}" disabled />
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="published_at">@lang('messages.publishedOn') [@lang('messages.optional')]</label>
+                                        <input type="text" name="published_at" id="published_at" class="form-control flatpickr-basic @error('published_at') is-invalid @enderror" placeholder="YYYY-MM-DD" value="{{ $sanction->published_at }}" />
+                                        @error('published_at')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="published_at_parsed">@lang('messages.decidedOn') @lang('messages.apiParsed')</label>
+                                        <input type="text" id="published_at_parsed" class="form-control @error('published_at_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['published_at'] }}" disabled />
+                                    </div>
+                                </div>
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
-                                        <label class="form-label" for="fine">@lang('messages.fine')</label>
+                                        <label class="form-label" for="fine">@lang('messages.fine') [@lang('messages.optional')]</label>
                                         <input type="text" id="fine" class="form-control @error('fine') is-invalid @enderror" placeholder="3800" name="fine" value="{{ $sanction->fine }}" />
                                         @error('fine')
                                             <div class="invalid-feedback">{{ $message }}</div>

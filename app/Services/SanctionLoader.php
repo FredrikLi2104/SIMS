@@ -74,7 +74,7 @@ class SanctionLoader
                                 $matches = [];
                                 $dateDecided = preg_match('/<td>Decided:<\/td>\n<td>(\d*.*)\n/m', $html, $matches);
                                 if (isset($matches[1])) {
-                                    if ($matches[1] != null && $matches[1] != '' && strlen($matches[1] > 7)) {
+                                    if ($matches[1] != null && $matches[1] != '' && strlen($matches[1]) > 7) {
                                         try {
                                             $sanction->update(['decided_at' => Carbon::parse($matches[1])]);
                                         } catch (\Throwable $th) {
@@ -106,6 +106,30 @@ class SanctionLoader
                                             // create it
                                             $currency = Currency::create(['symbol' => $fineMatches[2]]);
                                             $sanction->update(['currency_id' => $currency->id]);
+                                        }
+                                    }
+                                }
+                                // started_at
+                                $startedMatches = [];
+                                $startedAtRegex = preg_match('/<td>Started:<\/td>\n<td>(\d*.*)\n/m', $html, $startedMatches);
+                                if (isset($startedMatches[1])) {
+                                    if ($startedMatches[1] != null && $startedMatches[1] != '' && strlen($startedMatches[1]) > 7) {
+                                        try {
+                                            $sanction->update(['started_at' => Carbon::parse($startedMatches[1])]);
+                                        } catch (\Throwable $th) {
+                                            //throw $th;
+                                        }
+                                    }
+                                }
+                                // published_at
+                                $publishedMatches = [];
+                                $publishedAtRegex = preg_match('/<td>Published:<\/td>\n<td>(\d*.*)\n/m', $html, $publishedMatches);
+                                if (isset($publishedMatches[1])) {
+                                    if ($publishedMatches[1] != null && $publishedMatches[1] != '' && strlen($publishedMatches[1]) > 7) {
+                                        try {
+                                            $sanction->update(['published_at' => Carbon::parse($publishedMatches[1])]);
+                                        } catch (\Throwable $th) {
+                                            //throw $th;
                                         }
                                     }
                                 }

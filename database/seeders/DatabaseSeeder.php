@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         // Local
         $this->call([
             //CountrySeeder::class,
-            //MasterSeeder::class,
+            MasterSeeder::class,
             //UserSeeder::class,
             //OrganisationStatementSeeder::class,
         ]);

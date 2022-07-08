@@ -19,10 +19,11 @@ class MasterSeeder extends Seeder
     public function run()
     {
         //
-        // currencies
         $sanctions = Sanction::all();
         foreach ($sanctions as $sanction) {
             $html = $sanction->html;
+            // currencies [complete]
+            /*
             $matches = [];
             $regex = preg_match('/<td>Fine:<\/td>\n<td>(\d*.*)\s(\w+)\n/m', $html, $matches);
             // does it have a fine?
@@ -46,6 +47,31 @@ class MasterSeeder extends Seeder
                         // create it
                         $currency = Currency::create(['symbol' => $matches[2]]);
                         $sanction->update(['currency_id' => $currency->id]);
+                    }
+                }
+            }
+            */
+            // started_at
+            $startedMatches = [];
+            $startedAtRegex = preg_match('/<td>Started:<\/td>\n<td>(\d*.*)\n/m', $html, $startedMatches);
+            if (isset($startedMatches[1])) {
+                if ($startedMatches[1] != null && $startedMatches[1] != '' && strlen($startedMatches[1]) > 7) {
+                    try {
+                        $sanction->update(['started_at' => Carbon::parse($startedMatches[1])]);
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
+                }
+            }
+            // published_at
+            $publishedMatches = [];
+            $publishedAtRegex = preg_match('/<td>Published:<\/td>\n<td>(\d*.*)\n/m', $html, $publishedMatches);
+            if (isset($publishedMatches[1])) {
+                if ($publishedMatches[1] != null && $publishedMatches[1] != '' && strlen($publishedMatches[1]) > 7) {
+                    try {
+                        $sanction->update(['published_at' => Carbon::parse($publishedMatches[1])]);
+                    } catch (\Throwable $th) {
+                        //throw $th;
                     }
                 }
             }

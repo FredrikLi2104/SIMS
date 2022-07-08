@@ -80,7 +80,7 @@ class SanctionController extends Controller
     {
         //
         $data = $request->validated();
-        $sanction->update(['decided_at' => $data['decided_at']]);
+        $sanction->update($data);
         return redirect()->route('sanctions.index', App::currentLocale())->with('success', __('messages.itemUpdatedSuccessfully'));
     }
 

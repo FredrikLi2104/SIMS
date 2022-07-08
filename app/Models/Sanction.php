@@ -11,8 +11,8 @@ class Sanction extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $visible = ['id', 'pageid', 'title', 'dpa_id', 'decided_at', 'fine', 'currency_id', 'created_at', 'updated_at'];
-    protected $appends = ['created_at_for_humans', 'decided_at_for_humans', 'url'];
+    protected $visible = ['id', 'pageid', 'title', 'dpa_id', 'started_at', 'decided_at', 'published_at', 'fine', 'currency_id', 'created_at', 'updated_at'];
+    protected $appends = ['created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url'];
 
     public function createdAtForHumans(): Attribute
     {
@@ -41,12 +41,24 @@ class Sanction extends Model
     public function htmlClean()
     {
         $html = $this->html;
-        $r = ['decided_at' => null, 'fine' => null, 'currency' => null];
+        $r = ['started_at' => null, 'decided_at' => null, 'published_at', 'fine' => null, 'currency' => null];
+        // date started
+        $startedMatches = [];
+        $dateStarted= preg_match('/<td>Started:<\/td>\n<td>(\d*.*)\n/m', $html, $startedMatches);
+        if (isset($startedMatches[1])) {
+            $r['started_at'] = $startedMatches[1];
+        }
         // date decided
         $matches = [];
         $dateDecided = preg_match('/<td>Decided:<\/td>\n<td>(\d*.*)\n/m', $html, $matches);
         if (isset($matches[1])) {
             $r['decided_at'] = $matches[1];
+        }
+        // date published
+        $publishedMatches = [];
+        $datePublished = preg_match('/<td>Published:<\/td>\n<td>(\d*.*)\n/m', $html, $publishedMatches);
+        if (isset($publishedMatches[1])) {
+            $r['published_at'] = $publishedMatches[1];
         }
         // fine & currency
         $fineMatches = [];
@@ -72,6 +84,20 @@ class Sanction extends Model
         }
         //
         return $r;
+    }
+
+    public function publishedAtForHumans(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => $this->published_at ? Carbon::parse($this->published_at)->format('Y-m-d') : ''
+        );
+    }
+
+    public function startedAtForHumans(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => $this->started_at ? Carbon::parse($this->started_at)->format('Y-m-d') : ''
+        );
     }
 
     public function url(): Attribute
