@@ -1,0 +1,219 @@
+{
+    "menu": [
+        {
+            "name": "home",
+            "badgeClass": "badge badge-light-warning rounded-pill ms-auto me-1",
+            "icon": "home",
+            "url": "home",
+            "slug": ["home"],
+            "auth": "all"
+        },
+        {
+            "name": "plan",
+            "auth": "user",
+            "icon": "check-square",
+            "url": "plan",
+            "slug": ["organisations.plan"]
+        },
+        {
+            "name": "do",
+            "auth": "user",
+            "icon": "pen-tool",
+            "url": "do",
+            "slug": ["organisations.do"]
+        },
+        {
+            "name": "kpis",
+            "auth": "auditor-user",
+            "icon": "rotate-ccw",
+            "url": "organisations/kpis",
+            "slug": ["organisations.kpis"]
+        },
+        {
+            "name": "risks",
+            "auth": "auditor-user",
+            "icon": "alert-triangle",
+            "url": "risks",
+            "slug": ["risks.index", "risks.create", "risks.edit"]
+        },
+        {
+            "name": "review",
+            "auth": "auditor",
+            "icon": "repeat",
+            "url": "review",
+            "slug": ["organisations.review"]
+        },
+        {
+            "name": "actions",
+            "auth": "none",
+            "icon": "book-open",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "actionCreate",
+                    "url": "actions/create",
+                    "icon": "circle",
+                    "slug": ["actions.create"]
+                },
+                {
+                    "name": "actions",
+                    "url": "actions",
+                    "icon": "circle",
+                    "slug": ["actions.index", "actions.edit", "actions.show"]
+                }
+            ]
+        },
+        {
+            "name": "organisations",
+            "auth": "moderator",
+            "icon": "briefcase",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "kpiCreate",
+                    "url": "kpis/create",
+                    "icon": "circle",
+                    "slug": ["kpis.create"]
+                },
+                {
+                    "name": "kpis",
+                    "url": "kpis",
+                    "icon": "circle",
+                    "slug": ["kpis.index", "kpis.edit", "kpis.show"]
+                },
+                {
+                    "name": "organisationCreate",
+                    "url": "organisations/create",
+                    "icon": "circle",
+                    "slug": ["organisations.create"]
+                },
+                {
+                    "name": "organisations",
+                    "url": "organisations",
+                    "icon": "circle",
+                    "slug": ["organisations.index", "organisations.edit", "organisations.show"]
+                },
+                {
+                    "name": "planCreate",
+                    "url": "plans/create",
+                    "icon": "circle",
+                    "slug": ["plans.create"]
+                },
+                {
+                    "name": "plans",
+                    "url": "plans",
+                    "icon": "circle",
+                    "slug": ["plans.index", "plans.edit", "plans.show"]
+                },
+                {
+                    "name": "sniCreate",
+                    "url": "snis/create",
+                    "icon": "circle",
+                    "slug": ["snis.create"]
+                },
+                {
+                    "name": "snis",
+                    "url": "snis",
+                    "icon": "circle",
+                    "slug": ["snis.index", "snis.edit", "snis.show"]
+                }
+            ]
+        },
+        {
+            "name": "sanctions",
+            "auth": "moderator",
+            "icon": "dollar-sign",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "dpas",
+                    "url": "dpas",
+                    "icon": "circle",
+                    "slug": ["dpas.index", "dpas.edit"]
+                },
+                {
+                    "name": "sanctions",
+                    "url": "sanctions",
+                    "icon": "circle",
+                    "slug": ["sanctions.index", "sanctions.edit"]
+                }
+            ]
+        },
+        {
+            "name": "statements",
+            "auth": "moderator",
+            "icon": "edit-3",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "componentsCreate",
+                    "url": "components/create",
+                    "icon": "circle",
+                    "slug": ["components.create"]
+                },
+                {
+                    "name": "components",
+                    "url": "components",
+                    "icon": "circle",
+                    "slug": ["components.index", "components.edit", "components.show"]
+                },
+                {
+                    "name": "periodsCreate",
+                    "url": "periods/create",
+                    "icon": "circle",
+                    "slug": ["periods.create"]
+                },
+                {
+                    "name": "periods",
+                    "url": "periods",
+                    "icon": "circle",
+                    "slug": ["periods.index", "periods.edit", "periods.show"]
+                },
+                {
+                    "name": "statementCreate",
+                    "url": "statements/create",
+                    "icon": "circle",
+                    "slug": ["statements.create"]
+                },
+                {
+                    "name": "statements",
+                    "url": "statements",
+                    "icon": "circle",
+                    "slug": ["statements.index", "statements.edit", "statements.show"]
+                },
+                {
+                    "name": "statementTypeCreate",
+                    "url": "statement_types/create",
+                    "icon": "circle",
+                    "slug": ["statement_types.create"]
+                },
+                {
+                    "name": "statementTypes",
+                    "url": "statement_types",
+                    "icon": "circle",
+                    "slug": ["statement_types.index", "statement_types.edit", "statement_types.show"]
+                }
+            ]
+        },
+        {
+            "name": "users",
+            "auth": "moderator",
+            "icon": "users",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "usersCreate",
+                    "url": "users/create",
+                    "icon": "circle",
+                    "slug": ["users.create"]
+                },
+                {
+                    "name": "users",
+                    "url": "users",
+                    "icon": "circle",
+                    "slug": ["users.index", "users.edit", "users.show"]
+                }
+            ]
+        }
+    ]
+}
