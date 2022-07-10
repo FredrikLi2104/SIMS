@@ -52,7 +52,7 @@
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.fine }}</td>
-                                            <td>{{ sanctionActive?.fine ? parseInt(sanctionActive?.fine)+' '+(sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : '') : '' }}</td>
+                                            <td>{{ sanctionActive?.fine ? parseInt(sanctionActive?.fine) + " " + (sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : "") : "" }}</td>
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.startedOn }}</td>
@@ -66,7 +66,14 @@
                                             <td>{{ collection?.messages?.publishedOn }}</td>
                                             <td>{{ sanctionActive?.published_at_for_humans }}</td>
                                         </tr>
-                                        
+                                        <tr>
+                                            <td>{{ collection?.messages?.articles }}</td>
+                                            <td>
+                                                <div v-for="article in sanctionActive?.articlesSorted" :key="article.title">
+                                                    <a :href="article?.url" target="_blank">{{ article?.title }}</a>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -194,7 +201,7 @@ export default {
                             } else {
                                 let r = ``;
                                 if (full.fine) {
-                                    r = `<p>${parseInt(full.fine)} ${full.currency?.symbol ? full.currency?.symbol : ''}</p>`;
+                                    r = `<p>${parseInt(full.fine)} ${full.currency?.symbol ? full.currency?.symbol : ""}</p>`;
                                 }
                                 return r;
                             }

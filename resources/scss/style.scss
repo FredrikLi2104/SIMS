@@ -32,3 +32,10 @@ $info: #00cfe8;
 .table-td-light {
     background-color: $tableLight !important;
 }
+
+.articles-parsed {
+    .select2-selection__choice {
+        background-color: unset;
+        background-color: grey !important;
+    }
+}

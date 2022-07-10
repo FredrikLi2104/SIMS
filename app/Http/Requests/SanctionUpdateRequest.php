@@ -28,9 +28,10 @@ class SanctionUpdateRequest extends FormRequest
             'started_at' => 'nullable|sometimes|date',
             'decided_at' => 'nullable|sometimes|date',
             'published_at' => 'nullable|sometimes|date',
-            'fine' => 'nullable|sometimes|numeric',
-            'currency_id' => 'nullable|sometimes|exists:currencies,id'
-
+            'fine' => 'nullable|sometimes|required_with:currency_id|numeric',
+            'currency_id' => 'nullable|sometimes|required_with:fine|exists:currencies,id',
+            'articles' => 'nullable|sometimes',
+            'articles.*' => 'nullable|sometimes|exists:articles,id',
         ];
     }
 }

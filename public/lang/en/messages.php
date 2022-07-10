@@ -6,6 +6,7 @@ return [
     'account' => 'Account',
     'allFields' => '(All fields are required unless marked with [Optional])',
     'allRightsReserved' => 'All Rights Reserved',
+    'articles' => 'Articles',
     'apiParsed' => 'API Parsed',
     'aTableOfAll' => 'A table of all',
     'by' => 'By',

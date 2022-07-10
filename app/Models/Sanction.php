@@ -14,6 +14,10 @@ class Sanction extends Model
     protected $visible = ['id', 'pageid', 'title', 'dpa_id', 'started_at', 'decided_at', 'published_at', 'fine', 'currency_id', 'created_at', 'updated_at'];
     protected $appends = ['created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url'];
 
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class)->withTimestamps();
+    }
     public function createdAtForHumans(): Attribute
     {
         return new Attribute(
@@ -41,10 +45,10 @@ class Sanction extends Model
     public function htmlClean()
     {
         $html = $this->html;
-        $r = ['started_at' => null, 'decided_at' => null, 'published_at', 'fine' => null, 'currency' => null];
+        $r = ['articles' => [], 'started_at' => null, 'decided_at' => null, 'published_at', 'fine' => null, 'currency' => null];
         // date started
         $startedMatches = [];
-        $dateStarted= preg_match('/<td>Started:<\/td>\n<td>(\d*.*)\n/m', $html, $startedMatches);
+        $dateStarted = preg_match('/<td>Started:<\/td>\n<td>(\d*.*)\n/m', $html, $startedMatches);
         if (isset($startedMatches[1])) {
             $r['started_at'] = $startedMatches[1];
         }
@@ -79,6 +83,32 @@ class Sanction extends Model
                 $currency = Currency::where('symbol', $fineMatches[2])->first();
                 if ($currency) {
                     $r['currency'] = $currency->symbol;
+                }
+            }
+        }
+        // articles
+        // get relevant laws if any
+        $relevantLawMatches = [];
+        $relevantRegex = preg_match('/<td>Relevant Law:<\/td>\n<td>(.*)\n<\/td>/m', $html, $relevantLawMatches);
+        // has law?
+        if (isset($relevantLawMatches[1])) {
+            // law is not empty or weird space?
+            if ($relevantLawMatches[1] != null && $relevantLawMatches[1] != '') {
+                $relevantHtml = $relevantLawMatches[1];
+                $articleMatches = [];
+                $articleRegex = preg_match_all('/href="(?P<link>[^"]*)"[^>]*>(?P<title>[^<]*)/m', $relevantHtml, $articleMatches);
+                if (isset($articleMatches[1])) {
+                    if ($articleMatches[1] != null && $articleMatches[1] != '') {
+                        for ($i = 0; $i < count($articleMatches['title']); $i++) {
+                            // sanitize
+                            if (strlen($articleMatches['title'][$i]) > 128) {
+                                $title = substr($articleMatches['title'][$i], 0, 125) . '...';
+                            } else {
+                                $title = $articleMatches['title'][$i];
+                            }
+                            $r['articles'][] = $title;
+                        }
+                    }
                 }
             }
         }

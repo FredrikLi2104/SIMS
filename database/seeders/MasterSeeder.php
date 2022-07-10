@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Article;
 use App\Models\Currency;
 use App\Models\Sanction;
 use Carbon\Carbon;
@@ -22,7 +23,8 @@ class MasterSeeder extends Seeder
         $sanctions = Sanction::all();
         foreach ($sanctions as $sanction) {
             $html = $sanction->html;
-            // currencies [complete]
+            // [complete]
+            // currencies 
             /*
             $matches = [];
             $regex = preg_match('/<td>Fine:<\/td>\n<td>(\d*.*)\s(\w+)\n/m', $html, $matches);
@@ -50,7 +52,7 @@ class MasterSeeder extends Seeder
                     }
                 }
             }
-            */
+            
             // started_at
             $startedMatches = [];
             $startedAtRegex = preg_match('/<td>Started:<\/td>\n<td>(\d*.*)\n/m', $html, $startedMatches);
@@ -72,6 +74,46 @@ class MasterSeeder extends Seeder
                         $sanction->update(['published_at' => Carbon::parse($publishedMatches[1])]);
                     } catch (\Throwable $th) {
                         //throw $th;
+                    }
+                }
+            }
+            */
+            // articles
+            // get relevant laws if any
+            $relevantLawMatches = [];
+            $relevantRegex = preg_match('/<td>Relevant Law:<\/td>\n<td>(.*)\n<\/td>/m', $html, $relevantLawMatches);
+            // has law?
+            if (isset($relevantLawMatches[1])) {
+                // law is not empty or weird space?
+                if ($relevantLawMatches[1] != null && $relevantLawMatches[1] != '') {
+                    $relevantHtml = $relevantLawMatches[1];
+                    $articleMatches = [];
+                    $articleRegex = preg_match_all('/href="(?P<link>[^"]*)"[^>]*>(?P<title>[^<]*)/m', $relevantHtml, $articleMatches);
+                    if (isset($articleMatches[1])) {
+                        if ($articleMatches[1] != null && $articleMatches[1] != '') {
+                            for ($i = 0; $i < count($articleMatches['link']); $i++) {
+                                // find if article exists
+                                $article = Article::where('title', $articleMatches['title'][$i])->first();
+                                if (!$article) {
+                                    // fix link
+                                    $linkPrefix = substr($articleMatches['link'][$i], 0, 6);
+                                    if ($linkPrefix != '/index') {
+                                        $url = $articleMatches['link'][$i];
+                                    } else {
+                                        $url = 'https://gdprhub.eu/' . $articleMatches['link'][$i];
+                                    }
+                                    // fix title
+                                    if (strlen($articleMatches['title'][$i]) > 128) {
+                                        $title = substr($articleMatches['title'][$i], 0, 125) . '...';
+                                    } else {
+                                        $title = $articleMatches['title'][$i];
+                                    }
+                                    $article = Article::create(['title' => mb_convert_encoding($title, 'UTF-8'), 'url' => $url]);
+                                } else {
+                                    $sanction->articles()->attach($article);
+                                }
+                            }
+                        }
                     }
                 }
             }

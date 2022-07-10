@@ -9,6 +9,7 @@ return [
     'account' => 'Konto',
     'allFields' => '(Alla fält är obligatoriska om de inte är markerade med [Valfritt])',
     'allRightsReserved' => 'Med ensamrätt',
+    'articles' => 'Artiklar',
     'apiParsed' => 'API analyserad',
     'aTableOfAll' => 'En tabell av alla',
     'by' => 'Av',

@@ -117,7 +117,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="currency_id">@lang('messages.currency')</label>
+                                        <label class="form-label" for="currency_id">@lang('messages.currency') [@lang('messages.optional')]</label>
                                         <select id="currency_id" class="select2 form-select form-control @error('currency_id') is-invalid @enderror" name="currency_id">
                                             <option value="">@lang('messages.pleaseSelect')</option>
                                             @foreach ($currencies as $currency)
@@ -133,6 +133,29 @@
                                     <div class="mb-1">
                                         <label class="form-label" for="currency_parsed">@lang('messages.currency') @lang('messages.apiParsed')</label>
                                         <input type="text" id="currency_parsed" class="form-control @error('currency_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['currency'] }}" disabled />
+                                    </div>
+                                </div>
+                                <div class='col-md-6'>
+                                    <div class="mb-1">
+                                        <label class='form-label' for='articles[]'>@lang('messages.articles') [@lang('messages.optional')]</label>
+                                        <select id='articles[]' class='select2 form-select form-control @error('articles[]') is-invalid @enderror' name='articles[]' multiple>
+                                            @foreach ($articles as $article)
+                                                <option value="{{ $article->id }}" @if (in_array($article->id, $sanctionArticlesIds)) selected @endif>{{ $article->title }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('articles[]')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class='col-md-6 articles-parsed'>
+                                    <div class="mb-1">
+                                        <label class='form-label' for='articles[]'>@lang('messages.articles') @lang('messages.apiParsed')</label>
+                                        <select id='articles_parsed' class='select2 form-select form-control' multiple disabled>
+                                            @foreach ($sanction->htmlClean()['articles'] as $key => $articleParsed)
+                                                <option selected>{{ $articleParsed }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-12">
@@ -156,4 +179,9 @@
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
     {!! JsValidator::formRequest('App\Http\Requests\SanctionUpdateRequest', '#form') !!}
     <script src="{{ asset(mix('js/scripts/forms/pickers/form-pickers.js')) }}"></script>
+    <script>
+        window.onload = (event) => {
+            $( ".articles-parsed .mb-1 .position-relative .select2 .selection .select2-selection--multiple .select2-selection__rendered .select2-selection__choice" ).attr('style', 'background-color: grey !important; border-color: grey !important;');
+        };
+    </script>
 @endsection

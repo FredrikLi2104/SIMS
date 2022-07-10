@@ -563,8 +563,10 @@ class AxiosController extends Controller
      **/
     public function sanctions($locale)
     {
-        $sanctions = Sanction::all()->load(['currency','dpa'])->makeVisible(['currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url']);
+        $sanctions = Sanction::all()->load(['articles', 'currency','dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url']);
         foreach ($sanctions as $sanction) {
+            $articles = $sanction->articles;
+            $sanction->articlesSorted = $articles->sortBy('title')->values();
             $sanction->dpa->load('country')->makeVisible(['country', 'name']);
         }
         App::setlocale($locale);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SanctionUpdateRequest;
+use App\Models\Article;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Sanction;
@@ -64,9 +65,11 @@ class SanctionController extends Controller
     public function edit($locale, Sanction $sanction)
     {
         //
+        $articles = Article::all()->sortBy('title');
         $countries = Country::all()->sortBy('name');
         $currencies = Currency::all();
-        return view('models.sanctions.edit', compact('sanction', 'countries', 'currencies'));
+        $sanctionArticlesIds = $sanction->articles->pluck('id')->all();
+        return view('models.sanctions.edit', compact('articles', 'sanction', 'sanctionArticlesIds', 'countries', 'currencies'));
     }
 
     /**
@@ -80,6 +83,12 @@ class SanctionController extends Controller
     {
         //
         $data = $request->validated();
+        if($data['articles']) {
+            $articles = $data['articles'];
+            unset($data['articles']);
+            $sanction->articles()->detach();
+            $sanction->articles()->sync($articles);
+        }
         $sanction->update($data);
         return redirect()->route('sanctions.index', App::currentLocale())->with('success', __('messages.itemUpdatedSuccessfully'));
     }
