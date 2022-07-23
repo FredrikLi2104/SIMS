@@ -8,6 +8,7 @@ use App\Models\Sanction;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class MasterSeeder extends Seeder
@@ -19,7 +20,12 @@ class MasterSeeder extends Seeder
      */
     public function run()
     {
-        //
+        // seed user role for component organisation
+        DB::table('component_organisation')->update(['role' => 'user']);
+        // end user role for component organisation
+        //############################################################################################
+        // [complete]
+        /*
         $sanctions = Sanction::all();
         foreach ($sanctions as $sanction) {
             $html = $sanction->html;
@@ -78,8 +84,9 @@ class MasterSeeder extends Seeder
                 }
             }
             */
-            // articles
+            // articles [complete]
             // get relevant laws if any
+            /*
             $relevantLawMatches = [];
             $relevantRegex = preg_match('/<td>Relevant Law:<\/td>\n<td>(.*)\n<\/td>/m', $html, $relevantLawMatches);
             // has law?

@@ -30,6 +30,8 @@ class StatementUpdateRequest extends FormRequest
             'content_se' => ['required'],
             'desc_en' => ['required'],
             'desc_se' => ['required'],
+            'implementation_en' => ['required'],
+            'implementation_se' => ['required'],
             'guide_en' => ['required'],
             'guide_se' => ['required'],
             'component_id' => ['required', 'exists:components,id'],

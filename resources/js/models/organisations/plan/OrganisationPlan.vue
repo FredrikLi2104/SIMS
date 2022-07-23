@@ -59,10 +59,6 @@
                                                 <td>{{ statementActive ? statementActive[`content_${locale}`] : null }}</td>
                                             </tr>
                                             <tr>
-                                                <td>{{ collection?.messages?.guide }}</td>
-                                                <td>{{ statementActive ? statementActive[`guide_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
                                                 <td>{{ collection?.messages?.desc }}</td>
                                                 <td>{{ statementActive ? statementActive[`desc_${locale}`] : null }}</td>
                                             </tr>
@@ -87,8 +83,12 @@
                                                 <td>{{ statementActive ? statementActive[`k5_${locale}`] : null }}</td>
                                             </tr>
                                             <tr>
-                                                <td>{{ collection?.messages?.plan }}</td>
-                                                <td>{{ statementActive ? statementPeriod(statementActive.id) : null }}</td>
+                                                <td>{{ collection?.messages?.implementation + " " }}{{ collection?.messages?.example }}</td>
+                                                <td>{{ statementActive ? statementActive[`implementation_${locale}`] : null }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>{{ collection?.messages?.implementation }}</td>
+                                                <td>{{ statementActive ? statementActive.implementation : null }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -141,9 +141,9 @@ export default {
                     <thead>
                         <tr>
                             <th>${thisComponent.collection?.messages?.period}</th>
-                            <th>${thisComponent.collection?.messages?.subcode+'-'+thisComponent.collection?.messages?.statement+'-'+thisComponent.collection?.messages?.component}</th>
+                            <th>${thisComponent.collection?.messages?.subcode + "-" + thisComponent.collection?.messages?.statement + "-" + thisComponent.collection?.messages?.component}</th>
                             <th>${thisComponent.collection?.messages?.implementation}</th>
-                            <th>${thisComponent.collection?.messages?.plan}</th>
+                            <th>${thisComponent.collection?.messages?.implementation + " " + thisComponent.collection?.messages?.example}</th>
                             <th class="text-center">${thisComponent.collection?.messages?.actions}</th>
                         </tr>
                     </thead>
@@ -155,11 +155,11 @@ export default {
             var columns = [];
             switch (thisComponent.active) {
                 case "components":
-                    columns = [{ data: "code_name" }, { data: "desc" + thisComponent.locale }, { data: "periods" }];
+                    columns = [{ data: "code_name" }, { data: "desc_" + thisComponent.locale }, { data: "periods" }];
                     break;
 
                 case "statements":
-                    columns = [{ data: "component.organisation_period.sort_order" }, { data: "subcode" },  { data: "plans" }];
+                    columns = [{ data: "component.organisation_period.sort_order" }, { data: "subcode" }, { data: "implementation" }, { data: "implementation_" + thisComponent.locale }];
                     break;
             }
             var columnDefs = [];
@@ -258,13 +258,13 @@ export default {
                             responsivePriority: 1,
                             width: "35%",
                             render: function (data, type, full, meta) {
-                                let x = full.subcode+'-'+eval("full.content_" + thisComponent.locale)+'-'+eval("full.component.name_" + thisComponent.locale);
-                                if(type === "sort") {
+                                let x = full.subcode + "-" + eval("full.content_" + thisComponent.locale) + "-" + eval("full.component.name_" + thisComponent.locale);
+                                if (type === "sort") {
                                     return x;
                                 } else {
                                     return `<p>${x}</p>`;
                                 }
-                            }
+                            },
                         },
                         /*
                         {
@@ -323,15 +323,29 @@ export default {
                             targets: 2,
                             responsivePriority: 2,
                             width: "20%",
+                            orderable: false,
                             render: function (data, type, full, meta) {
                                 let r = `
                             <div class="form-group">
-                                <textarea class="form-control" type="text" placeholder="" id="implementationInput${full.id}" onchange="window.thisComponent.enablePlanButton(${full.id})">${full.implementation ? full.implementation : ''}</textarea>
+                                <textarea class="form-control" type="text" placeholder="" id="implementationInput${full.id}" onchange="window.thisComponent.enablePlanButton(${full.id})">${full.implementation ? full.implementation : ""}</textarea>
                             </div>
                             `;
                                 return r;
                             },
                         },
+                        {
+                            // admin implementation
+                            targets: 3,
+                            responsivePriority: 3,
+                            orderable: false,
+                            width: "20%",
+                            render: function (data, type, full, meta) {
+                                let x = eval("full.implementation_" + thisComponent.locale) ? eval("full.implementation_" + thisComponent.locale) : "";
+                                let r = `<p>${x}</p>`;
+                                return r;
+                            },
+                        },
+                        /*
                         {
                             // plans
                             targets: 3,
@@ -355,7 +369,7 @@ export default {
                                 `;
                                 return r;
                             },
-                        },
+                        },*/
                         {
                             // actions
                             targets: 4,
@@ -450,7 +464,7 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/plan", {})
                 .then(function (response) {
-                    console.log(response.data);
+                    //console.log(response.data);
                     thisComponent.collection = response.data;
                     thisComponent.$nextTick(() => {
                         thisComponent.buildTable();
@@ -477,9 +491,22 @@ export default {
             $("#statementViewModal").modal("hide");
         },
         statementViewShow(id) {
-            let f = this.collection.statements.filter((x) => x.id == id);
-            this.statementActive = f[0];
-            $("#statementViewModal").modal("show");
+            var thisComponent = this;
+            axios
+                .get("/" + thisComponent.locale + "/axios/organisations/plan", {})
+                .then(function (response) {
+                    //console.log(response.data);
+                    let c = response.data;
+                    let f = c.statements.filter((x) => x.id == id);
+                    thisComponent.statementActive = f[0];
+                    thisComponent.$nextTick(() => {
+                        $("#statementViewModal").modal("show");
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                });
         },
         updateComponentPeriod(componentID) {
             // set the button who called this to disabled
@@ -515,12 +542,12 @@ export default {
         updateStatementPlan(statementID) {
             // set the button who called this to disabled
             $("#statementButton" + statementID).prop("disabled", true);
-            let v = $(`#statementPlanSelect${statementID}`).select2("data")[0].id;
+            //let v = $(`#statementPlanSelect${statementID}`).select2("data")[0].id;
             let i = $(`#implementationInput${statementID}`).val();
             axios
                 .post(`/${thisComponent.locale}/axios/organisations/statements/plans/update`, {
                     statement_id: statementID,
-                    plan_id: v,
+                    //plan_id: v,
                     implementation: i,
                 })
                 .then(function (response) {

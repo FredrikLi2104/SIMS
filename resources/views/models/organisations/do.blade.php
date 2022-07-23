@@ -36,5 +36,5 @@
 @endsection
 @section('page-script')
 <script src="{{ asset(mix('js/scripts/forms/form-select2.js')) }}"></script>
-    <script src="{{ asset(mix('js/models/organisations/do/app.js')) }}"></script>
+<script src="{{ asset(mix('js/models/organisations/do/app.js')) }}"></script>
 @endsection

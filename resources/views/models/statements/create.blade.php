@@ -157,8 +157,26 @@
                                 </div>
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
+                                        <label class="form-label" for="implementation_en">@lang('messages.implementation') @lang('messages.inEnglish')</label>
+                                        <textarea id="implementation_en" class="form-control @error('implementation_en') is-invalid @enderror" rows="3" placeholder="Show the user (DPO) how to implement a plan for this statement" name="implementation_en">{{ old('implementation_en') }}</textarea>
+                                        @error('implementation_en')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="implementation_se">@lang('messages.implementation') @lang('messages.inSwedish')</label>
+                                        <textarea id="implementation_se" class="form-control @error('implementation_se') is-invalid @enderror" rows="3" placeholder="Visa användaren (DPO) hur man implementerar en plan för denna programsats" name="implementation_se">{{ old('implementation_se') }}</textarea>
+                                        @error('implementation_se')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
                                         <label class="form-label" for="guide_en">@lang('messages.guide_en')</label>
-                                        <textarea id="guide_en" class="form-control @error('guide_en') is-invalid @enderror" rows="3" placeholder="Ask the organization where and how the legal basis is documented. Check if the correct legal basis is being applied. Is there legal support when legal obligations are used? Have interest rate changes been documented separately? Review the content of interest rate balances." name="guide_en">{{ old('guide_en') }}</textarea>
+                                        <textarea id="guide_en" class="form-control @error('guide_en') is-invalid @enderror" rows="3" placeholder="Guide the auditor (DSO) how to review this statement" name="guide_en">{{ old('guide_en') }}</textarea>
                                         @error('guide_en')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -167,7 +185,7 @@
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
                                         <label class="form-label" for="guide_se">@lang('messages.guide_se')</label>
-                                        <textarea id="guide_se" class="form-control @error('guide_se') is-invalid @enderror" rows="3" placeholder="Fråga organisationen var och hur den rättsliga grunden dokumenteras. Kontrollera om den korrekta rättsliga grunden tillämpas. Finns det lagligt stöd när lagliga skyldigheter används? Har ränteförändringar dokumenterats separat? Granska innehållet i räntesaldon." name="guide_se">{{ old('guide_se') }}</textarea>
+                                        <textarea id="guide_se" class="form-control @error('guide_se') is-invalid @enderror" rows="3" placeholder="Vägleda revisorn (DSO) hur man granskar detta uttalande" name="guide_se">{{ old('guide_se') }}</textarea>
                                         @error('guide_se')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror

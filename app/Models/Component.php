@@ -33,6 +33,17 @@ class Component extends Model
         return $op;
     }
 
+    public function organisationUserPeriod(Organisation $organisation)
+    {
+        $componentOrganisationUserPeriod = DB::table('component_organisation')->where('organisation_id', $organisation->id)->where('component_id', $this->id)->where('role', 'user')->first();
+        if($componentOrganisationUserPeriod) {
+            $oup = Period::where('id', $componentOrganisationUserPeriod->period_id)->first();
+        } else {
+            $oup = $this->period;
+        }
+        return $oup;
+    }
+
     public function period()
     {
         return $this->belongsTo(Period::class);

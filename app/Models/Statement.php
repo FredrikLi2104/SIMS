@@ -12,7 +12,7 @@ class Statement extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $visible = ['id', 'content_en', 'content_se', 'desc_en', 'desc_se', 'k1_en', 'k1_se', 'k2_en', 'k2_se', 'k3_en', 'k3_se', 'k4_en', 'k4_se', 'k5_en', 'k5_se', 'guide_en', 'guide_se', 'sort_order'];
+    protected $visible = ['id', 'content_en', 'content_se', 'desc_en', 'desc_se', 'k1_en', 'k1_se', 'k2_en', 'k2_se', 'k3_en', 'k3_se', 'k4_en', 'k4_se', 'k5_en', 'k5_se', 'implementation_en', 'implementation_se', 'guide_en', 'guide_se', 'sort_order'];
     protected $appends = ['concat', 'period', 'subcode'];
 
     public function component()
@@ -36,11 +36,11 @@ class Statement extends Model
     public function organisationPlan(Organisation $organisation)
     {
         $sp = collect([]);
-        $sp->plan = null;
+        //$sp->plan = null;
         $sp->implementation = null;
         $statementOrganisationPlan = DB::table('organisation_statement')->where('organisation_id', $organisation->id)->where('statement_id', $this->id)->first();
         if ($statementOrganisationPlan) {
-            $sp->plan = Plan::where('id', $statementOrganisationPlan->plan_id)->first();
+            //$sp->plan = Plan::where('id', $statementOrganisationPlan->plan_id)->first();
             $sp->implementation = $statementOrganisationPlan->implementation;
         }
         return $sp;

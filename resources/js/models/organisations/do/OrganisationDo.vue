@@ -70,25 +70,20 @@
                                             <td>{{ statementActive ? statementActive[`k5_${locale}`] : null }}</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ collection?.messages?.plan }}</td>
-                                            <td>{{ statementActive?.plan ? statementActive.plan[`name_${locale}`] : null }}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>{{ collection?.messages?.guide }}</td>
-                                            <td>{{ statementActive ? statementActive[`guide_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
                                             <td>{{ collection?.messages?.implementation }}</td>
                                             <td>{{ statementActive ? statementActive.implementation : null }}</td>
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.value }}</td>
-                                            <td>{{ statementActive ? value : null }}</td>
+                                            <td>{{ statementActive ? (statementActive.deed ? statementActive.deed.value : null) : null }}</td>
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.comment }}</td>
-                                            <td>{{ statementActive ? comment : null }}</td>
+                                            <td>{{ statementActive ? (statementActive.deed ? statementActive.deed.comment : null) : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.lastUpdated }}</td>
+                                            <td>{{ statementActive ? (statementActive.deed ? statementActive.deed.updated_at_for_humans : null) : null }}</td>
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.status }}</td>
@@ -101,6 +96,10 @@
                                         <tr>
                                             <td>{{ collection?.messages?.review }}</td>
                                             <td>{{ statementActive?.review?.review }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.review+" "+collection?.messages?.lastUpdated }}</td>
+                                            <td>{{ statementActive?.review?.updated_at_for_humans }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -135,8 +134,6 @@ export default {
              <thead>
                 <tr>
                     <th>${thisComponent.collection?.messages?.statement}</th>
-                    <th>${thisComponent.collection?.messages?.plan}</th>
-
                     <th class="text-center">${thisComponent.collection?.messages?.value}</th>
                     <th>${thisComponent.collection?.messages?.comment}</th>
                     <th class="text-center">${thisComponent.collection?.messages?.status}</th>
@@ -155,7 +152,7 @@ export default {
                 paging: false,
                 autoWidth: true,
                 searching: true,
-                columns: [{ data: "id" }, { data: "plan" }, /*{ data: "guide_" + thisComponent.locale }, { data: "implementation" }, */ { data: "deed" }, { data: "deed" }],
+                columns: [{ data: "id" }, { data: "deed" }, /*{ data: "guide_" + thisComponent.locale }, { data: "implementation" }, */ { data: "deed" }, { data: "deed" }],
                 columnDefs: [
                     {
                         // statement
@@ -178,56 +175,20 @@ export default {
                         },
                     },
                     {
-                        // plan
+                        // Value
                         targets: 1,
                         responsivePriority: 1,
-                        width: "10%",
-                        render: function (data, type, full, meta) {
-                            if (type === "sort") {
-                                let x = null;
-                                if (full.plan) {
-                                    x = eval(`full.plan?.name_` + thisComponent.locale);
-                                }
-                                return x;
-                            } else {
-                                let p = ``;
-                                if (full.plan) {
-                                    p = eval(`full.plan?.name_` + thisComponent.locale);
-                                }
-                                let r = `<p>${p}</p>`;
-                                return r;
-                            }
-                        },
-                    },
-                    /*
-                    {
-                        // guide
-                        targets: 2,
-                        responsivePriority: 2,
-                        width: "10%",
-                        render: function (data, type, full, meta) {
-                            let r = `<p>${eval("full.guide_" + thisComponent.locale)}</p>`;
-                            return r;
-                        },
-                    },
-                    {
-                        // implementation
-                        targets: 3,
-                        responsivePriority: 3,
-                        width: "10%",
-                        render: function (data, type, full, meta) {
-                            let r = `<p>${full.implementation ? full.implementation : ""}</p>`;
-                            return r;
-                        },
-                    },
-                    */
-                    {
-                        // Value
-                        targets: 2,
-                        responsivePriority: 2,
                         orderable: false,
                         width: "10%",
                         render: function (data, type, full, meta) {
+                            // value tooltip
+                            let k = `
+                            1: ${eval("full.k1_" + thisComponent.locale)}</br> \n
+                            2: ${eval("full.k2_" + thisComponent.locale)}</br> \n
+                            3: ${eval("full.k3_" + thisComponent.locale)}</br> \n
+                            4: ${eval("full.k4_" + thisComponent.locale)}</br> \n
+                            5: ${eval("full.k5_" + thisComponent.locale)}</br> \n
+                            `;
                             let r = `
                                 <div class="d-flex">
                                     <select id="valueSelect${full.id}" class="select2 form-select form-control" onchange="window.thisComponent.statementActionButtonEnable(${full.id})">
@@ -241,14 +202,18 @@ export default {
                             r += o;
                             r += `
                                     </select>
+                                    <button type="button" class="btn btn-icon btn-flat-warning px-1" data-html="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${k}">
+                                        <i data-feather="help-circle"></i>
+                                    </button>
+                                </div>
                                 `;
                             return r;
                         },
                     },
                     {
                         // Comment
-                        targets: 3,
-                        responsivePriority: 3,
+                        targets: 2,
+                        responsivePriority: 2,
                         orderable: false,
                         width: "20%",
                         render: function (data, type, full, meta) {
@@ -262,8 +227,8 @@ export default {
                     },
                     {
                         // Status
-                        targets: 4,
-                        responsivePriority: 4,
+                        targets: 3,
+                        responsivePriority: 3,
                         width: "10%",
                         orderable: false,
                         render: function (data, type, full, meta) {
@@ -286,14 +251,22 @@ export default {
                             }
                             b = `
                                 <div class="row mr-1">
-                                    <button type="button" class="btn btn-gradient-${c}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${full.review ? full.review.review : ""}">${t}</button>
+                                    <button type="button" class="btn btn-gradient-${c}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${full.review ? full.review.updated_at_for_humans + `: ` + full.review.review : ""}">${t}</button>
                                 </div>
                                 `;
+                            let badge = ``;
+                            if (full.review?.new == true) {
+                                badge = `
+                                <span class="badge badge-glow bg-primary rounded-pill float-end new-badge" id="${"statementbadgeid_" + full.id}">${thisComponent.collection?.messages.new}</span>
+                                `;
+                            }
+
                             let r =
                                 `
-                                <div class="d-flex justify-content-center align-items-center px-2">
+                                <div class="justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
                                     ` +
+                                badge +
                                 b +
                                 `
                                     </div>
@@ -302,22 +275,10 @@ export default {
                             return r;
                         },
                     },
-                    /*
-                    {
-                        // review
-                        targets: 5,
-                        responsivePriority: 5,
-                        width: "10%",
-                        render: function (data, type, full, meta) {
-                            let r = `<p>${full.review ? full.review.review : ''}</p>`;
-                            return r;
-                        },
-                    },
-                    */
                     {
                         // Actions
-                        targets: 5,
-                        responsivePriority: 5,
+                        targets: 4,
+                        responsivePriority: 4,
                         width: "10%",
                         orderable: false,
                         render: function (data, type, full, meta) {
@@ -366,19 +327,36 @@ export default {
                     $("#updateAll").html(updateAllHtml);
                 },
                 drawCallback: function () {
+                    thisComponent.$nextTick(function () {
+                        if (feather) {
+                            feather.replace({
+                                width: 14,
+                                height: 14,
+                            });
+                        }
+                    });
                     $(".select2").select2();
+                    /*
                     try {
-                        $(document).find('[data-bs-toggle="tooltip"]').tooltip();
+                        //$(document).find('[data-bs-toggle="tooltip"]').tooltip({ html: true });
+                        function sleep(ms) {
+                            return new Promise((resolve) => setTimeout(resolve, ms));
+                        }
+                        async function create() {
+                            await sleep(3200);
+                            $(document).find('[data-bs-toggle="tooltip"]').tooltip({ html: true });
+                        }
+                        create();
                     } catch (error) {
                         function sleep(ms) {
                             return new Promise((resolve) => setTimeout(resolve, ms));
                         }
-                        async function retry() {
+                        async function create() {
                             await sleep(4000);
-                            $(document).find('[data-bs-toggle="tooltip"]').tooltip();
+                            $(document).find('[data-bs-toggle="tooltip"]').tooltip({ html: true });
                         }
-                        retry();
-                    }
+                        create();
+                    }*/
                     /*
                     if (window.thisComponent.scrollPos != null) {
                         window.thisComponent.$nextTick(() => {
@@ -412,6 +390,7 @@ export default {
             $("#statementButton" + id).prop("disabled", false);
         },
         statementActionUpdate(id) {
+            var sid = id;
             $("#statementButton" + id).prop("disabled", true);
             let v = $(`#valueSelect${id}`).select2("data")[0].id;
             let c = $(`#commentInput${id}`).val();
@@ -423,6 +402,23 @@ export default {
                 })
                 .then(function (response) {
                     //console.log(response.data);
+                    // remove new tag
+                    // find this statement in collection
+                    thisComponent.collection?.statements?.forEach((element, index, array) => {
+                        if ((element.id = sid && element.review)) {
+                            array[index].review.new = false;
+                            //datatables are not reactive also kill span
+                            $("#statementbadgeid_" + sid).remove();
+                        }
+                    });
+                    /*let s = thisComponent.collection?.statements?.filter((element) => {
+                        return element.id == sid;
+                    });
+                    // has review?
+                    if(s.review) {
+                        s.review.new = false;
+                    }*/
+                    // end remove new tag
                     toastr["success"](`${thisComponent.collection?.messages?.itemUpdatedSuccessfully}.`, `${thisComponent.collection?.messages?.success}!`, {
                         showMethod: "slideDown",
                         hideMethod: "slideUp",
@@ -499,16 +495,25 @@ export default {
         },
         statementViewHide() {
             this.statementActive = null;
-            this.value = null;
-            this.comment = null;
             $("#statementViewModal").modal("hide");
         },
         statementViewShow(id) {
-            let f = this.collection.statements.filter((x) => x.id == id);
-            this.statementActive = f[0];
-            this.value = $(`#valueSelect${id}`).select2("data")[0].id;
-            this.comment = $(`#commentInput${id}`).val();
-            $("#statementViewModal").modal("show");
+            var thisComponent = this;
+            axios
+                .get("/" + thisComponent.locale + "/axios/organisations/do", {})
+                .then(function (response) {
+                    //console.log(response.data);
+                    let c = response.data;
+                    let f = c.statements.filter((x) => x.id == id);
+                    thisComponent.statementActive = f[0];
+                    thisComponent.$nextTick(() => {
+                        $("#statementViewModal").modal("show");
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                });
         },
     },
     mounted() {

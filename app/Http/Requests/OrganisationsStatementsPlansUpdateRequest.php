@@ -26,7 +26,6 @@ class OrganisationsStatementsPlansUpdateRequest extends FormRequest
         return [
             //
             'statement_id' => ['required', 'exists:statements,id'],
-            'plan_id' => ['required', 'exists:periods,id'],
             'implementation' => ['required']
         ];
     }

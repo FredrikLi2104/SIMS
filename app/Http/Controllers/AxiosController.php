@@ -123,15 +123,26 @@ class AxiosController extends Controller
             $op = $statement->component->organisationPeriod(Auth::user()->organisation);
             $statement->component->makeVisible(['organisation_period']);
             $statement->component->organisation_period = $op;
-            $statement->plan = null;
+            //$statement->plan = null;
             $statement->implementation = null;
             $op = $statement->organisationPlan(Auth::user()->organisation);
             if ($op) {
-                $statement->plan = $op->plan;
+                //$statement->plan = $op->plan;
                 $statement->implementation = $op->implementation;
             }
             $statement->deed = $statement->organisationDeed(Auth::user()->organisation);
             $statement->review = $statement->organisationReview(Auth::user()->organisation);
+            // new badge
+            if($statement->deed && $statement->review) {
+                $statement->review->makeVisible(['updated_at_for_humans', 'new']);
+                $statement->review->new = false;
+                if (Carbon::parse($statement->deed->updated_at) < Carbon::parse($statement->review->updated_at)) {
+                    $statement->review->new = true;
+                } else {
+                    $statement->review->new = false;
+                }
+                $statement->deed->makeVisible(['updated_at_for_humans']);
+            }
         };
         App::setlocale($locale);
         $messages = Lang::get('messages');
@@ -147,12 +158,16 @@ class AxiosController extends Controller
     {
         $data = $request->validated();
         $o = Auth::user()->organisation;
+        $role = Auth::user()->role;
+        if(!(in_array($role, ['user', 'auditor']))) {
+            $role = 'user';
+        }
         // find if this component has a period
-        $x = DB::table('component_organisation')->where('organisation_id', $o->id)->where('component_id', $data['component_id'])->first();
+        $x = DB::table('component_organisation')->where('organisation_id', $o->id)->where('component_id', $data['component_id'])->where('role', $role)->first();
         if ($x) {
-            DB::table('component_organisation')->where('organisation_id', $o->id)->where('component_id', $data['component_id'])->update(['period_id' => $data['period_id']]);
+            DB::table('component_organisation')->where('organisation_id', $o->id)->where('component_id', $data['component_id'])->where('role', $role)->update(['period_id' => $data['period_id'], 'updated_at' => Carbon::now()]);
         } else {
-            $o->components()->attach([$data['component_id'] => ['period_id' => $data['period_id']]]);
+            $o->components()->attach([$data['component_id'] => ['period_id' => $data['period_id'], 'role' => $role, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]]);
         }
         return response('success', 200);
     }
@@ -226,7 +241,7 @@ class AxiosController extends Controller
     {
         $components = Component::all()->load('period')->makeVisible(['code_name', 'period', 'periods']);
         foreach ($components as $component) {
-            $op = $component->organisationPeriod(Auth::user()->organisation);
+            $op = $component->organisationUserPeriod(Auth::user()->organisation);
             $component->periods = Period::all()->sortBy('sort_order');
             foreach ($component->periods as $period) {
                 if ($period->id == $op->id) {
@@ -237,15 +252,16 @@ class AxiosController extends Controller
             }
         };
         // statements periods for this organisation would be the same for their component organisationPeriod
-        $statements = Statement::all()->load('component')->makeVisible(['component', 'implementation', 'period', 'plans', 'subcode']);
+        $statements = Statement::all()->load('component')->makeVisible(['component', 'implementation', 'period', 'subcode']);
         foreach ($statements as $statement) {
             // calculate component periods for this organisation
-            $op = $statement->component->organisationPeriod(Auth::user()->organisation);
+            $oup = $statement->component->organisationUserPeriod(Auth::user()->organisation);
             $statement->component->makeVisible(['organisation_period']);
-            $statement->component->organisation_period = $op;
-            // calculate statement plan for this organisation
+            $statement->component->organisation_period = $oup;
             $sp = $statement->organisationPlan(Auth::user()->organisation);
             $statement->implementation = $sp->implementation;
+            // calculate statement plan for this organisation [cancelled]
+            /*
             $statement->plans = Plan::all();
             foreach ($statement->plans as $plan) {
                 $plan->selected = false;
@@ -254,7 +270,7 @@ class AxiosController extends Controller
                         $plan->selected = true;
                     }
                 }
-            }
+            }*/
         }
         App::setlocale($locale);
         $messages = Lang::get('messages');
@@ -468,12 +484,12 @@ class AxiosController extends Controller
         //
         $data = $request->validated();
         $o = Auth::user()->organisation;
-        // find if this statement already has a plan
+        // find if this statement already has an entry
         $x = DB::table('organisation_statement')->where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
         if ($x) {
-            DB::table('organisation_statement')->where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->update(['plan_id' => $data['plan_id'], 'implementation' => $data['implementation'], 'updated_at' => Carbon::now()]);
+            DB::table('organisation_statement')->where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->update(['implementation' => $data['implementation'], 'updated_at' => Carbon::now()]);
         } else {
-            $o->statements()->attach([$data['statement_id'] => ['plan_id' => $data['plan_id'], 'implementation' => $data['implementation'], 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]]);
+            $o->statements()->attach([$data['statement_id'] => ['implementation' => $data['implementation'], 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]]);
         }
         return response('success', 200);
     }
