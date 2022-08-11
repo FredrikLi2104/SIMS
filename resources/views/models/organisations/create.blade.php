@@ -26,7 +26,7 @@
                                 @endforeach
                             </div>
                         @endif
-                        <form id="form" class="form" action="{{ route('organisations.store', App::currentLocale()) }}" method="POST">
+                        <form id="form" class="form" action="{{ route('organisations.store', App::currentLocale()) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 col-12">
@@ -50,7 +50,7 @@
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
                                         <label class="form-label" for="turnover">@lang('messages.turnover') [@lang('messages.optional')]</label>
-                                        <input type="text" id="turnover" class="form-control @error('turnover') is-invalid @enderror" placeholder="100000" name="turnover" {{ old('turnover') }} />
+                                        <input type="text" id="turnover" class="form-control @error('turnover') is-invalid @enderror" placeholder="100000" name="turnover" value="{{ old('turnover') }}" />
                                         @error('turnover')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -96,6 +96,22 @@
                                         @error('organisation_id')
                                             <div class='invalid-feedback'>{{ $message }}</div>
                                         @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label for="logofile" class="form-label">@lang('messages.logo') [@lang('messages.optional')]</label>
+                                        <input id="logofile" class="form-control @error('logofile') is-invalid @enderror" type="file" name="logofile" />
+                                        <p><small class="text-muted">@lang('messages.logoRequirements')</small></p>
+                                        @error('logofile')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label for="color" class="form-label">@lang('messages.accentColor') [@lang('messages.optional')]</label>
+                                        <input id="color" type="color" class="form-control" title="Choose your color" name="color" value="#000001" />
                                     </div>
                                 </div>
                                 <div class="col-12">

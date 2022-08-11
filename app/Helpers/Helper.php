@@ -140,10 +140,13 @@ class Helper
         }
 
         // darklight theme
+        /*
         if(session()->has('theme')) {
+            var_dump(session()->get('theme'));
             $layoutClasses['theme'] = session()->get('theme');
-            $layoutClasses['layoutTheme'] = session()->get('theme');
+            $layoutClasses['layoutTheme'] = session()->get('theme').'-layout';
         };
+        */
 
         return $layoutClasses;
     }

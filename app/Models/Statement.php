@@ -42,6 +42,7 @@ class Statement extends Model
         if ($statementOrganisationPlan) {
             //$sp->plan = Plan::where('id', $statementOrganisationPlan->plan_id)->first();
             $sp->implementation = $statementOrganisationPlan->implementation;
+            $sp->responsibility = $statementOrganisationPlan->responsibility;
         }
         return $sp;
     }

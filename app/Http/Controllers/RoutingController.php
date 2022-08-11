@@ -15,6 +15,7 @@ class RoutingController extends Controller
     }
     public function home()
     {
+        //var_dump(session()->get('theme'));
         return view('dashboard');
     }
     public function root()
@@ -25,5 +26,11 @@ class RoutingController extends Controller
     public function setSession(Request $request) {
         session(['theme' => $request['theme']]);
         return response('set', 200);
+    }
+
+    public function themeSwitcher(Request $request)
+    {
+        session(['theme' => $request['theme']]);
+        return response('success', 200);
     }
 }

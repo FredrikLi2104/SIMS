@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrganisationsStatementsPlansUpdateRequest extends FormRequest
+class AxiosOrganisationUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,8 @@ class OrganisationsStatementsPlansUpdateRequest extends FormRequest
     {
         return [
             //
-            'statement_id' => ['required', 'exists:statements,id'],
-            'implementation' => ['required'],
-            'responsibility' => ['sometimes', 'nullable'],
+            'logo' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png', 'max: 1024'],
+            'color' => ['sometimes', 'nullable']
         ];
     }
 }

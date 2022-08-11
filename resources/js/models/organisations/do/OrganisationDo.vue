@@ -152,7 +152,7 @@ export default {
                 paging: false,
                 autoWidth: true,
                 searching: true,
-                columns: [{ data: "id" }, { data: "deed" }, /*{ data: "guide_" + thisComponent.locale }, { data: "implementation" }, */ { data: "deed" }, { data: "deed" }],
+                columns: [{ data: "id" }, { data: "deed" }, { data: "deed" }, { data: "deed" }],
                 columnDefs: [
                     {
                         // statement
@@ -334,6 +334,7 @@ export default {
                                 height: 14,
                             });
                         }
+                        $(document).find('[data-bs-toggle="tooltip"]').tooltip({ html: true });
                     });
                     $(".select2").select2();
                     /*

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AxiosOrganisationUpdateRequest;
 use App\Http\Requests\OrganisationsComponentsPeriodsUpdateRequest;
 use App\Http\Requests\OrganisationsKpicommentsStoreRequest;
 use App\Http\Requests\OrganisationsKpicommentStoreRequest;
@@ -27,11 +28,14 @@ use App\Models\RiskComment;
 use App\Models\Sanction;
 use App\Models\Statement;
 use Carbon\Carbon;
+use Illuminate\Http\File;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Storage;
 
 class AxiosController extends Controller
 {
@@ -54,6 +58,8 @@ class AxiosController extends Controller
         $r = collect($r);
         return $r;
     }
+
+
 
     /**
      * Return all dpas along with dictionary
@@ -133,7 +139,7 @@ class AxiosController extends Controller
             $statement->deed = $statement->organisationDeed(Auth::user()->organisation);
             $statement->review = $statement->organisationReview(Auth::user()->organisation);
             // new badge
-            if($statement->deed && $statement->review) {
+            if ($statement->deed && $statement->review) {
                 $statement->review->makeVisible(['updated_at_for_humans', 'new']);
                 $statement->review->new = false;
                 if (Carbon::parse($statement->deed->updated_at) < Carbon::parse($statement->review->updated_at)) {
@@ -159,7 +165,7 @@ class AxiosController extends Controller
         $data = $request->validated();
         $o = Auth::user()->organisation;
         $role = Auth::user()->role;
-        if(!(in_array($role, ['user', 'auditor']))) {
+        if (!(in_array($role, ['user', 'auditor']))) {
             $role = 'user';
         }
         // find if this component has a period
@@ -252,7 +258,7 @@ class AxiosController extends Controller
             }
         };
         // statements periods for this organisation would be the same for their component organisationPeriod
-        $statements = Statement::all()->load('component')->makeVisible(['component', 'implementation', 'period', 'subcode']);
+        $statements = Statement::all()->load('component')->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
         foreach ($statements as $statement) {
             // calculate component periods for this organisation
             $oup = $statement->component->organisationUserPeriod(Auth::user()->organisation);
@@ -260,6 +266,7 @@ class AxiosController extends Controller
             $statement->component->organisation_period = $oup;
             $sp = $statement->organisationPlan(Auth::user()->organisation);
             $statement->implementation = $sp->implementation;
+            $statement->responsibility = $sp->responsibility;
             // calculate statement plan for this organisation [cancelled]
             /*
             $statement->plans = Plan::all();
@@ -272,9 +279,39 @@ class AxiosController extends Controller
                 }
             }*/
         }
+        // Organisation data for report
+        $organisation = Auth::user()->organisation->makeVisible(['orgcolor', 'logo']);
+        // Report Chart
+        $quarterchart = [];
+        $quarters = Period::whereIn('id', [1,2,3,4])->get();
+        foreach ($quarters as $quarter) {
+            $quarterchart['labels'][] = $quarter->{'name_'.$locale};
+            // loop all components
+            $count = 0;
+            $quarterchartcomponents = [];
+            foreach ($components as $component) {
+                if($component->organisationuserPeriod($organisation)->id == $quarter->id) {
+                    $count += 1;
+                    $quarterchartcomponents[] = $component->code_name;
+                }
+            }
+            $quarterchart['data'][] = $count;
+            $quarterchart['components'][] = $quarterchartcomponents;
+            /*
+            $comps = Component::where('period_id', $quarter->id)->all();
+            // if any of those components period id has been planned differently in component org by user, remove them from this quarter
+            $quarterchart['data'][] = DB::table('component_organisation')->where('period_id', $quarter->id)->get()->count();
+            */
+        }
+        $cs = Component::all()->sortBy('sort_order')->makeVisible(['code_name']);
+        $quarterchart['componentsfinal'] = [];
+        foreach ($cs as $c) {
+            $quarterchart['componentsfinal'][] = ['codename' => $c->code_name, 'desc' => $c->{'desc_'.$locale}, 'implementation' => '[Placeholder for Implementation]?'];
+        }
+        // Localization
         App::setlocale($locale);
         $messages = Lang::get('messages');
-        $r = ['components' => $components, 'statements' => $statements, 'messages' => $messages];
+        $r = ['components' => $components, 'organisation' => $organisation, 'statements' => $statements, 'quarterchart' => $quarterchart, 'messages' => $messages];
         $r = collect($r);
         return $r;
     }
@@ -350,14 +387,28 @@ class AxiosController extends Controller
         })->all()), count($risks->filter(function ($item) {
             return $item->risk['class'] == 'danger';
         })->all())];
-        //Scatter Data
+        // Scatter Data New with Range
+        /*
         $dataSets = [];
         foreach ($risks as $risk) {
-            $dataSets[] = ['label' => $risk->title, 'backgroundColor' => $risk->risk['colour'], 'borderColor' => $risk->risk['colour'], 'data' => [['x' => $risk->consequence, 'y' => $risk->probability, 'r' => 10 * count($risks->filter(function ($item) use ($risk) {
-                return ($item->consequence == $risk->consequence && $item->probability == $risk->probability);
-            })->all())]], 'count' => count($risks->filter(function ($item) use ($risk) {
-                return ($item->consequence == $risk->consequence && $item->probability == $risk->probability);
-            })->all())];
+            $dataSets[] = ['label' => $risk->title, 'backgroundColor' => $risk->risk['colour'], 'borderColor' => $risk->risk['colour']];  
+        };
+        */
+        // Scatter Data New with Range End
+        //Scatter Data
+        //Carbon::create()->startOfMonth()->month($period->start)->locale(__('messages.localeCarbon'))->getTranslatedMonthName('M');
+        $dataSets = [];
+        $rangeDates = [$messages['rangeAllTime']];
+        $scatterRisks = $risks->sortByDesc('created_at');
+        foreach ($scatterRisks as $scatterRisk) {
+            $dataSets[] = ['label' => $scatterRisk->title, 'backgroundColor' => $scatterRisk->risk['colour'], 'borderColor' => $scatterRisk->risk['colour'], 'data' => [['x' => $scatterRisk->consequence, 'y' => $scatterRisk->probability, 'r' => 10 * count($scatterRisks->filter(function ($item) use ($scatterRisk) {
+                return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
+            })->all())]], 'count' => count($scatterRisks->filter(function ($item) use ($scatterRisk) {
+                return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
+            })->all()), 'date' => Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM')];
+            if (!(in_array(Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM'), $rangeDates))) {
+                $rangeDates[] = Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM');
+            }
         };
         //Scatter Date End
         // history data new
@@ -414,7 +465,7 @@ class AxiosController extends Controller
         };
         */
         // history data old end
-        $r = ['messages' => $messages, 'risks' => $risks, 'now' => $now, 'colours' => $colours, 'series' => $series, 'dataSets' => $dataSets, 'history' => $history];
+        $r = ['messages' => $messages, 'risks' => $risks, 'now' => $now, 'colours' => $colours, 'series' => $series, 'dataSets' => $dataSets, 'history' => $history, 'rangeDates' => $rangeDates];
         $r = collect($r);
         return $r;
     }
@@ -486,10 +537,14 @@ class AxiosController extends Controller
         $o = Auth::user()->organisation;
         // find if this statement already has an entry
         $x = DB::table('organisation_statement')->where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
+        $responsibility = null;
+        if (isset($data['responsibility'])) {
+            $responsibility = $data['responsibility'];
+        }
         if ($x) {
-            DB::table('organisation_statement')->where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->update(['implementation' => $data['implementation'], 'updated_at' => Carbon::now()]);
+            DB::table('organisation_statement')->where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->update(['implementation' => $data['implementation'], 'responsibility' => $responsibility, 'updated_at' => Carbon::now()]);
         } else {
-            $o->statements()->attach([$data['statement_id'] => ['implementation' => $data['implementation'], 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]]);
+            $o->statements()->attach([$data['statement_id'] => ['implementation' => $data['implementation'], 'responsibility' => $responsibility, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]]);
         }
         return response('success', 200);
     }
@@ -519,6 +574,31 @@ class AxiosController extends Controller
     }
 
     /**
+     * Update organisation details
+     *
+     * Undocumented function long description
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     **/
+    public function organisationsUpdate(AxiosOrganisationUpdateRequest $request)
+    {
+        $data = $request->validated();
+        $organisation = Auth::user()->organisation;
+        $update = [];
+        // logo uploaded?
+        if (isset($data['logo'])) {
+            $update['logofile'] = Storage::putFile('public/organisations/logos', $data['logo']);
+        }
+        // color uploaded?
+        if (isset($data['color'])) {
+            $update['color'] = $data['color'];
+        }
+        $organisation->update($update);
+        return $organisation->makeVisible(['orgcolor', 'logo']);
+    }
+
+    /**
      * Store a risk comment
      *
      * N/A
@@ -539,6 +619,8 @@ class AxiosController extends Controller
             abort(403, 'This risk does not belong to your organisation, you can not comment on it.');
         }
     }
+
+
 
     /**
      * Return a risk along with messages dictionaries
@@ -579,7 +661,7 @@ class AxiosController extends Controller
      **/
     public function sanctions($locale)
     {
-        $sanctions = Sanction::all()->load(['articles', 'currency','dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url']);
+        $sanctions = Sanction::all()->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url']);
         foreach ($sanctions as $sanction) {
             $articles = $sanction->articles;
             $sanction->articlesSorted = $articles->sortBy('title')->values();

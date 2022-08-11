@@ -4,6 +4,7 @@
     {{-- vendor css files --}}
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/charts/apexcharts.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
 @endsection
 @section('page-style')
  <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/charts/chart-apex.css')) }}">
@@ -33,7 +34,9 @@
     <script src="{{ asset(mix('vendors/js/charts/apexcharts.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset(mix('js/chartjs-plugin-datalabels.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
 @endsection
 @section('page-script')
     <script src="{{ asset(mix('js/models/risks/index/app.js')) }}"></script>
+    <script src="{{ asset(mix('js/scripts/forms/form-select2.js')) }}"></script>
 @endsection

@@ -26,7 +26,7 @@
                                 @endforeach
                             </div>
                         @endif
-                        <form id="form" class="form" action="{{ route('organisations.update', [App::currentLocale(), $organisation->id]) }}" method="POST">
+                        <form id="form" class="form" action="{{ route('organisations.update', [App::currentLocale(), $organisation->id]) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PATCH')
                             <div class="row">
@@ -97,6 +97,28 @@
                                         @error('organisation_id')
                                             <div class='invalid-feedback'>{{ $message }}</div>
                                         @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label for="logofile" class="form-label">@lang('messages.logo') [@lang('messages.optional')]</label>
+                                        <input id="logofile" class="form-control @error('logofile') is-invalid @enderror" type="file" name="logofile" />
+                                        <p><small class="text-muted">@lang('messages.logoRequirements')</small></p>
+                                        @error('logofile')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-1">
+                                        <div class="">
+                                            <label class="form-label">@lang('messages.currentLogo')</label>
+                                        </div>
+                                        <img src="{{ $organisation->logo }}" height="80" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label for="color" class="form-label">@lang('messages.accentColor') [@lang('messages.optional')]</label>
+                                        <input id="color" type="color" class="form-control" title="Choose your color" name="color" value="#{{$organisation->orgcolor}}" />
                                     </div>
                                 </div>
                                 <div class="col-12">

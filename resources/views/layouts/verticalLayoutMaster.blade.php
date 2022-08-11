@@ -62,6 +62,8 @@
     @include('panels/scripts')
 
     <script type="text/javascript">
+        let x = $('html');
+        console.log(x.hasClass('dark-layout'));
         $(window).on('load', function() {
             if (feather) {
                 feather.replace({

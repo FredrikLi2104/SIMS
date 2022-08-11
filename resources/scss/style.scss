@@ -52,3 +52,8 @@ $info: #00cfe8;
 .table-striped {
     --bs-table-striped-bg: rgba(96, 96, 96, 0.2);
 }
+
+// Apex text fix for dark mode
+.apexcharts-legend-text {
+    color: grey !important;
+}

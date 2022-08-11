@@ -56,7 +56,8 @@ class UserController extends Controller
     {
         //
         $users = User::all();
-        return view('models.users.index', compact('users'));
+        $roles = ['super' => 'Webmaster', 'admin' => 'ITSB Administrator', 'moderator' => 'ITSB Staff', 'auditor' => 'DPO Data Protection Officer', 'user'=> 'DPC Data Privacy Coordinator'];
+        return view('models.users.index', compact('roles', 'users'));
     }
 
     /**
@@ -71,13 +72,13 @@ class UserController extends Controller
         $roles = [];
         switch (Auth::user()->role) {
             case 'super':
-                $roles = ['Webmaster' => 'super', 'Administrator' => 'admin', 'Moderator' => 'moderator', 'Data Protection Officer' => 'auditor', 'Data Privacy Co-Ordinator' => 'user'];
+                $roles = ['Webmaster' => 'super', 'ITSB Administrator' => 'admin', 'ITSB Staff' => 'moderator', 'DPO Data Protection Officer' => 'auditor', 'DPC Data Privacy Coordinator' => 'user'];
                 break;
             case 'admin':
-                $roles = ['Administrator' => 'admin', 'Moderator' => 'moderator', 'Data Protection Officer' => 'auditor', 'Data Privacy Co-Ordinator' => 'user'];
+                $roles = ['ITSB Administrator' => 'admin', 'ITSB Staff' => 'moderator', 'DPO Data Protection Officer' => 'auditor', 'DPC Data Privacy Coordinator' => 'user'];
                 break;
             case 'moderator':
-                $roles = ['Data Protection Officer' => 'auditor', 'Data Privacy Co-Ordinator' => 'user'];
+                $roles = ['DPO Data Protection Officer' => 'auditor', 'DPC Data Privacy Coordinator' => 'user'];
                 break;
             default:
                 $roles = [];
@@ -134,13 +135,13 @@ class UserController extends Controller
             $roles = [];
             switch (Auth::user()->role) {
                 case 'super':
-                    $roles = ['Webmaster' => 'super', 'Administrator' => 'admin', 'Moderator' => 'moderator', 'Data Protection Officer' => 'auditor', 'Data Privacy Co-Ordinator' => 'user'];
+                    $roles = ['Webmaster' => 'super', 'ITSB Administrator' => 'admin', 'ITSB Staff' => 'moderator', 'DPO Data Protection Officer' => 'auditor', 'DPC Data Privacy Coordinator' => 'user'];
                     break;
                 case 'admin':
-                    $roles = ['Administrator' => 'admin', 'Moderator' => 'moderator', 'Data Protection Officer' => 'auditor', 'Data Privacy Co-Ordinator' => 'user'];
+                    $roles = ['ITSB Administrator' => 'admin', 'ITSB Staff' => 'moderator', 'DPO Data Protection Officer' => 'auditor', 'DPC Data Privacy Coordinator' => 'user'];
                     break;
                 case 'moderator':
-                    $roles = ['Data Protection Officer' => 'auditor', 'Data Privacy Co-Ordinator' => 'user'];
+                    $roles = ['DPO Data Protection Officer' => 'auditor', 'DPC Data Privacy Coordinator' => 'user'];
                     break;
                 default:
                     $roles = [];

@@ -3,18 +3,44 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Organisation extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $visible = ['id', 'name', 'number', 'commitment'];
+    protected $visible = ['id', 'name', 'number', 'commitment', 'logofile', 'color'];
+    protected $appends = ['orgcolor', 'logo'];
 
+    public function orgcolor(): Attribute
+    {
+        $color = $this->color;
+        if (!($color)) {
+            $color = '00315c';
+        }
+        return new Attribute(
+            get: fn ($value) => $color
+        );
+    }
     public function components()
     {
         return $this->belongsToMany(Component::class)->withPivot('period_id');
+    }
+
+    public function logo(): Attribute
+    {
+        $logo = $this->logofile;
+        if (!($logo)) {
+            $logo = '/images/portrait/small/it.png';
+        } else {
+            $logo = Storage::url($logo);
+        }
+        return new Attribute(
+            get: fn ($value) => $logo
+        );
     }
     public function kpis()
     {

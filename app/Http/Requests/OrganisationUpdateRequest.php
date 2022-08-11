@@ -32,6 +32,8 @@ class OrganisationUpdateRequest extends FormRequest
             'commitment' => ['required', 'integer', 'between:1,5'],
             'sni_id' => ['sometimes', 'nullable', 'exists:snis,id'],
             'organisation_id' => ['sometimes', 'nullable', 'exists:organisations,id'],
+            'logofile' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png', 'max: 1024'],
+            'color' => ['sometimes', 'nullable']
         ];
     }
 }

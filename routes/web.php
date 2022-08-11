@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Route;
 /* Root Routing */
 
 Route::get('/', [RoutingController::class, 'root'])->name('root');
+Route::post('/theme-switch', [RoutingController::class, 'themeSwitcher'])->name('theme.switch');
 //Route::post('/set-session', [RoutingController::class, 'setSession'])->name('set.session');
 
 /* Axios */
@@ -52,6 +53,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::post('organisations/statements/deeds/update-all', [AxiosController::class, 'organisationsStatementsDeedsUpdateAll'])->middleware('can:user')->name('axios.organisations.statements.deeds.update-all');
     Route::post('organisations/statements/plans/update', [AxiosController::class, 'organisationsStatementsPlansUpdate'])->middleware('can:user')->name('axios.organisations.statements.plans.update');
     Route::post('organisations/statements/reviews/update', [AxiosController::class, 'organisationsStatementsReviewsUpdate'])->middleware('can:auditor')->name('axios.organisations.statements.reviews.update');
+    Route::post('organisations/update', [AxiosController::class, 'organisationsUpdate'])->middleware('can:user')->name('axios.organisations.update');
     Route::post('risk_comments/store', [AxiosController::class, 'riskCommentsStore'])->middleware('can:auditor-user')->name('axios.risk_comments.store');
     Route::get('risks/{risk}', [AxiosController::class, 'risksShow'])->middleware('can:auditor-user')->name('axios.risks.show');
     Route::get('sanctions', [AxiosController::class, 'sanctions'])->middleware('can:moderator')->name('axios.sanctions.index');
@@ -80,6 +82,6 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
 });
 
 /* Services - Do not Modify */
-Route::prefix('services')->middleware('auth')->group(function() {
+Route::prefix('services')->middleware('auth')->group(function () {
     //Route::get('countries/seed', [RoutingController::class, 'countriesSeed'])->middleware('can:super')->name('countries.seed');
 });

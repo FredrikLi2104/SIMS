@@ -20,8 +20,8 @@ class MasterSeeder extends Seeder
      */
     public function run()
     {
-        // seed user role for component organisation
-        DB::table('component_organisation')->update(['role' => 'user']);
+        // seed user role for component organisation [complete]
+        //DB::table('component_organisation')->update(['role' => 'user']);
         // end user role for component organisation
         //############################################################################################
         // [complete]

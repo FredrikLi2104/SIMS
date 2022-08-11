@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class OrganisationController extends Controller
 {
@@ -86,6 +87,16 @@ class OrganisationController extends Controller
     {
         //
         $data = $request->all();
+        // logo uploaded?
+        if (isset($data['logofile'])) {
+            $data['logofile'] = Storage::putFile('public/organisations/logos', $data['logofile']);
+        }
+        // color selected?
+        if ($data['color'] != '#000001') {
+            $data['color'] = substr($data['color'], 1);
+        } else {
+            $data['color'] = null;
+        }
         try {
             DB::transaction(function () use ($data) {
                 $organisation = Organisation::create($data);
@@ -132,6 +143,16 @@ class OrganisationController extends Controller
     {
         //
         $data = $request->all();
+        // logo uploaded?
+        if (isset($data['logofile'])) {
+            $data['logofile'] = Storage::putFile('public/organisations/logos', $data['logofile']);
+        }
+        // color selected?
+        if ($data['color'] != '#00315c') {
+            $data['color'] = substr($data['color'], 1);
+        } else {
+            $data['color'] = null;
+        }
         try {
             DB::transaction(function () use ($data, $organisation) {
                 $organisation->update($data);

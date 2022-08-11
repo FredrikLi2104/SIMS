@@ -15,6 +15,17 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h4 class="card-title">{{ collection?.messages?.risks }} {{ collection?.messages?.scatter }}</h4>
+                                    <div class="d-flex align-items-center">
+                                        <div class="px-1 py-1">
+                                            <i data-feather="calendar"></i>
+                                        </div>
+                                        <div class="col-6" style="width: 200px;">
+                                            <select id="rangeSelect" class="select2 form-select form-control">
+                                                <option v-for="rangeDate in collection?.rangeDates" :key="rangeDate" :value="rangeDate">{{rangeDate}}</option>
+                                            </select>
+                                        </div>
+                                        <!--<input type="date" id="scatterRiskRange" class="form-control border-0 shadow-none bg-transparent pe-0" :placeholder="collection?.messages?.riskRange" />-->
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="row d-flex justify-content-center align-items-center" id="scatterLegend"></div>
@@ -195,6 +206,7 @@ export default {
             collection: null,
             riskActive: { risk_comments: [] },
             riskCommentStoreError: null,
+            scatterChart: null,
         };
     },
     methods: {
@@ -226,8 +238,9 @@ export default {
                 labelColor = "#6e6b7b",
                 grid_line_color = "rgba(200, 200, 200, 0.2)"; // RGBA color helps in dark layout
             Chart.plugins.register(ChartDataLabels);
+            // scatter chart
             if (bubbleChartEx.length) {
-                var bubbleExample = new Chart(bubbleChartEx, {
+                thisComponent.scatterChart = new Chart(bubbleChartEx, {
                     type: "bubble",
                     options: {
                         responsive: true,
@@ -374,9 +387,10 @@ export default {
                 });
             }
             thisComponent.$nextTick(() => {
-                let d = bubbleExample.generateLegend();
+                let d = thisComponent.scatterChart.generateLegend();
                 document.getElementById("scatterLegend").innerHTML = d;
             });
+            // donut chart
             var donutChartEl = document.querySelector("#ratio-chart"),
                 donutChartConfig = {
                     chart: {
@@ -417,7 +431,7 @@ export default {
                                         fontSize: "1.5rem",
                                         label: thisComponent.collection?.messages?.risks,
                                         formatter: function (w) {
-                                            let s = thisComponent.collection?.series.reduce((a,b) => a+b , 0);
+                                            let s = thisComponent.collection?.series.reduce((a, b) => a + b, 0);
                                             return s;
                                         },
                                     },
@@ -855,6 +869,11 @@ export default {
                     thisComponent.$nextTick(() => {
                         thisComponent.buildTable();
                         thisComponent.buildCharts();
+                        thisComponent.$nextTick(() => {
+                            $("#rangeSelect").on("select2:select", function (e) {
+                                thisComponent.scatterChartUpdate(e);
+                            });
+                        });
                     });
                 })
                 .catch(function (error) {
@@ -910,6 +929,20 @@ export default {
             let y = this.collection.risks.filter((x) => x.id == id);
             this.riskActive = y[0];
             $("#riskViewModal").modal("show");
+        },
+        scatterChartUpdate(e) {
+            var thisComponent = this;
+            let ranje = e.params.data.text;
+            let dataSets = [];
+            if(ranje != thisComponent.collection?.messages?.rangeAllTime) {
+               dataSets = thisComponent.collection?.dataSets?.filter(element => element.date == ranje);
+               thisComponent.scatterChart.data.datasets = dataSets;
+               thisComponent.scatterChart.update();
+            } else {
+                // populate all
+                thisComponent.scatterChart.data.datasets = thisComponent.collection?.dataSets;
+                thisComponent.scatterChart.update();
+            }
         },
     },
     mounted() {

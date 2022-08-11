@@ -50,7 +50,7 @@
                                         <td>{{ $user->id }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $user->role }}</td>
+                                        <td>{{$roles[$user->role]}} ({{ $user->role }})</td>
                                         <td class="text-center">
                                             <a href="{{ route('users.edit', [App::currentLocale(), $user->id]) }}">
                                                 <button type="button" class="btn btn-gradient-primary">
@@ -69,7 +69,7 @@
                                             <td>{{ $user->id }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
-                                            <td>{{ $user->role }}</td>
+                                            <td>{{$roles[$user->role]}} ({{ $user->role }})</td>
                                             <td class="text-center">
                                                 <a href="{{ route('users.edit', [App::currentLocale(), $user->id]) }}">
                                                     <button type="button" class="btn btn-gradient-primary">
@@ -89,7 +89,7 @@
                                             <td>{{ $user->id }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
-                                            <td>{{ $user->role }}</td>
+                                            <td>{{$roles[$user->role]}} ({{ $user->role }})</td>
                                             <td class="text-center">
                                                 <a href="{{ route('users.edit', [App::currentLocale(), $user->id]) }}">
                                                     <button type="button" class="btn btn-gradient-primary">
