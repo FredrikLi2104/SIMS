@@ -29,6 +29,11 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
+                                    <label class="form-label">{{ collection?.messages?.resolutionNotice }}</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="col-8 mb-1">
                                     <label for="customFile1" class="form-label">{{ collection?.messages?.logo }}</label>
                                     <input id="logoInput" :class="errors?.logo ? 'form-control is-invalid' : 'form-control'" type="file" @change="orgUpdate" />
                                     <p>
@@ -53,6 +58,78 @@
                                     <div class="bg-white" style="position: relative; height: 30vh; width: 40vw">
                                         <canvas id="graphelementlarge" class="polar-area-chart-ex chartjs" data-height="800"></canvas>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="col-8 mb-1">
+                                    <label class="form-label">{{ collection?.messages?.organisationDetails }}</label>
+                                    <div id="footer" class="bg-white" style="position: relative; height: 100px; width: 730px">
+                                        <svg height="100" width="660" style="position: absolute; left: 0">
+                                            <polygon points="0,0 504,0 660,100 0,100" :fill="`#484848`" />
+                                        </svg>
+                                        <svg height="50" width="150" style="position: absolute; left: 440; bottom: 0">
+                                            <polygon points="40,0 150,0 110,50 0,50 " :fill="accentColor()" />
+                                        </svg>
+                                        <svg height="50" width="190" style="position: absolute; right: 0; bottom: 0">
+                                            <polygon points="40,0 190,0 190,50 0,50" :fill="color" />
+                                        </svg>
+                                        <svg height="32" width="32" style="position: absolute; left: 16; top: 12">
+                                            <circle cx="16" cy="16" r="16" :fill="accentColor()" />
+                                        </svg>
+                                        <img src="/images/icons/phone.png" width="16" height="16" style="position: absolute; left: 24px; top: 20px" />
+                                        <p style="position: absolute; left: 56px; top: 14px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.phone }}</p>
+                                        <svg height="32" width="32" style="position: absolute; left: 232; top: 12">
+                                            <circle cx="16" cy="16" r="16" :fill="accentColor()" />
+                                        </svg>
+                                        <img src="/images/icons/gps.png" width="16" height="16" style="position: absolute; left: 240px; top: 20px" />
+                                        <p style="position: absolute; left: 272px; top: 8px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.address1 }}</p>
+                                        <p style="position: absolute; left: 272px; top: 24px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.address2 }}</p>
+                                        <svg height="32" width="32" style="position: absolute; left: 16; top: 56">
+                                            <circle cx="16" cy="16" r="16" :fill="accentColor()" />
+                                        </svg>
+                                        <img src="/images/icons/email.png" width="16" height="16" style="position: absolute; left: 24px; top: 64px" />
+                                        <p style="position: absolute; left: 56px; top: 60px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.email }}</p>
+                                        <svg height="32" width="32" style="position: absolute; left: 232; top: 56">
+                                            <circle cx="16" cy="16" r="16" :fill="accentColor()" />
+                                        </svg>
+                                        <img src="/images/icons/web.png" width="16" height="16" style="position: absolute; left: 240px; top: 64px" />
+                                        <p style="position: absolute; left: 272px; top: 60px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.website }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="col-8 mb-1">
+                                    <label for="phoneInput" class="form-label">{{ collection?.messages?.phone }}</label>
+                                    <input id="phoneInput" type="text" :class="errors?.phone ? 'form-control is-invalid' : 'form-control'" placeholder="+4681234567" @blur="orgUpdate" :value="collection.organisation.phone" />
+                                    <div v-if="errors?.phone" class="invalid-feedback">{{ errors?.phone }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="col-8 mb-1">
+                                    <label for="address1Input" class="form-label">{{ collection?.messages?.address1 }}</label>
+                                    <input id="address1Input" type="text" :class="errors?.address1 ? 'form-control is-invalid' : 'form-control'" placeholder="Birger Jarlsgatan 4" @blur="orgUpdate" :value="collection.organisation.address1" />
+                                    <div v-if="errors?.address1" class="invalid-feedback">{{ errors?.address1 }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="col-8 mb-1">
+                                    <label for="address2Input" class="form-label">{{ collection?.messages?.address2 }}</label>
+                                    <input id="address2Input" type="text" :class="errors?.address2 ? 'form-control is-invalid' : 'form-control'" placeholder="114 34 Stockholm, Sweden" @blur="orgUpdate" :value="collection.organisation.address2" />
+                                    <div v-if="errors?.address2" class="invalid-feedback">{{ errors?.address2 }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="col-8 mb-1">
+                                    <label for="emailInput" class="form-label">{{ collection?.messages?.email }}</label>
+                                    <input id="emailInput" type="text" :class="errors?.email ? 'form-control is-invalid' : 'form-control'" placeholder="hello@organisation.se" @blur="orgUpdate" :value="collection.organisation.email" />
+                                    <div v-if="errors?.email" class="invalid-feedback">{{ errors?.email }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="col-8 mb-1">
+                                    <label for="websiteInput" class="form-label">{{ collection?.messages?.website }}</label>
+                                    <input id="websiteInput" type="text" :class="errors?.website ? 'form-control is-invalid' : 'form-control'" placeholder="https://organisation.se" @blur="orgUpdate" :value="collection.organisation.website" />
+                                    <div v-if="errors?.website" class="invalid-feedback">{{ errors?.website }}</div>
                                 </div>
                             </div>
                         </div>
@@ -117,19 +194,44 @@
                                         <p class="my-0 px-1">{{ collection?.messages?.dataProtectionPlan }}</p>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-start align-items-center">
+                                <div class="d-flex justify-content-start align-items-center mb-2">
                                     <div class="col-12 text-black" :style="`font-family: 'Times New Roman'; font-weight: 400;`">
                                         <p class="my-0 px-1">{{ collection?.messages?.dataProtectionText }}</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div id="footer" class="bg-white" style="position: relative; height: 64px; width: 400px">
+                                        <svg height="64" width="400" style="position: absolute; left: 0">
+                                            <polygon points="0,0 212,0 320,64 0,64" :fill="`#484848`" />
+                                        </svg>
+
+                                        <svg height="40" width="100" style="position: absolute; right: 150; bottom: 0">
+                                            <polygon points="30,0 100,0 70,40 0,40 " :fill="accentColor()" />
+                                        </svg>
+                                        <svg height="40" width="180" style="position: absolute; right: 0; bottom: 0">
+                                            <polygon points="30,0 180,0 180,40 0,40" :fill="color" />
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
                             <div class="browser-states">
                                 <div class="d-flex flex-row">
                                     <img src="/images/icons/word_icon.png" class="rounded me-1" height="30" alt="Google Chrome" />
-                                    <h6 class="align-self-center mb-0">Download A4 Word Document</h6>
+                                    <h6 class="align-self-center mb-0">{{ collection?.messages?.downloadDocx }}</h6>
                                 </div>
                                 <div class="d-flex align-items-center" style="position: relative">
                                     <button type="button" class="btn btn-icon btn-success waves-effect waves-float waves-light" @click="generateDocx">
+                                        <i data-feather="download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="browser-states">
+                                <div class="d-flex flex-row">
+                                    <img src="/images/icons/pdf_icon.png" class="rounded me-1" height="30" alt="Acrobat Reader" />
+                                    <h6 class="align-self-center mb-0">{{ collection?.messages?.downloadPdf }}</h6>
+                                </div>
+                                <div class="d-flex align-items-center" style="position: relative">
+                                    <button type="button" class="btn btn-icon btn-success waves-effect waves-float waves-light" @click="generatePdf">
                                         <i data-feather="download"></i>
                                     </button>
                                 </div>
@@ -235,10 +337,14 @@
     </div>
 </template>
 <script>
-import { AlignmentType, BorderStyle, convertInchesToTwip, Document, Header, ImageRun, Packer, PageBreak, Paragraph, ShadingType, SymbolRun, Table, TableCell, TableRow, TextRun, VerticalAlign, WidthType } from "docx";
+import { AlignmentType, BorderStyle, convertInchesToTwip, Document, Footer, Header, ImageRun, Packer, PageBreak, Paragraph, ShadingType, SymbolRun, Table, TableCell, TableRow, TextRun, VerticalAlign, WidthType } from "docx";
 import { saveAs } from "file-saver";
 import domtoimage from "dom-to-image";
 import hsl from "hsl-to-hex";
+import { jsPDF } from "jspdf";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 export default {
     props: ["locale"],
     data() {
@@ -252,6 +358,46 @@ export default {
         };
     },
     methods: {
+        accentColor() {
+            var thisComponent = this;
+            let primaryToAccent = function (hexColor) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
+                let r = parseInt(result[1], 16);
+                let g = parseInt(result[2], 16);
+                let b = parseInt(result[3], 16);
+                (r /= 255), (g /= 255), (b /= 255);
+                var max = Math.max(r, g, b),
+                    min = Math.min(r, g, b);
+                var h,
+                    s,
+                    l = (max + min) / 2;
+                if (max == min) {
+                    h = s = 0; // achromatic
+                } else {
+                    var d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r:
+                            h = (g - b) / d + (g < b ? 6 : 0);
+                            break;
+                        case g:
+                            h = (b - r) / d + 2;
+                            break;
+                        case b:
+                            h = (r - g) / d + 4;
+                            break;
+                    }
+                    h /= 6;
+                }
+                var HSL = new Object();
+                HSL["h"] = h;
+                HSL["s"] = s;
+                HSL["l"] = l;
+                return hsl(h * 360, s * 80, l * 120);
+            };
+            let accentColor = primaryToAccent(thisComponent.color);
+            return accentColor;
+        },
         buildTable() {
             var thisComponent = this;
             if (thisComponent.dataTable) {
@@ -680,6 +826,47 @@ export default {
             });
         },
         deleteModel(id) {},
+        async docData() {
+            var thisComponent = this;
+            let r = {};
+            r.filename = thisComponent.collection?.organisation?.name + "_" + thisComponent.collection?.messages?.planningReport + "_" + new Date().toLocaleDateString();
+            // header logo
+            function getFile(url) {
+                return new Promise((resolve, reject) => {
+                    let logoImage = new Image();
+                    logoImage.src = url;
+                    logoImage.onload = () => resolve(logoImage);
+                    logoImage.onerror = () => reject();
+                });
+            }
+            async function getbase(url) {
+                const data = await fetch(url);
+                const blob = await data.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject();
+                });
+            }
+            const logoImageFile = await getFile(thisComponent.collection?.organisation?.logo);
+            r.height = 48;
+            r.width = Math.round((logoImageFile.width / logoImageFile.height) * 48);
+            r.base = await getbase(thisComponent.collection?.organisation?.logo);
+            const footerBlob = await domtoimage.toBlob(document.getElementById("footer")).then((blob) => blob);
+            const graphBlob = await domtoimage.toBlob(document.getElementById("graphelementlarge")).then((blob) => blob);
+            async function blobToBase(blob) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject();
+                });
+            }
+            r.footerBase = await blobToBase(footerBlob);
+            r.graphBase = await blobToBase(graphBlob);
+            return r;
+        },
         draw(type) {
             var thisComponent = this;
             thisComponent.active = type;
@@ -884,6 +1071,41 @@ export default {
                 columnWidths: [convertInchesToTwip(3.5), convertInchesToTwip(3.5)],
             });
             // end header bar/////////////////////////////////////////////////////////////////////
+            // Footer
+            const footerBlob = await domtoimage.toBlob(document.getElementById("footer")).then((blob) => blob);
+            const footerImage = new ImageRun({
+                data: footerBlob,
+                transformation: {
+                    height: 100,
+                    width: 730,
+                },
+            });
+            const footerTable = new Table({
+                rows: [
+                    new TableRow({
+                        children: [
+                            new TableCell({
+                                borders: headerBorders,
+                                children: [
+                                    new Paragraph({
+                                        children: [footerImage],
+                                        alignment: AlignmentType.CENTER,
+                                    }),
+                                ],
+                                verticalAlign: VerticalAlign.CENTER,
+                                columnSpan: 2,
+                            }),
+                        ],
+                    }),
+                ],
+                width: {
+                    size: 100,
+                    type: WidthType.PERCENTAGE,
+                },
+                alignment: AlignmentType.CENTER,
+                columnWidths: [convertInchesToTwip(3.5), convertInchesToTwip(3.5)],
+            });
+            // end footer ////////////////////////////////////////////////////////////////////////
             // Summary paragraph
             const summaryParagraph = new Paragraph({
                 children: [
@@ -1090,7 +1312,7 @@ export default {
                 ],
                 spacing: {
                     after: 300,
-                }
+                },
             });
             let docChildren = [summaryParagraph, summaryDescParagraph, graphParagraph, planTitle, planText, planTable, pageBreak, componentsDescTitle];
             // Components paragraph
@@ -1119,7 +1341,7 @@ export default {
                     ],
                     spacing: {
                         after: 100,
-                    }
+                    },
                 });
                 docChildren.push(componentDesc);
                 componentImplementation = new Paragraph({
@@ -1133,7 +1355,7 @@ export default {
                     ],
                     spacing: {
                         after: 150,
-                    }
+                    },
                 });
                 docChildren.push(componentImplementation);
             }
@@ -1144,6 +1366,11 @@ export default {
                         headers: {
                             default: new Header({
                                 children: [headerTable, headerBarTable],
+                            }),
+                        },
+                        footers: {
+                            default: new Footer({
+                                children: [footerTable],
                             }),
                         },
                         children: docChildren,
@@ -1157,6 +1384,285 @@ export default {
             });
             // end save document
         },
+        async generatePdf() {
+            var thisComponent = this;
+            const docData = await thisComponent.docData();
+            pdfMake.fonts = {
+                Times: {
+                    normal: "https://backend.gdpr.se/fonts/times.ttf",
+                    bold: "https://backend.gdpr.se/fonts/timesbd.ttf",
+                    italics: "https://backend.gdpr.se/fonts/timesi.ttf",
+                    bolditalics: "https://backend.gdpr.se/fonts/timesbi.ttf",
+                },
+            };
+            var primaryToAccent = function (hexColor) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
+                let r = parseInt(result[1], 16);
+                let g = parseInt(result[2], 16);
+                let b = parseInt(result[3], 16);
+                (r /= 255), (g /= 255), (b /= 255);
+                var max = Math.max(r, g, b),
+                    min = Math.min(r, g, b);
+                var h,
+                    s,
+                    l = (max + min) / 2;
+                if (max == min) {
+                    h = s = 0; // achromatic
+                } else {
+                    var d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r:
+                            h = (g - b) / d + (g < b ? 6 : 0);
+                            break;
+                        case g:
+                            h = (b - r) / d + 2;
+                            break;
+                        case b:
+                            h = (r - g) / d + 4;
+                            break;
+                    }
+                    h /= 6;
+                }
+                var HSL = new Object();
+                HSL["h"] = h;
+                HSL["s"] = s;
+                HSL["l"] = 0.8;
+                return hsl(h * 360, 75, 70);
+            };
+            const accentColor = primaryToAccent("#" + thisComponent.collection?.organisation?.orgcolor);
+            // 595 pt
+            const headerTable = {
+                layout: "noBorders",
+                table: {
+                    widths: [300, 216],
+                    body: [[[{ text: thisComponent.collection?.messages?.planningReport, style: "boldColor", alignment: "left", margin: [0, 16, 0, 0] }], [{ image: docData.base, width: docData.width, height: docData.height, alignment: "right" }]]],
+                },
+                margin: [24, 8, 24, 0],
+            };
+            const headerBar = {
+                svg: `<svg width="532" height="8">
+                        <rect y="1.5" width="400" height="1.5" fill="#${thisComponent.collection?.organisation?.orgcolor}"/>
+                        <rect x="400" y="0" width="132" height="3" fill="#${thisComponent.collection?.organisation?.orgcolor}"/>
+                    </svg>`,
+                margin: [24, 8, 24, 0],
+            };
+            const footerImage = {
+                image: docData.footerBase,
+                width: 595,
+                height: 80,
+            };
+            const sumTitle = {
+                text: thisComponent.collection?.messages?.summary,
+                style: "normalColor",
+            };
+            const sumParagraph = {
+                text: thisComponent.collection?.messages?.summaryDesc,
+                style: "normal",
+            };
+            const graphImage = {
+                image: docData.graphBase,
+                width: 424,
+                height: 172,
+                margin: [0, 12, 0, 0],
+            };
+            const dataTitle = {
+                text: thisComponent.collection?.messages?.dataProtectionPlan,
+                style: "normalColor",
+            };
+            const dataParagraph = {
+                text: thisComponent.collection?.messages?.dataProtectionText,
+                style: "normal",
+            };
+            let tableBody = [
+                [
+                    { text: thisComponent.collection?.messages?.quarter, style: "normal", fillColor: accentColor, alignment: "center" },
+                    { text: thisComponent.collection?.messages?.component, style: "normal", fillColor: accentColor, alignment: "center" },
+                ],
+            ];
+            for (let index = 0; index < 4; index++) {
+                let carray = thisComponent.collection?.quarterchart?.components;
+                carray = carray[index];
+                carray = carray.join(", ");
+                if (carray == "") {
+                    carray = " ";
+                }
+                tableBody.push([
+                    { text: index + 1, style: "normal", alignment: "center" },
+                    { text: carray, style: "normal", alignment: "center" },
+                ]);
+            }
+            tableBody.push([
+                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [true, false, false, false] },
+                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [false, false, true, false] },
+            ]);
+            tableBody.push([
+                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [true, false, false, false] },
+                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [false, false, true, false] },
+            ]);
+            tableBody.push([
+                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [true, false, false, false] },
+                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [false, false, true, false] },
+            ]);
+            const quartersTable = {
+                table: {
+                    widths: [64, 400],
+                    body: tableBody,
+                },
+                margin: [0, 12, 0, 0],
+                pageBreak: "after",
+            };
+            const compDescText = {
+                text: thisComponent.collection?.messages?.componentsDesc,
+                style: "normalColor",
+                margin: [0, 0, 0, 12],
+            };
+            const content = [sumTitle, sumParagraph, graphImage, dataTitle, dataParagraph, quartersTable, compDescText];
+            // Components paragraph
+            let componentCodeName = null;
+            let componentDesc = null;
+            let componentImplementation = null;
+            for (const comp of thisComponent.collection?.quarterchart?.componentsfinal) {
+                componentCodeName = {
+                    text: comp.codename,
+                    style: "normalTwelveColor",
+                };
+                content.push(componentCodeName);
+                componentDesc = {
+                    text: comp.desc,
+                    style: "normal",
+                };
+                content.push(componentDesc);
+                componentImplementation = {
+                    text: comp.implementation,
+                    style: "normalTwelveColor",
+                    margin: [0, 0, 0, 8],
+                };
+                content.push(componentImplementation);
+            }
+            let docDefinition = {
+                pageSize: "A4",
+                pageOrientation: "portrait",
+                pageMargins: [48, 128, 48, 80],
+                header: function (currentPage, pageCount, pageSize) {
+                    return [headerTable, headerBar];
+                },
+                footer: function (currentPage, pageCount, pageSize) {
+                    return [footerImage];
+                },
+                content: content,
+                styles: {
+                    boldColor: {
+                        font: "Times",
+                        fontSize: 14,
+                        bold: true,
+                        color: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    },
+                    normalColor: {
+                        font: "Times",
+                        fontSize: 14,
+                        color: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    },
+                    normal: {
+                        font: "Times",
+                        fontSize: 12,
+                    },
+                    normalTwelveColor: {
+                        font: "Times",
+                        fontSize: 12,
+                        color: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    },
+                },
+            };
+            //let content = ["First paragraph"];
+            //docDefinition.content = content;
+            pdfMake.createPdf(docDefinition).download();
+        },
+        async generatePdfx() {
+            var thisComponent = this;
+            let docData = await thisComponent.docData();
+            const doc = new jsPDF();
+            // Header 186
+            /// Header Title
+            doc.setFont("times", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor("#" + thisComponent.collection?.organisation?.orgcolor);
+            doc.text(thisComponent.collection?.messages?.planningReport, 12, 24);
+            /// Header Image
+            doc.addImage(thisComponent.collection?.organisation?.logo, "png", 164, 12, docData.width, docData.height);
+            /// Header Bar
+            doc.setFillColor("#" + thisComponent.collection?.organisation?.orgcolor);
+            doc.rect(11.5, 36, 140, 0.5, "F");
+            doc.rect(151.5, 35.5, 47, 1, "F");
+            // Header End /////////////////////////////////////////////////////////////////////////////
+
+            // Paragraph 178
+            doc.setFont("times", "normal");
+            doc.setFontSize(13);
+            doc.text(thisComponent.collection?.messages?.summary, 16, 48);
+            doc.setFontSize(12);
+            doc.setTextColor("#000000");
+            doc.text(thisComponent.collection?.messages?.summaryDesc, 16, 56, { align: "left", maxWidth: 178 });
+            // Paragraph End //////////////////////////////////////////////////////////////////////////
+
+            // Graph 178
+            const graphImage = await domtoimage.toPng(document.getElementById("graphelementlarge")).then((png) => png);
+            doc.addImage(graphImage, "png", 16, 74, 178, 80);
+            // Graph End //////////////////////////////////////////////////////////////////////////////
+
+            // Plan 178
+            doc.setFont("times", "normal");
+            doc.setFontSize(13);
+            doc.setTextColor("#" + thisComponent.collection?.organisation?.orgcolor);
+            doc.text(thisComponent.collection?.messages?.dataProtectionPlan, 16, 148);
+            doc.setFont("times", "normal");
+            doc.setFontSize(12);
+            doc.setTextColor("#000000");
+            doc.text(thisComponent.collection?.messages?.dataProtectionText, 16, 156, { align: "left", maxWidth: 178 });
+            // Plan End ///////////////////////////////////////////////////////////////////////////////
+
+            // Table 178<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< You are here
+            let tableData = [];
+            let row = {};
+            for (let index = 0; index < 4; index++) {
+                let carray = thisComponent.collection?.quarterchart?.components;
+                carray = carray[index];
+                carray = carray.join(", ");
+                if (carray == "") {
+                    carray = " ";
+                }
+                if (thisComponent.collection?.messages?.locale == "en") {
+                    row = { Quarter: (index + 1).toString(), Component: carray };
+                } else {
+                    row = { Kvartal: (index + 1).toString(), Komponent: carray };
+                }
+                tableData.push(Object.assign({}, row));
+            }
+            function createHeaders(keys) {
+                var result = [];
+                for (var i = 0; i < keys.length; i += 1) {
+                    let header = {
+                        id: keys[i],
+                        name: keys[i],
+                        prompt: keys[i],
+                        align: "center",
+                        padding: 0,
+                    };
+                    if (i == 0) {
+                        header.width = 32;
+                    } else {
+                        header.width = 208;
+                    }
+                    result.push(header);
+                }
+                return result;
+            }
+            var headers = createHeaders([thisComponent.collection?.messages?.quarter, thisComponent.collection?.messages?.component]);
+            doc.setFillColor("#" + thisComponent.collection?.organisation?.orgcolor);
+            doc.table(16, 162, tableData, headers, { headerBackgroundColor: thisComponent.accentColor() });
+            doc.rect(20, 20, 224, 16, "F");
+            doc.save(docData.filename + ".pdf");
+        },
         orgUpdate() {
             var thisComponent = this;
             const orgFormData = new FormData();
@@ -1168,6 +1674,23 @@ export default {
             if (thisComponent.color != null) {
                 orgFormData.append("color", thisComponent.color.substring(1));
             }
+            // has phone?
+            if (document.getElementById("phoneInput").value != null || document.getElementById("phoneInput").value != "") {
+                orgFormData.append("phone", document.getElementById("phoneInput").value);
+            }
+            if (document.getElementById("address1Input").value != null || document.getElementById("address1Input").value != "") {
+                orgFormData.append("address1", document.getElementById("address1Input").value);
+            }
+            if (document.getElementById("address2Input").value != null || document.getElementById("address2Input").value != "") {
+                orgFormData.append("address2", document.getElementById("address2Input").value);
+            }
+            if (document.getElementById("emailInput").value != null || document.getElementById("emailInput").value != "") {
+                orgFormData.append("email", document.getElementById("emailInput").value);
+            }
+            if (document.getElementById("websiteInput").value != null || document.getElementById("websiteInput").value != "") {
+                orgFormData.append("website", document.getElementById("websiteInput").value);
+            }
+
             axios
                 .post(`/${thisComponent.locale}/axios/organisations/update/`, orgFormData)
                 .then(function (response) {

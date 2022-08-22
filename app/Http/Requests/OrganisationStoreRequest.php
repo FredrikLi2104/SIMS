@@ -32,7 +32,17 @@ class OrganisationStoreRequest extends FormRequest
             'sni_id' => ['sometimes', 'nullable', 'exists:snis,id'],
             'organisation_id' => ['sometimes', 'nullable', 'exists:organisations,id'],
             'logofile' => ['sometimes', 'nullable', 'mimes:jpg,jpeg,png', 'max: 1024'],
-            'color' => ['sometimes', 'nullable']
+            'color' => ['sometimes', 'nullable'],
+            'phone' => ['sometimes', 'nullable', 'starts_with:+', function ($attribute, $value, $fail) {
+                $digits = substr($value, 1);
+                if (!(is_numeric($digits))) {
+                    $fail($attribute . ' can contain only numbers and +');
+                }
+            }, 'min:8', 'max:16'],
+            'address1' => ['sometimes', 'nullable', 'max:24'],
+            'address2' => ['sometimes', 'nullable', 'max:24'],
+            'email' => ['sometimes', 'nullable', 'email', 'max:24'],
+            'website' => ['sometimes', 'nullable', 'url', 'max:36'],
         ];
     }
 }

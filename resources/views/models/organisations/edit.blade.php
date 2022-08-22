@@ -121,6 +121,51 @@
                                         <input id="color" type="color" class="form-control" title="Choose your color" name="color" value="#{{$organisation->orgcolor}}" />
                                     </div>
                                 </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="phone">@lang('messages.phone') [@lang('messages.optional')]</label>
+                                        <input type="text" id="phone" class="form-control @error('phone') is-invalid @enderror" placeholder="+461234567" name="phone" value="{{ $organisation->phone }}" />
+                                        @error('phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="address1">@lang('messages.address1') [@lang('messages.optional')]</label>
+                                        <input type="text" id="address1" class="form-control @error('address1') is-invalid @enderror" placeholder="Birger Jarlsgatan 4" name="address1" value="{{ $organisation->address1 }}" />
+                                        @error('address1')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="email">@lang('messages.email') [@lang('messages.optional')]</label>
+                                        <input type="text" id="email" class="form-control @error('email') is-invalid @enderror" placeholder="hello@organisation.se" name="email" value="{{ $organisation->email }}" />
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="address2">@lang('messages.address2') [@lang('messages.optional')]</label>
+                                        <input type="text" id="address2" class="form-control @error('address2') is-invalid @enderror" placeholder="114 34 Stockholm, Sweden" name="address2" value="{{ $organisation->address2 }}" />
+                                        @error('address2')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="website">@lang('messages.website') [@lang('messages.optional')]</label>
+                                        <input type="text" id="website" class="form-control @error('website') is-invalid @enderror" placeholder="https://organisation.se" name="website" value="{{ $organisation->website }}" />
+                                        @error('website')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary me-1">@lang('messages.submit')</button>
                                 </div>

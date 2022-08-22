@@ -23,6 +23,13 @@
             "slug": ["organisations.do"]
         },
         {
+            "name": "act",
+            "auth": "user",
+            "icon": "pie-chart",
+            "url": "act",
+            "slug": ["organisations.act"]
+        },
+        {
             "name": "kpis",
             "auth": "auditor-user",
             "icon": "rotate-ccw",

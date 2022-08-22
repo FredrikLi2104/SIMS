@@ -594,6 +594,22 @@ class AxiosController extends Controller
         if (isset($data['color'])) {
             $update['color'] = $data['color'];
         }
+        // has phone?
+        if(isset($data['phone'])) {
+            $update['phone'] = $data['phone'];
+        }
+        if(isset($data['address1'])) {
+            $update['address1'] = $data['address1'];
+        }
+        if(isset($data['address2'])) {
+            $update['address2'] = $data['address2'];
+        }
+        if(isset($data['email'])) {
+            $update['email'] = $data['email'];
+        }
+        if(isset($data['website'])) {
+            $update['website'] = $data['website'];
+        }
         $organisation->update($update);
         return $organisation->makeVisible(['orgcolor', 'logo']);
     }

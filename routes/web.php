@@ -62,6 +62,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
 /* Localized Routes */
 Route::prefix('{locale}')->middleware('locale')->group(function () {
     require __DIR__ . '/auth.php';
+    Route::get('act', [OrganisationController::class, 'act'])->middleware('auth')->middleware('can:user')->name('organisations.act');
     Route::get('do', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
