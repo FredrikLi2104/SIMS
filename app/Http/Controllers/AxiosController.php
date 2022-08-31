@@ -147,7 +147,8 @@ class AxiosController extends Controller
                     $data[$year]['commitment'][] = $org->commitment;
                     $data[$year]['mean'][] = $comp->statementMeanValue($org, $year);
                     $data[$year]['codenames'][] = $comp->codeName;
-                    $name = strlen($comp->{'name_' . App::currentLocale()}) > 16 ? substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
+                    $name = mb_strlen($comp->{'name_' . App::currentLocale()}) > 16 ? mb_substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
+                    //$name = strlen($comp->{'name_' . App::currentLocale()}) > 16 ? substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
                     $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_'.App::currentLocale()}, 'deeds' => $comp->organisationStatementsYear($org, $year)];
                 }
                 // Risks
