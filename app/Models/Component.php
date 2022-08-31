@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,17 @@ class Component extends Model
         );
     }
 
+    public function organisationStatementsYear(Organisation $organisation, $year)
+    {
+        $x = Deed::where('organisation_id', $organisation->id)->whereIn('statement_id', $this->statements->pluck('id'))->get()->load('statement')->makeVisible(['statement']);
+        $r = $x->filter(function ($item) use ($year){
+            $y = Carbon::parse($item->created_at)->format('Y');
+            if ($y == $year) {
+                return $item;
+            }
+        });
+        return $r;
+    }
     public function organisationPeriod(Organisation $organisation)
     {
         $componentOrganisationPeriod = DB::table('component_organisation')->where('organisation_id', $organisation->id)->where('component_id', $this->id)->first();
@@ -52,5 +64,18 @@ class Component extends Model
     public function statements()
     {
         return $this->hasMany(Statement::class);
+    }
+
+    public function statementMeanValue(Organisation $organisation, $year)
+    {
+        $statements = Deed::where('organisation_id', $organisation->id)->whereIn('statement_id', $this->statements->pluck('id'))->get();
+        $statements = $statements->filter(function ($item, $value) use($year) {
+            return Carbon::parse($item->created_at)->format('Y') == $year;
+        });
+        $mean = $statements->avg('value');
+        if($mean == null) {
+            $mean = 0;
+        }
+        return $mean;
     }
 }

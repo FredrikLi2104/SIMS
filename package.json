@@ -13,6 +13,8 @@
         "@popperjs/core": "^2.10.2",
         "@radial-color-picker/vue-color-picker": "^5.0.1",
         "bootstrap": "~5.1.0",
+        "chart.js": "^3.9.1",
+        "chartjs-plugin-datalabels": "^2.1.0",
         "docx": "^7.4.1",
         "dom-to-image": "^2.6.0",
         "feather-icons": "^4.29.0",

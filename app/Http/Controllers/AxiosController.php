@@ -115,6 +115,107 @@ class AxiosController extends Controller
     }
 
     /**
+     * Return the data about the organisation (and its suborganisations) relevant to the act page
+     *
+     * Undocumented function long description
+     *
+     * @param String $locale AppLocale
+     * @return Illuminate\Database\Eloquent\Collection
+     **/
+    public function organisationsAct($locale)
+    {
+        App::setlocale($locale);
+        $messages = Lang::get('messages');
+        $orgData = [];
+        $organisation = Auth::user()->organisation->load('organisations')->makeVisible(['organisations', 'risks']);
+        $organisations = [$organisation];
+        foreach ($organisation->organisations->makeVisible(['risks']) as $v) {
+            $organisations[] = $v;
+        }
+        foreach ($organisations as $org) {
+            $data = [];
+            $years = $org->deedsYears();
+            if ($years == []) {
+                $years = [Carbon::now()->format('Y')];
+            }
+            sort($years);
+            foreach ($years as $year) {
+                $data[$year] = [];
+                $components = Component::all();
+                foreach ($components as $comp) {
+                    $data[$year]['components'][] = $comp->code;
+                    $data[$year]['commitment'][] = $org->commitment;
+                    $data[$year]['mean'][] = $comp->statementMeanValue($org, $year);
+                    $data[$year]['codenames'][] = $comp->codeName;
+                    $name = strlen($comp->{'name_' . App::currentLocale()}) > 16 ? substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
+                    $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_'.App::currentLocale()}, 'deeds' => $comp->organisationStatementsYear($org, $year)];
+                }
+                // Risks
+                $scatterRisks = $org->risks->sortBy('created_at');
+                $data[$year]['risks']['datasets'] = [];
+                foreach($scatterRisks as $risk) {
+                    if(Carbon::parse($risk->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear())) {
+                        $r = $scatterRisks->filter(function ($item) use($risk, $year) {
+                            return ($item->consequence == $risk->consequence && $item->probability == $risk->probability && Carbon::parse($item->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear()));
+                        });
+                        $r = 10*count($r);
+                        $data[$year]['risks']['datasets'][] = [
+                            'label' => $risk->title,
+                            'backgroundColor' => $risk->risk()['colour'],
+                            'borderColor' => $risk->risk()['colour'],
+                            'data' => [
+                                ['x' => $risk->consequence,'y' => $risk->probability,'r' => $r],
+                            ],
+                            'count' => $r/10,
+                            'fs' => 11+($r/10),
+                        ];
+                    }
+                }
+                /*
+                foreach ($scatterRisks as $scatterRisk) {
+                    $dataSets[] = ['label' => $scatterRisk->title, 'backgroundColor' => $scatterRisk->risk['colour'], 'borderColor' => $scatterRisk->risk['colour'], 'data' => [['x' => $scatterRisk->consequence, 'y' => $scatterRisk->probability, 'r' => 10 * count($scatterRisks->filter(function ($item) use ($scatterRisk) {
+                        return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
+                    })->all())]], 'count' => count($scatterRisks->filter(function ($item) use ($scatterRisk) {
+                        return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
+                    })->all()), 'date' => Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM')];
+                    if (!(in_array(Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM'), $rangeDates))) {
+                        $rangeDates[] = Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM');
+                    }
+                };
+                $data[$year]['risks']['datasets'][] = [
+                    'label' => 'First Dataset', 'data' => [
+                        [
+                            'x' => 20,
+                            'y' => 30,
+                            'r' => 15
+                        ],
+                        [
+                            'x' => 40,
+                            'y' => 10,
+                            'r' => 10,
+                        ],
+                    ],
+                    'backgroundColor' => 'rgb(255, 99, 132)',
+                ];*/
+                //$data[$year]['risks']['legend'] = ['success' => '#28c76f', 'lowMed' => '#cab707', 'warning' => '#FF9F43', 'medHigh' => '#ff5f43', 'danger' => '#EA5455'];
+                $data[$year]['risks']['legend'] = [
+                    ['text' => $messages['low'], 'colour' => '#28c76f'],
+                    ['text' => $messages['lowMed'], 'colour' => '#cab707'],
+                    ['text' => $messages['medium'], 'colour' => '#FF9F43'],
+                    ['text' => $messages['mediumHigh'], 'colour' => '#ff5f43'],
+                    ['text' => $messages['high'], 'colour' => '#EA5455'],
+
+                ];
+            }
+            $orgData[] = ['name' => $org->name, 'data' => $data];
+        }
+        // Localization
+        $r = ['data' => $orgData, 'messages' => $messages];
+        $r = collect($r);
+        return $r;
+    }
+
+    /**
      * Show organisation do
      *
      * Retrieve all statements and return them as data in relation to organisations deeds on said statements if any
@@ -283,14 +384,14 @@ class AxiosController extends Controller
         $organisation = Auth::user()->organisation->makeVisible(['orgcolor', 'logo']);
         // Report Chart
         $quarterchart = [];
-        $quarters = Period::whereIn('id', [1,2,3,4])->get();
+        $quarters = Period::whereIn('id', [1, 2, 3, 4])->get();
         foreach ($quarters as $quarter) {
-            $quarterchart['labels'][] = $quarter->{'name_'.$locale};
+            $quarterchart['labels'][] = $quarter->{'name_' . $locale};
             // loop all components
             $count = 0;
             $quarterchartcomponents = [];
             foreach ($components as $component) {
-                if($component->organisationuserPeriod($organisation)->id == $quarter->id) {
+                if ($component->organisationuserPeriod($organisation)->id == $quarter->id) {
                     $count += 1;
                     $quarterchartcomponents[] = $component->code_name;
                 }
@@ -306,7 +407,7 @@ class AxiosController extends Controller
         $cs = Component::all()->sortBy('sort_order')->makeVisible(['code_name']);
         $quarterchart['componentsfinal'] = [];
         foreach ($cs as $c) {
-            $quarterchart['componentsfinal'][] = ['codename' => $c->code_name, 'desc' => $c->{'desc_'.$locale}, 'implementation' => '[Placeholder for Implementation]?'];
+            $quarterchart['componentsfinal'][] = ['codename' => $c->code_name, 'desc' => $c->{'desc_' . $locale}, 'implementation' => '[Placeholder for Implementation]?'];
         }
         // Localization
         App::setlocale($locale);
@@ -595,19 +696,19 @@ class AxiosController extends Controller
             $update['color'] = $data['color'];
         }
         // has phone?
-        if(isset($data['phone'])) {
+        if (isset($data['phone'])) {
             $update['phone'] = $data['phone'];
         }
-        if(isset($data['address1'])) {
+        if (isset($data['address1'])) {
             $update['address1'] = $data['address1'];
         }
-        if(isset($data['address2'])) {
+        if (isset($data['address2'])) {
             $update['address2'] = $data['address2'];
         }
-        if(isset($data['email'])) {
+        if (isset($data['email'])) {
             $update['email'] = $data['email'];
         }
-        if(isset($data['website'])) {
+        if (isset($data['website'])) {
             $update['website'] = $data['website'];
         }
         $organisation->update($update);

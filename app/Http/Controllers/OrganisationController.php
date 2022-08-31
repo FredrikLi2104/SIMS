@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Storage;
 
 class OrganisationController extends Controller
 {
+    public function act()
+    {
+        return view('models.organisations.act');
+    }
     /**
      * Show the organisation do-able statements
      *

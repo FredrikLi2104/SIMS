@@ -18,8 +18,10 @@ class DatabaseSeeder extends Seeder
 
         // Local
         $this->call([
+            //ComponentSeeder::class,
             //CountrySeeder::class,
-            MasterSeeder::class,
+            //MasterSeeder::class,
+            //StatementSeeder::class,
             //UserSeeder::class,
             //OrganisationStatementSeeder::class,
         ]);
