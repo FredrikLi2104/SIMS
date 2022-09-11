@@ -49,7 +49,24 @@
                 </div>
             </div>
         </div>
-
+        <div class="row match-height">
+            <div class="col-12">
+                <div class="card invoice-list-wrapper">
+                    <div class="card-datatable table-responsive">
+                        <table class="invoice-list-table table" id="kpiTable"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row match-height">
+            <div class="col-12">
+                <div class="card invoice-list-wrapper">
+                    <div class="card-datatable table-responsive">
+                        <table class="invoice-list-table table" id="sanctionsTable"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade text-start modal-primary" id="componentShowModal" tabindex="-1" aria-labelledby="componentShowLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-extra-wide">
                 <div class="modal-content">
@@ -82,8 +99,8 @@
                                             <td></td>
                                         </tr>
                                         <tr v-for="deed in componentActive?.deeds" :key="deed">
-                                            <td>{{deed.statement[`content_${locale}`]}}</td>
-                                            <td>{{deed.value}}</td>
+                                            <td>{{ deed.statement[`content_${locale}`] }}</td>
+                                            <td>{{ deed.value }}</td>
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.implementation }}</td>
@@ -95,6 +112,159 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" @click="componentHide">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 modal fade text-start modal-primary" id="kpiViewModal" tabindex="-1" aria-labelledby="kpiLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="kpiLabel">{{ collection?.messages?.kpi }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="kpiHide"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-4 table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>{{ collection?.messages?.key }}</th>
+                                            <th>{{ collection?.messages?.value }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ collection?.messages?.id }}</td>
+                                            <td>{{ kpiActive?.id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.name }}</td>
+                                            <td>{{ kpiActive ? kpiActive["name_" + locale] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.desc }}</td>
+                                            <td>{{ kpiActive ? kpiActive["desc_" + locale] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.target }}</td>
+                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.target : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.value }}</td>
+                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.value : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.comment }}</td>
+                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.comment : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.lastUpdated }}</td>
+                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.created_at_for_humans : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.by }}</td>
+                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.user.name + " [" + kpiActive.kpicomment.user.role + "]" : null }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-8">
+                                <div class="card">
+                                    <div class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
+                                        <div>
+                                            <h4 class="card-title">{{ collection?.messages?.kpi }} {{ collection?.messages?.history }}</h4>
+                                            <span class="card-subtitle text-muted">{{ collection?.messages?.kpiHistorySubtitle }}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center"></div>
+                                    </div>
+                                    <div id="kpi-history-parent" class="card-body">
+                                        <div id="kpi-history-chart"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" @click="kpiHide">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade text-start modal-primary" id="sanctionShowModal" tabindex="-1" aria-labelledby="sanctionShowLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-extra-wide">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="sanctionShowLabel">{{ sanctionActive?.title }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="sanctionHide"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>{{ collection?.messages?.key }}</th>
+                                            <th>{{ collection?.messages?.value }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ collection?.messages?.id }}</td>
+                                            <td>{{ sanctionActive?.id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.createdAt }}</td>
+                                            <td>{{ sanctionActive?.created_at_for_humans }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.title }}</td>
+                                            <td>{{ sanctionActive?.title }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.dpa }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-start">
+                                                    <div v-if="sanctionActive?.dpa?.country != undefined" class="col-2">
+                                                        <img :src="`/images/flags/svg/${sanctionActive?.dpa?.country?.code}.svg`" style="width: 30px" />
+                                                    </div>
+                                                    <div class="col-10 align-items-center">
+                                                        <p class="mx-0 my-0">{{ sanctionActive?.dpa?.name }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.fine }}</td>
+                                            <td>{{ sanctionActive?.fine ? parseInt(sanctionActive?.fine) + " " + (sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : "") : "" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.startedOn }}</td>
+                                            <td>{{ sanctionActive?.started_at_for_humans }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.decidedOn }}</td>
+                                            <td>{{ sanctionActive?.decided_at_for_humans }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.publishedOn }}</td>
+                                            <td>{{ sanctionActive?.published_at_for_humans }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.articles }}</td>
+                                            <td>
+                                                <div v-for="article in sanctionActive?.articlesSorted" :key="article.title">
+                                                    <a :href="article?.url" target="_blank">{{ article?.title }}</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" @click="sanctionHide">Ok</button>
                         </div>
                     </div>
                 </div>
@@ -112,13 +282,19 @@ export default {
             collection: null,
             componentActive: null,
             dataTable: null,
+            kpiActive: null,
+            kpiChart: null,
+            kpiTable: null,
             radarChart: null,
+            sanctionActive: null,
+            sanctionsTable: null,
             scatterChart: null,
             activeOrg: {},
         };
     },
     methods: {
         buildTable() {
+            //console.log(this.dataTable);
             // console.log("called");
             var thisComponent = this;
             if (thisComponent.dataTable) {
@@ -141,7 +317,7 @@ export default {
             const activeYear = document.getElementById("yearSelect").value;
             var dataSource = thisComponent.activeOrg[activeYear].table;
             document.getElementById("dataTable").innerHTML = header;
-            thisComponent.dataTable = $(".invoice-list-table").DataTable({
+            thisComponent.dataTable = $("#dataTable").DataTable({
                 data: dataSource,
                 createdRow: function (row, data, dataIndex) {
                     //$(row).addClass("row-auth-bg");
@@ -246,6 +422,474 @@ export default {
                     */
                 },
             });
+        },
+        buildKpiTable() {
+            var thisComponent = this;
+            if (thisComponent.kpiTable) {
+                thisComponent.kpiTable.destroy();
+                thisComponent.kpiTable = null;
+                document.getElementById("kpiTable").innerHTML = "";
+            }
+            let header = `
+            <thead>
+                <tr>
+                    <th class="cell-fit">${thisComponent.collection?.messages?.id}</th>
+                    <th>${thisComponent.collection?.messages?.name}</th>
+                    <th>${thisComponent.collection?.messages?.desc}</th>
+                    <th>${thisComponent.collection?.messages?.target}</th>
+                    <th>${thisComponent.collection?.messages?.value}</th>
+                    <th>${thisComponent.collection?.messages?.comment}</th>
+                    <th class="text-center">${thisComponent.collection?.messages?.actions}</th>
+                </tr>
+            </thead>
+            `;
+            const activeYear = document.getElementById("yearSelect").value;
+            const dataSource = thisComponent.activeOrg[activeYear].kpis;
+            //console.log(dataSource);
+            document.getElementById("kpiTable").innerHTML = header;
+            thisComponent.kpiTable = $("#kpiTable").DataTable({
+                data: dataSource,
+                createdRow: function (row, data, dataIndex) {
+                    //$(row).addClass("row-auth-bg");
+                },
+                lengthMenu: [10, 20, 50, 100],
+                paging: true,
+                autoWidth: true,
+                searching: true,
+                columns: [{ data: "id" }, { data: "name" }, { data: "desc" }, { data: "target" }, { data: "value" }, { data: "comment" }],
+                columnDefs: [
+                    {
+                        // id
+                        targets: 0,
+                        responsivePriority: 0,
+                        width: "5%",
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.id}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // name
+                        targets: 1,
+                        responsivePriority: 1,
+                        width: "10%",
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.name}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // desc
+                        targets: 2,
+                        responsivePriority: 2,
+                        width: "15%",
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.desc}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // target
+                        targets: 3,
+                        responsivePriority: 3,
+                        width: "7.5%",
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.target}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // value
+                        targets: 4,
+                        responsivePriority: 4,
+                        width: "7.5%",
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.value}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // comment
+                        targets: 5,
+                        responsivePriority: 5,
+                        width: "15%",
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.comment}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // actions
+                        targets: 6,
+                        responsivePriority: 6,
+                        width: "10%",
+                        orderable: false,
+                        render: function (data, type, full, meta) {
+                            let r = `
+                                <div class="d-flex justify-content-center align-items-center px-2">
+                                    <div class="d-flex flex-column">
+                                        <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.kpiShow(${full.id})">
+                                            ${feather.icons["eye"].toSvg({ class: "me-25" })}
+                                            <span>${thisComponent.collection?.messages?.view}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                `;
+                            return r;
+                        },
+                    },
+                ],
+                order: [[0, "asc"]],
+                dom: `
+                <"row d-flex justify-content-start align-items-center m-1"
+                    <"col-lg-8 d-flex justify-content-start align-items-center"
+                        <"#kpiCardHeader">
+                    >
+                    <"col-lg-4 d-flex justify-content-end align-items-center"f>
+                >t
+                <"d-flex justify-content-between mx-2 row"
+                    <"col-sm-12 col-md-6"i>
+                    <"col-sm-12 col-md-6"p>
+                ">`,
+                initComplete: function () {
+                    let domHtml = `
+                            <div class="card-body">
+                                <h4 class="card-title">${thisComponent.collection?.messages?.kpis}</h4>
+                                <h6 class="card-subtitle text-muted">${thisComponent.collection?.messages?.kpis} ${thisComponent.collection?.messages?.table}</h6>
+                            </div>
+                            `;
+                    $("#kpiCardHeader").html(domHtml);
+                },
+                drawCallback: function () {
+                    /*
+                    if (window.thisComponent.scrollPos != null) {
+                        window.thisComponent.$nextTick(() => {
+                            window.scrollTo(0, window.component.scrollPos);
+                        });
+                    } else {
+                        window.component.scrollPos = 500;
+                    }
+                    */
+                },
+            });
+        },
+        buildSanctionsTable() {
+            var thisComponent = this;
+            if (thisComponent.sanctionsTable) {
+                thisComponent.sanctionsTable.destroy();
+                thisComponent.sanctionsTable = null;
+                document.getElementById("sanctionsTable").innerHTML = "";
+            }
+            let header = `
+            <thead>
+                <tr>
+                    <th class="">${thisComponent.collection?.messages?.id}</th>
+                    <th class="">${thisComponent.collection?.messages?.createdAt}</th>
+                    <th class="">${thisComponent.collection?.messages?.dpa}</th>
+                    <th>${thisComponent.collection?.messages?.decidedOn}</th>
+                    <th>${thisComponent.collection?.messages?.fine}</th>
+                    <th>${thisComponent.collection?.messages?.title}</th>
+                    <th class="text-center">${thisComponent.collection?.messages?.actions}</th>
+                </tr>
+            </thead>
+            `;
+            document.getElementById("sanctionsTable").innerHTML = header;
+            const ajaxUrl = `/${thisComponent.locale}/axios/organisations/act/sanctions`;
+            thisComponent.sanctionsTable = $("#sanctionsTable").DataTable({
+                processing: true,
+                serverSide: true,
+                paging: true,
+                autoWidth: true,
+                searching: true,
+                ajax: {
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                    },
+                    url: ajaxUrl,
+                    type: "POST",
+                    /*
+                    complete: function (xhr, responseText) {
+                        console.log(xhr);
+                    },
+                    */
+                    
+                },
+                columnDefs: [
+                    {
+                        //id
+                        targets: 0,
+                        responsivePriority: 0,
+                        width: "10%",
+                        render: function (data, type, full, meta) {
+                            //console.log(full);
+                            let r = `<p>${full.id}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        //created_at
+                        targets: 1,
+                        responsivePriority: 1,
+                        width: "10%",
+                        render: function (data, type, full, meta) {
+                            //console.log(full);
+                            let r = `<p>${full.created_at_for_humans}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // DPA
+                        targets: 2,
+                        responsivePriority: 2,
+                        width: "20%",
+                        render: function (data, type, full, meta) {
+                            // has image?
+                            let r = `
+                            <div class="d-flex align-items-center justify-content-start">
+                                <div class="col-2">
+                            `;
+                            if (full.dpa.country) {
+                                r += `
+                                <img src='/images/flags/svg/${full.dpa?.country?.code}.svg' width="48"/>
+                                `;
+                            }
+                            r += `
+                                </div>
+                                <div class="col-10 align-items-center px-1">
+                                    <p class="mx-0 my-0">${full.dpa?.name}</p>
+                                </div>
+                            </row>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // decided_at
+                        targets: 3,
+                        responsivePriority: 3,
+                        width: "10%",
+                        render: function (data, type, full, meta) {
+                            if (type === "sort") {
+                                return Date.parse(full.decided_at_for_humans);
+                            } else {
+                                let r = `<p>${full.decided_at_for_humans}</p>`;
+                                return r;
+                            }
+                        },
+                    },
+                    {
+                        // fine
+                        targets: 4,
+                        responsivePriority: 4,
+                        width: "10%",
+                        type: "numeric",
+                        render: function (data, type, full, meta) {
+                            if (type === "sort") {
+                                return full.fine;
+                            } else {
+                                let r = ``;
+                                if (full.fine) {
+                                    r = `<p>${parseInt(full.fine)} ${full.currency?.symbol ? full.currency?.symbol : ""}</p>`;
+                                }
+                                return r;
+                            }
+                        },
+                    },
+                    {
+                        // title
+                        targets: 5,
+                        responsivePriority: 5,
+                        width: "20%",
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.title}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // actions
+                        targets: 6,
+                        responsivePriority: 6,
+                        width: "15%",
+                        orderable: false,
+                        render: function (data, type, full, meta) {
+                            let r = `
+                                <div class="d-flex justify-content-center align-items-center px-2">
+                                    <div class="d-flex flex-column">
+                                        <button type="button" class="btn btn-gradient-info waves-effect mb-1" onClick="window.open('${full.url}','_blank')">
+                                            ${feather.icons["external-link"].toSvg({ class: "me-25" })}
+                                            <span>${thisComponent.collection?.messages?.visit}</span>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.sanctionShow(${full.id})">
+                                            ${feather.icons["eye"].toSvg({ class: "me-25" })}
+                                            <span>${thisComponent.collection?.messages?.view}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                `;
+                            return r;
+                        },
+                    },
+                ],
+                order: [[0, "desc"]],
+                dom: `
+                <"row d-flex justify-content-start align-items-center m-1"
+                    <"col-lg-8 d-flex justify-content-start align-items-center"
+                        <"#sanctionCardHeader">
+                    >
+                    <"col-lg-4 d-flex justify-content-end align-items-center"f>
+                >
+                <"row d-flex justify-content-start align-items-center m-1"
+                    <"col-lg-4"l>
+                >t
+                <"d-flex justify-content-between mx-2 row"
+                    <"col-sm-12 col-md-6"i>
+                    <"col-sm-12 col-md-6"p>
+                ">`,
+                initComplete: function () {
+                    let domHtml = `
+                    <div class="card-body">
+                        <h4 class="card-title">${thisComponent.collection?.messages?.sanctions}</h4>
+                        <h6 class="card-subtitle text-muted">${thisComponent.collection?.messages?.sanctions} ${thisComponent.collection?.messages?.table}</h6>
+                    </div>
+                    `;
+                    $("#sanctionCardHeader").html(domHtml);
+                },
+            });
+        },
+        drawKpiChart() {
+            var thisComponent = this;
+            var chartColors = {
+                column: {
+                    series1: "#826af9",
+                    series2: "#d2b0ff",
+                    bg: "#f8d3ff",
+                },
+                success: {
+                    shade_100: "#7eefc7",
+                    shade_200: "#06774f",
+                },
+                donut: {
+                    series1: "#ffe700",
+                    series2: "#00d4bd",
+                    series3: "#826bf8",
+                    series4: "#2b9bf4",
+                    series5: "#FFA1A1",
+                },
+                area: {
+                    series3: "#a4f8cd",
+                    series2: "#60f2ca",
+                    series1: "#2bdac7",
+                },
+            };
+            var areaChartEl = document.querySelector("#kpi-history-chart"),
+                areaChartConfig = {
+                    chart: {
+                        height: 400,
+                        type: "area",
+                        parentHeightOffset: 0,
+                        toolbar: {
+                            show: false,
+                        },
+                    },
+                    colors: [chartColors.donut.series1, chartColors.donut.series3],
+                    dataLabels: {
+                        enabled: false,
+                    },
+                    fill: {
+                        type: "gradient",
+                        gradient: {
+                            shadeIntensity: 1,
+                            opacityFrom: 0.7,
+                            opacityTo: 0.9,
+                            stops: [0, 90, 100],
+                        },
+                    },
+                    legend: {
+                        show: true,
+                        position: "top",
+                        horizontalAlign: "start",
+                    },
+                    grid: {
+                        xaxis: {
+                            lines: {
+                                show: true,
+                            },
+                        },
+                    },
+                    markers: {
+                        size: [5, 5],
+                    },
+                    series: [
+                        {
+                            name: thisComponent.collection?.messages?.target,
+                            data: thisComponent.kpiActive?.targets,
+                        },
+                        {
+                            name: thisComponent.collection?.messages?.value,
+                            data: thisComponent.kpiActive?.values,
+                        },
+                    ],
+                    stroke: {
+                        curve: "smooth",
+                        width: 4,
+                    },
+                    tooltip: {
+                        enabled: true,
+                        shared: true,
+                        custom: function ({ series, seriesIndex, dataPointIndex, w, context }) {
+                            let r = `
+                            <div class="arrow_box" style="left: 445.159px; top: 124.792px;">
+                                <div class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">${thisComponent.kpiActive?.targets[dataPointIndex].x}</div>
+                                <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
+                                    <span class="apexcharts-tooltip-marker" style="background-color: ${chartColors.donut.series1};"></span>
+                                    <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                                        <div class="apexcharts-tooltip-y-group">
+                                            <span class="apexcharts-tooltip-text-label">${thisComponent.collection?.messages?.target}: </span>
+                                            <span class="apexcharts-tooltip-text-value">${thisComponent.kpiActive?.targets[dataPointIndex].y}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
+                                    <span class="apexcharts-tooltip-marker" style="background-color: ${chartColors.donut.series3};"></span>
+                                    <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                                        <div class="apexcharts-tooltip-y-group">
+                                            <span class="apexcharts-tooltip-text-label">${thisComponent.collection?.messages?.value}: </span>
+                                            <span class="apexcharts-tooltip-text-value">${thisComponent.kpiActive?.values[dataPointIndex].y}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
+                                    <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                                        <div class="apexcharts-tooltip-y-group">
+                                            <span class="apexcharts-tooltip-text-label">${thisComponent.collection?.messages?.user}: </span>
+                                            <span class="apexcharts-tooltip-text-value">${thisComponent.kpiActive?.targets[dataPointIndex].user}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
+                                    <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                                        <div class="apexcharts-tooltip-y-group">
+                                            <span class="apexcharts-tooltip-text-label">${thisComponent.collection?.messages?.comment}: </span>
+                                            <span class="apexcharts-tooltip-text-value">${thisComponent.kpiActive?.targets[dataPointIndex].comment}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                            return r;
+                        },
+                    },
+                    xaxis: {
+                        type: "category",
+                        categories: thisComponent.kpiActive?.xaxis,
+                    },
+                    yaxis: {
+                        opposite: false,
+                    },
+                };
+            if (typeof areaChartEl !== undefined && areaChartEl !== null) {
+                thisComponent.areaChart = new ApexCharts(areaChartEl, areaChartConfig);
+                thisComponent.areaChart.render();
+            }
         },
         drawRadar() {
             var thisComponent = this;
@@ -452,6 +1096,51 @@ export default {
             this.componentActive = y[0];
             $("#componentShowModal").modal("show");
         },
+        kpiHide() {
+            $("#kpiViewModal").modal("hide");
+            this.kpiActive = null;
+            // kill chart
+            if (this.kpiChart) {
+                this.kpiChart.destroy();
+                this.kpiChart = null;
+            }
+        },
+        kpiShow(id) {
+            var thisComponent = this;
+            axios
+                .get(`/${thisComponent.locale}/axios/organisations/kpis/${id}`, {})
+                .then(function (response) {
+                    //console.log(response.data);
+                    thisComponent.kpiActive = response.data;
+                    $("#kpiViewModal").modal("show");
+                    thisComponent.$nextTick(() => {
+                        thisComponent.drawKpiChart();
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                });
+        },
+        sanctionShow(id) {
+            var thisComponent = this;
+            axios
+                .get(`/${thisComponent.locale}/axios/sanctions/${id}`)
+                .then(function (response) {
+                    //console.log(response.data);
+                    thisComponent.sanctionActive = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+            //let y = this.collection?.sanctions?.filter((x) => x.id == id);
+            //this.sanctionActive = y[0];
+            $("#sanctionShowModal").modal("show");
+        },
+        sanctionHide() {
+            this.sanctionActive = null;
+            $("#sanctionShowModal").modal("hide");
+        },
         updateOrg() {
             const org = document.getElementById("basicSelect").value;
             let selectedOrg = this.collection?.data?.filter((e) => {
@@ -471,13 +1160,15 @@ export default {
         axios
             .get("/" + thisComponent.locale + "/axios/organisations/act", {})
             .then(function (response) {
-                console.log(response.data);
+                //console.log(response.data);
                 thisComponent.collection = response.data;
                 thisComponent.activeOrg = response.data.data[0].data;
                 //console.log(thisComponent.activeOrg);
                 thisComponent.$nextTick(() => {
                     thisComponent.drawRadar();
                     thisComponent.buildTable();
+                    thisComponent.buildKpiTable();
+                    thisComponent.buildSanctionsTable();
                 });
             })
             .catch(function (error) {

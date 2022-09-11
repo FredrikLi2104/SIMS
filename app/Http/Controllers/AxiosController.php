@@ -149,56 +149,44 @@ class AxiosController extends Controller
                     $data[$year]['codenames'][] = $comp->codeName;
                     $name = mb_strlen($comp->{'name_' . App::currentLocale()}) > 16 ? mb_substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
                     //$name = strlen($comp->{'name_' . App::currentLocale()}) > 16 ? substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
-                    $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_'.App::currentLocale()}, 'deeds' => $comp->organisationStatementsYear($org, $year)];
+                    $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_' . App::currentLocale()}, 'deeds' => $comp->organisationStatementsYear($org, $year)];
+                }
+                // Kpis
+                $kpis = Kpi::all();
+                foreach ($kpis as $kpi) {
+                    $orgKpiComments = $kpi->org_kpicomments($org);
+                    $orgKpiLast = $orgKpiComments->last();
+                    $target = '';
+                    $value = '';
+                    $comment = '';
+                    if ($orgKpiLast) {
+                        $target = $orgKpiLast->target;
+                        $value = $orgKpiLast->value;
+                        $comment = $orgKpiLast->comment;
+                    }
+                    $data[$year]['kpis'][] = ['id' => $kpi->id, 'name' => $kpi->{'name_' . App::currentLocale()}, 'desc' => $kpi->{'desc_' . App::currentLocale()}, 'target' => $target, 'value' => $value, 'comment' => $comment];
                 }
                 // Risks
                 $scatterRisks = $org->risks->sortBy('created_at');
                 $data[$year]['risks']['datasets'] = [];
-                foreach($scatterRisks as $risk) {
-                    if(Carbon::parse($risk->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear())) {
-                        $r = $scatterRisks->filter(function ($item) use($risk, $year) {
+                foreach ($scatterRisks as $risk) {
+                    if (Carbon::parse($risk->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear())) {
+                        $r = $scatterRisks->filter(function ($item) use ($risk, $year) {
                             return ($item->consequence == $risk->consequence && $item->probability == $risk->probability && Carbon::parse($item->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear()));
                         });
-                        $r = 10*count($r);
+                        $r = 10 * count($r);
                         $data[$year]['risks']['datasets'][] = [
                             'label' => $risk->title,
                             'backgroundColor' => $risk->risk()['colour'],
                             'borderColor' => $risk->risk()['colour'],
                             'data' => [
-                                ['x' => $risk->consequence,'y' => $risk->probability,'r' => $r],
+                                ['x' => $risk->consequence, 'y' => $risk->probability, 'r' => $r],
                             ],
-                            'count' => $r/10,
-                            'fs' => 11+($r/10),
+                            'count' => $r / 10,
+                            'fs' => 11 + ($r / 10),
                         ];
                     }
                 }
-                /*
-                foreach ($scatterRisks as $scatterRisk) {
-                    $dataSets[] = ['label' => $scatterRisk->title, 'backgroundColor' => $scatterRisk->risk['colour'], 'borderColor' => $scatterRisk->risk['colour'], 'data' => [['x' => $scatterRisk->consequence, 'y' => $scatterRisk->probability, 'r' => 10 * count($scatterRisks->filter(function ($item) use ($scatterRisk) {
-                        return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
-                    })->all())]], 'count' => count($scatterRisks->filter(function ($item) use ($scatterRisk) {
-                        return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
-                    })->all()), 'date' => Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM')];
-                    if (!(in_array(Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM'), $rangeDates))) {
-                        $rangeDates[] = Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM');
-                    }
-                };
-                $data[$year]['risks']['datasets'][] = [
-                    'label' => 'First Dataset', 'data' => [
-                        [
-                            'x' => 20,
-                            'y' => 30,
-                            'r' => 15
-                        ],
-                        [
-                            'x' => 40,
-                            'y' => 10,
-                            'r' => 10,
-                        ],
-                    ],
-                    'backgroundColor' => 'rgb(255, 99, 132)',
-                ];*/
-                //$data[$year]['risks']['legend'] = ['success' => '#28c76f', 'lowMed' => '#cab707', 'warning' => '#FF9F43', 'medHigh' => '#ff5f43', 'danger' => '#EA5455'];
                 $data[$year]['risks']['legend'] = [
                     ['text' => $messages['low'], 'colour' => '#28c76f'],
                     ['text' => $messages['lowMed'], 'colour' => '#cab707'],
@@ -769,6 +757,7 @@ class AxiosController extends Controller
         }
     }
 
+
     /**
      * Return all sanctions along with dictionary
      *
@@ -790,5 +779,69 @@ class AxiosController extends Controller
         $r = ['sanctions' => $sanctions, 'messages' => $messages];
         $r = collect($r);
         return $r;
+    }
+
+
+    /**
+     * Return a specific sanction model
+     *
+     * Undocumented function long description
+     *
+     * @param string $locale app locale
+     * @param \App\Models\Sanction $sanction
+     * @return Illuminate\Database\Eloquent\Collection
+     **/
+    public function sanctionsShow($locale, Sanction $sanction)
+    {
+        $sanction->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'dpa', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url']);
+        $articles = $sanction->articles;
+        $sanction->articlesSorted = $articles->sortBy('title')->values();
+        $sanction->dpa->load('country')->makeVisible(['country', 'name']);
+        return $sanction;
+    }
+
+    /**
+     * Return all sanctions for the act route in ajax datatable format
+     *
+     * Undocumented function long description
+     *
+     * @param string $locale app locale
+     * @return Illuminate\Database\Eloquent\Collection
+     **/
+    public function sanctionsTable($locale, Request $request)
+    {
+        if ($request->search['value'] == '' || $request->search['value'] == null) {
+            $sanctions = Sanction::all()->sortByDesc('id');
+        } else {
+            $needle = $request->search['value'];
+            // spider search
+            $sanctions = Sanction::where(function ($query) use ($needle) {
+                $query->where('title', 'like', '%'.$needle.'%')->orWhere('started_at', 'like', '%'.$needle.'%')->orWhere('decided_at', 'like', '%'.$needle.'%')->orWhere('published_at', 'like', '%'.$needle.'%')->orWhere('fine', 'like', '%'.$needle.'%');
+            })->get();
+            $sanctions = $sanctions->sortByDesc('id');
+        }
+        $draw = $request->draw;
+        $recordsTotal = $sanctions->count();
+        $recordsFiltered = $sanctions->count();
+        $data = $sanctions->chunk($request->length);
+        if(is_int($request->start/$request->length)) {
+            $data = $data[$request->start/$request->length];
+        } else {
+            $data = $data[count($data)-1];
+        }
+        $data = $data->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'decided_at_for_humans', 'dpa', 'url'])->take($request->length);
+        foreach ($data as $sanction) {
+            $articles = $sanction->articles;
+            $sanction->articlesSorted = $articles->sortBy('title')->values();
+            $sanction->dpa->load('country')->makeVisible(['country', 'name']);
+        }
+        $data = $data->values();
+        return [
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data,
+            'index' => $request->start,
+        ];
     }
 }

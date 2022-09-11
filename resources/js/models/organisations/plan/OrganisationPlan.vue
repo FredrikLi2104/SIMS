@@ -236,6 +236,17 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="browser-states">
+                                <div class="d-flex flex-row">
+                                    <img src="/images/icons/powerpoint_icon.png" class="rounded me-1" height="30" alt="Power Point" />
+                                    <h6 class="align-self-center mb-0">{{ collection?.messages?.downloadPptx }}</h6>
+                                </div>
+                                <div class="d-flex align-items-center" style="position: relative">
+                                    <button type="button" class="btn btn-icon btn-success waves-effect waves-float waves-light" @click="generatePptx">
+                                        <i data-feather="download"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -345,6 +356,7 @@ import { jsPDF } from "jspdf";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import pptxgen from "pptxgenjs";
 export default {
     props: ["locale"],
     data() {
@@ -874,7 +886,7 @@ export default {
                 axios
                     .get("/" + thisComponent.locale + "/axios/organisations/plan", {})
                     .then(function (response) {
-                        console.log(response.data);
+                        //console.log(response.data);
                         thisComponent.collection = response.data;
                         thisComponent.color = "#" + response.data.organisation.orgcolor;
                         thisComponent.$nextTick(() => {
@@ -1578,6 +1590,7 @@ export default {
             //docDefinition.content = content;
             pdfMake.createPdf(docDefinition).download();
         },
+        /*
         async generatePdfx() {
             var thisComponent = this;
             let docData = await thisComponent.docData();
@@ -1662,6 +1675,470 @@ export default {
             doc.table(16, 162, tableData, headers, { headerBackgroundColor: thisComponent.accentColor() });
             doc.rect(20, 20, 224, 16, "F");
             doc.save(docData.filename + ".pdf");
+        },
+        */
+        async generatePptx() {
+            let pptx = new pptxgen();
+            pptx.layout = "LAYOUT_16x9";
+            var thisComponent = this;
+            var primaryColor = thisComponent.collection?.organisation?.orgcolor;
+            const grayColor = "484848";
+            var primaryToSecondary = function (hexColor) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
+                let r = parseInt(result[1], 16);
+                let g = parseInt(result[2], 16);
+                let b = parseInt(result[3], 16);
+                (r /= 255), (g /= 255), (b /= 255);
+                var max = Math.max(r, g, b),
+                    min = Math.min(r, g, b);
+                var h,
+                    s,
+                    l = (max + min) / 2;
+                if (max == min) {
+                    h = s = 0; // achromatic
+                } else {
+                    var d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r:
+                            h = (g - b) / d + (g < b ? 6 : 0);
+                            break;
+                        case g:
+                            h = (b - r) / d + 2;
+                            break;
+                        case b:
+                            h = (r - g) / d + 4;
+                            break;
+                    }
+                    h /= 6;
+                }
+                var HSL = new Object();
+                HSL["h"] = h;
+                HSL["s"] = s;
+                HSL["l"] = l;
+                return hsl(h * 360, s * 80, l * 120);
+            };
+            var primaryToAccent = function (hexColor) {
+                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexColor);
+                let r = parseInt(result[1], 16);
+                let g = parseInt(result[2], 16);
+                let b = parseInt(result[3], 16);
+                (r /= 255), (g /= 255), (b /= 255);
+                var max = Math.max(r, g, b),
+                    min = Math.min(r, g, b);
+                var h,
+                    s,
+                    l = (max + min) / 2;
+                if (max == min) {
+                    h = s = 0; // achromatic
+                } else {
+                    var d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r:
+                            h = (g - b) / d + (g < b ? 6 : 0);
+                            break;
+                        case g:
+                            h = (b - r) / d + 2;
+                            break;
+                        case b:
+                            h = (r - g) / d + 4;
+                            break;
+                    }
+                    h /= 6;
+                }
+                var HSL = new Object();
+                HSL["h"] = h;
+                HSL["s"] = s;
+                HSL["l"] = 0.8;
+                return hsl(h * 360, 75, 70);
+            };
+            const secondaryColor = primaryToSecondary(primaryColor);
+            const accentColor = primaryToAccent(primaryColor);
+            async function getbase(url) {
+                const data = await fetch(url);
+                const blob = await data.blob();
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject();
+                });
+            }
+            const docData = await thisComponent.docData();
+            const logoBase = await getbase(thisComponent.collection?.organisation?.logo);
+            const graphBase = docData.graphBase;
+            const titleOptions = {
+                x: 0.2,
+                y: 0.1,
+                w: 2,
+                h: 0.5,
+                align: "left",
+                bold: true,
+                color: primaryColor,
+                fontFace: "Times New Roman",
+                fontSize: 14,
+            };
+            const logo = {
+                x: 9,
+                y: 0.15,
+                w: 0.5,
+                h: 0.5,
+                data: logoBase,
+            };
+            const headerLineOne = {
+                x: 0.35,
+                y: 0.75,
+                w: 7,
+                h: 0,
+                line: { color: primaryColor, width: 1 },
+            };
+            const headerLineTwo = {
+                x: 7.35,
+                y: 0.745,
+                w: 2.15,
+                h: 0,
+                line: { color: primaryColor, width: 2 },
+            };
+            const summaryOptions = {
+                x: 0.5,
+                y: 0.9,
+                w: 2,
+                h: 0.25,
+                align: "left",
+                color: primaryColor,
+                fontFace: "Times New Roman",
+                fontSize: 14,
+            };
+
+            const summaryDescOptions = {
+                x: 0.5,
+                y: 1.05,
+                w: 9,
+                h: 1,
+                align: "left",
+                fontFace: "Times New Roman",
+                fontSize: 12,
+            };
+            const graph = {
+                x: 2.65,
+                y: 2.125,
+                w: 5,
+                h: 2.125,
+                data: graphBase,
+            };
+            const ya = 4.82;
+            const footerShapeAOptions = {
+                x: 0,
+                y: ya,
+                w: 8,
+                h: 0.8,
+                line: { color: grayColor, width: 1 },
+                fill: { color: grayColor },
+                points: [{ x: 0, y: 0 }, { x: 7, y: 0 }, { x: 8, y: 0.8 }, { x: 0, y: 0.8 }, { close: true }],
+            };
+            const da = 0.05;
+            const footerCircAOptions = {
+                x: 0.25,
+                y: ya + da,
+                w: 0.25,
+                h: 0.25,
+                fill: { color: secondaryColor },
+            };
+            const db = 0.05;
+            const footerPhoneIcon = {
+                x: 0.3,
+                y: ya + da + db,
+                w: 0.15,
+                h: 0.15,
+                data: await getbase("/images/icons/phone.png"),
+            };
+            const dac = 0.025;
+            const footerPhoneTextOptions = {
+                x: 0.5,
+                y: ya + da + dac,
+                w: 1,
+                h: 0.2,
+                align: "left",
+                fontFace: "Times New Roman",
+                color: "FFFFFF",
+                fontSize: 9,
+            };
+            const xa = 3;
+            const footerCircBOptions = {
+                x: xa,
+                y: ya + da,
+                w: 0.25,
+                h: 0.25,
+                fill: { color: secondaryColor },
+            };
+            const xb = 0.05;
+            const footerLocationIcon = {
+                x: xa + xb,
+                y: ya + da + db,
+                w: 0.15,
+                h: 0.15,
+                data: await getbase("/images/icons/gps.png"),
+            };
+            const xc = 0.2;
+            const footerAddressTextOptions = {
+                x: xa + xb + xc,
+                y: ya + da + dac,
+                w: 2.5,
+                h: 0.2,
+                align: "left",
+                fontFace: "Times New Roman",
+                color: "FFFFFF",
+                fontSize: 9,
+            };
+            const dc = 0.45;
+            const footerCircCOptions = {
+                x: 0.25,
+                y: ya + dc,
+                w: 0.25,
+                h: 0.25,
+                fill: { color: secondaryColor },
+            };
+            const footerEmailIcon = {
+                x: 0.3,
+                y: ya + dc + db,
+                w: 0.15,
+                h: 0.15,
+                data: await getbase("/images/icons/email.png"),
+            };
+            const footerEmailTextOptions = {
+                x: 0.5,
+                y: ya + dc + dac,
+                w: 1.5,
+                h: 0.2,
+                align: "left",
+                fontFace: "Times New Roman",
+                color: "FFFFFF",
+                fontSize: 9,
+                hyperlink: { url: "mailto:" + thisComponent.collection?.organisation?.email },
+            };
+            const footerCircDOptions = {
+                x: xa,
+                y: ya + dc,
+                w: 0.25,
+                h: 0.25,
+                fill: { color: secondaryColor },
+            };
+            const footerWebIcon = {
+                x: xa + xb,
+                y: ya + dc + db,
+                w: 0.15,
+                h: 0.15,
+                data: await getbase("/images/icons/web.png"),
+            };
+            const footerWebTextOptions = {
+                x: xa + xb + xc,
+                y: ya + dc + dac,
+                w: 2,
+                h: 0.2,
+                align: "left",
+                fontFace: "Times New Roman",
+                color: "FFFFFF",
+                fontSize: 9,
+                hyperlink: { url: thisComponent.collection?.organisation?.website },
+            };
+            const sbx = 6.15;
+            const sby = ya + 0.3;
+            const sbw = 1.25;
+            const sbh = 0.5;
+            const sbt = 0.3;
+            const FooterShapeBOptions = {
+                x: sbx,
+                y: sby,
+                w: 4,
+                h: sbh,
+                line: { color: secondaryColor, width: 1 },
+                fill: { color: secondaryColor },
+                points: [{ x: sbt, y: 0 }, { x: sbw, y: 0 }, { x: sbw - sbt, y: sbh }, { x: 0, y: sbh }, { close: true }],
+            };
+            const scw = 4.15 - sbw;
+            const FooterShapeCOptions = {
+                x: sbx + sbw - sbt,
+                y: sby,
+                w: scw,
+                h: sbh,
+                line: { color: primaryColor, width: 1 },
+                fill: { color: primaryColor },
+                points: [{ x: sbt, y: 0 }, { x: scw, y: 0 }, { x: scw, y: sbh }, { x: 0, y: sbh }, { close: true }],
+            };
+            const dataPlanTextOptions = {
+                x: 0.5,
+                y: 0.9,
+                w: 4,
+                h: 0.25,
+                align: "left",
+                color: primaryColor,
+                fontFace: "Times New Roman",
+                fontSize: 14,
+            };
+            const dataTextOptions = {
+                x: 0.5,
+                y: 1.05,
+                w: 9,
+                h: 0.5,
+                align: "left",
+                fontFace: "Times New Roman",
+                fontSize: 12,
+            };
+            let tableRows = [
+                [
+                    { text: thisComponent.collection?.messages?.quarter, options: { fill: accentColor } },
+                    { text: thisComponent.collection?.messages?.component, options: { fill: accentColor } },
+                ],
+            ];
+            for (let index = 0; index < 4; index++) {
+                let carray = thisComponent.collection?.quarterchart?.components;
+                carray = carray[index];
+                carray = carray.join(", ");
+                if (carray == "") {
+                    carray = " ";
+                }
+                tableRows.push([index + 1, carray]);
+            }
+            tableRows.push([
+                { text: "", options: { fill: primaryColor } },
+                { text: "", options: { fill: primaryColor } },
+            ]);
+            const tableOptions = {
+                x: 0.5,
+                y: 1.5,
+                w: 9,
+                align: "center",
+                fontFace: "Times New Roman",
+                fontSize: 10,
+                border: { type: "solid", pt: 1, color: "000000" },
+                colW: [1, 8],
+                autoPage: true,
+            };
+            const componentsDescTextOptions = {
+                x: 0.5,
+                y: 0.9,
+                w: 3,
+                h: 0.25,
+                align: "left",
+                color: primaryColor,
+                fontFace: "Times New Roman",
+                fontSize: 14,
+            };
+            const componentsLength = thisComponent.collection?.quarterchart?.componentsfinal.length;
+            const components = thisComponent.collection?.quarterchart?.componentsfinal;
+            let counter = 0;
+            let writing = true;
+            let slide = null;
+            while (writing) {
+                slide = pptx.addSlide();
+                slide.addText(thisComponent.collection?.messages?.planningReport, titleOptions);
+                slide.addImage(logo);
+                slide.addShape(pptx.ShapeType.line, headerLineOne);
+                slide.addShape(pptx.ShapeType.line, headerLineTwo);
+                switch (true) {
+                    case counter == 0:
+                        slide.addText(thisComponent.collection?.messages?.summary, summaryOptions);
+                        slide.addText(thisComponent.collection?.messages?.summaryDesc, summaryDescOptions);
+                        slide.addImage(graph);
+                        counter += 1;
+                        break;
+                    case counter == 1:
+                        slide.addText(thisComponent.collection?.messages?.dataProtectionPlan, dataPlanTextOptions);
+                        slide.addText(thisComponent.collection?.messages?.dataProtectionText, dataTextOptions);
+                        slide.addTable(tableRows, tableOptions);
+                        counter += 1;
+                        // if no components stop writing
+                        if (componentsLength == 0) {
+                            writing = false;
+                        }
+                        break;
+                    case counter == 2:
+                        slide.addText(thisComponent.collection?.messages?.componentsDesc, componentsDescTextOptions);
+                        // for the first three draw table below title
+                        let componentsRows = [];
+                        let componentCellText = [];
+                        let componentCode = {};
+                        let componentDesc = {};
+                        let componentImplementation = {};
+                        for (let j = 0; j < 3; j++) {
+                            if (components[j] != undefined || components[j] != null) {
+                                componentCode = { text: components[j]["codename"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10, color: primaryColor } };
+                                componentDesc = { text: components[j]["desc"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10 } };
+                                componentImplementation = { text: components[j]["implementation"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10, color: primaryColor } };
+                                componentCellText = [componentCode, componentDesc, componentImplementation];
+                                componentsRows.push([{ text: componentCellText }]);
+                            }
+                        }
+                        const componentsTableAOptions = {
+                            x: 0.5,
+                            y: 1.25,
+                            w: 9,
+                            h: 2,
+                            align: "left",
+                            border: { type: "none" },
+                        };
+                        slide.addTable(componentsRows, componentsTableAOptions);
+                        counter += 1;
+                        let o = 3;
+                        // if no MORE components stop writing
+                        if (componentsLength <= 2) {
+                            writing = false;
+                        }
+                        break;
+                    case counter > 2:
+                        componentCellText = [];
+                        componentsRows = [];
+                        for (let k = o; k < o + 3; k++) {
+                            if (components[k] != undefined || components[k] != null) {
+                                componentCode = { text: components[k]["codename"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10, color: primaryColor } };
+                                componentDesc = { text: components[k]["desc"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10 } };
+                                componentImplementation = { text: components[k]["implementation"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10, color: primaryColor } };
+                                componentCellText = [componentCode, componentDesc, componentImplementation];
+                                componentsRows.push([{ text: componentCellText }]);
+                            }
+                        }
+                        o += 3;
+                        const componentsTableBOptions = {
+                            x: 0.5,
+                            y: 1,
+                            w: 9,
+                            h: 2,
+                            align: "left",
+                            border: { type: "none" },
+                        };
+                        slide.addTable(componentsRows, componentsTableBOptions);
+                        counter += 1;
+                        if (components[o] == undefined || components[o] == null) {
+                            writing = false;
+                        }
+                        break;
+                }
+                slide.addShape(pptx.shapes.CUSTOM_GEOMETRY, footerShapeAOptions);
+                slide.addShape(pptx.ShapeType.ellipse, footerCircAOptions);
+                slide.addImage(footerPhoneIcon);
+                slide.addText(thisComponent.collection?.organisation?.phone, footerPhoneTextOptions);
+                slide.addShape(pptx.ShapeType.ellipse, footerCircBOptions);
+                slide.addImage(footerLocationIcon);
+                slide.addText(thisComponent.collection?.organisation?.address1 + " " + thisComponent.collection?.organisation?.address2, footerAddressTextOptions);
+                slide.addShape(pptx.ShapeType.ellipse, footerCircCOptions);
+                slide.addImage(footerEmailIcon);
+                slide.addText(thisComponent.collection?.organisation?.email, footerEmailTextOptions);
+                slide.addShape(pptx.ShapeType.ellipse, footerCircDOptions);
+                slide.addImage(footerWebIcon);
+                slide.addText(thisComponent.collection?.organisation?.website, footerWebTextOptions);
+                slide.addShape(pptx.shapes.CUSTOM_GEOMETRY, FooterShapeBOptions);
+                slide.addShape(pptx.shapes.CUSTOM_GEOMETRY, FooterShapeCOptions);
+            }
+            /*
+            pptx.defineSlideMaster({
+                title: "MASTER_SLIDE",
+                objects: [{ text: title }, { image: logo }, {line: headerLineOne}, {line: headerLineTwo}, {text: footerA}, {ellipse: footerCircA}, {plaque: footerCircB}],
+            });
+            let slide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
+            */
+            const filename = thisComponent.collection?.organisation?.name + "_" + thisComponent.collection?.messages?.planningReport + "_" + new Date().toLocaleDateString() + ".pptx";
+            pptx.writeFile({ fileName: filename });
         },
         orgUpdate() {
             var thisComponent = this;

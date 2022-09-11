@@ -47,6 +47,7 @@ return [
     'do' => 'Gör',
     'downloadDocx' => 'Ladda ner A4 Word-dokument',
     'downloadPdf' => 'Ladda ner A4 PDF',
+    'downloadPptx' => 'Ladda ner 16:9 Powerpoint',
     'dpa' => 'DPA',
     'dpas' => 'DPAer',
     'edit' => 'Redigera',

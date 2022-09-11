@@ -42,6 +42,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('kpis', [AxiosController::class, 'kpis'])->middleware('can:moderator')->name('axios.kpis.index');
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
     Route::get('organisations/act', [AxiosController::class, 'organisationsAct'])->middleware('can:user')->name('axios.organisations.act');
+    Route::post('organisations/act/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:user')->name('axios.organisations.act.sanctions');
     Route::get('organisations/do', [AxiosController::class, 'organisationsDo'])->middleware('can:user')->name('axios.organisations.do');
     Route::post('organisations/kpicomments/store', [AxiosController::class, 'organisationsKpicommentsStore'])->middleware('can:user')->name('axios.organisations.kpicomments.store');
     Route::get('organisations/kpis/{kpi}', [AxiosController::class, 'organisationsKpisShow'])->middleware('can:auditor-user')->name('axios.organisations.kpis.show');
@@ -58,6 +59,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::post('risk_comments/store', [AxiosController::class, 'riskCommentsStore'])->middleware('can:auditor-user')->name('axios.risk_comments.store');
     Route::get('risks/{risk}', [AxiosController::class, 'risksShow'])->middleware('can:auditor-user')->name('axios.risks.show');
     Route::get('sanctions', [AxiosController::class, 'sanctions'])->middleware('can:moderator')->name('axios.sanctions.index');
+    Route::get('sanctions/{sanction}', [AxiosController::class, 'sanctionsShow'])->middleware('can:user')->name('axios.sanctions.show');
 });
 
 /* Localized Routes */

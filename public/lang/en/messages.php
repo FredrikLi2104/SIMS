@@ -44,6 +44,7 @@ return [
     'do' => 'Do',
     'downloadDocx' => 'Download A4 Word Document',
     'downloadPdf' => 'Download A4 PDF',
+    'downloadPptx' => 'Download 16:9 Powerpoint',
     'dpa' => 'DPA',
     'dpas' => 'DPAs',
     'edit' => 'Edit',

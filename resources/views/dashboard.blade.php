@@ -14,6 +14,7 @@
 @section('content')
     <!-- Dashboard Ecommerce Starts -->
     <section id="dashboard-ecommerce">
+        {{--
         <div class="row match-height">
             <!-- Medal Card -->
             <div class="col-xl-4 col-md-6 col-12">
@@ -31,6 +32,7 @@
             <!-- Statistics Card -->
             <!--/ Statistics Card -->
         </div>
+        --}}
         @if (Auth::user()->role == 'user')
             <organisation-dashboard locale="{{App::currentLocale()}}" />
         @endif
