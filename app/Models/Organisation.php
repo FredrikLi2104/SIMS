@@ -81,6 +81,11 @@ class Organisation extends Model
         return $this->belongsToMany(Statement::class);
     }
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function deedsYears()
     {
         $years = [];

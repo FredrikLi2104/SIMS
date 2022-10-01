@@ -19,6 +19,21 @@ class OrganisationController extends Controller
     {
         return view('models.organisations.act');
     }
+
+    /**
+     * Show the organisation plan for the auditors
+     *
+     * Undocumented function long description
+     *
+     * @param Type $var Description
+     * @return type
+     * @throws conditon
+     **/
+    public function auditorPlan()
+    {
+        return view('models.organisations.auditor.plan');
+    }
+
     /**
      * Show the organisation do-able statements
      *

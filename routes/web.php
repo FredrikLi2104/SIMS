@@ -48,6 +48,8 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('organisations/kpis/{kpi}', [AxiosController::class, 'organisationsKpisShow'])->middleware('can:auditor-user')->name('axios.organisations.kpis.show');
     Route::get('organisations/kpis', [AxiosController::class, 'organisationsKpis'])->middleware('can:auditor-user')->name('axios.organisations.kpis');
     Route::get('organisations/plan', [AxiosController::class, 'organisationsPlan'])->middleware('can:user')->name('axios.organisations.plan');
+    Route::get('organisations/plan/auditor', [AxiosController::class, 'organisationsPlanAuditor'])->middleware('can:auditor')->name('axios.organisations.plan.auditor');
+    Route::post('organisations/plan/auditor/update', [AxiosController::class, 'organisationsPlanAuditorUpdate'])->middleware('can:auditor')->name('axios.organisations.plan.auditor.update');
     Route::get('organisations/review', [AxiosController::class, 'organisationsReview'])->middleware('can:auditor')->name('axios.organisations.review');
     Route::post('organisations/components/periods/update', [AxiosController::class, 'organisationsComponentsPeriodsUpdate'])->middleware('can:user')->name('axios.organisations.components.periods.update');
     Route::get('organisations/risks', [AxiosController::class, 'organisationsRisksIndex'])->middleware('can:auditor-user')->name('axios.organisations.risks.index');
@@ -74,6 +76,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('organisations/kpis', [OrganisationController::class, 'kpisIndex'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.kpis');
     Route::resource('organisations', OrganisationController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('periods', PeriodController::class)->middleware('auth')->middleware('can:moderator');
+    Route::get('auditor/plan', [OrganisationController::class, 'auditorPlan'])->middleware('auth')->middleware('can:auditor')->name('organisations.auditor.plan');
     Route::get('plan', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan');
     Route::resource('plans', PlanController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('review', [OrganisationController::class, 'review'])->middleware('auth')->middleware('can:auditor')->name('organisations.review');

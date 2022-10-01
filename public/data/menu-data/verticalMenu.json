@@ -10,6 +10,13 @@
         },
         {
             "name": "plan",
+            "auth": "auditor",
+            "icon": "check-square",
+            "url": "auditor/plan",
+            "slug": ["organisations.auditor.plan"]
+        },
+        {
+            "name": "plan",
             "auth": "user",
             "icon": "check-square",
             "url": "plan",

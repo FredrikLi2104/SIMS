@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Statement extends Model
@@ -51,6 +52,26 @@ class Statement extends Model
     {
         return $this->reviews->where('organisation_id', $organisation->id)->first();
     }
+    /**
+     * Return the review type of plan for this statement for this organisation (if it has any entries)
+     *
+     * Undocumented function long description
+     *
+     * @return type
+     **/
+    public function reviewPlan()
+    {
+        $org = Auth::user()->organisation;
+        $usersIds = $org->users->pluck('id');
+        $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $this->id)->get();
+        if (count($r) == 0) {
+            $plan = null;
+        } else {
+            $r = $r->first();
+            $plan = Plan::where('id', $r->plan_id)->first();
+        }
+        return $plan;
+    }
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -67,7 +88,7 @@ class Statement extends Model
     {
         $r = '';
         $r .= $this->subcode;
-        $r .= '-'.$this->{'content_' . App::currentLocale()};
+        $r .= '-' . $this->{'content_' . App::currentLocale()};
         return new Attribute(
             get: fn ($value) => $r
         );

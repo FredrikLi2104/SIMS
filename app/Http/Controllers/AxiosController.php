@@ -6,6 +6,7 @@ use App\Http\Requests\AxiosOrganisationUpdateRequest;
 use App\Http\Requests\OrganisationsComponentsPeriodsUpdateRequest;
 use App\Http\Requests\OrganisationsKpicommentsStoreRequest;
 use App\Http\Requests\OrganisationsKpicommentStoreRequest;
+use App\Http\Requests\OrganisationsPlanAuditorUpdateRequest;
 use App\Http\Requests\OrganisationsStatementsActionsUpdateRequest;
 use App\Http\Requests\OrganisationsStatementsDeedsUpdateAllRequest;
 use App\Http\Requests\OrganisationsStatementsDeedsUpdateRequest;
@@ -407,6 +408,73 @@ class AxiosController extends Controller
     }
 
     /**
+     * Return a collection of statements and relations to the auditor organisation along with their guide and plan (review) type
+     *
+     * Undocumented function long description
+     *
+     * @param string $locale AppLocale
+     * @return Illuminate\Support\Collection the statements
+     **/
+    public function organisationsPlanAuditor($locale)
+    {
+        $statements = Statement::all()->makeVisible(['concat', 'guide', 'plans']);
+        $plans = Plan::all()->sortBy('sort_order');
+        $statementPlans = [];
+        foreach ($statements as $statement) {
+            $statementReviewPlan = $statement->reviewPlan();
+            if ($statementReviewPlan) {
+                $org = Auth::user()->organisation;
+                $usersIds = $org->users->pluck('id');
+                $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $statement->id)->get()->first();
+                $statement->guide = $r->guide;
+            } else {
+                $statement->guide = '';
+            }
+            foreach ($plans as $plan) {
+                $selected = false;
+                if ($statementReviewPlan) {
+                    if ($statementReviewPlan->id == $plan->id) {
+                        $selected = true;
+                    }
+                }
+                $statementPlans[] = ['plan' => $plan, 'selected' => $selected];
+            }
+            $statement->plans = $statementPlans;
+            $statementPlans = [];
+        }
+        App::setlocale($locale);
+        $messages = Lang::get('messages');
+        $r = ['statements' => $statements, 'messages' => $messages];
+        return $r;
+    }
+
+    /**
+     * Update the plan status for a statement by an auditor
+     *
+     * Undocumented function long description
+     *
+     * @param App\Http\Requests\OrganisationsPlanAuditorUpdateRequest $request load
+     * @param string $locale AppLocale
+     * @return \Illuminate\Http\Response
+     **/
+    public function organisationsPlanAuditorUpdate(OrganisationsPlanAuditorUpdateRequest $request, $locale)
+    {
+        // as exists?
+        try {
+            $as = DB::table('auditor_statement')->where('statement_id', $request->statement_id)->get()->first();
+            if ($as) {
+                DB::table('auditor_statement')->where('id', $as->id)->update(['plan_id' => $request->plan_id, 'user_id' => Auth::user()->id, 'guide' => $request->guide, 'updated_at' => Carbon::now()]);
+            } else {
+                DB::table('auditor_statement')->insert(['statement_id' => $request->statement_id, 'plan_id' => $request->plan_id, 'user_id' => Auth::user()->id, 'guide' => $request->guide, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+            abort(500, $th->getMessage());
+        }
+        return response('success', 200);
+    }
+
+    /**
      * Get organisation review statements
      *
      * Get organisation statements, with their deeds and return them for auditor to review them
@@ -416,16 +484,16 @@ class AxiosController extends Controller
      **/
     public function organisationsReview($locale)
     {
-        $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
+        $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'review', 'subcode']);
         foreach ($statements as $statement) {
             $op = $statement->component->organisationPeriod(Auth::user()->organisation);
             $statement->component->makeVisible(['organisation_period']);
             $statement->component->organisation_period = $op;
-            $statement->plan = null;
+            //$statement->plan = null;
             $statement->implementation = null;
             $op = $statement->organisationPlan(Auth::user()->organisation);
             if ($op) {
-                $statement->plan = $op->plan;
+                //$statement->plan = $op->plan;
                 $statement->implementation = $op->implementation;
             }
             $statement->deed = $statement->organisationDeed(Auth::user()->organisation);
@@ -816,7 +884,7 @@ class AxiosController extends Controller
             $needle = $request->search['value'];
             // spider search
             $sanctions = Sanction::where(function ($query) use ($needle) {
-                $query->where('title', 'like', '%'.$needle.'%')->orWhere('started_at', 'like', '%'.$needle.'%')->orWhere('decided_at', 'like', '%'.$needle.'%')->orWhere('published_at', 'like', '%'.$needle.'%')->orWhere('fine', 'like', '%'.$needle.'%');
+                $query->where('title', 'like', '%' . $needle . '%')->orWhere('started_at', 'like', '%' . $needle . '%')->orWhere('decided_at', 'like', '%' . $needle . '%')->orWhere('published_at', 'like', '%' . $needle . '%')->orWhere('fine', 'like', '%' . $needle . '%');
             })->get();
             $sanctions = $sanctions->sortByDesc('id');
         }
@@ -824,10 +892,10 @@ class AxiosController extends Controller
         $recordsTotal = $sanctions->count();
         $recordsFiltered = $sanctions->count();
         $data = $sanctions->chunk($request->length);
-        if(is_int($request->start/$request->length)) {
-            $data = $data[$request->start/$request->length];
+        if (is_int($request->start / $request->length)) {
+            $data = $data[$request->start / $request->length];
         } else {
-            $data = $data[count($data)-1];
+            $data = $data[count($data) - 1];
         }
         $data = $data->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'decided_at_for_humans', 'dpa', 'url'])->take($request->length);
         foreach ($data as $sanction) {

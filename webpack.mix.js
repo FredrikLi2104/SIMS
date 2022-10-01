@@ -72,6 +72,7 @@ mix
     .js('resources/js/models/dpas/edit/app.js', 'public/js/models/dpas/edit/app.js').vue()
     .js('resources/js/models/kpis/index/app.js', 'public/js/models/kpis/index/app.js').vue()
     .js('resources/js/models/organisations/act/app.js', 'public/js/models/organisations/act/app.js').vue()
+    .js('resources/js/models/organisations/plan/auditor/app.js', 'public/js/models/organisations/plan/auditor/app.js').vue()
     .js('resources/js/models/organisations/dashboard/app.js', 'public/js/models/organisations/dashboard/app.js').vue()
     .js('resources/js/models/organisations/do/app.js', 'public/js/models/organisations/do/app.js').vue()
     .js('resources/js/models/organisations/kpis/app.js', 'public/js/models/organisations/kpis/app.js').vue()
