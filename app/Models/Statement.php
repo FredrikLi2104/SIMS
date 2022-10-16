@@ -13,7 +13,7 @@ class Statement extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $visible = ['id', 'content_en', 'content_se', 'desc_en', 'desc_se', 'k1_en', 'k1_se', 'k2_en', 'k2_se', 'k3_en', 'k3_se', 'k4_en', 'k4_se', 'k5_en', 'k5_se', 'implementation_en', 'implementation_se', 'guide_en', 'guide_se', 'sort_order'];
+    protected $visible = ['id', 'code', 'content_en', 'content_se', 'desc_en', 'desc_se', 'k1_en', 'k1_se', 'k2_en', 'k2_se', 'k3_en', 'k3_se', 'k4_en', 'k4_se', 'k5_en', 'k5_se', 'implementation_en', 'implementation_se', 'guide_en', 'guide_se', 'sort_order'];
     protected $appends = ['concat', 'period', 'subcode'];
 
     public function component()
@@ -78,10 +78,16 @@ class Statement extends Model
     }
     public function subcode(): Attribute
     {
+        /*
         $s = $this->component?->statements?->sortBy('sort_order');
         $i = intval($s?->search($this)) + 1;
+        */
+        $code = $this->code;
+        if(!$code) {
+            $code = '';
+        }
         return new Attribute(
-            get: fn ($value) => $this->component?->code . '.' . $i
+            get: fn ($value) => $this->component->code . '.' . $code
         );
     }
     public function concat(): Attribute

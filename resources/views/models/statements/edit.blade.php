@@ -208,6 +208,15 @@
                                 </div>
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
+                                        <label class="form-label" for="code">@lang('messages.code')</label>
+                                        <input type="text" id="code" class="form-control @error('code') is-invalid @enderror" placeholder="1" name="code" value="{{ $statement->code }}" />
+                                        @error('code')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
                                         <label class="form-label" for="statement_type_id">@lang('messages.statementType')</label>
                                         <select id="statement_type_id" class="select2 form-select form-control @error('statement_type_id') is-invalid @enderror" name="statement_type_id">
                                             <option value="">@lang('messages.pleaseSelect')</option>

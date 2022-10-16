@@ -35,6 +35,7 @@ class StatementUpdateRequest extends FormRequest
             'guide_en' => ['required'],
             'guide_se' => ['required'],
             'component_id' => ['required', 'exists:components,id'],
+            'code' => ['required', 'integer', 'gt:0'],
             'statement_type_id' => ['required', 'exists:statement_types,id'],
             'sort_order' => ['required', 'integer', Rule::unique('statements')->ignore($this->route()->statement->id)]
         ];

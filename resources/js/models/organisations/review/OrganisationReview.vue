@@ -39,7 +39,7 @@
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.period }}</td>
-                                            <td>{{ statementActive?.component?.organisation_period ? statementActive.component.organisation_period[`name_${locale}`] : null  }}</td>
+                                            <td>{{ statementActive?.component?.organisation_period ? statementActive.component.organisation_period[`name_${locale}`] : null }}</td>
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.statement }}</td>
@@ -73,7 +73,7 @@
                                             <td>{{ collection?.messages?.plan }}</td>
                                             <td>{{ statementActive?.plan ? statementActive.plan[`name_${locale}`] : null }}</td>
                                         </tr>
-                                        
+
                                         <tr>
                                             <td>{{ collection?.messages?.guide }}</td>
                                             <td>{{ statementActive ? statementActive[`guide_${locale}`] : null }}</td>
@@ -122,8 +122,9 @@ export default {
              <thead>
                 <tr>
                     <th>${thisComponent.collection?.messages?.statement}</th>
-                    <th>${thisComponent.collection?.messages?.plan}</th>
-                    <th>${thisComponent.collection?.messages?.guide}</th>
+                    <th>${thisComponent.collection?.messages?.guide} ${thisComponent.collection?.messages?.example}</th>
+                    <th>${thisComponent.collection?.messages?.guide} ${thisComponent.collection?.messages?.plan}</th>
+                    <th>${thisComponent.collection?.messages?.review} ${thisComponent.collection?.messages?.plan}</th>
                     <th>${thisComponent.collection?.messages?.implementation}</th>
                     <th>${thisComponent.collection?.messages?.value}</th>
                     <th>${thisComponent.collection?.messages?.comment}</th>
@@ -150,7 +151,7 @@ export default {
                         // statement
                         targets: 0,
                         responsivePriority: 0,
-                        width: "10%",
+                        width: "30%",
                         render: function (data, type, full, meta) {
                             let x = `${full.subcode + " - "}`;
                             x += eval(`full.component?.name_` + thisComponent.locale);
@@ -167,31 +168,9 @@ export default {
                         },
                     },
                     {
-                        // plan
+                        // guide example
                         targets: 1,
                         responsivePriority: 1,
-                        width: "10%",
-                        render: function (data, type, full, meta) {
-                            if (type === "sort") {
-                                let x = null;
-                                if (full.plan) {
-                                    x = eval(`full.plan?.name_` + thisComponent.locale);
-                                }
-                                return x;
-                            } else {
-                                let p = ``;
-                                if (full.plan) {
-                                    p = eval(`full.plan?.name_` + thisComponent.locale);
-                                }
-                                let r = `<p>${p}</p>`;
-                                return r;
-                            }
-                        },
-                    },
-                    {
-                        // guide
-                        targets: 2,
-                        responsivePriority: 2,
                         width: "10%",
                         render: function (data, type, full, meta) {
                             let r = `<p>${eval("full.guide_" + thisComponent.locale)}</p>`;
@@ -199,9 +178,31 @@ export default {
                         },
                     },
                     {
-                        // implementation
+                        // guide plan
+                        targets: 2,
+                        responsivePriority: 2,
+                        width: "10%",
+                        render: function (data, type, full, meta) {
+                            let p = ``;
+                            p = full.guide;
+                            let r = `<p>${p}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // review type (plan)
                         targets: 3,
                         responsivePriority: 3,
+                        width: "10%",
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${eval("full.plan.name_" + thisComponent.locale)}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // implementation
+                        targets: 4,
+                        responsivePriority: 4,
                         width: "10%",
                         render: function (data, type, full, meta) {
                             let r = `<p>${full.implementation ? full.implementation : ""}</p>`;
@@ -210,8 +211,8 @@ export default {
                     },
                     {
                         // value
-                        targets: 4,
-                        responsivePriority: 4,
+                        targets: 5,
+                        responsivePriority: 5,
                         width: "10%",
                         render: function (data, type, full, meta) {
                             if (type === "sort") {
@@ -225,8 +226,8 @@ export default {
                     },
                     {
                         // comment
-                        targets: 5,
-                        responsivePriority: 5,
+                        targets: 6,
+                        responsivePriority: 6,
                         width: "10%",
                         render: function (data, type, full, meta) {
                             if (type === "sort") {
@@ -240,8 +241,8 @@ export default {
                     },
                     {
                         // accepted
-                        targets: 6,
-                        responsivePriority: 6,
+                        targets: 7,
+                        responsivePriority: 7,
                         width: "10%",
                         orderable: false,
                         render: function (data, type, full, meta) {
@@ -265,8 +266,8 @@ export default {
                     },
                     {
                         // review
-                        targets: 7,
-                        responsivePriority: 7,
+                        targets: 8,
+                        responsivePriority: 8,
                         orderable: false,
                         width: "10%",
                         render: function (data, type, full, meta) {
@@ -280,8 +281,8 @@ export default {
                     },
                     {
                         // actions
-                        targets: 8,
-                        responsivePriority: 8,
+                        targets: 9,
+                        responsivePriority: 9,
                         width: "10%",
                         orderable: false,
                         render: function (data, type, full, meta) {
@@ -294,7 +295,7 @@ export default {
                                         <div class="row mr-1">
                                             <button type="button" class="btn btn-outline-primary waves-effect" onclick="window.thisComponent.statementViewShow(${full.id})">${thisComponent.collection?.messages?.view}</button>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                                 `;

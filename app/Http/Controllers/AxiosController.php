@@ -484,7 +484,8 @@ class AxiosController extends Controller
      **/
     public function organisationsReview($locale)
     {
-        $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'review', 'subcode']);
+        $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
+        $plans = Plan::all()->sortBy('sort_order');
         foreach ($statements as $statement) {
             $op = $statement->component->organisationPeriod(Auth::user()->organisation);
             $statement->component->makeVisible(['organisation_period']);
@@ -498,6 +499,23 @@ class AxiosController extends Controller
             }
             $statement->deed = $statement->organisationDeed(Auth::user()->organisation);
             $statement->review = $statement->organisationReview(Auth::user()->organisation);
+            $statementReviewPlan = $statement->reviewPlan();
+            if ($statementReviewPlan) {
+                $org = Auth::user()->organisation;
+                $usersIds = $org->users->pluck('id');
+                $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $statement->id)->get()->first();
+                $statement->guide = $r->guide;
+            } else {
+                $statement->guide = '';
+            }
+            $statement->plan = ['name_en' => '', 'name_se' => ''];
+            foreach ($plans as $plan) {
+                if ($statementReviewPlan) {
+                    if ($statementReviewPlan->id == $plan->id) {
+                        $statement->plan = $plan;
+                    }
+                }
+            }
         };
         App::setlocale($locale);
         $messages = Lang::get('messages');

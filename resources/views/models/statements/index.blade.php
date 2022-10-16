@@ -26,6 +26,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
+                                <th>@lang('messages.subcode')</th>
                                 <th>@lang('messages.sortOrder')</th>
                                 <th>ID</th>
                                 <th>@lang('messages.type')</th>
@@ -37,6 +38,7 @@
                         <tbody>
                             @foreach ($statements as $statement)
                                 <tr>
+                                    <td>{{ $statement->subcode }}</td>
                                     <td>{{ $statement->sort_order }}</td>
                                     <td>{{ $statement->id }}</td>
                                     <td>{{ $statement->statement_type->code }}</td>
