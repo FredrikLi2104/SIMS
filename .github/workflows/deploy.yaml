@@ -15,4 +15,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: "cd /var/www/html/backend.gdpr.se && bash /var/www/html/backend.gdpr.se/deploy.sh"
+          key: ${{ secrets.KEY }}
+          script: "cd /var/www/html/backend.gdpr.se && bash deploy.sh"
