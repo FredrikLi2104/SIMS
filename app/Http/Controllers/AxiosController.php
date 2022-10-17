@@ -233,7 +233,7 @@ class AxiosController extends Controller
             if ($statement->deed && $statement->review) {
                 $statement->review->makeVisible(['updated_at_for_humans', 'new']);
                 $statement->review->new = false;
-                if (Carbon::parse($statement->deed->updated_at) < Carbon::parse($statement->review->updated_at)) {
+                if ((Carbon::parse($statement->deed->updated_at) < Carbon::parse($statement->review->updated_at)) && $statement->review->accepted != true) {
                     $statement->review->new = true;
                 } else {
                     $statement->review->new = false;

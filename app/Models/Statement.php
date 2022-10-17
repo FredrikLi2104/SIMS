@@ -87,7 +87,7 @@ class Statement extends Model
             $code = '';
         }
         return new Attribute(
-            get: fn ($value) => $this->component->code . '.' . $code
+            get: fn ($value) => $this->component?->code . '.' . $code
         );
     }
     public function concat(): Attribute
