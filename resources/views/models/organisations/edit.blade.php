@@ -51,7 +51,7 @@
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
                                         <label class="form-label" for="turnover">@lang('messages.turnover') [@lang('messages.optional')]</label>
-                                        <input type="text" id="turnover" class="form-control @error('turnover') is-invalid @enderror" placeholder="100000" name="turnover" {{ $organisation->turnover }} />
+                                        <input type="text" id="turnover" class="form-control @error('turnover') is-invalid @enderror" placeholder="100000" name="turnover" value="{{ $organisation->turnover }}" />
                                         @error('turnover')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -59,8 +59,17 @@
                                 </div>
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
+                                        <label class="form-label" for="employees">@lang('messages.employees') [@lang('messages.optional')]</label>
+                                        <input type="text" id="employees" class="form-control @error('employees') is-invalid @enderror" placeholder="10" name="employees" value="{{ $organisation->employees }}" />
+                                        @error('employees')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
                                         <label class="form-label" for="commitment">@lang('messages.commitment')</label>
-                                        <select id="commitment" class="form-select form-control @error('commitment') is-invalid @enderror" name="commitment" {{ $organisation->commitment }}>
+                                        <select id="commitment" class="form-select form-control @error('commitment') is-invalid @enderror" name="commitment">
                                             @for ($i = 0; $i < 5; $i++)
                                                 <option @selected($organisation->commitment == $i + 1) value={{ $i + 1 }}>{{ $i + 1 }}</option>
                                             @endfor

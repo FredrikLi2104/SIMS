@@ -29,6 +29,7 @@ class OrganisationUpdateRequest extends FormRequest
             'name' => ['required', Rule::unique('organisations')->ignore($this->route()->organisation->id)],
             'number' => ['required', Rule::unique('organisations')->ignore($this->route()->organisation->id)],
             'turnover' => ['sometimes', 'nullable', 'integer'],
+            'employees' => ['sometimes', 'nullable', 'integer'],
             'commitment' => ['required', 'integer', 'between:1,5'],
             'sni_id' => ['sometimes', 'nullable', 'exists:snis,id'],
             'organisation_id' => ['sometimes', 'nullable', 'exists:organisations,id'],
@@ -42,7 +43,7 @@ class OrganisationUpdateRequest extends FormRequest
             }, 'min:8', 'max:16'],
             'address1' => ['sometimes', 'nullable', 'max:24'],
             'address2' => ['sometimes', 'nullable', 'max:24'],
-            'email' => ['sometimes', 'nullable', 'email', 'max:24'],
+            'email' => ['sometimes', 'nullable', 'email', 'max:36'],
             'website' => ['sometimes', 'nullable', 'url', 'max:36'],
         ];
     }

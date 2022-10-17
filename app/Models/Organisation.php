@@ -14,7 +14,7 @@ class Organisation extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $visible = ['id', 'name', 'number', 'commitment', 'logofile', 'color', 'phone', 'address1', 'address2', 'email', 'website'];
+    protected $visible = ['id', 'name', 'turnover', 'employees', 'number', 'commitment', 'logofile', 'color', 'phone', 'address1', 'address2', 'email', 'website'];
     protected $appends = ['orgcolor', 'logo'];
 
 

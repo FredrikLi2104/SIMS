@@ -49,6 +49,7 @@ return [
     'dpas' => 'DPAs',
     'edit' => 'Edit',
     'email' => 'Email',
+    'employees' => 'Employees',
     'end' => 'End',
     'english' => 'English',
     'error' => 'Error',

@@ -58,6 +58,15 @@
                                 </div>
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
+                                        <label class="form-label" for="employees">@lang('messages.employees') [@lang('messages.optional')]</label>
+                                        <input type="text" id="employees" class="form-control @error('employees') is-invalid @enderror" placeholder="10" name="employees" value="{{ old('employees') }}" />
+                                        @error('employees')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
                                         <label class="form-label" for="commitment">@lang('messages.commitment')</label>
                                         <select id="commitment" class="form-select form-control @error('commitment') is-invalid @enderror" name="commitment" {{ old('commitment') }}>
                                             @for ($i = 0; $i < 5; $i++)

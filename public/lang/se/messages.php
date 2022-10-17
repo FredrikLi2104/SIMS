@@ -52,6 +52,7 @@ return [
     'dpas' => 'DPAer',
     'edit' => 'Redigera',
     'email' => 'Email',
+    'employees' => 'Anställda',
     'end' => 'slut',
     'english' => 'Engelska',
     'error' => 'Fel',
