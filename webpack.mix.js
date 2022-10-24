@@ -25,6 +25,10 @@ mix
 // Sass
 mix
     .copy('resources/vendors/css/charts/apexcharts.css', 'public/vendors/css/charts/apexcharts.css')
+    .copy('resources/vendors/css/editors/quill/katex.min.css', 'public/vendors/css/editors/quill/katex.min.css')
+    .copy('resources/vendors/css/editors/quill/monokai-sublime.min.css', 'public/vendors/css/editors/quill/monokai-sublime.min.css')
+    .copy('resources/vendors/css/editors/quill/quill.snow.css', 'public/vendors/css/editors/quill/quill.snow.css')
+    .copy('resources/vendors/css/editors/quill/quill.bubble.css', 'public/vendors/css/editors/quill/quill.bubble.css')
     .copy('resources/vendors/css/forms/select/select2.min.css', 'public/vendors/css/forms/select/select2.min.css')
     .copy('resources/vendors/css/tables/datatable/dataTables.bootstrap5.min.css', 'public/vendors/css/tables/datatable/dataTables.bootstrap5.min.css')
     .copy('resources/vendors/css/extensions/toastr.min.css', 'public/vendors/css/extensions/toastr.min.css')
@@ -39,17 +43,22 @@ mix
     .sass('resources/scss/base/pages/dashboard-ecommerce.scss', 'public/css/base/pages/dashboard-ecommerce.css', {sassOptions})
     .sass('resources/scss/base/pages/app-invoice-list.scss', 'public/css/base/pages/app-invoice-list.css', {sassOptions})
     .sass('resources/scss/base/plugins/charts/chart-apex.scss', 'public/css/base/plugins/charts/chart-apex.css', {sassOptions})
+    .sass('resources/scss/base/plugins/forms/form-quill-editor.scss', 'public/css/base/plugins/forms/form-quill-editor.css', {sassOptions})
     .sass('resources/scss/base/plugins/forms/form-validation.scss', 'public/css/base/plugins/forms/form-validation.css', {sassOptions})
     .sass('resources/scss/base/plugins/extensions/ext-component-toastr.scss', 'public/css/base/plugins/extensions/ext-component-toastr.css', {sassOptions})
     .sass('resources/scss/base/themes/bordered-layout.scss', 'public/css/base/themes/bordered-layout.css', {sassOptions})
     .sass('resources/scss/base/themes/dark-layout.scss', 'public/css/base/themes/dark-layout.css', {sassOptions})
-    .sass('resources/scss/base/themes/semi-dark-layout.scss', 'public/css/base/themes/semi-dark-layout.css', {sassOptions});
+    .sass('resources/scss/base/themes/semi-dark-layout.scss', 'public/css/base/themes/semi-dark-layout.css', {sassOptions})
+    .sass('resources/scss/quill.scss', 'public/css/quill.css', {sassOptions});
 
 // JS
 mix
     .copy('resources/vendors/js/vendors.min.js', 'public/vendors/js/vendors.min.js')
     .copy('resources/vendors/js/charts/apexcharts.min.js', 'public/vendors/js/charts/apexcharts.min.js')
     .copy('resources/vendors/js/charts/chart.min.js', 'public/vendors/js/charts/chart.min.js')
+    .copy('resources/vendors/js/editors/quill/katex.min.js', 'public/vendors/js/editors/quill/katex.min.js')
+    .copy('resources/vendors/js/editors/quill/highlight.min.js', 'public/vendors/js/editors/quill/highlight.min.js')
+    .copy('resources/vendors/js/editors/quill/quill.min.js', 'public/vendors/js/editors/quill/quill.min.js')
     .copy('resources/vendors/js/extensions/toastr.min.js', 'public/vendors/js/extensions/toastr.min.js')
     .copy('resources/vendors/js/forms/select/select2.full.min.js', 'public/vendors/js/forms/select/select2.full.min.js')
     .copy('resources/vendors/js/forms/validation/jquery.validate.min.js', 'public/vendors/js/forms/validation/jquery.validate.min.js')
@@ -82,6 +91,7 @@ mix
     .js('resources/js/models/risks/edit/app.js', 'public/js/models/risks/edit/app.js').vue()
     .js('resources/js/models/risks/index/app.js', 'public/js/models/risks/index/app.js').vue()
     .js('resources/js/models/sanctions/index/app.js', 'public/js/models/sanctions/index/app.js').vue()
+    .js('resources/js/models/sanctions/edit/app.js', 'public/js/models/sanctions/edit/app.js').vue()
     // services
     .js('resources/js/services/countries/seed/app.js', 'public/js/services/countries/seed/app.js').vue()
 

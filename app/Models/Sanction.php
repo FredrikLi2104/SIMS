@@ -11,7 +11,7 @@ class Sanction extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
-    protected $visible = ['id', 'pageid', 'title', 'dpa_id', 'started_at', 'decided_at', 'published_at', 'fine', 'currency_id', 'created_at', 'updated_at'];
+    protected $visible = ['id', 'pageid', 'title', 'desc_en', 'desc_se', 'dpa_id', 'started_at', 'decided_at', 'published_at', 'fine', 'currency_id', 'created_at', 'updated_at'];
     protected $appends = ['created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url'];
 
     public function articles()

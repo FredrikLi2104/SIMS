@@ -62,6 +62,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('risks/{risk}', [AxiosController::class, 'risksShow'])->middleware('can:auditor-user')->name('axios.risks.show');
     Route::get('sanctions', [AxiosController::class, 'sanctions'])->middleware('can:moderator')->name('axios.sanctions.index');
     Route::get('sanctions/{sanction}', [AxiosController::class, 'sanctionsShow'])->middleware('can:user')->name('axios.sanctions.show');
+    Route::get('sanctions/admin/{sanction}', [AxiosController::class, 'sanction'])->middleware('can:admin')->name('axios.sanctions.view');
 });
 
 /* Localized Routes */

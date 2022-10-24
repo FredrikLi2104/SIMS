@@ -3,9 +3,16 @@
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/editors/quill/katex.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/editors/quill/monokai-sublime.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/editors/quill/quill.snow.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/editors/quill/quill.bubble.css')) }}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Roboto+Slab&family=Slabo+27px&family=Sofia&family=Ubuntu+Mono&display=swap" rel="stylesheet">
 @endsection
 @section('page-style')
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/pickers/form-flat-pickr.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-quill-editor.css')) }}">
 @endsection
 @section('content')
     <section id="multiple-column-form">
@@ -158,6 +165,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                <quill locale="{{ App::currentLocale() }}" sanctionid="{{$sanction->id}}"></quill>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary me-1">@lang('messages.submit')</button>
                                 </div>
@@ -172,16 +180,21 @@
 @section('vendor-script')
     <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/editors/quill/katex.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/editors/quill/highlight.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/editors/quill/quill.min.js')) }}"></script>
 @endsection
 @section('page-script')
     <!-- Page js files -->
+    <script src="{{ asset(mix('js/models/sanctions/edit/app.js')) }}"></script>
     <script src="{{ asset(mix('js/scripts/forms/form-select2.js')) }}"></script>
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
     {!! JsValidator::formRequest('App\Http\Requests\SanctionUpdateRequest', '#form') !!}
     <script src="{{ asset(mix('js/scripts/forms/pickers/form-pickers.js')) }}"></script>
     <script>
         window.onload = (event) => {
-            $( ".articles-parsed .mb-1 .position-relative .select2 .selection .select2-selection--multiple .select2-selection__rendered .select2-selection__choice" ).attr('style', 'background-color: grey !important; border-color: grey !important;');
+            $(".articles-parsed .mb-1 .position-relative .select2 .selection .select2-selection--multiple .select2-selection__rendered .select2-selection__choice").attr('style', 'background-color: wheat !important; border-color: wheat !important;');
         };
     </script>
+    
 @endsection

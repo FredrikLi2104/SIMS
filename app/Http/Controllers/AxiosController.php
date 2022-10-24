@@ -843,6 +843,23 @@ class AxiosController extends Controller
         }
     }
 
+    /**
+     * Return a sanction
+     *
+     * Undocumented function long description
+     *
+     * @param string $locale app locale
+     * @return Illuminate\Database\Eloquent\Collection
+     **/
+    public function sanction($locale, Sanction $sanction)
+    {
+        $sanction = $sanction->makeVisible(['desc_en', 'desc_se']);
+        App::setlocale($locale);
+        $messages = Lang::get('messages');
+        $r = ['sanction' => $sanction, 'messages' => $messages];
+        $r = collect($r);
+        return $r;
+    }
 
     /**
      * Return all sanctions along with dictionary
