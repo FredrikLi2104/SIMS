@@ -165,7 +165,21 @@
                                         </select>
                                     </div>
                                 </div>
-                                <quill locale="{{ App::currentLocale() }}" sanctionid="{{$sanction->id}}"></quill>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="sni_id">@lang('messages.sni') [@lang('messages.optional')]</label>
+                                        <select id="sni_id" class="select2 form-select form-control @error('sni_id') is-invalid @enderror" name="sni_id">
+                                            <option value="">@lang('messages.pleaseSelect')</option>
+                                            @foreach ($snis as $sni)
+                                                <option @selected($sanction->sni?->id == $sni->id) value="{{ $sni->id }}">{{ $sni->code.' | '.$sni->{'desc_' . App::currentLocale()} }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('sni_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <quill locale="{{ App::currentLocale() }}" sanctionid="{{ $sanction->id }}"></quill>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary me-1">@lang('messages.submit')</button>
                                 </div>
@@ -196,5 +210,5 @@
             $(".articles-parsed .mb-1 .position-relative .select2 .selection .select2-selection--multiple .select2-selection__rendered .select2-selection__choice").attr('style', 'background-color: wheat !important; border-color: wheat !important;');
         };
     </script>
-    
+
 @endsection

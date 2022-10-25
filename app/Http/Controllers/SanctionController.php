@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Sanction;
+use App\Models\Sni;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -68,8 +69,10 @@ class SanctionController extends Controller
         $articles = Article::all()->sortBy('title');
         $countries = Country::all()->sortBy('name');
         $currencies = Currency::all();
+        $sanction->load('sni')->makeVisible(['sni']);
         $sanctionArticlesIds = $sanction->articles->pluck('id')->all();
-        return view('models.sanctions.edit', compact('articles', 'sanction', 'sanctionArticlesIds', 'countries', 'currencies'));
+        $snis = Sni::all()->sortBy('code');
+        return view('models.sanctions.edit', compact('articles', 'sanction', 'sanctionArticlesIds', 'countries', 'currencies', 'snis'));
     }
 
     /**

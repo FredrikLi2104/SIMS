@@ -123,6 +123,10 @@ class Sanction extends Model
         );
     }
 
+    public function sni() {
+        return $this->belongsTo(Sni::class);
+    }
+
     public function startedAtForHumans(): Attribute
     {
         return new Attribute(

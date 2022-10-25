@@ -34,6 +34,7 @@ class SanctionUpdateRequest extends FormRequest
             'articles.*' => 'nullable|sometimes|exists:articles,id',
             'desc_en' => 'nullable|sometimes',
             'desc_se' => 'nullable|sometimes',
+            'sni_id' => ['nullable', 'sometimes', 'exists:snis,id']
         ];
     }
 }
