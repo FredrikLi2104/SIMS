@@ -59,7 +59,7 @@ class SanctionLoader
                         // exists?
                         $exists = Sanction::where('pageid', $sanction->pageid)->first();
                         if (!$exists) {
-                            $sanction = Sanction::create(['pageid' => $sanction->pageid, 'title' => $sanction->title, 'dpa_id' => $dpa->id, 'desc_en' => null, 'desc_se' => null, 'sni_id' => null]);
+                            $sanction = Sanction::create(['pageid' => $sanction->pageid, 'title' => $sanction->title, 'dpa_id' => $dpa->id, 'desc_en' => null, 'desc_se' => null, 'sni_id' => null, 'type_id' => null]);
                             // fields
                             $parseResponse = Http::get('https://gdprhub.eu/api.php', [
                                 'action' => 'parse',
@@ -91,7 +91,7 @@ class SanctionLoader
                                     // is it legible?
                                     if ($fineMatches[1] != null && $fineMatches[1] != '') {
                                         // strip the digits in case of commas
-                                        $fine = (int) filter_var($fineMatches[1], FILTER_SANITIZE_NUMBER_INT);
+                                        $fine = (int)filter_var($fineMatches[1], FILTER_SANITIZE_NUMBER_INT);
                                         $sanction->update(['fine' => $fine]);
                                     }
                                 }

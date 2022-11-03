@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Sanction;
 use App\Models\Sni;
+use App\Models\Type;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -36,9 +37,12 @@ class SanctionSeeder extends Seeder
         // first load the file as object
         $oldSanctions = File::get(base_path('/resources/SANKTION.json'));
         $oldSnis = File::get(base_path('/resources/ADM_SEKTOR.json'));
+        $oldTypes = File::get(base_path('/resources/ADM_ET.json'));
         $oldSanctions = json_decode($oldSanctions);
         $oldSnis = json_decode($oldSnis);
         $oldSnis = collect($oldSnis);
+        $oldTypes = collect(json_decode($oldTypes));
+
         $sanctions = Sanction::all()->load(['dpa'])->sortBy('id');
         foreach ($oldSanctions as $oldSanction) {
             try {
@@ -50,6 +54,7 @@ class SanctionSeeder extends Seeder
                     }
                     return $filtered;
                 })->first();
+
                 if ($match) {
                     // descs
                     $en = str_replace(array(
@@ -60,8 +65,8 @@ class SanctionSeeder extends Seeder
                         '\'', '"',
                         ',', ';', '<', '>'
                     ), ' ', $oldSanction->Beskrivning_sve);
-                    $desc_en = '{"ops":[{"insert":"' .$en. '"}]}';
-                    $desc_se = '{"ops":[{"insert":"' .$se. '"}]}';
+                    $desc_en = '{"ops":[{"insert":"' . $en . '"}]}';
+                    $desc_se = '{"ops":[{"insert":"' . $se . '"}]}';
                     $sni_id = null;
                     // sni
                     $oldSniId = $oldSanction->Sektor;
@@ -73,7 +78,17 @@ class SanctionSeeder extends Seeder
                         $sni = Sni::where('code', $oldSniCode)->first();
                         $sni_id = $sni->id;
                     }
-                    $match->update(['desc_en' => $desc_en, 'desc_se' => $desc_se, 'sni_id' => $sni_id]);
+
+                    // type
+                    $oldTypeId = $oldSanction->TypET;
+                    $oldType = $oldTypes->where('Enforcement_id', $oldTypeId)->first();
+                    $typeId = null;
+
+                    if ($oldType) {
+                        $typeId = Type::where('text_en', $oldType->Typ)->first()->id;
+                    }
+
+                    $match->update(['desc_en' => $desc_en, 'desc_se' => $desc_se, 'sni_id' => $sni_id, 'type_id' => $typeId]);
                 }
             } catch (\Throwable $th) {
                 //throw $th;

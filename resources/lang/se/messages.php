@@ -192,6 +192,7 @@ return [
     'title' => 'Titel',
     'turnover' => 'Omsättning',
     'type' => 'Typ',
+    'types' => 'Typer',
     'unlikely' => 'Osannolikt',
     'unreviewed' => 'ej granskad',
     'update' => 'Uppdatera',

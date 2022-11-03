@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/editors/quill/quill.snow.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/editors/quill/quill.bubble.css')) }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Roboto+Slab&family=Slabo+27px&family=Sofia&family=Ubuntu+Mono&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Roboto+Slab&family=Slabo+27px&family=Sofia&family=Ubuntu+Mono&display=swap"
+        rel="stylesheet">
 @endsection
 @section('page-style')
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/pickers/form-flat-pickr.css')) }}">
@@ -33,7 +35,9 @@
                                 @endforeach
                             </div>
                         @endif
-                        <form id="form" class="form" action="{{ route('sanctions.update', [App::currentLocale(), $sanction->id]) }}" method="POST">
+                        <form id="form" class="form"
+                              action="{{ route('sanctions.update', [App::currentLocale(), $sanction->id]) }}"
+                              method="POST">
                             @csrf
                             @method('PATCH')
                             <div class="row">
@@ -53,7 +57,9 @@
                                     <div class="row d-flex align-items-center justify-content-start">
                                         <div class="col-1">
                                             @if ($sanction->dpa->country)
-                                                <img src="{{ asset('/images/flags/svg/' . $sanction->dpa->country->code . '.svg') }}" width="40px" />
+                                                <img
+                                                    src="{{ asset('/images/flags/svg/' . $sanction->dpa->country->code . '.svg') }}"
+                                                    width="40px"/>
                                             @endif
                                         </div>
                                         <div class="col-5 align-items-center">
@@ -64,101 +70,138 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="started_at">@lang('messages.startedOn') [@lang('messages.optional')]</label>
-                                        <input type="text" name="started_at" id="started_at" class="form-control flatpickr-basic @error('started_at') is-invalid @enderror" placeholder="YYYY-MM-DD" value="{{ $sanction->started_at }}" />
+                                        <label class="form-label" for="started_at">@lang('messages.startedOn')
+                                            [@lang('messages.optional')]</label>
+                                        <input type="text" name="started_at" id="started_at"
+                                               class="form-control flatpickr-basic @error('started_at') is-invalid @enderror"
+                                               placeholder="YYYY-MM-DD" value="{{ $sanction->started_at }}"/>
                                         @error('started_at')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="started_at_parsed">@lang('messages.decidedOn') @lang('messages.apiParsed')</label>
-                                        <input type="text" id="started_at_parsed" class="form-control @error('started_at_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['started_at'] }}" disabled />
+                                        <label class="form-label"
+                                               for="started_at_parsed">@lang('messages.decidedOn') @lang('messages.apiParsed')</label>
+                                        <input type="text" id="started_at_parsed"
+                                               class="form-control @error('started_at_parsed') is-invalid @enderror"
+                                               value="{{ $sanction->htmlClean()['started_at'] }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="decided_at">@lang('messages.decidedOn') [@lang('messages.optional')]</label>
-                                        <input type="text" name="decided_at" id="decided_at" class="form-control flatpickr-basic @error('decided_at') is-invalid @enderror" placeholder="YYYY-MM-DD" value="{{ $sanction->decided_at }}" />
+                                        <label class="form-label" for="decided_at">@lang('messages.decidedOn')
+                                            [@lang('messages.optional')]</label>
+                                        <input type="text" name="decided_at" id="decided_at"
+                                               class="form-control flatpickr-basic @error('decided_at') is-invalid @enderror"
+                                               placeholder="YYYY-MM-DD" value="{{ $sanction->decided_at }}"/>
                                         @error('decided_at')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="decided_at_parsed">@lang('messages.decidedOn') @lang('messages.apiParsed')</label>
-                                        <input type="text" id="decided_at_parsed" class="form-control @error('decided_at_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['decided_at'] }}" disabled />
+                                        <label class="form-label"
+                                               for="decided_at_parsed">@lang('messages.decidedOn') @lang('messages.apiParsed')</label>
+                                        <input type="text" id="decided_at_parsed"
+                                               class="form-control @error('decided_at_parsed') is-invalid @enderror"
+                                               value="{{ $sanction->htmlClean()['decided_at'] }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="published_at">@lang('messages.publishedOn') [@lang('messages.optional')]</label>
-                                        <input type="text" name="published_at" id="published_at" class="form-control flatpickr-basic @error('published_at') is-invalid @enderror" placeholder="YYYY-MM-DD" value="{{ $sanction->published_at }}" />
+                                        <label class="form-label" for="published_at">@lang('messages.publishedOn')
+                                            [@lang('messages.optional')]</label>
+                                        <input type="text" name="published_at" id="published_at"
+                                               class="form-control flatpickr-basic @error('published_at') is-invalid @enderror"
+                                               placeholder="YYYY-MM-DD" value="{{ $sanction->published_at }}"/>
                                         @error('published_at')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="published_at_parsed">@lang('messages.decidedOn') @lang('messages.apiParsed')</label>
-                                        <input type="text" id="published_at_parsed" class="form-control @error('published_at_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['published_at'] }}" disabled />
+                                        <label class="form-label"
+                                               for="published_at_parsed">@lang('messages.decidedOn') @lang('messages.apiParsed')</label>
+                                        <input type="text" id="published_at_parsed"
+                                               class="form-control @error('published_at_parsed') is-invalid @enderror"
+                                               value="{{ $sanction->htmlClean()['published_at'] }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
-                                        <label class="form-label" for="fine">@lang('messages.fine') [@lang('messages.optional')]</label>
-                                        <input type="text" id="fine" class="form-control @error('fine') is-invalid @enderror" placeholder="3800" name="fine" value="{{ $sanction->fine }}" />
+                                        <label class="form-label" for="fine">@lang('messages.fine')
+                                            [@lang('messages.optional')]</label>
+                                        <input type="text" id="fine"
+                                               class="form-control @error('fine') is-invalid @enderror"
+                                               placeholder="3800" name="fine" value="{{ $sanction->fine }}"/>
                                         @error('fine')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="fine_parsed">@lang('messages.fine') @lang('messages.apiParsed')</label>
-                                        <input type="text" id="fine_parsed" class="form-control @error('fine_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['fine'] }}" disabled />
+                                        <label class="form-label"
+                                               for="fine_parsed">@lang('messages.fine') @lang('messages.apiParsed')</label>
+                                        <input type="text" id="fine_parsed"
+                                               class="form-control @error('fine_parsed') is-invalid @enderror"
+                                               value="{{ $sanction->htmlClean()['fine'] }}" disabled/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="currency_id">@lang('messages.currency') [@lang('messages.optional')]</label>
-                                        <select id="currency_id" class="select2 form-select form-control @error('currency_id') is-invalid @enderror" name="currency_id">
+                                        <label class="form-label" for="currency_id">@lang('messages.currency')
+                                            [@lang('messages.optional')]</label>
+                                        <select id="currency_id"
+                                                class="select2 form-select form-control @error('currency_id') is-invalid @enderror"
+                                                name="currency_id">
                                             <option value="">@lang('messages.pleaseSelect')</option>
                                             @foreach ($currencies as $currency)
-                                                <option @selected($sanction->currency_id == $currency->id) value="{{ $currency->id }}">{{ $currency->symbol }}</option>
+                                                <option
+                                                    @selected($sanction->currency_id == $currency->id) value="{{ $currency->id }}">{{ $currency->symbol }}</option>
                                             @endforeach
                                         </select>
                                         @error('currency_id')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-1">
-                                        <label class="form-label" for="currency_parsed">@lang('messages.currency') @lang('messages.apiParsed')</label>
-                                        <input type="text" id="currency_parsed" class="form-control @error('currency_parsed') is-invalid @enderror" value="{{ $sanction->htmlClean()['currency'] }}" disabled />
+                                        <label class="form-label"
+                                               for="currency_parsed">@lang('messages.currency') @lang('messages.apiParsed')</label>
+                                        <input type="text" id="currency_parsed"
+                                               class="form-control @error('currency_parsed') is-invalid @enderror"
+                                               value="{{ $sanction->htmlClean()['currency'] }}" disabled/>
                                     </div>
                                 </div>
                                 <div class='col-md-6'>
                                     <div class="mb-1">
-                                        <label class='form-label' for='articles[]'>@lang('messages.articles') [@lang('messages.optional')]</label>
-                                        <select id='articles[]' class='select2 form-select form-control @error('articles[]') is-invalid @enderror' name='articles[]' multiple>
+                                        <label class='form-label' for='articles[]'>@lang('messages.articles')
+                                            [@lang('messages.optional')]</label>
+                                        <select id='articles[]'
+                                                class='select2 form-select form-control @error('articles[]') is-invalid @enderror'
+                                                name='articles[]' multiple>
                                             @foreach ($articles as $article)
-                                                <option value="{{ $article->id }}" @if (in_array($article->id, $sanctionArticlesIds)) selected @endif>{{ $article->title }}</option>
+                                                <option value="{{ $article->id }}"
+                                                        @if (in_array($article->id, $sanctionArticlesIds)) selected @endif>{{ $article->title }}</option>
                                             @endforeach
                                         </select>
                                         @error('articles[]')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class='col-md-6 articles-parsed'>
                                     <div class="mb-1">
-                                        <label class='form-label' for='articles[]'>@lang('messages.articles') @lang('messages.apiParsed')</label>
-                                        <select id='articles_parsed' class='select2 form-select form-control' multiple disabled>
+                                        <label class='form-label'
+                                               for='articles[]'>@lang('messages.articles') @lang('messages.apiParsed')</label>
+                                        <select id='articles_parsed' class='select2 form-select form-control' multiple
+                                                disabled>
                                             @foreach ($sanction->htmlClean()['articles'] as $key => $articleParsed)
                                                 <option selected>{{ $articleParsed }}</option>
                                             @endforeach
@@ -167,19 +210,45 @@
                                 </div>
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
-                                        <label class="form-label" for="sni_id">@lang('messages.sni') [@lang('messages.optional')]</label>
-                                        <select id="sni_id" class="select2 form-select form-control @error('sni_id') is-invalid @enderror" name="sni_id">
+                                        <label class="form-label" for="sni_id">@lang('messages.sni')
+                                            [@lang('messages.optional')]</label>
+                                        <select id="sni_id"
+                                                class="select2 form-select form-control @error('sni_id') is-invalid @enderror"
+                                                name="sni_id">
                                             <option value="">@lang('messages.pleaseSelect')</option>
                                             @foreach ($snis as $sni)
-                                                <option @selected($sanction->sni?->id == $sni->id) value="{{ $sni->id }}">{{ $sni->code.' | '.$sni->{'desc_' . App::currentLocale()} }}</option>
+                                                <option
+                                                    @selected($sanction->sni?->id == $sni->id) value="{{ $sni->id }}">{{ $sni->code.' | '.$sni->{'desc_' . App::currentLocale()} }}</option>
                                             @endforeach
                                         </select>
                                         @error('sni_id')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-                                <quill locale="{{ App::currentLocale() }}" sanctionid="{{ $sanction->id }}"></quill>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="type">@lang('messages.type')
+                                            [@lang('messages.optional')]</label>
+                                        <select id="type"
+                                                class="select2 form-select form-control @error('type') is-invalid @enderror"
+                                                name="type_id">
+                                            <option value="">@lang('messages.pleaseSelect')</option>
+                                            @foreach ($types as $type)
+                                                <option
+                                                    @selected($sanction->type?->id == $type->id) value="{{ $type->id }}">{{ $type->{'text_' . App::currentLocale()} }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('type')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <quill locale="{{ App::currentLocale() }}"
+                                       label-en="{{ __('messages.desc') . ' ' . __('messages.inEnglish') . ' [' . __('messages.optional') . ']' }}"
+                                       label-se="{{ __('messages.desc') . ' ' . __('messages.inSwedish') . ' [' . __('messages.optional') . ']' }}"
+                                       :old-desc-en="{{ Js::from($sanction->desc_en) }}"
+                                       :old-desc-se="{{ Js::from($sanction->desc_se) }}"></quill>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary me-1">@lang('messages.submit')</button>
                                 </div>

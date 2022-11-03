@@ -15,6 +15,7 @@ use App\Http\Controllers\SanctionController;
 use App\Http\Controllers\SniController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\StatementTypeController;
+use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -86,6 +87,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::resource('statements', StatementController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('statement_types', StatementTypeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('snis', SniController::class)->middleware('auth')->middleware('can:moderator');
+    Route::resource('types', TypeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('users', UserController::class)->middleware('auth')->middleware('can:moderator');
 });
 

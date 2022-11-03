@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Sanction extends Model
 {
     use HasFactory;
+
     protected $guarded = ['id'];
     protected $visible = ['id', 'pageid', 'title', 'desc_en', 'desc_se', 'dpa_id', 'started_at', 'decided_at', 'published_at', 'fine', 'currency_id', 'created_at', 'updated_at'];
     protected $appends = ['created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url'];
@@ -18,10 +19,11 @@ class Sanction extends Model
     {
         return $this->belongsToMany(Article::class)->withTimestamps();
     }
+
     public function createdAtForHumans(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => Carbon::parse($this->created_at)->format('Y-m-d')
+            get: fn($value) => Carbon::parse($this->created_at)->format('Y-m-d')
         );
     }
 
@@ -33,7 +35,7 @@ class Sanction extends Model
     public function decidedAtForHumans(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => $this->decided_at ? Carbon::parse($this->decided_at)->format('Y-m-d') : ''
+            get: fn($value) => $this->decided_at ? Carbon::parse($this->decided_at)->format('Y-m-d') : ''
         );
     }
 
@@ -72,7 +74,7 @@ class Sanction extends Model
             // is it legible?
             if ($fineMatches[1] != null && $fineMatches[1] != '') {
                 // strip the digits in case of commas
-                $r['fine'] = (int) filter_var($fineMatches[1], FILTER_SANITIZE_NUMBER_INT);
+                $r['fine'] = (int)filter_var($fineMatches[1], FILTER_SANITIZE_NUMBER_INT);
             }
         }
         // has currency?
@@ -119,25 +121,31 @@ class Sanction extends Model
     public function publishedAtForHumans(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => $this->published_at ? Carbon::parse($this->published_at)->format('Y-m-d') : ''
+            get: fn($value) => $this->published_at ? Carbon::parse($this->published_at)->format('Y-m-d') : ''
         );
     }
 
-    public function sni() {
+    public function sni()
+    {
         return $this->belongsTo(Sni::class);
     }
 
     public function startedAtForHumans(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => $this->started_at ? Carbon::parse($this->started_at)->format('Y-m-d') : ''
+            get: fn($value) => $this->started_at ? Carbon::parse($this->started_at)->format('Y-m-d') : ''
         );
     }
 
     public function url(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => 'https://gdprhub.eu/index.php?title=' . urlencode($this->title)
+            get: fn($value) => 'https://gdprhub.eu/index.php?title=' . urlencode($this->title)
         );
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
     }
 }

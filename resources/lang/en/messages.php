@@ -189,6 +189,7 @@ return [
     'title' => 'Title',
     'turnover' => 'Turnover',
     'type' => 'Type',
+    'types' => 'Types',
     'unlikely' => 'Unlikely',
     'unreviewed' => 'Unreviewed',
     'update' => 'Update',

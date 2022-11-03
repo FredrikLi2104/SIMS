@@ -5,7 +5,9 @@
             "badgeClass": "badge badge-light-warning rounded-pill ms-auto me-1",
             "icon": "home",
             "url": "home",
-            "slug": ["home"],
+            "slug": [
+                "home"
+            ],
             "auth": "all"
         },
         {
@@ -13,49 +15,65 @@
             "auth": "auditor",
             "icon": "check-square",
             "url": "auditor/plan",
-            "slug": ["organisations.auditor.plan"]
+            "slug": [
+                "organisations.auditor.plan"
+            ]
         },
         {
             "name": "plan",
             "auth": "user",
             "icon": "check-square",
             "url": "plan",
-            "slug": ["organisations.plan"]
+            "slug": [
+                "organisations.plan"
+            ]
         },
         {
             "name": "do",
             "auth": "user",
             "icon": "pen-tool",
             "url": "do",
-            "slug": ["organisations.do"]
+            "slug": [
+                "organisations.do"
+            ]
         },
         {
             "name": "act",
             "auth": "user",
             "icon": "pie-chart",
             "url": "act",
-            "slug": ["organisations.act"]
+            "slug": [
+                "organisations.act"
+            ]
         },
         {
             "name": "kpis",
             "auth": "auditor-user",
             "icon": "rotate-ccw",
             "url": "organisations/kpis",
-            "slug": ["organisations.kpis"]
+            "slug": [
+                "organisations.kpis"
+            ]
         },
         {
             "name": "risks",
             "auth": "auditor-user",
             "icon": "alert-triangle",
             "url": "risks",
-            "slug": ["risks.index", "risks.create", "risks.edit"]
+            "slug": [
+                "risks.index",
+                "risks.create",
+                "risks.edit"
+            ]
         },
         {
             "name": "review",
             "auth": "auditor",
             "icon": "repeat",
             "url": "review",
-            "slug": ["organisations.review"]
+            "slug": [
+                "organisations.review"
+            ]
         },
         {
             "name": "actions",
@@ -67,13 +85,19 @@
                     "name": "actionCreate",
                     "url": "actions/create",
                     "icon": "circle",
-                    "slug": ["actions.create"]
+                    "slug": [
+                        "actions.create"
+                    ]
                 },
                 {
                     "name": "actions",
                     "url": "actions",
                     "icon": "circle",
-                    "slug": ["actions.index", "actions.edit", "actions.show"]
+                    "slug": [
+                        "actions.index",
+                        "actions.edit",
+                        "actions.show"
+                    ]
                 }
             ]
         },
@@ -87,49 +111,73 @@
                     "name": "kpiCreate",
                     "url": "kpis/create",
                     "icon": "circle",
-                    "slug": ["kpis.create"]
+                    "slug": [
+                        "kpis.create"
+                    ]
                 },
                 {
                     "name": "kpis",
                     "url": "kpis",
                     "icon": "circle",
-                    "slug": ["kpis.index", "kpis.edit", "kpis.show"]
+                    "slug": [
+                        "kpis.index",
+                        "kpis.edit",
+                        "kpis.show"
+                    ]
                 },
                 {
                     "name": "organisationCreate",
                     "url": "organisations/create",
                     "icon": "circle",
-                    "slug": ["organisations.create"]
+                    "slug": [
+                        "organisations.create"
+                    ]
                 },
                 {
                     "name": "organisations",
                     "url": "organisations",
                     "icon": "circle",
-                    "slug": ["organisations.index", "organisations.edit", "organisations.show"]
+                    "slug": [
+                        "organisations.index",
+                        "organisations.edit",
+                        "organisations.show"
+                    ]
                 },
                 {
                     "name": "planCreate",
                     "url": "plans/create",
                     "icon": "circle",
-                    "slug": ["plans.create"]
+                    "slug": [
+                        "plans.create"
+                    ]
                 },
                 {
                     "name": "plans",
                     "url": "plans",
                     "icon": "circle",
-                    "slug": ["plans.index", "plans.edit", "plans.show"]
+                    "slug": [
+                        "plans.index",
+                        "plans.edit",
+                        "plans.show"
+                    ]
                 },
                 {
                     "name": "sniCreate",
                     "url": "snis/create",
                     "icon": "circle",
-                    "slug": ["snis.create"]
+                    "slug": [
+                        "snis.create"
+                    ]
                 },
                 {
                     "name": "snis",
                     "url": "snis",
                     "icon": "circle",
-                    "slug": ["snis.index", "snis.edit", "snis.show"]
+                    "slug": [
+                        "snis.index",
+                        "snis.edit",
+                        "snis.show"
+                    ]
                 }
             ]
         },
@@ -143,13 +191,37 @@
                     "name": "dpas",
                     "url": "dpas",
                     "icon": "circle",
-                    "slug": ["dpas.index", "dpas.edit"]
+                    "slug": [
+                        "dpas.index",
+                        "dpas.edit"
+                    ]
                 },
                 {
                     "name": "sanctions",
                     "url": "sanctions",
                     "icon": "circle",
-                    "slug": ["sanctions.index", "sanctions.edit"]
+                    "slug": [
+                        "sanctions.index",
+                        "sanctions.edit"
+                    ]
+                },
+                {
+                    "name": "types_create",
+                    "url": "types/create",
+                    "icon": "circle",
+                    "slug": [
+                        "types.create"
+                    ]
+                },
+                {
+                    "name": "types",
+                    "url": "types",
+                    "icon": "circle",
+                    "slug": [
+                        "types.index",
+                        "types.edit",
+                        "types.show"
+                    ]
                 }
             ]
         },
@@ -163,49 +235,73 @@
                     "name": "componentsCreate",
                     "url": "components/create",
                     "icon": "circle",
-                    "slug": ["components.create"]
+                    "slug": [
+                        "components.create"
+                    ]
                 },
                 {
                     "name": "components",
                     "url": "components",
                     "icon": "circle",
-                    "slug": ["components.index", "components.edit", "components.show"]
+                    "slug": [
+                        "components.index",
+                        "components.edit",
+                        "components.show"
+                    ]
                 },
                 {
                     "name": "periodsCreate",
                     "url": "periods/create",
                     "icon": "circle",
-                    "slug": ["periods.create"]
+                    "slug": [
+                        "periods.create"
+                    ]
                 },
                 {
                     "name": "periods",
                     "url": "periods",
                     "icon": "circle",
-                    "slug": ["periods.index", "periods.edit", "periods.show"]
+                    "slug": [
+                        "periods.index",
+                        "periods.edit",
+                        "periods.show"
+                    ]
                 },
                 {
                     "name": "statementCreate",
                     "url": "statements/create",
                     "icon": "circle",
-                    "slug": ["statements.create"]
+                    "slug": [
+                        "statements.create"
+                    ]
                 },
                 {
                     "name": "statements",
                     "url": "statements",
                     "icon": "circle",
-                    "slug": ["statements.index", "statements.edit", "statements.show"]
+                    "slug": [
+                        "statements.index",
+                        "statements.edit",
+                        "statements.show"
+                    ]
                 },
                 {
                     "name": "statementTypeCreate",
                     "url": "statement_types/create",
                     "icon": "circle",
-                    "slug": ["statement_types.create"]
+                    "slug": [
+                        "statement_types.create"
+                    ]
                 },
                 {
                     "name": "statementTypes",
                     "url": "statement_types",
                     "icon": "circle",
-                    "slug": ["statement_types.index", "statement_types.edit", "statement_types.show"]
+                    "slug": [
+                        "statement_types.index",
+                        "statement_types.edit",
+                        "statement_types.show"
+                    ]
                 }
             ]
         },
@@ -219,13 +315,19 @@
                     "name": "usersCreate",
                     "url": "users/create",
                     "icon": "circle",
-                    "slug": ["users.create"]
+                    "slug": [
+                        "users.create"
+                    ]
                 },
                 {
                     "name": "users",
                     "url": "users",
                     "icon": "circle",
-                    "slug": ["users.index", "users.edit", "users.show"]
+                    "slug": [
+                        "users.index",
+                        "users.edit",
+                        "users.show"
+                    ]
                 }
             ]
         }
