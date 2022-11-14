@@ -21,7 +21,7 @@
             </div>
         </div>
     @endif
-    <sanctions locale="{{ App::currentLocale() }}" />
+    <sanctions locale="{{ App::currentLocale() }}" :messages="{{ Js::from($messages) }}"/>
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}

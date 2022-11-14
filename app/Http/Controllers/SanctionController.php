@@ -21,9 +21,8 @@ class SanctionController extends Controller
      */
     public function index()
     {
-        //
-        $sanctions = Sanction::all();
-        return view('models.sanctions.index', compact('sanctions'));
+        $messages = __('messages');
+        return view('models.sanctions.index', compact('messages'));
     }
 
     /**

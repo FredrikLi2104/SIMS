@@ -61,7 +61,6 @@ class AxiosController extends Controller
     }
 
 
-
     /**
      * Return all dpas along with dictionary
      *
@@ -567,7 +566,7 @@ class AxiosController extends Controller
         /*
         $dataSets = [];
         foreach ($risks as $risk) {
-            $dataSets[] = ['label' => $risk->title, 'backgroundColor' => $risk->risk['colour'], 'borderColor' => $risk->risk['colour']];  
+            $dataSets[] = ['label' => $risk->title, 'backgroundColor' => $risk->risk['colour'], 'borderColor' => $risk->risk['colour']];
         };
         */
         // Scatter Data New with Range End
@@ -578,8 +577,8 @@ class AxiosController extends Controller
         $scatterRisks = $risks->sortByDesc('created_at');
         foreach ($scatterRisks as $scatterRisk) {
             $dataSets[] = ['label' => $scatterRisk->title, 'backgroundColor' => $scatterRisk->risk['colour'], 'borderColor' => $scatterRisk->risk['colour'], 'data' => [['x' => $scatterRisk->consequence, 'y' => $scatterRisk->probability, 'r' => 10 * count($scatterRisks->filter(function ($item) use ($scatterRisk) {
-                return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
-            })->all())]], 'count' => count($scatterRisks->filter(function ($item) use ($scatterRisk) {
+                    return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
+                })->all())]], 'count' => count($scatterRisks->filter(function ($item) use ($scatterRisk) {
                 return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
             })->all()), 'date' => Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM')];
             if (!(in_array(Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM'), $rangeDates))) {
@@ -651,7 +650,7 @@ class AxiosController extends Controller
      *
      * Update or create a statement action in relation to an organisation, e.g: set statement x action for organization y to be "value 2, comment something"
      *
-     * @param \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      **/
     public function organisationsStatementsDeedsUpdate(OrganisationsStatementsDeedsUpdateRequest $request)
@@ -673,7 +672,7 @@ class AxiosController extends Controller
      *
      * Undocumented function long description
      *
-     * @param \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      * @throws \Throwable
      **/
@@ -703,7 +702,7 @@ class AxiosController extends Controller
     /**
      * Update the plan of the statement in relation to an organisation, e.g: set statement x plan for organisation x to be "Inspection"
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function organisationsStatementsPlansUpdate(OrganisationsStatementsPlansUpdateRequest $request)
@@ -730,7 +729,7 @@ class AxiosController extends Controller
      *
      * e.g: set statement x review or organisation y and deed z to be "you did this wrong"
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      **/
     public function organisationsStatementsReviewsUpdate(OrganisationsStatementsReviewsUpdateRequest $request)
@@ -813,7 +812,6 @@ class AxiosController extends Controller
     }
 
 
-
     /**
      * Return a risk along with messages dictionaries
      *
@@ -821,9 +819,9 @@ class AxiosController extends Controller
      *
      * @param string $locale App locale
      * @param App\Models\Risk $risk the risk to be returned
-     * @throws Illuminate\Http\Response when the user is not authorized ot access said risk
      * @return Illuminate\Database\Eloquent\Collection
-     **/
+     **@throws Illuminate\Http\Response when the user is not authorized ot access said risk
+     */
     public function risksShow($locale, Risk $risk)
     {
         // abort 403 if the risk requested does not belong to the user organisation
@@ -869,21 +867,58 @@ class AxiosController extends Controller
      * @param string $locale app locale
      * @return Illuminate\Database\Eloquent\Collection
      **/
-    public function sanctions($locale)
+    public function sanctions($locale, Request $request)
     {
-        $sanctions = Sanction::all()->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url']);
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $searchVal = $request->get('search')['value'];
+        $orderByColIndex = $request->get('order')[0]['column'];
+        $orderByColName = $orderBy ?? $request->get('columns')[$orderByColIndex]['data'];
+        $orderByColName = str_replace('_for_humans', '', $orderByColName);
+        $orderDir = $request->get('order')[0]['dir'];
+
+        $sanctions = Sanction::select('sanctions.*')
+            ->when($searchVal, function ($query, $searchVal) {
+                $query->where('id', 'like', "%$searchVal%")
+                    ->orWhereDate('created_at', 'like', "%$searchVal%")
+                    ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
+                    ->orWhereDate('decided_at', 'like', "%$searchVal%")
+                    ->orWhere('fine', 'like', "%$searchVal%")
+                    ->orWhere('title', 'like', "%$searchVal%");
+            })->when($orderByColName, function ($query, $orderByColName) use ($orderDir) {
+                if ($orderByColName == 'dpa') {
+                    $query->join('dpas', 'sanctions.dpa_id', '=', 'dpas.id')
+                        ->orderBy('dpas.title', $orderDir);
+                } else {
+                    $query->orderBy($orderByColName, $orderDir);
+                }
+            })->skip($start)
+            ->take($length)
+            ->get();
+
+        $sanctionsTotal = Sanction::count();
+        $sanctionsFiltered = Sanction::when($searchVal, function ($query, $searchVal) {
+            $query->where('id', 'like', "%$searchVal%")
+                ->orWhereDate('created_at', 'like', "%$searchVal%")
+                ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
+                ->orWhereDate('decided_at', 'like', "%$searchVal%")
+                ->orWhere('fine', 'like', "%$searchVal%")
+                ->orWhere('title', 'like', "%$searchVal%");
+        })->count();
+
+        $sanctions->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url']);
+
         foreach ($sanctions as $sanction) {
             $articles = $sanction->articles;
             $sanction->articlesSorted = $articles->sortBy('title')->values();
             $sanction->dpa->load('country')->makeVisible(['country', 'name']);
         }
+
         App::setlocale($locale);
-        $messages = Lang::get('messages');
-        $r = ['sanctions' => $sanctions, 'messages' => $messages];
+        $r = ['sanctions' => $sanctions, 'draw' => $request->get('draw'), 'recordsTotal' => $sanctionsTotal, 'recordsFiltered' => $sanctionsFiltered];
         $r = collect($r);
         return $r;
     }
-
 
     /**
      * Return a specific sanction model
