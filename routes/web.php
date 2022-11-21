@@ -4,6 +4,7 @@ use App\Http\Controllers\ActionController;
 use App\Http\Controllers\ActionTypeController;
 use App\Http\Controllers\AxiosController;
 use App\Http\Controllers\ComponentController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DpaController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\OrganisationController;
@@ -39,6 +40,8 @@ Route::post('/theme-switch', [RoutingController::class, 'themeSwitcher'])->name(
 /* Axios */
 Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('countries', [AxiosController::class, 'countries'])->middleware('can:moderator')->name('axios.countries.index');
+    Route::get('currencies', [AxiosController::class, 'currencies'])->middleware('can:moderator')->name('axios.currencies.index');
+    Route::post('currencies/rates/update', [AxiosController::class, 'currenciesRatesUpdate'])->middleware('can:moderator')->name('axios.currencies.rates.update');
     Route::get('dpas', [AxiosController::class, 'dpas'])->middleware('can:moderator')->name('axios.dpas.index');
     Route::get('kpis', [AxiosController::class, 'kpis'])->middleware('can:moderator')->name('axios.kpis.index');
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
@@ -70,6 +73,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
 Route::prefix('{locale}')->middleware('locale')->group(function () {
     require __DIR__ . '/auth.php';
     Route::get('act', [OrganisationController::class, 'act'])->middleware('auth')->middleware('can:user')->name('organisations.act');
+    Route::resource('/currencies', CurrencyController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('do', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');

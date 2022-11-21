@@ -7,6 +7,7 @@
     "/js/scripts/forms/pickers/form-pickers.js": "/js/scripts/forms/pickers/form-pickers.js",
     "/js/scripts/pages/auth-login.js": "/js/scripts/pages/auth-login.js",
     "/vendors/js/ui/jquery.sticky.js": "/vendors/js/ui/jquery.sticky.js",
+    "/js/models/currencies/index/app.js": "/js/models/currencies/index/app.js",
     "/js/models/dpas/index/app.js": "/js/models/dpas/index/app.js",
     "/js/models/dpas/edit/app.js": "/js/models/dpas/edit/app.js",
     "/js/models/kpis/index/app.js": "/js/models/kpis/index/app.js",

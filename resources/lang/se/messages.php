@@ -34,6 +34,7 @@ return [
     'create' => 'Skapa',
     'created' => 'Skapad',
     'currency' => 'Valuta',
+    'currencies' => 'Valutor',
     'currentLogo' => 'Aktuell Logotyp',
     'dataProtectionPlan' => 'Plan för dataskyddsarbetet',
     'dataProtectionText' => 'Enligt den plan som är lagd för årets dataskyddsarbete kommer arbetet att fördelas enligt följande:',

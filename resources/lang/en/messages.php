@@ -31,6 +31,7 @@ return [
     'create' => 'Create',
     'created' => 'Created',
     'currency' => 'Currency',
+    'currencies' => 'Currencies',
     'currentLogo' => 'Current Logo',
     'dataProtectionPlan' => 'Data Protection Plan',
     'dataProtectionText' => 'According to the plan for this year\'s data protection work, the work will be distributed as follows:',

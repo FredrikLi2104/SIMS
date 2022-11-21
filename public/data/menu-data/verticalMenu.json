@@ -188,6 +188,24 @@
             "slug": [],
             "submenu": [
                 {
+                    "name": "currencies_create",
+                    "url": "currencies/create",
+                    "icon": "circle",
+                    "slug": [
+                        "currencies.create"
+                    ]
+                },
+                {
+                    "name": "currencies",
+                    "url": "currencies",
+                    "icon": "circle",
+                    "slug": [
+                        "currencies.index",
+                        "currencies.edit",
+                        "currencies.show"
+                    ]
+                },
+                {
                     "name": "dpas",
                     "url": "dpas",
                     "icon": "circle",

@@ -77,6 +77,7 @@ mix
     .js('resources/js/scripts/pages/auth-login.js', 'public/js/scripts/pages/auth-login.js')
     .js('resources/vendors/js/ui/jquery.sticky.js', 'public/vendors/js/ui/jquery.sticky.js')
     // models
+    .js('resources/js/models/currencies/index/app.js', 'public/js/models/currencies/index/app.js').vue()
     .js('resources/js/models/dpas/index/app.js', 'public/js/models/dpas/index/app.js').vue()
     .js('resources/js/models/dpas/edit/app.js', 'public/js/models/dpas/edit/app.js').vue()
     .js('resources/js/models/kpis/index/app.js', 'public/js/models/kpis/index/app.js').vue()
@@ -95,7 +96,7 @@ mix
     // services
     .js('resources/js/services/countries/seed/app.js', 'public/js/services/countries/seed/app.js').vue()
 
-    // Js validation
+// Js validation
 mix
     .copy('resources/views/vendor/jsvalidation', 'public/resources/views/vendor/jsvalidation')
     .copy('vendor/proengsoft/laravel-jsvalidation/resources/views', 'resources/views/vendor/jsvalidation')

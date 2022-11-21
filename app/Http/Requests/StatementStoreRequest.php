@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Statement;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StatementStoreRequest extends FormRequest
@@ -38,5 +39,19 @@ class StatementStoreRequest extends FormRequest
             'statement_type_id' => ['required', 'exists:statement_types,id'],
             'sort_order' => ['required', 'integer', 'unique:statements']
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $componentId = $this->input('component_id');
+            $code = $this->input('code');
+
+            $subCodeExists = Statement::where(['component_id' => $componentId, 'code' => $code])->exists();
+
+            if ($subCodeExists) {
+                $validator->errors()->add('code', 'Subcode exists.');
+            }
+        });
     }
 }

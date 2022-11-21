@@ -6,7 +6,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">@lang('messages.types') {{ $action_msg }} @lang('messages.allFields')</h4>
+                        <h4 class="card-title">@lang('messages.currencies') {{ $action_msg }} @lang('messages.allFields')</h4>
                     </div>
                     <div class="card-body">
                         @if (count($errors->all()) > 0)
@@ -28,24 +28,24 @@
                             <div class="row">
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
-                                        <label class="form-label" for="text_en">Text @lang('messages.inEnglish')</label>
-                                        <input type="text" id="text_en"
-                                               class="form-control @error('text_en') is-invalid @enderror"
-                                               placeholder="Unknown" name="text_en"
-                                               value="{{ ($is_update ?? false) ? old('text_en') ?? $type->text_en : old('text_en') }}"/>
-                                        @error('name')
+                                        <label class="form-label" for="symbol">Symbol</label>
+                                        <input type="text" id="symbol"
+                                               class="form-control @error('symbol') is-invalid @enderror"
+                                               placeholder="EUR" name="symbol"
+                                               value="{{ ($is_update ?? false) ? old('symbol') ?? $currency->symbol : old('symbol') }}"/>
+                                        @error('symbol')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-12">
                                     <div class="mb-1">
-                                        <label class="form-label" for="text_se">Text @lang('messages.inSwedish')</label>
-                                        <input type="text" id="text_se"
-                                               class="form-control @error('text_se') is-invalid @enderror"
-                                               placeholder="Okänd" name="text_se"
-                                               value="{{ ($is_update ?? false) ? old('text_se') ?? $type->text_se : old('text_se') }}"/>
-                                        @error('name')
+                                        <label class="form-label" for="value">@lang('messages.value')</label>
+                                        <input type="text" id="value"
+                                               class="form-control @error('value') is-invalid @enderror"
+                                               placeholder="1" name="value"
+                                               value="{{ ($is_update ?? false) ? old('value') ?? $currency->value : old('value') }}"/>
+                                        @error('value')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -65,8 +65,8 @@
     <!-- Page js files -->
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
     @if ($is_update ?? false)
-        {!! JsValidator::formRequest('App\Http\Requests\TypeUpdateRequest', '#form') !!}
+        {!! JsValidator::formRequest('App\Http\Requests\CurrencyUpdateRequest', '#form') !!}
     @else
-        {!! JsValidator::formRequest('App\Http\Requests\TypeStoreRequest', '#form') !!}
+        {!! JsValidator::formRequest('App\Http\Requests\CurrencyStoreRequest', '#form') !!}
     @endif
 @endsection

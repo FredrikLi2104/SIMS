@@ -16,6 +16,7 @@ use App\Http\Requests\OrganisationsStatementsReviewsUpdateRequest;
 use App\Http\Requests\RiskCommentStoreRequest;
 use App\Models\Component;
 use App\Models\Country;
+use App\Models\Currency;
 use App\Models\Deed;
 use App\Models\Dpa;
 use App\Models\Kpi;
@@ -60,6 +61,34 @@ class AxiosController extends Controller
         return $r;
     }
 
+    public function currencies()
+    {
+        $currencies = Currency::all();
+
+        $currencies = $currencies->map(function ($currency) {
+            $currency->updated_at_for_humans = $currency->updated_at->format('Y-m-d H:i:s');
+            return $currency;
+        });
+
+        return ['currencies' => $currencies];
+    }
+
+    public function currenciesRatesUpdate($locale)
+    {
+        $currencies = Currency::all();
+        $currencies = $currencies->pluck('symbol')->all();
+
+        $rates = \AmrShawky\Currency::rates()
+            ->latest()
+            ->symbols($currencies)
+            ->round(2)
+            ->get();
+
+        foreach ($rates as $symbol => $rate) {
+            Currency::where('symbol', $symbol)
+                ->update(['value' => $rate]);
+        }
+    }
 
     /**
      * Return all dpas along with dictionary

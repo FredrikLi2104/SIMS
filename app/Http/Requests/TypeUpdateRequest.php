@@ -26,7 +26,7 @@ class TypeUpdateRequest extends FormRequest
     {
         return [
             'text_en' => ['required', Rule::unique('types')->ignore($this->route()->type->id)],
-            'text_se' => ['nullable', Rule::unique('types')->ignore($this->route()->type->id)],
+            'text_se' => ['required', Rule::unique('types')->ignore($this->route()->type->id)],
         ];
     }
 }

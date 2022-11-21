@@ -25,34 +25,32 @@
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
-                            <tr>
-                                <th>@lang('messages.subcode')</th>
-                                <th>@lang('messages.sortOrder')</th>
-                                <th>ID</th>
-                                <th>@lang('messages.type')</th>
-                                <th>@lang('messages.desc') - @lang('messages.english')</th>
-                                <th>@lang('messages.desc') - @lang('messages.swedish')</th>
-                                <th class="text-center">@lang('messages.actions')</th>
-                            </tr>
+                        <tr>
+                            <th>@lang('messages.subcode')</th>
+                            <th>@lang('messages.content_en')</th>
+                            <th>@lang('messages.content_se')</th>
+                            <th>@lang('messages.desc_en')</th>
+                            <th>@lang('messages.desc_se')</th>
+                            <th class="text-center">@lang('messages.actions')</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @foreach ($statements as $statement)
-                                <tr>
-                                    <td>{{ $statement->subcode }}</td>
-                                    <td>{{ $statement->sort_order }}</td>
-                                    <td>{{ $statement->id }}</td>
-                                    <td>{{ $statement->statement_type->code }}</td>
-                                    <td>{{ substr($statement->desc_en,0,24).'...' }}</td>
-                                    <td>{{ substr($statement->desc_se,0,24).'...' }}</td>
-                                    <td class="text-center">
-                                        <a href="{{ route('statements.edit', [App::currentLocale(), $statement->id]) }}">
-                                            <button type="button" class="btn btn-gradient-primary">
-                                                @lang('messages.edit')
-                                            </button>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
+                        @foreach ($statements as $statement)
+                            <tr>
+                                <td>{{ $statement->subcode }}</td>
+                                <td>{{ Str::limit($statement->content_en, 24) }}</td>
+                                <td>{{ Str::limit($statement->content_se, 24) }}</td>
+                                <td>{{ Str::limit($statement->desc_en, 24) }}</td>
+                                <td>{{ Str::limit($statement->desc_se, 24) }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('statements.edit', [App::currentLocale(), $statement->id]) }}">
+                                        <button type="button" class="btn btn-gradient-primary">
+                                            @lang('messages.edit')
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
