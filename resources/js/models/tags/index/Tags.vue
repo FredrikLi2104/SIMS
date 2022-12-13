@@ -89,7 +89,7 @@ export default {
                         responsivePriority: 4,
                         width: "10%",
                         render: function (data, type, full, meta) {
-                            let r = `<p>${full.tag_se ?? ''}</p>`;
+                            let r = `<p>${full.desc_se ?? ''}</p>`;
                             return r;
                         },
                     },
