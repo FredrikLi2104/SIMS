@@ -148,4 +148,19 @@ class Sanction extends Model
     {
         return $this->belongsTo(Type::class);
     }
+
+    public function outcome()
+    {
+        return $this->belongsTo(Outcome::class);
+    }
+
+    public function issue_category()
+    {
+        return $this->belongsTo(IssueCategory::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
 }

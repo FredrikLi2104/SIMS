@@ -244,6 +244,73 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="outcome">@lang('messages.outcome')
+                                            [@lang('messages.optional')]</label>
+                                        <select id="outcome"
+                                                class="select2 form-select form-control @error('outcome') is-invalid @enderror"
+                                                name="outcome_id">
+                                            <option value="">@lang('messages.pleaseSelect')</option>
+                                            @foreach ($outcomes as $outcome)
+                                                <option
+                                                    @selected($sanction->outcome?->id == $outcome->id) value="{{ $outcome->id }}">{{ $outcome->{'desc_' . App::currentLocale()} }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('outcome')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="party">@lang('messages.party')
+                                            [@lang('messages.optional')]</label>
+                                        <input type="text" id="party"
+                                               class="form-control @error('party') is-invalid @enderror"
+                                               placeholder="Rights International Spain (RIS)" name="party"
+                                               value="{{ $sanction->party }}"/>
+                                        @error('party')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="issue-category">@lang('messages.issue_category')
+                                            [@lang('messages.optional')]</label>
+                                        <select id="issue-category"
+                                                class="select2 form-select form-control @error('issue_category') is-invalid @enderror"
+                                                name="issue_category_id">
+                                            <option value="">@lang('messages.pleaseSelect')</option>
+                                            @foreach ($issueCategories as $issueCategory)
+                                                <option
+                                                    @selected($sanction->issue_category?->id == $issueCategory->id) value="{{ $issueCategory->id }}">{{ $issueCategory->{'desc_' . App::currentLocale()} }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('issue_category')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class='col-md-6'>
+                                    <div class="mb-1">
+                                        <label class='form-label' for="tags">@lang('messages.tags')
+                                            [@lang('messages.optional')]</label>
+                                        <select id="tags"
+                                                class="select2 form-select form-control @error('tags[]') is-invalid @enderror"
+                                                name="tags[]" multiple
+                                                data-placeholder="@lang('messages.pleaseSelect')">
+                                            @foreach ($tags as $tag)
+                                                <option
+                                                    @selected(in_array($tag->id, $tagIds)) value="{{ $tag->id }}">{{ $tag->{'tag_' . App::currentLocale()} }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('tags[]')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <quill locale="{{ App::currentLocale() }}"
                                        label-en="{{ __('messages.desc') . ' ' . __('messages.inEnglish') . ' [' . __('messages.optional') . ']' }}"
                                        label-se="{{ __('messages.desc') . ' ' . __('messages.inSwedish') . ' [' . __('messages.optional') . ']' }}"

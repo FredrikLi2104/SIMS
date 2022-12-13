@@ -6,8 +6,11 @@ use App\Http\Controllers\AxiosController;
 use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DpaController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\IssueCategoryController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\OrganisationController;
+use App\Http\Controllers\OutcomeController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\RiskController;
@@ -16,6 +19,7 @@ use App\Http\Controllers\SanctionController;
 use App\Http\Controllers\SniController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\StatementTypeController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -67,6 +71,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('sanctions', [AxiosController::class, 'sanctions'])->middleware('can:moderator')->name('axios.sanctions.index');
     Route::get('sanctions/{sanction}', [AxiosController::class, 'sanctionsShow'])->middleware('can:user')->name('axios.sanctions.show');
     Route::get('sanctions/admin/{sanction}', [AxiosController::class, 'sanction'])->middleware('can:admin')->name('axios.sanctions.view');
+    Route::get('tags', [AxiosController::class, 'tags'])->middleware('can:moderator')->name('axios.tags.index');
 });
 
 /* Localized Routes */
@@ -76,11 +81,14 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::resource('/currencies', CurrencyController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('do', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');
+    Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
+    Route::resource('/issue_categories', IssueCategoryController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('components', ComponentController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('kpis', KpiController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('organisations/kpis', [OrganisationController::class, 'kpisIndex'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.kpis');
     Route::resource('organisations', OrganisationController::class)->middleware('auth')->middleware('can:moderator');
+    Route::resource('/outcomes', OutcomeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('periods', PeriodController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('auditor/plan', [OrganisationController::class, 'auditorPlan'])->middleware('auth')->middleware('can:auditor')->name('organisations.auditor.plan');
     Route::get('plan', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan');
@@ -91,6 +99,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::resource('statements', StatementController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('statement_types', StatementTypeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('snis', SniController::class)->middleware('auth')->middleware('can:moderator');
+    Route::resource('tags', TagController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('types', TypeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('users', UserController::class)->middleware('auth')->middleware('can:moderator');
 });

@@ -36,6 +36,11 @@ class SanctionUpdateRequest extends FormRequest
             'desc_se' => 'nullable|sometimes',
             'sni_id' => ['nullable', 'sometimes', 'exists:snis,id'],
             'type_id' => ['nullable', 'sometimes', 'exists:types,id'],
+            'outcome_id' => ['nullable', 'sometimes', 'exists:outcomes,id'],
+            'party' => ['nullable', 'sometimes'],
+            'issue_category_id' => ['nullable', 'sometimes', 'exists:issue_categories,id'],
+            'tags' => 'nullable|sometimes',
+            'tags.*' => 'nullable|sometimes|exists:tags,id',
         ];
     }
 }

@@ -21576,7 +21576,15 @@ __webpack_require__.r(__webpack_exports__);
               "class": "me-25"
             }), "\n                                            <span>").concat(thisComponent.messages.edit, "</span>\n                                        </button>\n                                        <button type=\"button\" class=\"btn btn-gradient-info waves-effect mb-1\" onClick=\"window.open('").concat(full.url, "','_blank')\">\n                                            ").concat(feather.icons["external-link"].toSvg({
               "class": "me-25"
-            }), "\n                                            <span>").concat(thisComponent.messages.visit, "</span>\n                                        </button>\n                                        <button type=\"button\" class=\"btn btn-outline-primary waves-effect mb-1\" onClick=\"window.thisComponent.sanctionShow(").concat(full.id, ")\">\n                                            ").concat(feather.icons["eye"].toSvg({
+            }), "\n                                            <span>").concat(thisComponent.messages.visit, "</span>\n                                        </button>");
+
+            if (full.etid) {
+              r += "<button type=\"button\" class=\"btn btn-gradient-info waves-effect mb-1\" onClick=\"window.open('https://www.enforcementtracker.com/Etid-".concat(full.etid, "','_blank')\">\n                                                ").concat(feather.icons["external-link"].toSvg({
+                "class": "me-25"
+              }), "\n                                                <span>").concat(thisComponent.messages.et_visit, "</span>\n                                            </button>");
+            }
+
+            r += "<button type=\"button\" class=\"btn btn-outline-primary waves-effect mb-1\" onClick=\"window.thisComponent.sanctionShow(".concat(full.id, ")\">\n                                            ").concat(feather.icons["eye"].toSvg({
               "class": "me-25"
             }), "\n                                            <span>").concat(thisComponent.messages.view, "</span>\n                                        </button>\n                                    </div>\n                                </div>\n                                ");
             return r;

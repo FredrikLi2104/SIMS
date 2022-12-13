@@ -247,8 +247,14 @@ export default {
                                         <button type="button" class="btn btn-gradient-info waves-effect mb-1" onClick="window.open('${full.url}','_blank')">
                                             ${feather.icons["external-link"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.messages.visit}</span>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.thisComponent.sanctionShow(${full.id})">
+                                        </button>`;
+                                        if(full.etid) {
+                                            r += `<button type="button" class="btn btn-gradient-info waves-effect mb-1" onClick="window.open('https://www.enforcementtracker.com/Etid-${full.etid}','_blank')">
+                                                ${feather.icons["external-link"].toSvg({class: "me-25"})}
+                                                <span>${thisComponent.messages.et_visit}</span>
+                                            </button>`;
+                                        }
+                                        r += `<button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.thisComponent.sanctionShow(${full.id})">
                                             ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.messages.view}</span>
                                         </button>

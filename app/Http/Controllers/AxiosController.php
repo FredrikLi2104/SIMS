@@ -29,6 +29,7 @@ use App\Models\Risk;
 use App\Models\RiskComment;
 use App\Models\Sanction;
 use App\Models\Statement;
+use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\File;
 use Illuminate\Support\Str;
@@ -935,7 +936,7 @@ class AxiosController extends Controller
                 ->orWhere('title', 'like', "%$searchVal%");
         })->count();
 
-        $sanctions->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url']);
+        $sanctions->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid']);
 
         foreach ($sanctions as $sanction) {
             $articles = $sanction->articles;
@@ -1010,5 +1011,14 @@ class AxiosController extends Controller
             'data' => $data,
             'index' => $request->start,
         ];
+    }
+
+    public function tags($locale)
+    {
+        App::setlocale($locale);
+        $tags = Tag::all();
+        $messages = Lang::get('messages');
+
+        return collect(['tags' => $tags, 'messages' => $messages]);
     }
 }

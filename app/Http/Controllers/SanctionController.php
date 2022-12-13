@@ -6,8 +6,11 @@ use App\Http\Requests\SanctionUpdateRequest;
 use App\Models\Article;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\IssueCategory;
+use App\Models\Outcome;
 use App\Models\Sanction;
 use App\Models\Sni;
+use App\Models\Tag;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -73,7 +76,12 @@ class SanctionController extends Controller
         $sanctionArticlesIds = $sanction->articles->pluck('id')->all();
         $snis = Sni::all()->sortBy('code');
         $types = Type::all()->sortBy('text_' . App::currentLocale());
-        return view('models.sanctions.edit', compact('articles', 'sanction', 'sanctionArticlesIds', 'countries', 'currencies', 'snis', 'types'));
+        $outcomes = Outcome::all()->sortBy('desc_' . App::currentLocale());
+        $issueCategories = IssueCategory::all()->sortBy('desc_' . App::currentLocale());
+        $tags = Tag::all()->sortBy('tag_' . App::currentLocale());
+        $tagIds = $sanction->tags->pluck('id')->all();
+
+        return view('models.sanctions.edit', compact('articles', 'sanction', 'sanctionArticlesIds', 'countries', 'currencies', 'snis', 'types', 'outcomes', 'issueCategories', 'tags', 'tagIds'));
     }
 
     /**
@@ -93,6 +101,14 @@ class SanctionController extends Controller
             $sanction->articles()->detach();
             $sanction->articles()->sync($articles);
         }
+
+        if (isset($data['tags'])) {
+            $tags = $data['tags'];
+            unset($data['tags']);
+            $sanction->tags()->sync($tags);
+        }
+
+        $data['user_id'] = auth()->user()->id;
         $sanction->update($data);
         return redirect()->route('sanctions.index', App::currentLocale())->with('success', __('messages.itemUpdatedSuccessfully'));
     }

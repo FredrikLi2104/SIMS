@@ -215,12 +215,84 @@
                     ]
                 },
                 {
+                    "name": "groups_create",
+                    "url": "groups/create",
+                    "icon": "circle",
+                    "slug": [
+                        "groups.create"
+                    ]
+                },
+                {
+                    "name": "groups",
+                    "url": "groups",
+                    "icon": "circle",
+                    "slug": [
+                        "groups.index",
+                        "groups.edit",
+                        "groups.show"
+                    ]
+                },
+                {
+                    "name": "issue_categories_create",
+                    "url": "issue_categories/create",
+                    "icon": "circle",
+                    "slug": [
+                        "issue_categories.create"
+                    ]
+                },
+                {
+                    "name": "issue_categories",
+                    "url": "issue_categories",
+                    "icon": "circle",
+                    "slug": [
+                        "issue_categories.index",
+                        "issue_categories.edit",
+                        "issue_categories.show"
+                    ]
+                },
+                {
+                    "name": "outcomes_create",
+                    "url": "outcomes/create",
+                    "icon": "circle",
+                    "slug": [
+                        "outcomes.create"
+                    ]
+                },
+                {
+                    "name": "outcomes",
+                    "url": "outcomes",
+                    "icon": "circle",
+                    "slug": [
+                        "outcomes.index",
+                        "outcomes.edit",
+                        "outcomes.show"
+                    ]
+                },
+                {
                     "name": "sanctions",
                     "url": "sanctions",
                     "icon": "circle",
                     "slug": [
                         "sanctions.index",
                         "sanctions.edit"
+                    ]
+                },
+                {
+                    "name": "tags_create",
+                    "url": "tags/create",
+                    "icon": "circle",
+                    "slug": [
+                        "tags.create"
+                    ]
+                },
+                {
+                    "name": "tags",
+                    "url": "tags",
+                    "icon": "circle",
+                    "slug": [
+                        "tags.index",
+                        "tags.edit",
+                        "tags.show"
                     ]
                 },
                 {
