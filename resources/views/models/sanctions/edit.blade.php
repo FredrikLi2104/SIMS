@@ -311,6 +311,24 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class='col-md-6'>
+                                    <div class="mb-1">
+                                        <label class='form-label' for="statements">@lang('messages.statements')
+                                            [@lang('messages.optional')]</label>
+                                        <select id="statements"
+                                                class="select2 form-select form-control @error('statements[]') is-invalid @enderror"
+                                                name="statements[]" multiple
+                                                data-placeholder="@lang('messages.pleaseSelect')">
+                                            @foreach ($statements as $statement)
+                                                <option
+                                                    @selected(in_array($statement->id, $statementIds)) value="{{ $statement->id }}">{{ $statement->component->code . '.' . $statement->{'code'} }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('tags[]')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <quill locale="{{ App::currentLocale() }}"
                                        label-en="{{ __('messages.desc') . ' ' . __('messages.inEnglish') . ' [' . __('messages.optional') . ']' }}"
                                        label-se="{{ __('messages.desc') . ' ' . __('messages.inSwedish') . ' [' . __('messages.optional') . ']' }}"

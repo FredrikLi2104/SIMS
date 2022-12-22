@@ -21522,9 +21522,9 @@ __webpack_require__.r(__webpack_exports__);
           responsivePriority: 4,
           width: "10%",
           render: function render(data, type, full, meta) {
-            var _full$tag_se2;
+            var _full$desc_se;
 
-            var r = "<p>".concat((_full$tag_se2 = full.tag_se) !== null && _full$tag_se2 !== void 0 ? _full$tag_se2 : '', "</p>");
+            var r = "<p>".concat((_full$desc_se = full.desc_se) !== null && _full$desc_se !== void 0 ? _full$desc_se : '', "</p>");
             return r;
           }
         }, {

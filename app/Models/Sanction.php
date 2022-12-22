@@ -13,7 +13,7 @@ class Sanction extends Model
 
     protected $guarded = ['id'];
     protected $visible = ['id', 'pageid', 'title', 'desc_en', 'desc_se', 'dpa_id', 'started_at', 'decided_at', 'published_at', 'fine', 'currency_id', 'created_at', 'updated_at'];
-    protected $appends = ['created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url'];
+    protected $appends = ['created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url', 'updated_at_for_humans'];
 
     public function articles()
     {
@@ -118,6 +118,16 @@ class Sanction extends Model
         return $r;
     }
 
+    public function issue_category()
+    {
+        return $this->belongsTo(IssueCategory::class);
+    }
+
+    public function outcome()
+    {
+        return $this->belongsTo(Outcome::class);
+    }
+
     public function publishedAtForHumans(): Attribute
     {
         return new Attribute(
@@ -137,11 +147,14 @@ class Sanction extends Model
         );
     }
 
-    public function url(): Attribute
+    public function statements()
     {
-        return new Attribute(
-            get: fn($value) => 'https://gdprhub.eu/index.php?title=' . urlencode($this->title)
-        );
+        return $this->belongsToMany(Statement::class)->withTimestamps();
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
     }
 
     public function type()
@@ -149,18 +162,17 @@ class Sanction extends Model
         return $this->belongsTo(Type::class);
     }
 
-    public function outcome()
+    public function updatedAtForHumans(): Attribute
     {
-        return $this->belongsTo(Outcome::class);
+        return new Attribute(
+            get: fn($value) => $this->updated_at ? Carbon::parse($this->updated_at)->format('Y-m-d') : ''
+        );
     }
 
-    public function issue_category()
+    public function url(): Attribute
     {
-        return $this->belongsTo(IssueCategory::class);
-    }
-
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class)->withTimestamps();
+        return new Attribute(
+            get: fn($value) => 'https://gdprhub.eu/index.php?title=' . urlencode($this->title)
+        );
     }
 }

@@ -2,6 +2,41 @@
     <div class="row">
         <div class="col-12">
             <div class="card invoice-list-wrapper">
+                <div class="card-body mt-2">
+                    <form class="dt_adv_search" method="POST">
+                        <div class="row g-1 mb-md-1">
+                            <div class="col-md-4">
+                                <label for="dpa-filter" class="form-label">DPA:</label>
+                                <select id="dpa-filter" class="form-select form-control" v-model="dpaId"
+                                        @change="filterTable">
+                                    <option value="">{{ messages.pleaseSelect }}</option>
+                                    <option v-for="dpa in dpas" :value="dpa.id">{{ dpa.title }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="sni-filter" class="form-label">SNI:</label>
+                                <select id="sni-filter" class="form-select form-control" v-model="sniId"
+                                        @change="filterTable">
+                                    <option value="">{{ messages.pleaseSelect }}</option>
+                                    <option v-for="sni in snis" :value="sni.id">
+                                        {{ `${sni.code} | ${sni[`desc_${locale}`]}` }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="type-filter" class="form-label">Type:</label>
+                                <select id="type-filter" class="form-select form-control" v-model="typeId"
+                                        @change="filterTable">
+                                    <option value="">{{ messages.pleaseSelect }}</option>
+                                    <option v-for="type in types" :value="type.id">
+                                        {{ `${type[`text_${locale}`]}` }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr class="my-0">
                 <div class="card-datatable table-responsive">
                     <table class="invoice-list-table table" id="dataTable"></table>
                 </div>
@@ -98,12 +133,15 @@
 </template>
 <script>
 export default {
-    props: ['locale', 'messages'],
+    props: ['locale', 'messages', 'dpas', 'snis', 'types'],
     data() {
         return {
             dataTable: null,
             collection: {},
             sanctionActive: null,
+            dpaId: '',
+            sniId: '',
+            typeId: '',
         };
     },
     methods: {
@@ -118,6 +156,7 @@ export default {
                     <th>${thisComponent.messages.decidedOn}</th>
                     <th>${thisComponent.messages.fine}</th>
                     <th>${thisComponent.messages.title}</th>
+                    <th>${thisComponent.messages.lastUpdated}</th>
                     <th class="text-center">${thisComponent.messages.actions}</th>
                 </tr>
             </thead>
@@ -132,12 +171,26 @@ export default {
                         thisComponent.collection.sanctions = json.sanctions;
                         return json.sanctions;
                     },
+                    data: function (d) {
+                        d.filters = {
+                            'dpa_id': thisComponent.dpaId,
+                            'sni_id': thisComponent.sniId,
+                            'type_id': thisComponent.typeId,
+                        }
+                    }
+                },
+                "bStateSave": true,
+                "fnStateSave": function (oSettings, oData) {
+                    localStorage.setItem('DataTables_' + window.location.pathname, JSON.stringify(oData));
+                },
+                "fnStateLoad": function (oSettings) {
+                    return JSON.parse(localStorage.getItem('DataTables_' + window.location.pathname));
                 },
                 lengthMenu: [10, 25, 50, 75, 100],
                 paging: true,
                 autoWidth: true,
                 searching: true,
-                columns: [{data: "id"}, {data: "created_at_for_humans"}, {data: "dpa"}, {data: "decided_at_for_humans"}, {data: "fine"}, {data: "title"}],
+                columns: [{data: "id"}, {data: "created_at_for_humans"}, {data: "dpa"}, {data: "decided_at_for_humans"}, {data: "fine"}, {data: "title"}, {data: 'updated_at_for_humans'}],
                 columnDefs: [
                     {
                         // ID
@@ -232,8 +285,8 @@ export default {
                     },
                     {
                         // actions
-                        targets: 6,
-                        responsivePriority: 6,
+                        targets: 7,
+                        responsivePriority: 7,
                         width: "15%",
                         orderable: false,
                         render: function (data, type, full, meta) {
@@ -248,13 +301,13 @@ export default {
                                             ${feather.icons["external-link"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.messages.visit}</span>
                                         </button>`;
-                                        if(full.etid) {
-                                            r += `<button type="button" class="btn btn-gradient-info waves-effect mb-1" onClick="window.open('https://www.enforcementtracker.com/Etid-${full.etid}','_blank')">
+                            if (full.etid) {
+                                r += `<button type="button" class="btn btn-gradient-info waves-effect mb-1" onClick="window.open('https://www.enforcementtracker.com/Etid-${full.etid}','_blank')">
                                                 ${feather.icons["external-link"].toSvg({class: "me-25"})}
                                                 <span>${thisComponent.messages.et_visit}</span>
                                             </button>`;
-                                        }
-                                        r += `<button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.thisComponent.sanctionShow(${full.id})">
+                            }
+                            r += `<button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.thisComponent.sanctionShow(${full.id})">
                                             ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.messages.view}</span>
                                         </button>
@@ -306,9 +359,32 @@ export default {
         sanctionShowClose() {
             $("#sanctionShowModal").modal("hide");
         },
+        filterTable() {
+            let filters = {
+                'dpaId': this.dpaId,
+                'sniId': this.sniId,
+                'typeId': this.typeId,
+            };
+
+            localStorage.setItem('SanctionDataTablesFilters', JSON.stringify(filters));
+
+            this.dataTable.draw();
+        }
     },
     mounted() {
         window.thisComponent = this;
+        let filters = localStorage.getItem('SanctionDataTablesFilters');
+
+        try {
+            filters = JSON.parse(filters);
+
+            this.dpaId = filters.dpaId;
+            this.sniId = filters.sniId;
+            this.typeId = filters.typeId;
+        } catch (e) {
+
+        }
+
         this.buildTable();
     },
 };

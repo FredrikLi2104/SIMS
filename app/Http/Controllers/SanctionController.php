@@ -6,14 +6,17 @@ use App\Http\Requests\SanctionUpdateRequest;
 use App\Models\Article;
 use App\Models\Country;
 use App\Models\Currency;
+use App\Models\Dpa;
 use App\Models\IssueCategory;
 use App\Models\Outcome;
 use App\Models\Sanction;
 use App\Models\Sni;
+use App\Models\Statement;
 use App\Models\Tag;
 use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use NunoMaduro\Collision\Adapters\Phpunit\State;
 
 class SanctionController extends Controller
 {
@@ -24,8 +27,18 @@ class SanctionController extends Controller
      */
     public function index()
     {
+        $dpas = Dpa::select(['id', 'title'])->orderBy('title')->get();
+        $dpas = $dpas->map(function ($dpa) {
+            $dpa->title = str_replace('Category:', '', $dpa->title);
+            return $dpa;
+        });
+
+        $snis = Sni::select(['id', 'code', 'desc_en', 'desc_se'])->orderBy('code')->get();
+        $types = Type::select(['id', 'text_en', 'text_se'])->orderBy('text_' . App::currentLocale())->get();
+
         $messages = __('messages');
-        return view('models.sanctions.index', compact('messages'));
+
+        return view('models.sanctions.index', compact('dpas', 'snis', 'types', 'messages'));
     }
 
     /**
@@ -80,8 +93,10 @@ class SanctionController extends Controller
         $issueCategories = IssueCategory::all()->sortBy('desc_' . App::currentLocale());
         $tags = Tag::all()->sortBy('tag_' . App::currentLocale());
         $tagIds = $sanction->tags->pluck('id')->all();
+        $statements = Statement::all()->sortBy([['component.code'], ['code']]);
+        $statementIds = $sanction->statements->pluck('id')->all();
 
-        return view('models.sanctions.edit', compact('articles', 'sanction', 'sanctionArticlesIds', 'countries', 'currencies', 'snis', 'types', 'outcomes', 'issueCategories', 'tags', 'tagIds'));
+        return view('models.sanctions.edit', compact('articles', 'sanction', 'sanctionArticlesIds', 'countries', 'currencies', 'snis', 'types', 'outcomes', 'issueCategories', 'tags', 'tagIds', 'statements', 'statementIds'));
     }
 
     /**

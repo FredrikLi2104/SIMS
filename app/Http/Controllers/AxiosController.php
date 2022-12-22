@@ -906,15 +906,26 @@ class AxiosController extends Controller
         $orderByColName = $orderBy ?? $request->get('columns')[$orderByColIndex]['data'];
         $orderByColName = str_replace('_for_humans', '', $orderByColName);
         $orderDir = $request->get('order')[0]['dir'];
+        $filterByDpa = $request->get('filters')['dpa_id'];
+        $filterBySni = $request->get('filters')['sni_id'];
+        $filterByType = $request->get('filters')['type_id'];
 
         $sanctions = Sanction::select('sanctions.*')
             ->when($searchVal, function ($query, $searchVal) {
-                $query->where('id', 'like', "%$searchVal%")
-                    ->orWhereDate('created_at', 'like', "%$searchVal%")
-                    ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
-                    ->orWhereDate('decided_at', 'like', "%$searchVal%")
-                    ->orWhere('fine', 'like', "%$searchVal%")
-                    ->orWhere('title', 'like', "%$searchVal%");
+                $query->where(function ($query) use ($searchVal) {
+                    $query->where('id', 'like', "%$searchVal%")
+                        ->orWhereDate('created_at', 'like', "%$searchVal%")
+                        ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
+                        ->orWhereDate('decided_at', 'like', "%$searchVal%")
+                        ->orWhere('fine', 'like', "%$searchVal%")
+                        ->orWhere('title', 'like', "%$searchVal%");
+                });
+            })->when($filterByDpa, function ($query, $filterByDpa) {
+                $query->where('dpa_id', $filterByDpa);
+            })->when($filterBySni, function ($query, $filterBySni) {
+                $query->where('sni_id', $filterBySni);
+            })->when($filterByType, function ($query, $filterByType) {
+                $query->where('type_id', $filterByType);
             })->when($orderByColName, function ($query, $orderByColName) use ($orderDir) {
                 if ($orderByColName == 'dpa') {
                     $query->join('dpas', 'sanctions.dpa_id', '=', 'dpas.id')
@@ -928,15 +939,23 @@ class AxiosController extends Controller
 
         $sanctionsTotal = Sanction::count();
         $sanctionsFiltered = Sanction::when($searchVal, function ($query, $searchVal) {
-            $query->where('id', 'like', "%$searchVal%")
-                ->orWhereDate('created_at', 'like', "%$searchVal%")
-                ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
-                ->orWhereDate('decided_at', 'like', "%$searchVal%")
-                ->orWhere('fine', 'like', "%$searchVal%")
-                ->orWhere('title', 'like', "%$searchVal%");
+            $query->where(function ($query) use ($searchVal) {
+                $query->where('id', 'like', "%$searchVal%")
+                    ->orWhereDate('created_at', 'like', "%$searchVal%")
+                    ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
+                    ->orWhereDate('decided_at', 'like', "%$searchVal%")
+                    ->orWhere('fine', 'like', "%$searchVal%")
+                    ->orWhere('title', 'like', "%$searchVal%");
+            });
+        })->when($filterByDpa, function ($query, $filterByDpa) {
+            $query->where('dpa_id', $filterByDpa);
+        })->when($filterBySni, function ($query, $filterBySni) {
+            $query->where('sni_id', $filterBySni);
+        })->when($filterByType, function ($query, $filterByType) {
+            $query->where('type_id', $filterByType);
         })->count();
 
-        $sanctions->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid']);
+        $sanctions->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans']);
 
         foreach ($sanctions as $sanction) {
             $articles = $sanction->articles;
