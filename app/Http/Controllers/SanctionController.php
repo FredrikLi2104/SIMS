@@ -121,6 +121,16 @@ class SanctionController extends Controller
             $tags = $data['tags'];
             unset($data['tags']);
             $sanction->tags()->sync($tags);
+        } else {
+            $sanction->tags()->detach();
+        }
+
+        if (isset($data['statements'])) {
+            $statements = $data['statements'];
+            unset($data['statements']);
+            $sanction->statements()->sync($statements);
+        } else {
+            $sanction->statements()->detach();
         }
 
         $data['user_id'] = auth()->user()->id;
