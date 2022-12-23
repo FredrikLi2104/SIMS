@@ -37,7 +37,7 @@ class SanctionStatementSeeder extends Seeder
                     $newSanction = $newSanctions->where('title', $oldSanctionTitle)->first();
 
                     if ($newSanction) {
-                        $newSanction->statements()->sync($statement->id);
+                        $newSanction->statements()->attach($statement->id);
                     }
                 }
             }
