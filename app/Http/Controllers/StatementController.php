@@ -20,7 +20,7 @@ class StatementController extends Controller
     public function index()
     {
         //
-        $statements = Statement::all()->load('statement_type')->makeVisible('statement_type', 'subcode')->sortBy('subcode');
+        $statements = Statement::all()->load(['statement_type', 'component'])->makeVisible('statement_type', 'subcode')->sortBy(['component.sort_order', 'code']);
         return view('models.statements.index', compact('statements'));
     }
 
@@ -114,5 +114,5 @@ class StatementController extends Controller
         //
     }
 
-    
+
 }
