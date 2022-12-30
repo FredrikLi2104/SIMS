@@ -20,7 +20,7 @@ class StatementController extends Controller
     public function index()
     {
         //
-        $statements = Statement::all()->load(['statement_type', 'component'])->makeVisible('statement_type', 'subcode')->sortBy(['component.sort_order', 'code']);
+        $statements = Statement::all()->load('statement_type')->makeVisible('statement_type', 'subcode')->sortBy('subcode', SORT_NATURAL);
         return view('models.statements.index', compact('statements'));
     }
 
@@ -46,7 +46,7 @@ class StatementController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(StatementStoreRequest $request)
@@ -60,7 +60,7 @@ class StatementController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Statement  $statement
+     * @param \App\Models\Statement $statement
      * @return \Illuminate\Http\Response
      */
     public function show(Statement $statement)
@@ -71,7 +71,7 @@ class StatementController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Statement  $statement
+     * @param \App\Models\Statement $statement
      * @return \Illuminate\Http\Response
      */
     public function edit($locale, Statement $statement)
@@ -91,8 +91,8 @@ class StatementController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Statement  $statement
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Statement $statement
      * @return \Illuminate\Http\Response
      */
     public function update($locale, StatementUpdateRequest $request, Statement $statement)
@@ -106,7 +106,7 @@ class StatementController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Statement  $statement
+     * @param \App\Models\Statement $statement
      * @return \Illuminate\Http\Response
      */
     public function destroy(Statement $statement)
