@@ -6,29 +6,41 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Lang;
 
 class Risk extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $guarded = ['id'];
     protected $visible = ['id', 'title', 'desc', 'probability', 'consequence', 'responsible', 'organisation_id', 'component_id', 'user_id', 'created_at'];
     protected $appends = ['created_at_for_humans'];
+
+    protected static function booted()
+    {
+        static::deleted(function ($risk) {
+            $risk->risk_comments()->delete();
+        });
+    }
 
     public function component()
     {
         return $this->belongsTo(Component::class);
     }
+
     public function createdAtForHumans(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => Carbon::parse($this->created_at)->format('Y-m-d')
+            get: fn($value) => Carbon::parse($this->created_at)->format('Y-m-d')
         );
     }
+
     public function factor()
     {
-        return floatval($this->probability)*floatval($this->consequence);
+        return floatval($this->probability) * floatval($this->consequence);
     }
+
     public function organisation()
     {
         return $this->belongsTo(Organisation::class);

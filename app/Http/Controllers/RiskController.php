@@ -55,7 +55,7 @@ class RiskController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(RiskStoreRequest $request)
@@ -71,7 +71,7 @@ class RiskController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Risk  $risk
+     * @param \App\Models\Risk $risk
      * @return \Illuminate\Http\Response
      */
     public function show(Risk $risk)
@@ -82,7 +82,7 @@ class RiskController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Risk  $risk
+     * @param \App\Models\Risk $risk
      * @return \Illuminate\Http\Response
      */
     public function edit($locale, Risk $risk)
@@ -99,8 +99,8 @@ class RiskController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Risk  $risk
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Risk $risk
      * @return \Illuminate\Http\Response
      */
     public function update($locale, RiskUpdateRequest $request, Risk $risk)
@@ -120,11 +120,14 @@ class RiskController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Risk  $risk
+     * @param \App\Models\Risk $risk
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Risk $risk)
+    public function destroy($locale, Risk $risk)
     {
-        //
+        $result = $risk->delete();
+        $data = $result ? ['success' => true, 'msg' => __('messages.delete_success')] : ['error' => true, 'msg' => __('messages.error')];
+
+        return response()->json($data);
     }
 }

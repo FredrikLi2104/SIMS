@@ -21733,7 +21733,7 @@ var _hoisted_15 = {
 };
 
 var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
-  "for": "sni-filter",
+  "for": "type-filter",
   "class": "form-label"
 }, "Type:", -1
 /* HOISTED */
@@ -21858,7 +21858,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   ))], 544
   /* HYDRATE_EVENTS, NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.sniId]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
-    id: "sni-filter",
+    id: "type-filter",
     "class": "form-select form-control",
     "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
       return $data.typeId = $event;

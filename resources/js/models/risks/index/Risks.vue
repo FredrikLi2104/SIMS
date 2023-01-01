@@ -5,7 +5,8 @@
                 <div class="card-header">
                     <h4 class="card-title">{{ collection?.messages?.statistics }}</h4>
                     <div class="d-flex align-items-center">
-                        <p class="card-text font-small-2 me-25 mb-0">{{ collection?.messages?.renderedAt }} {{ collection?.now }}</p>
+                        <p class="card-text font-small-2 me-25 mb-0">{{ collection?.messages?.renderedAt }}
+                            {{ collection?.now }}</p>
                     </div>
                 </div>
                 <div class="card-body statistics-body">
@@ -14,21 +15,25 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">{{ collection?.messages?.risks }} {{ collection?.messages?.scatter }}</h4>
+                                    <h4 class="card-title">{{ collection?.messages?.risks }}
+                                        {{ collection?.messages?.scatter }}</h4>
                                     <div class="d-flex align-items-center">
                                         <div class="px-1 py-1">
                                             <i data-feather="calendar"></i>
                                         </div>
                                         <div class="col-6" style="width: 200px;">
                                             <select id="rangeSelect" class="select2 form-select form-control">
-                                                <option v-for="rangeDate in collection?.rangeDates" :key="rangeDate" :value="rangeDate">{{rangeDate}}</option>
+                                                <option v-for="rangeDate in collection?.rangeDates" :key="rangeDate"
+                                                        :value="rangeDate">{{ rangeDate }}
+                                                </option>
                                             </select>
                                         </div>
                                         <!--<input type="date" id="scatterRiskRange" class="form-control border-0 shadow-none bg-transparent pe-0" :placeholder="collection?.messages?.riskRange" />-->
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row d-flex justify-content-center align-items-center" id="scatterLegend"></div>
+                                    <div class="row d-flex justify-content-center align-items-center"
+                                         id="scatterLegend"></div>
                                     <canvas class="bubble-chart-ex chartjs" data-height="500"></canvas>
                                 </div>
                             </div>
@@ -37,8 +42,11 @@
                         <div class="col-4">
                             <div class="card">
                                 <div class="card-header flex-column align-items-start">
-                                    <h4 class="card-title mb-75">{{ collection?.messages?.risk }} {{ collection?.messages?.ratio }}</h4>
-                                    <span class="card-subtitle text-muted">{{ collection?.messages?.riskPieChartPerRiskFactor }} </span>
+                                    <h4 class="card-title mb-75">{{ collection?.messages?.risk }}
+                                        {{ collection?.messages?.ratio }}</h4>
+                                    <span class="card-subtitle text-muted">{{
+                                            collection?.messages?.riskPieChartPerRiskFactor
+                                        }} </span>
                                 </div>
                                 <div class="card-body mt-4">
                                     <div id="ratio-chart"></div>
@@ -48,10 +56,14 @@
                         <!-- History Chart-->
                         <div class="col-8">
                             <div class="card">
-                                <div class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
+                                <div
+                                    class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
                                     <div>
-                                        <h4 class="card-title">{{ collection?.messages?.risk }} {{ collection?.messages?.history }}</h4>
-                                        <span class="card-subtitle text-muted">{{ collection?.messages?.oneYearPastFromToday }}</span>
+                                        <h4 class="card-title">{{ collection?.messages?.risk }}
+                                            {{ collection?.messages?.history }}</h4>
+                                        <span class="card-subtitle text-muted">{{
+                                                collection?.messages?.accumulative_risk_history
+                                            }}</span>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -72,68 +84,74 @@
             </div>
         </div>
         <!-- Risk Show Modal -->
-        <div class="modal fade text-start modal-primary" id="riskViewModal" tabindex="-1" aria-labelledby="riskViewLabel" aria-hidden="true">
+        <div class="modal fade text-start modal-primary" id="riskViewModal" tabindex="-1"
+             aria-labelledby="riskViewLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-extra-wide">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="riskViewLabel">{{ collection?.messages?.risk }} {{ collection?.messages?.show }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="riskHide"></button>
+                        <h5 class="modal-title" id="riskViewLabel">{{ collection?.messages?.risk }}
+                            {{ collection?.messages?.show }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="riskHide"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>{{ collection?.messages?.key }}</th>
-                                            <th>{{ collection?.messages?.value }}</th>
-                                        </tr>
+                                    <tr>
+                                        <th>{{ collection?.messages?.key }}</th>
+                                        <th>{{ collection?.messages?.value }}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>{{ collection?.messages?.createdAt }}</td>
-                                            <td>{{ riskActive?.created_at_for_humans }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.by }}</td>
-                                            <td>{{ riskActive?.user?.name + ` [${riskActive?.user?.role}]` }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.title }}</td>
-                                            <td>{{ riskActive?.title }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.desc }}</td>
-                                            <td>{{ riskActive?.desc }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.probability }}</td>
-                                            <td>{{ riskActive?.probability }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.consequence }}</td>
-                                            <td>{{ riskActive?.consequence }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.risk }}</td>
-                                            <td>
-                                                <div class="d-flex justify-content-start align-items-start">
-                                                    <span :class="`badge rounded-pill badge-light-${riskActive?.risk?.class}`">{{ riskActive?.risk?.text }}</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.responsibilityOf }}</td>
-                                            <td>{{ riskActive?.responsible }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.organisation }}</td>
-                                            <td>{{ riskActive?.organisation?.name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.component }}</td>
-                                            <td>{{ riskActive?.component?.code_name }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.createdAt }}</td>
+                                        <td>{{ riskActive?.created_at_for_humans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.by }}</td>
+                                        <td>{{ riskActive?.user?.name + ` [${riskActive?.user?.role}]` }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.title }}</td>
+                                        <td>{{ riskActive?.title }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.desc }}</td>
+                                        <td>{{ riskActive?.desc }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.probability }}</td>
+                                        <td>{{ riskActive?.probability }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.consequence }}</td>
+                                        <td>{{ riskActive?.consequence }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.risk }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-start">
+                                                <span
+                                                    :class="`badge rounded-pill badge-light-${riskActive?.risk?.class}`">{{
+                                                        riskActive?.risk?.text
+                                                    }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.responsibilityOf }}</td>
+                                        <td>{{ riskActive?.responsible }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.organisation }}</td>
+                                        <td>{{ riskActive?.organisation?.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.component }}</td>
+                                        <td>{{ riskActive?.component?.code_name }}</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -150,37 +168,53 @@
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header bg-transparent">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="riskHide"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="riskHide"></button>
                     </div>
                     <div class="modal-body mx-50 pb-4">
                         <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">{{ collection?.messages?.risks }} {{ collection?.messages?.comments }}</h4>
+                                    <h4 class="card-title">{{ collection?.messages?.risks }}
+                                        {{ collection?.messages?.comments }}</h4>
                                 </div>
                                 <div class="card-body">
                                     <div class="row d-flex align-items-center justify-content-center">
                                         <div class="col-6">
                                             <div class="mb-1">
-                                                <label class="form-label" for="comment">{{ collection?.messages?.comment }}</label>
-                                                <textarea id="comment" :class="`form-control ${riskCommentStoreError ? 'is-invalid' : null}`" rows="3" :placeholder="locale == 'en' ? 'I believe this risk does not qualify for consequence 3 because so and so' : 'Jag anser att denna risk inte är berättigad till konsekvens 3 eftersom så och så'"></textarea>
-                                                <div v-if="riskCommentStoreError" class="invalid-feedback">{{ riskCommentStoreError?.status + ":" + riskCommentStoreError?.data?.message }}</div>
+                                                <label class="form-label" for="comment">{{
+                                                        collection?.messages?.comment
+                                                    }}</label>
+                                                <textarea id="comment"
+                                                          :class="`form-control ${riskCommentStoreError ? 'is-invalid' : null}`"
+                                                          rows="3"
+                                                          :placeholder="locale == 'en' ? 'I believe this risk does not qualify for consequence 3 because so and so' : 'Jag anser att denna risk inte är berättigad till konsekvens 3 eftersom så och så'"></textarea>
+                                                <div v-if="riskCommentStoreError" class="invalid-feedback">{{
+                                                        riskCommentStoreError?.status + ":" + riskCommentStoreError?.data?.message
+                                                    }}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-6">
-                                            <button type="button" class="btn btn-info me-1" @click="riskCommentStore">{{ collection?.messages.submit }}</button>
+                                            <button type="button" class="btn btn-info me-1" @click="riskCommentStore">
+                                                {{ collection?.messages.submit }}
+                                            </button>
                                         </div>
                                     </div>
                                     <h4 class="card-title">{{ collection?.messages?.history }}</h4>
                                     <ul class="timeline">
-                                        <li v-for="comment in riskActive?.risk_comments_sorted" :key="comment.id" class="timeline-item">
+                                        <li v-for="comment in riskActive?.risk_comments_sorted" :key="comment.id"
+                                            class="timeline-item">
                                             <span class="timeline-point timeline-point border-info">
                                                 <i data-feather="message-circle" style="color: #ffffff !important"></i>
                                             </span>
                                             <div class="timeline-event">
-                                                <div class="d-flex justify-content-between flex-sm-row flex-column mb-sm-0 mb-1">
+                                                <div
+                                                    class="d-flex justify-content-between flex-sm-row flex-column mb-sm-0 mb-1">
                                                     <h6>{{ comment.user?.name + " [" + comment.user?.role + "]" }}</h6>
-                                                    <span class="timeline-event-time">{{ comment.created_at_for_humans }}</span>
+                                                    <span class="timeline-event-time">{{
+                                                            comment.created_at_for_humans
+                                                        }}</span>
                                                 </div>
                                                 <p>{{ comment.comment }}</p>
                                             </div>
@@ -198,13 +232,15 @@
 </template>
 <script>
 import feather from "feather-icons";
+import Swal from "sweetalert2";
+
 export default {
     props: ["locale"],
     data() {
         return {
             dataTable: null,
             collection: null,
-            riskActive: { risk_comments: [] },
+            riskActive: {risk_comments: []},
             riskCommentStoreError: null,
             scatterChart: null,
         };
@@ -382,7 +418,7 @@ export default {
                         animation: {
                             duration: 10000,
                         },
-                        datasets: thisComponent.collection?.dataSets,
+                        datasets: thisComponent.collection?.dataSets.filter(element => element.date == thisComponent.collection?.messages?.rangeAllTime),
                     },
                 });
             }
@@ -717,7 +753,7 @@ export default {
                 paging: false,
                 autoWidth: true,
                 searching: true,
-                columns: [{ data: "id" }, { data: "title" }, { data: "desc" }, { data: "probability" }],
+                columns: [{data: "id"}, {data: "title"}, {data: "desc"}, {data: "probability"}],
                 columnDefs: [
                     {
                         // id
@@ -806,15 +842,19 @@ export default {
                                 <div class="d-flex justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
                                         <button type="button" class="btn btn-gradient-primary mb-1" onClick="window.location.href='/${thisComponent.locale}/risks/${full.id}/edit';">
-                                            ${feather.icons["edit"].toSvg({ class: "me-25" })}
+                                            ${feather.icons["edit"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.edit}</span>
                                         </button>
                                         <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.thisComponent.riskShow(${full.id})">
-                                            ${feather.icons["eye"].toSvg({ class: "me-25" })}
+                                            ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.view}</span>
                                         </button>
+                                        <button type="button" class="btn btn-outline-danger waves-effect mb-1" onClick="window.thisComponent.delete(${full.id})">
+                                            ${feather.icons["trash-2"].toSvg({class: "me-25"})}
+                                            <span>${thisComponent.collection?.messages?.delete}</span>
+                                        </button>
                                         <button type="button" class="btn btn-gradient-info mb-1" onClick="window.thisComponent.riskCommentsShow(${full.id})">
-                                            ${feather.icons["message-square"].toSvg({ class: "me-25" })}
+                                            ${feather.icons["message-square"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.comment} (${full.risk_comments?.length})</span>
                                         </button>
                                     </div>
@@ -857,6 +897,61 @@ export default {
                     $(".select2").select2();
                     */
                 },
+            });
+        },
+        delete(riskId) {
+            let thisComponent = this;
+
+            const swal = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-gradient-danger me-1',
+                    cancelButton: 'btn btn-gradient-secondary'
+                },
+                buttonsStyling: false
+            });
+
+            swal.fire({
+                title: `${thisComponent.collection?.messages?.delete_confirm}`,
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonText: `${thisComponent.collection?.messages?.ok}`,
+                cancelButtonText: `${thisComponent.collection?.messages?.cancel}`,
+                buttonsStyling: false
+            }).then(result => {
+                if (result.value === true) {
+                    var thisComponent = this;
+                    axios
+                        .delete("/" + thisComponent.locale + "/risks/" + riskId, {})
+                        .then(function (response) {
+                            if (response.data.success) {
+                                toastr["success"](response.data.msg, `${thisComponent.collection?.messages?.success}`, {
+                                    showMethod: "slideDown",
+                                    hideMethod: "slideUp",
+                                    timeOut: 3000,
+                                    progressBar: true,
+                                    "positionClass": "toast-top-center",
+                                });
+                            } else {
+                                toastr["error"](response.data.msg, `${thisComponent.collection?.messages?.error}`, {
+                                    showMethod: "slideDown",
+                                    hideMethod: "slideUp",
+                                    timeOut: 3000,
+                                    progressBar: true,
+                                    "positionClass": "toast-top-center",
+                                });
+                            }
+
+                            thisComponent.$nextTick(() => {
+                                thisComponent.dataTable.destroy();
+                                thisComponent.dataTable = null;
+                                thisComponent.draw();
+                            });
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            console.log(error.response);
+                        });
+                }
             });
         },
         draw() {
@@ -934,13 +1029,14 @@ export default {
             var thisComponent = this;
             let ranje = e.params.data.text;
             let dataSets = [];
-            if(ranje != thisComponent.collection?.messages?.rangeAllTime) {
-               dataSets = thisComponent.collection?.dataSets?.filter(element => element.date == ranje);
-               thisComponent.scatterChart.data.datasets = dataSets;
-               thisComponent.scatterChart.update();
+            if (ranje != thisComponent.collection?.messages?.rangeAllTime) {
+                dataSets = thisComponent.collection?.dataSets?.filter(element => element.date == ranje);
+                thisComponent.scatterChart.data.datasets = dataSets;
+                thisComponent.scatterChart.update();
             } else {
                 // populate all
-                thisComponent.scatterChart.data.datasets = thisComponent.collection?.dataSets;
+                dataSets = thisComponent.collection?.dataSets?.filter(element => element.date == thisComponent.collection?.messages?.rangeAllTime);
+                thisComponent.scatterChart.data.datasets = dataSets;
                 thisComponent.scatterChart.update();
             }
         },

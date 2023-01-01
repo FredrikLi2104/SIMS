@@ -604,17 +604,39 @@ class AxiosController extends Controller
         //Carbon::create()->startOfMonth()->month($period->start)->locale(__('messages.localeCarbon'))->getTranslatedMonthName('M');
         $dataSets = [];
         $rangeDates = [$messages['rangeAllTime']];
-        $scatterRisks = $risks->sortByDesc('created_at');
-        foreach ($scatterRisks as $scatterRisk) {
-            $dataSets[] = ['label' => $scatterRisk->title, 'backgroundColor' => $scatterRisk->risk['colour'], 'borderColor' => $scatterRisk->risk['colour'], 'data' => [['x' => $scatterRisk->consequence, 'y' => $scatterRisk->probability, 'r' => 10 * count($scatterRisks->filter(function ($item) use ($scatterRisk) {
-                    return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
-                })->all())]], 'count' => count($scatterRisks->filter(function ($item) use ($scatterRisk) {
-                return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
-            })->all()), 'date' => Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM')];
-            if (!(in_array(Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM'), $rangeDates))) {
-                $rangeDates[] = Carbon::parse($scatterRisk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM');
+        $risks = $risks->sortBy('created_at');
+
+        $risks->each(function ($risk) use (&$rangeDates) {
+            if (!(in_array(Carbon::parse($risk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM'), $rangeDates))) {
+                $rangeDates[] = Carbon::parse($risk->created_at)->locale(__('messages.localeCarbon'))->isoFormat('Y MMMM');
+            }
+        });
+
+        foreach ($rangeDates as $key => $date) {
+            if ($key === 0) {
+                $risksUpToMonth = $risks;
+            } else {
+                $risksUpToMonth = $risks->where('created_at', '<=', Carbon::parse($date)->endOfMonth());
+            }
+
+            foreach ($risksUpToMonth as $scatterRisk) {
+                $dataSets[] = [
+                    'label' => $scatterRisk->title,
+                    'backgroundColor' => $scatterRisk->risk['colour'],
+                    'borderColor' => $scatterRisk->risk['colour'],
+                    'data' => [[
+                        'x' => $scatterRisk->consequence,
+                        'y' => $scatterRisk->probability,
+                        'r' => 10 * count($risks->filter(function ($item) use ($scatterRisk) {
+                                return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
+                            })->all())
+                    ]],
+                    'count' => count($risks->filter(function ($item) use ($scatterRisk) {
+                        return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
+                    })->all()), 'date' => $date];
             }
         };
+
         //Scatter Date End
         // history data new
         // x axis
@@ -628,7 +650,7 @@ class AxiosController extends Controller
         for ($i = 0; $i < 13; $i++) {
             $month = Carbon::now()->addMonths($i - 12);
             $monthlyRisks = $risks->filter(function ($item) use ($month) {
-                return ($month->startOfMonth() <= Carbon::parse($item->created_at) && Carbon::parse($item->created_at) <= $month->endOfMonth());
+                return Carbon::parse($item->created_at) <= $month->endOfMonth();
             });
             $historyLow[] = count($monthlyRisks->filter(function ($item) {
                 return $item->risk['class'] == 'success';
