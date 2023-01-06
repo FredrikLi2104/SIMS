@@ -988,7 +988,7 @@ class AxiosController extends Controller
             $query->where('type_id', $filterByType);
         })->count();
 
-        $sanctions->load(['articles', 'dpa', 'user'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user']);
+        $sanctions->load(['articles', 'dpa', 'user'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party']);
 
         foreach ($sanctions as $sanction) {
             $articles = $sanction->articles;

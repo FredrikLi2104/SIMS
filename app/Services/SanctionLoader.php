@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Article;
 use App\Models\Currency;
 use App\Models\Dpa;
+use App\Models\Outcome;
 use App\Models\Sanction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -173,7 +174,21 @@ class SanctionLoader
                                         }
                                     }
                                 }
-                                //
+                                // outcome
+                                $outcomeMatches = [];
+                                preg_match('/<td>Outcome:<\/td>\n<td>(.*)\n/m', $html, $outcomeMatches);
+
+                                if (isset($outcomeMatches[1])) {
+                                    $outcome = Outcome::where('desc_en', $outcomeMatches[1])->first();
+
+                                    if ($outcome) {
+                                        try {
+                                            $sanction->update(['outcome_id' => $outcome->id]);
+                                        } catch (\Throwable $th) {
+
+                                        }
+                                    }
+                                }
                             } else {
                                 $parseResponse->throw();
                             }

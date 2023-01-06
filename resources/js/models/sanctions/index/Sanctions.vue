@@ -121,6 +121,10 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td>{{ messages.party }}</td>
+                                        <td>{{ sanctionActive?.party }}</td>
+                                    </tr>
+                                    <tr>
                                         <td>{{ messages.startedOn }}</td>
                                         <td>{{ sanctionActive?.started_at_for_humans }}</td>
                                     </tr>
@@ -179,6 +183,7 @@ export default {
                     <th>${thisComponent.messages.decidedOn}</th>
                     <th>${thisComponent.messages.fine}</th>
                     <th>${thisComponent.messages.title}</th>
+                    <th>${thisComponent.messages.party}</th>
                     <th>${thisComponent.messages.lastUpdated}</th>
                     <th class="text-center">${thisComponent.messages.actions}</th>
                 </tr>
@@ -214,7 +219,7 @@ export default {
                 paging: true,
                 autoWidth: true,
                 searching: true,
-                columns: [{data: "id"}, {data: "created_at_for_humans"}, {data: "dpa"}, {data: "decided_at_for_humans"}, {data: "fine"}, {data: "title"}, {data: 'updated_at_for_humans'}],
+                columns: [{data: "id"}, {data: "created_at_for_humans"}, {data: "dpa"}, {data: "decided_at_for_humans"}, {data: "fine"}, {data: "title"}, {data: "party"}, {data: 'updated_at_for_humans'}],
                 columnDefs: [
                     {
                         // ID
@@ -308,15 +313,24 @@ export default {
                         },
                     },
                     {
+                        // party
+                        targets: 6,
+                        responsivePriority: 6,
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.party ?? ''}</p>`;
+                            return r;
+                        },
+                    },
+                    {
                         // actions
-                        targets: 7,
+                        targets: 8,
                         responsivePriority: 7,
                         width: "15%",
                         orderable: false,
                         render: function (data, type, full, meta) {
                             let r = `
                                 <div class="d-flex justify-content-center align-items-center px-2">
-                                    <div class="d-flex flex-column">
+                                    <div class="d-flex flex-column text-nowrap">
                                         <button type="button" class="btn btn-gradient-primary mb-1" onClick="window.location.href='/${thisComponent.locale}/sanctions/${full.id}/edit';">
                                             ${feather.icons["edit"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.messages.edit}</span>
@@ -345,10 +359,11 @@ export default {
                 order: [[0, "desc"]],
                 dom: `
                 <"row d-flex justify-content-start align-items-center m-1"
-                    <"col-lg-8 d-flex justify-content-start align-items-center"
+                    <"col-lg-12 d-flex justify-content-start align-items-center"
                         <"#cardHeader">
                     >
-                    <"col-lg-4 d-flex justify-content-end align-items-center"f>l
+                    <"col-lg-6 d-flex align-items-center"l>
+                    <"col-lg-6 d-flex align-items-center justify-content-lg-end flex-lg-nowrap flex-wrap pe-lg-1 p-0"f>
                 >t
                 <"d-flex justify-content-between mx-2 row"
                     <"col-sm-12 col-md-6"i>

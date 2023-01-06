@@ -21455,7 +21455,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     buildTable: function buildTable() {
       var thisComponent = this;
-      var header = "\n             <thead>\n                <tr>\n                    <th>".concat(thisComponent.messages.id, "</th>\n                    <th>").concat(thisComponent.messages.createdAt, "</th>\n                    <th>").concat(thisComponent.messages.dpa, "</th>\n                    <th>").concat(thisComponent.messages.decidedOn, "</th>\n                    <th>").concat(thisComponent.messages.fine, "</th>\n                    <th>").concat(thisComponent.messages.title, "</th>\n                    <th>").concat(thisComponent.messages.lastUpdated, "</th>\n                    <th class=\"text-center\">").concat(thisComponent.messages.actions, "</th>\n                </tr>\n            </thead>\n            ");
+      var header = "\n             <thead>\n                <tr>\n                    <th>".concat(thisComponent.messages.id, "</th>\n                    <th>").concat(thisComponent.messages.createdAt, "</th>\n                    <th>").concat(thisComponent.messages.dpa, "</th>\n                    <th>").concat(thisComponent.messages.decidedOn, "</th>\n                    <th>").concat(thisComponent.messages.fine, "</th>\n                    <th>").concat(thisComponent.messages.title, "</th>\n                    <th>").concat(thisComponent.messages.party, "</th>\n                    <th>").concat(thisComponent.messages.lastUpdated, "</th>\n                    <th class=\"text-center\">").concat(thisComponent.messages.actions, "</th>\n                </tr>\n            </thead>\n            ");
       document.getElementById("dataTable").innerHTML = header;
       thisComponent.dataTable = $(".invoice-list-table").DataTable({
         serverSide: true,
@@ -21498,6 +21498,8 @@ __webpack_require__.r(__webpack_exports__);
           data: "fine"
         }, {
           data: "title"
+        }, {
+          data: "party"
         }, {
           data: 'updated_at_for_humans'
         }],
@@ -21587,13 +21589,23 @@ __webpack_require__.r(__webpack_exports__);
             return r;
           }
         }, {
+          // party
+          targets: 6,
+          responsivePriority: 6,
+          render: function render(data, type, full, meta) {
+            var _full$party;
+
+            var r = "<p>".concat((_full$party = full.party) !== null && _full$party !== void 0 ? _full$party : '', "</p>");
+            return r;
+          }
+        }, {
           // actions
-          targets: 7,
+          targets: 8,
           responsivePriority: 7,
           width: "15%",
           orderable: false,
           render: function render(data, type, full, meta) {
-            var r = "\n                                <div class=\"d-flex justify-content-center align-items-center px-2\">\n                                    <div class=\"d-flex flex-column\">\n                                        <button type=\"button\" class=\"btn btn-gradient-primary mb-1\" onClick=\"window.location.href='/".concat(thisComponent.locale, "/sanctions/").concat(full.id, "/edit';\">\n                                            ").concat(feather.icons["edit"].toSvg({
+            var r = "\n                                <div class=\"d-flex justify-content-center align-items-center px-2\">\n                                    <div class=\"d-flex flex-column text-nowrap\">\n                                        <button type=\"button\" class=\"btn btn-gradient-primary mb-1\" onClick=\"window.location.href='/".concat(thisComponent.locale, "/sanctions/").concat(full.id, "/edit';\">\n                                            ").concat(feather.icons["edit"].toSvg({
               "class": "me-25"
             }), "\n                                            <span>").concat(thisComponent.messages.edit, "</span>\n                                        </button>\n                                        <button type=\"button\" class=\"btn btn-gradient-info waves-effect mb-1\" onClick=\"window.open('").concat(full.url, "','_blank')\">\n                                            ").concat(feather.icons["external-link"].toSvg({
               "class": "me-25"
@@ -21612,7 +21624,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         }],
         order: [[0, "desc"]],
-        dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-8 d-flex justify-content-start align-items-center\"\n                        <\"#cardHeader\">\n                    >\n                    <\"col-lg-4 d-flex justify-content-end align-items-center\"f>l\n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
+        dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-12 d-flex justify-content-start align-items-center\"\n                        <\"#cardHeader\">\n                    >\n                    <\"col-lg-6 d-flex align-items-center\"l>\n                    <\"col-lg-6 d-flex align-items-center justify-content-lg-end flex-lg-nowrap flex-wrap pe-lg-1 p-0\"f>\n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
         initComplete: function initComplete() {
           var domHtml = "\n                    <div class=\"card-body\">\n                        <h4 class=\"card-title\">".concat(thisComponent.messages.sanctions, "</h4>\n                        <h6 class=\"card-subtitle text-muted\">").concat(thisComponent.messages.sanctions, " ").concat(thisComponent.messages.index, "</h6>\n                    </div>\n                    ");
           $("#cardHeader").html(domHtml);
@@ -21816,7 +21828,7 @@ var _hoisted_41 = {
   "class": "modal-footer"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$data$sanctionActive, _$data$sanctionActive2, _$data$sanctionActive3, _$data$sanctionActive4, _$data$sanctionActive5, _$data$sanctionActive6, _$data$sanctionActive7, _$data$sanctionActive8, _$data$sanctionActive9, _$data$sanctionActive10, _$data$sanctionActive11, _$data$sanctionActive12, _$data$sanctionActive13, _$data$sanctionActive14, _$data$sanctionActive15, _$data$sanctionActive16, _$data$sanctionActive17, _$data$sanctionActive18, _$data$sanctionActive19, _$data$sanctionActive20, _$data$sanctionActive21, _$data$sanctionActive22, _$data$sanctionActive23;
+  var _$data$sanctionActive, _$data$sanctionActive2, _$data$sanctionActive3, _$data$sanctionActive4, _$data$sanctionActive5, _$data$sanctionActive6, _$data$sanctionActive7, _$data$sanctionActive8, _$data$sanctionActive9, _$data$sanctionActive10, _$data$sanctionActive11, _$data$sanctionActive12, _$data$sanctionActive13, _$data$sanctionActive14, _$data$sanctionActive15, _$data$sanctionActive16, _$data$sanctionActive17, _$data$sanctionActive18, _$data$sanctionActive19, _$data$sanctionActive20, _$data$sanctionActive21, _$data$sanctionActive22, _$data$sanctionActive23, _$data$sanctionActive24;
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.dpa) + ":", 1
   /* TEXT */
@@ -21959,21 +21971,25 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* TEXT */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive15 = $data.sanctionActive) !== null && _$data$sanctionActive15 !== void 0 && _$data$sanctionActive15.fine ? parseInt((_$data$sanctionActive16 = $data.sanctionActive) === null || _$data$sanctionActive16 === void 0 ? void 0 : _$data$sanctionActive16.fine) + " " + ((_$data$sanctionActive17 = $data.sanctionActive) !== null && _$data$sanctionActive17 !== void 0 && (_$data$sanctionActive18 = _$data$sanctionActive17.currency) !== null && _$data$sanctionActive18 !== void 0 && _$data$sanctionActive18.symbol ? (_$data$sanctionActive19 = $data.sanctionActive) === null || _$data$sanctionActive19 === void 0 ? void 0 : _$data$sanctionActive19.currency.symbol : "EUR") : ""), 1
   /* TEXT */
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.party), 1
+  /* TEXT */
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive20 = $data.sanctionActive) === null || _$data$sanctionActive20 === void 0 ? void 0 : _$data$sanctionActive20.party), 1
+  /* TEXT */
   )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.startedOn), 1
   /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive20 = $data.sanctionActive) === null || _$data$sanctionActive20 === void 0 ? void 0 : _$data$sanctionActive20.started_at_for_humans), 1
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive21 = $data.sanctionActive) === null || _$data$sanctionActive21 === void 0 ? void 0 : _$data$sanctionActive21.started_at_for_humans), 1
   /* TEXT */
   )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.decidedOn), 1
   /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive21 = $data.sanctionActive) === null || _$data$sanctionActive21 === void 0 ? void 0 : _$data$sanctionActive21.decided_at_for_humans), 1
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive22 = $data.sanctionActive) === null || _$data$sanctionActive22 === void 0 ? void 0 : _$data$sanctionActive22.decided_at_for_humans), 1
   /* TEXT */
   )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.publishedOn), 1
   /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive22 = $data.sanctionActive) === null || _$data$sanctionActive22 === void 0 ? void 0 : _$data$sanctionActive22.published_at_for_humans), 1
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive23 = $data.sanctionActive) === null || _$data$sanctionActive23 === void 0 ? void 0 : _$data$sanctionActive23.published_at_for_humans), 1
   /* TEXT */
   )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.articles), 1
   /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$sanctionActive23 = $data.sanctionActive) === null || _$data$sanctionActive23 === void 0 ? void 0 : _$data$sanctionActive23.articlesSorted, function (article) {
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$sanctionActive24 = $data.sanctionActive) === null || _$data$sanctionActive24 === void 0 ? void 0 : _$data$sanctionActive24.articlesSorted, function (article) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       key: article.title
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
