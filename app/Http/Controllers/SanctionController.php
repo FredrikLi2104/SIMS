@@ -27,18 +27,25 @@ class SanctionController extends Controller
      */
     public function index()
     {
-        $dpas = Dpa::select(['id', 'title'])->orderBy('title')->get();
+        $dpas = Dpa::select(['dpas.id', 'dpas.title'])
+            ->selectRaw('count(*) AS count')
+            ->join('sanctions', 'dpas.id', '=', 'sanctions.dpa_id')
+            ->groupBy(['dpas.id', 'dpas.title'])
+            ->orderBy('title')->get();
+
         $dpas = $dpas->map(function ($dpa) {
             $dpa->title = str_replace('Category:', '', $dpa->title);
             return $dpa;
         });
 
+        $dpas->makeVisible(['count']);
         $snis = Sni::select(['id', 'code', 'desc_en', 'desc_se'])->orderBy('code')->get();
+        $statements = Statement::all()->makeVisible(['subcode'])->sortBy('subcode', SORT_NATURAL);
         $types = Type::select(['id', 'text_en', 'text_se'])->orderBy('text_' . App::currentLocale())->get();
 
         $messages = __('messages');
 
-        return view('models.sanctions.index', compact('dpas', 'snis', 'types', 'messages'));
+        return view('models.sanctions.index', compact('dpas', 'snis', 'statements', 'types', 'messages'));
     }
 
     /**
@@ -93,7 +100,7 @@ class SanctionController extends Controller
         $issueCategories = IssueCategory::all()->sortBy('desc_' . App::currentLocale());
         $tags = Tag::all()->sortBy('tag_' . App::currentLocale());
         $tagIds = $sanction->tags->pluck('id')->all();
-        $statements = Statement::all()->sortBy([['component.code'], ['code']]);
+        $statements = Statement::all()->sortBy('subcode', SORT_NATURAL);
         $statementIds = $sanction->statements->pluck('id')->all();
 
         return view('models.sanctions.edit', compact('articles', 'sanction', 'sanctionArticlesIds', 'countries', 'currencies', 'snis', 'types', 'outcomes', 'issueCategories', 'tags', 'tagIds', 'statements', 'statementIds'));

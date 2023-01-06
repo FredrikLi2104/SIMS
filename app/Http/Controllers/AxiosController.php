@@ -930,22 +930,28 @@ class AxiosController extends Controller
         $orderDir = $request->get('order')[0]['dir'];
         $filterByDpa = $request->get('filters')['dpa_id'];
         $filterBySni = $request->get('filters')['sni_id'];
+        $filterByStatement = $request->get('filters')['statement_id'];
         $filterByType = $request->get('filters')['type_id'];
 
         $sanctions = Sanction::select('sanctions.*')
             ->when($searchVal, function ($query, $searchVal) {
                 $query->where(function ($query) use ($searchVal) {
-                    $query->where('id', 'like', "%$searchVal%")
-                        ->orWhereDate('created_at', 'like', "%$searchVal%")
+                    $query->where('sanctions.id', 'like', "%$searchVal%")
+                        ->orWhereDate('sanctions.created_at', 'like', "%$searchVal%")
                         ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
-                        ->orWhereDate('decided_at', 'like', "%$searchVal%")
-                        ->orWhere('fine', 'like', "%$searchVal%")
-                        ->orWhere('title', 'like', "%$searchVal%");
+                        ->orWhereDate('sanctions.decided_at', 'like', "%$searchVal%")
+                        ->orWhere('sanctions.fine', 'like', "%$searchVal%")
+                        ->orWhere('sanctions.title', 'like', "%$searchVal%");
                 });
             })->when($filterByDpa, function ($query, $filterByDpa) {
                 $query->where('dpa_id', $filterByDpa);
             })->when($filterBySni, function ($query, $filterBySni) {
                 $query->where('sni_id', $filterBySni);
+            })->when($filterByStatement, function ($query, $filterByStatement) {
+                $query->join('sanction_statement', function ($join) use ($filterByStatement) {
+                    $join->on('sanctions.id', '=', 'sanction_statement.sanction_id')
+                        ->where('sanction_statement.statement_id', $filterByStatement);
+                });
             })->when($filterByType, function ($query, $filterByType) {
                 $query->where('type_id', $filterByType);
             })->when($orderByColName, function ($query, $orderByColName) use ($orderDir) {
@@ -962,27 +968,44 @@ class AxiosController extends Controller
         $sanctionsTotal = Sanction::count();
         $sanctionsFiltered = Sanction::when($searchVal, function ($query, $searchVal) {
             $query->where(function ($query) use ($searchVal) {
-                $query->where('id', 'like', "%$searchVal%")
-                    ->orWhereDate('created_at', 'like', "%$searchVal%")
+                $query->where('sanctions.id', 'like', "%$searchVal%")
+                    ->orWhereDate('sanctions.created_at', 'like', "%$searchVal%")
                     ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
-                    ->orWhereDate('decided_at', 'like', "%$searchVal%")
-                    ->orWhere('fine', 'like', "%$searchVal%")
-                    ->orWhere('title', 'like', "%$searchVal%");
+                    ->orWhereDate('sanctions.decided_at', 'like', "%$searchVal%")
+                    ->orWhere('sanctions.fine', 'like', "%$searchVal%")
+                    ->orWhere('sanctions.title', 'like', "%$searchVal%");
             });
         })->when($filterByDpa, function ($query, $filterByDpa) {
             $query->where('dpa_id', $filterByDpa);
         })->when($filterBySni, function ($query, $filterBySni) {
             $query->where('sni_id', $filterBySni);
+        })->when($filterByStatement, function ($query, $filterByStatement) {
+            $query->join('sanction_statement', function ($join) use ($filterByStatement) {
+                $join->on('sanctions.id', '=', 'sanction_statement.sanction_id')
+                    ->where('sanction_statement.statement_id', $filterByStatement);
+            });
         })->when($filterByType, function ($query, $filterByType) {
             $query->where('type_id', $filterByType);
         })->count();
 
-        $sanctions->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans']);
+        $sanctions->load(['articles', 'dpa', 'user'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user']);
 
         foreach ($sanctions as $sanction) {
             $articles = $sanction->articles;
             $sanction->articlesSorted = $articles->sortBy('title')->values();
             $sanction->dpa->load('country')->makeVisible(['country', 'name']);
+
+            if ($sanction->currency?->symbol && $sanction->currency->symbol != 'EUR') {
+                $currency = Currency::where('symbol', $sanction->currency->symbol)->first();
+
+                if ($currency) {
+                    try {
+                        $sanction->fine = $sanction->fine / $currency->value;
+                    } catch (\Throwable $th) {
+
+                    }
+                }
+            }
         }
 
         App::setlocale($locale);

@@ -5,16 +5,19 @@
                 <div class="card-body mt-2">
                     <form class="dt_adv_search" method="POST">
                         <div class="row g-1 mb-md-1">
-                            <div class="col-md-4">
-                                <label for="dpa-filter" class="form-label">DPA:</label>
+                            <div class="col-md-3">
+                                <label for="dpa-filter" class="form-label">{{ messages.dpa }}:</label>
                                 <select id="dpa-filter" class="form-select form-control" v-model="dpaId"
                                         @change="filterTable">
                                     <option value="">{{ messages.pleaseSelect }}</option>
-                                    <option v-for="dpa in dpas" :value="dpa.id">{{ dpa.title }}</option>
+                                    <option v-for="dpa in dpas" :value="dpa.id">{{
+                                            `${dpa.title} &mdash; ${dpa.count}`
+                                        }}
+                                    </option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label for="sni-filter" class="form-label">SNI:</label>
+                            <div class="col-md-3">
+                                <label for="sni-filter" class="form-label">{{ messages.sni }}:</label>
                                 <select id="sni-filter" class="form-select form-control" v-model="sniId"
                                         @change="filterTable">
                                     <option value="">{{ messages.pleaseSelect }}</option>
@@ -23,13 +26,23 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label for="type-filter" class="form-label">Type:</label>
+                            <div class="col-md-3">
+                                <label for="type-filter" class="form-label">{{ messages.type }}:</label>
                                 <select id="type-filter" class="form-select form-control" v-model="typeId"
                                         @change="filterTable">
                                     <option value="">{{ messages.pleaseSelect }}</option>
                                     <option v-for="type in types" :value="type.id">
                                         {{ `${type[`text_${locale}`]}` }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="type-filter" class="form-label">{{ messages.statements }}:</label>
+                                <select id="type-filter" class="form-select form-control" v-model="statementId"
+                                        @change="filterTable">
+                                    <option value="">{{ messages.pleaseSelect }}</option>
+                                    <option v-for="statement in statements" :value="statement.id">
+                                        {{ statement.subcode }}
                                     </option>
                                 </select>
                             </div>
@@ -71,6 +84,14 @@
                                         <td>{{ sanctionActive?.created_at_for_humans }}</td>
                                     </tr>
                                     <tr>
+                                        <td>{{ messages.lastUpdated }}</td>
+                                        <td>{{ sanctionActive?.updated_at_for_humans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ `${messages.updated} ${messages.by}` }}</td>
+                                        <td>{{ sanctionActive?.user?.name }}</td>
+                                    </tr>
+                                    <tr>
                                         <td>{{ messages.title }}</td>
                                         <td>{{ sanctionActive?.title }}</td>
                                     </tr>
@@ -93,7 +114,8 @@
                                         <td>{{ messages.fine }}</td>
                                         <td>{{
                                                 sanctionActive?.fine ? parseInt(sanctionActive?.fine) + " " +
-                                                    (sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : "") :
+                                                    (sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : "EUR")
+                                                    :
                                                     ""
                                             }}
                                         </td>
@@ -133,7 +155,7 @@
 </template>
 <script>
 export default {
-    props: ['locale', 'messages', 'dpas', 'snis', 'types'],
+    props: ['locale', 'messages', 'dpas', 'snis', 'statements', 'types'],
     data() {
         return {
             dataTable: null,
@@ -141,6 +163,7 @@ export default {
             sanctionActive: null,
             dpaId: '',
             sniId: '',
+            statementId: '',
             typeId: '',
         };
     },
@@ -175,6 +198,7 @@ export default {
                         d.filters = {
                             'dpa_id': thisComponent.dpaId,
                             'sni_id': thisComponent.sniId,
+                            'statement_id': thisComponent.statementId,
                             'type_id': thisComponent.typeId,
                         }
                     }
@@ -267,7 +291,7 @@ export default {
                             } else {
                                 let r = ``;
                                 if (full.fine) {
-                                    r = `<p>${parseInt(full.fine)} ${full.currency?.symbol ? full.currency?.symbol : ""}</p>`;
+                                    r = `<p>${parseInt(full.fine)} ${full.currency?.symbol ? full.currency?.symbol : "EUR"}</p>`;
                                 }
                                 return r;
                             }
@@ -363,6 +387,7 @@ export default {
             let filters = {
                 'dpaId': this.dpaId,
                 'sniId': this.sniId,
+                'statementId': this.statementId,
                 'typeId': this.typeId,
             };
 
@@ -380,6 +405,7 @@ export default {
 
             this.dpaId = filters.dpaId;
             this.sniId = filters.sniId;
+            this.statementId = filters.statementId;
             this.typeId = filters.typeId;
         } catch (e) {
 

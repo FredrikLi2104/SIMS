@@ -324,7 +324,7 @@
                                                     @selected(in_array($statement->id, $statementIds)) value="{{ $statement->id }}">{{ $statement->component->code . '.' . $statement->{'code'} }}</option>
                                             @endforeach
                                         </select>
-                                        @error('tags[]')
+                                        @error('statements[]')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>

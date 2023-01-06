@@ -175,4 +175,9 @@ class Sanction extends Model
             get: fn($value) => 'https://gdprhub.eu/index.php?title=' . urlencode($this->title)
         );
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
