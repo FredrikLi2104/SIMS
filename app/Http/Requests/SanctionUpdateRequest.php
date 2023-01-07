@@ -42,6 +42,7 @@ class SanctionUpdateRequest extends FormRequest
             'tags' => 'nullable|sometimes',
             'tags.*' => 'nullable|sometimes|exists:tags,id',
             'statements.*' => 'nullable|sometimes|exists:statements,id',
+            'etid' => 'nullable|sometimes|integer',
         ];
     }
 }

@@ -329,6 +329,17 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="et-id">ET-ID [@lang('messages.optional')]</label>
+                                        <input type="text" id="et-id"
+                                               class="form-control @error('etid') is-invalid @enderror"
+                                               placeholder="1234" name="etid" value="{{ $sanction->etid }}"/>
+                                        @error('etid')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <quill locale="{{ App::currentLocale() }}"
                                        label-en="{{ __('messages.desc') . ' ' . __('messages.inEnglish') . ' [' . __('messages.optional') . ']' }}"
                                        label-se="{{ __('messages.desc') . ' ' . __('messages.inSwedish') . ' [' . __('messages.optional') . ']' }}"

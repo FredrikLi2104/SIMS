@@ -46,6 +46,16 @@
                                     </option>
                                 </select>
                             </div>
+                            <div class="col-md-3">
+                                <label for="user-filter" class="form-label">{{
+                                        `${messages.updated} ${messages.by}`
+                                    }}:</label>
+                                <select id="user-filter" class="form-select form-control" v-model="userId"
+                                        @change="filterTable">
+                                    <option value="">{{ messages.pleaseSelect }}</option>
+                                    <option v-for="(name, id) in users" :value="id">{{ name }}</option>
+                                </select>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -159,7 +169,7 @@
 </template>
 <script>
 export default {
-    props: ['locale', 'messages', 'dpas', 'snis', 'statements', 'types'],
+    props: ['locale', 'messages', 'dpas', 'snis', 'statements', 'types', 'users'],
     data() {
         return {
             dataTable: null,
@@ -169,6 +179,7 @@ export default {
             sniId: '',
             statementId: '',
             typeId: '',
+            userId: '',
         };
     },
     methods: {
@@ -205,6 +216,7 @@ export default {
                             'sni_id': thisComponent.sniId,
                             'statement_id': thisComponent.statementId,
                             'type_id': thisComponent.typeId,
+                            'user_id': thisComponent.userId,
                         }
                     }
                 },
@@ -404,6 +416,7 @@ export default {
                 'sniId': this.sniId,
                 'statementId': this.statementId,
                 'typeId': this.typeId,
+                'userId': this.userId,
             };
 
             localStorage.setItem('SanctionDataTablesFilters', JSON.stringify(filters));
@@ -422,6 +435,7 @@ export default {
             this.sniId = filters.sniId;
             this.statementId = filters.statementId;
             this.typeId = filters.typeId;
+            this.userId = filters.userId;
         } catch (e) {
 
         }

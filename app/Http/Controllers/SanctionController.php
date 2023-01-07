@@ -43,9 +43,16 @@ class SanctionController extends Controller
         $statements = Statement::all()->makeVisible(['subcode'])->sortBy('subcode', SORT_NATURAL);
         $types = Type::select(['id', 'text_en', 'text_se'])->orderBy('text_' . App::currentLocale())->get();
 
+        $users = Sanction::select('user_id')
+            ->distinct()
+            ->whereNotNull('user_id')
+            ->get();
+
+        $users = $users->pluck('user.name', 'user_id')->sort()->all();
+
         $messages = __('messages');
 
-        return view('models.sanctions.index', compact('dpas', 'snis', 'statements', 'types', 'messages'));
+        return view('models.sanctions.index', compact('dpas', 'snis', 'statements', 'types', 'users', 'messages'));
     }
 
     /**

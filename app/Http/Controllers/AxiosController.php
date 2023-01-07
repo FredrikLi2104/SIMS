@@ -932,6 +932,7 @@ class AxiosController extends Controller
         $filterBySni = $request->get('filters')['sni_id'];
         $filterByStatement = $request->get('filters')['statement_id'];
         $filterByType = $request->get('filters')['type_id'];
+        $filterByUser = $request->get('filters')['user_id'];
 
         $sanctions = Sanction::select('sanctions.*')
             ->when($searchVal, function ($query, $searchVal) {
@@ -954,6 +955,8 @@ class AxiosController extends Controller
                 });
             })->when($filterByType, function ($query, $filterByType) {
                 $query->where('type_id', $filterByType);
+            })->when($filterByUser, function ($query, $filterByUser) {
+                $query->where('user_id', $filterByUser);
             })->when($orderByColName, function ($query, $orderByColName) use ($orderDir) {
                 if ($orderByColName == 'dpa') {
                     $query->join('dpas', 'sanctions.dpa_id', '=', 'dpas.id')
@@ -986,6 +989,8 @@ class AxiosController extends Controller
             });
         })->when($filterByType, function ($query, $filterByType) {
             $query->where('type_id', $filterByType);
+        })->when($filterByUser, function ($query, $filterByUser) {
+            $query->where('user_id', $filterByUser);
         })->count();
 
         $sanctions->load(['articles', 'dpa', 'user'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party']);

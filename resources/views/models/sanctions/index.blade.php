@@ -30,7 +30,8 @@
         </div>
     @endif
     <sanctions locale="{{ App::currentLocale() }}" :messages="{{ Js::from($messages) }}" :dpas="{{ Js::from($dpas) }}"
-               :snis="{{ Js::from($snis) }}" :statements="{{ Js::from($statements) }}" :types="{{ Js::from($types) }}"/>
+               :snis="{{ Js::from($snis) }}" :statements="{{ Js::from($statements) }}" :types="{{ Js::from($types) }}"
+               :users="{{ Js::from($users) }}"/>
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}
