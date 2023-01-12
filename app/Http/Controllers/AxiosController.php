@@ -942,7 +942,9 @@ class AxiosController extends Controller
                         ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
                         ->orWhereDate('sanctions.decided_at', 'like', "%$searchVal%")
                         ->orWhere('sanctions.fine', 'like', "%$searchVal%")
-                        ->orWhere('sanctions.title', 'like', "%$searchVal%");
+                        ->orWhere('sanctions.title', 'like', "%$searchVal%")
+                        ->orWhere('sanctions.desc_en', 'like', "{\"ops\":[{\"insert\":\"%$searchVal%")
+                        ->orWhere('sanctions.desc_se', 'like', "{\"ops\":[{\"insert\":\"%$searchVal%");
                 });
             })->when($filterByDpa, function ($query, $filterByDpa) {
                 $query->where('dpa_id', $filterByDpa);
@@ -976,7 +978,9 @@ class AxiosController extends Controller
                     ->orWhereRelation('dpa', 'title', 'like', "Category:%$searchVal%")
                     ->orWhereDate('sanctions.decided_at', 'like', "%$searchVal%")
                     ->orWhere('sanctions.fine', 'like', "%$searchVal%")
-                    ->orWhere('sanctions.title', 'like', "%$searchVal%");
+                    ->orWhere('sanctions.title', 'like', "%$searchVal%")
+                    ->orWhere('sanctions.desc_en', 'like', "{\"ops\":[{\"insert\":\"%$searchVal%")
+                    ->orWhere('sanctions.desc_se', 'like', "{\"ops\":[{\"insert\":\"%$searchVal%");
             });
         })->when($filterByDpa, function ($query, $filterByDpa) {
             $query->where('dpa_id', $filterByDpa);
