@@ -19,8 +19,10 @@ use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Deed;
 use App\Models\Dpa;
+use App\Models\Faq;
 use App\Models\Kpi;
 use App\Models\Kpicomment;
+use App\Models\Link;
 use App\Models\Organisation;
 use App\Models\Period;
 use App\Models\Plan;
@@ -109,6 +111,11 @@ class AxiosController extends Controller
         return $r;
     }
 
+    public function faqs()
+    {
+        return Faq::all();
+    }
+
     /**
      * Return all kpis along with dictionary
      *
@@ -125,6 +132,11 @@ class AxiosController extends Controller
         $r = ['kpis' => $kpis, 'messages' => $messages];
         $r = collect($r);
         return $r;
+    }
+
+    public function links()
+    {
+        return Link::all();
     }
 
     /**

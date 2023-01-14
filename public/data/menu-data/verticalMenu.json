@@ -38,6 +38,15 @@
             ]
         },
         {
+            "name": "check",
+            "auth": "user",
+            "icon": "check",
+            "url": "check",
+            "slug": [
+                "organisations.check"
+            ]
+        },
+        {
             "name": "act",
             "auth": "user",
             "icon": "pie-chart",
@@ -108,6 +117,24 @@
             "slug": [],
             "submenu": [
                 {
+                    "name": "faqs_create",
+                    "url": "faqs/create",
+                    "icon": "circle",
+                    "slug": [
+                        "faqs.create"
+                    ]
+                },
+                {
+                    "name": "faqs",
+                    "url": "faqs",
+                    "icon": "circle",
+                    "slug": [
+                        "faqs.index",
+                        "faqs.edit",
+                        "faqs.show"
+                    ]
+                },
+                {
                     "name": "kpiCreate",
                     "url": "kpis/create",
                     "icon": "circle",
@@ -123,6 +150,24 @@
                         "kpis.index",
                         "kpis.edit",
                         "kpis.show"
+                    ]
+                },
+                {
+                    "name": "links_create",
+                    "url": "links/create",
+                    "icon": "circle",
+                    "slug": [
+                        "links.create"
+                    ]
+                },
+                {
+                    "name": "links",
+                    "url": "links",
+                    "icon": "circle",
+                    "slug": [
+                        "links.index",
+                        "links.edit",
+                        "links.show"
                     ]
                 },
                 {

@@ -194,6 +194,7 @@ return [
     'status' => 'Status',
     "subcode" => "Subcode",
     'submit' => 'Submit',
+    'submitting' => 'Submitting',
     'success' => 'Success',
     'summary' => 'Summary',
     'summaryDesc' => 'This document describes how the work of the year is organized for data protection. We will carry out an ongoing review during the year described in this document. The purpose of this document is to provide a brief explanation of what activities are planned and when these will be performed during the year.',
@@ -226,5 +227,12 @@ return [
     'welcome' => 'Welcome',
     'welcomeTo' => 'Welcome to',
     'working' => 'Working',
+    'faqs' => 'FAQ',
+    'question' => 'Question',
+    'answer' => 'Answer',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'links' => 'Links',
+    'check' => 'Check',
 ];
 ?>

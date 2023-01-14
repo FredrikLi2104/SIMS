@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrganisationStoreRequest;
 use App\Http\Requests\OrganisationUpdateRequest;
+use App\Models\Faq;
+use App\Models\Link;
 use App\Models\Organisation;
 use App\Models\Sni;
 use App\Models\Statement;
@@ -99,7 +101,7 @@ class OrganisationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(OrganisationStoreRequest $request)
@@ -129,7 +131,7 @@ class OrganisationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Organisation  $organisation
+     * @param \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */
     public function show(Organisation $organisation)
@@ -140,7 +142,7 @@ class OrganisationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Organisation  $organisation
+     * @param \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */
     public function edit($locale, Organisation $organisation)
@@ -154,8 +156,8 @@ class OrganisationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Organisation  $organisation
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */
     public function update($locale, OrganisationUpdateRequest $request, Organisation $organisation)
@@ -185,7 +187,7 @@ class OrganisationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Organisation  $organisation
+     * @param \App\Models\Organisation $organisation
      * @return \Illuminate\Http\Response
      */
     public function destroy(Organisation $organisation)
@@ -197,5 +199,14 @@ class OrganisationController extends Controller
     {
         $statements = Statement::all()->sortBy('sort_order');
         return view('models.organisations.plan', compact('statements'));
+    }
+
+    public function check()
+    {
+        $data['faqs'] = Faq::where('live', true)->orderBy('sort_order')->get();
+        $data['links'] = Link::where('live', true)->orderBy('sort_order')->get();
+        $data['messages'] = __('messages');
+
+        return view('models.organisations.check', $data);
     }
 }
