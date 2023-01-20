@@ -1053,6 +1053,19 @@ class AxiosController extends Controller
         return $sanction;
     }
 
+    public function sanctionsStats($locale, $by)
+    {
+        return match ($by) {
+            'component' => $this->sanctionsByCmponent($locale),
+            'statement' => $this->sanctionsByStatement(),
+            'chronological' => $this->sanctionsImposedOverTime(),
+            'country' => $this->sanctionsByCountry(),
+            'sector' => $this->sanctionsBySector($locale),
+            'individual' => $this->sanctionsIndividual($locale),
+            default => [],
+        };
+    }
+
     /**
      * Return all sanctions for the act route in ajax datatable format
      *
@@ -1105,5 +1118,170 @@ class AxiosController extends Controller
         $messages = Lang::get('messages');
 
         return collect(['tags' => $tags, 'messages' => $messages]);
+    }
+
+    private function sanctionsByCmponent($locale)
+    {
+        $sanctions = Sanction::select("components.name_$locale", DB::raw('SUM(fine / currencies.value) AS sum'))
+            ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+            ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+            ->join('components', 'statements.component_id', '=', 'components.id')
+            ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
+            ->groupBy("components.name_$locale")
+            ->orderBy('sum', 'desc')
+            ->get();
+
+        $data = $sanctions->pluck('sum');
+        $data = $data->map(function ($fine) {
+            return round($fine);
+        });
+
+        $sum = ['categories' => $sanctions->pluck("name_$locale"), 'data' => $data];
+
+        $sanctions = Sanction::select("components.name_$locale", DB::raw('COUNT(1) AS count'))
+            ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+            ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+            ->join('components', 'statements.component_id', '=', 'components.id')
+            ->groupBy("components.name_$locale")
+            ->orderBy('count', 'desc')
+            ->get();
+
+        $count = ['categories' => $sanctions->pluck("name_$locale"), 'data' => $sanctions->pluck('count')];
+
+        return ['sum' => $sum, 'count' => $count];
+    }
+
+    private function sanctionsByStatement()
+    {
+        $sanctions = Sanction::select(DB::raw("CONCAT(components.code, '.', statements.code) AS code, SUM(fine / currencies.value) AS sum"))
+            ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+            ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+            ->join('components', 'statements.component_id', '=', 'components.id')
+            ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
+            ->groupBy(DB::raw("CONCAT(components.code, '.', statements.code)"))
+            ->orderBy('sum', 'desc')
+            ->get();
+
+        $data = $sanctions->pluck('sum');
+        $data = $data->map(function ($fine) {
+            return round($fine);
+        });
+
+        $sum = ['categories' => $sanctions->pluck('code'), 'data' => $data];
+
+        $sanctions = Sanction::select(DB::raw("CONCAT(components.code, '.', statements.code) AS code, COUNT(1) AS count"))
+            ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+            ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+            ->join('components', 'statements.component_id', '=', 'components.id')
+            ->groupBy(DB::raw("CONCAT(components.code, '.', statements.code)"))
+            ->orderBy('count', 'desc')
+            ->get();
+
+        $count = ['categories' => $sanctions->pluck("code"), 'data' => $sanctions->pluck('count')];
+
+        return ['sum' => $sum, 'count' => $count];
+    }
+
+    private function sanctionsImposedOverTime()
+    {
+        $sanctions = Sanction::select(DB::raw("YEAR(sanctions.decided_at) AS year, MONTH(sanctions.decided_at) AS month, DATE_FORMAT(sanctions.decided_at, '%b %Y') AS month_year, SUM(fine / currencies.value) AS sum, COUNT(1) AS count"))
+            ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
+            ->whereNotNull('decided_at')
+            ->groupBy('year', 'month', 'month_year')
+            ->orderBy('year')
+            ->orderBy('month')
+            ->get();
+
+        $sanctions = $sanctions->map(function ($sanction) {
+            $sanction->sum = round($sanction->sum);
+
+            return $sanction;
+        });
+
+        $sum = ['categories' => $sanctions->pluck('month_year'), 'data' => $sanctions->pluck('sum')];
+        $count = ['categories' => $sanctions->pluck('month_year'), 'data' => $sanctions->pluck('count')];
+
+        return ['sum' => $sum, 'count' => $count];
+    }
+
+    private function sanctionsByCountry()
+    {
+        $sanctions = Sanction::select('countries.name', DB::raw('SUM(fine / currencies.value) AS sum'))
+            ->join('dpas', 'sanctions.dpa_id', '=', 'dpas.id')
+            ->join('countries', 'dpas.country_id', '=', 'countries.id')
+            ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
+            ->groupBy('countries.name')
+            ->orderBy('sum', 'desc')
+            ->take(10)
+            ->get();
+
+        $data = $sanctions->pluck('sum');
+        $data = $data->map(function ($fine) {
+            return round($fine);
+        });
+
+        $sum = ['categories' => $sanctions->pluck('name'), 'data' => $data];
+
+        $sanctions = Sanction::select('countries.name', DB::raw('COUNT(1) AS count'))
+            ->join('dpas', 'sanctions.dpa_id', '=', 'dpas.id')
+            ->join('countries', 'dpas.country_id', '=', 'countries.id')
+            ->groupBy('countries.name')
+            ->orderBy('count', 'desc')
+            ->take(10)
+            ->get();
+
+        $count = ['categories' => $sanctions->pluck('name'), 'data' => $sanctions->pluck('count')];
+
+        return ['sum' => $sum, 'count' => $count];
+    }
+
+    private function sanctionsBySector($locale)
+    {
+        $sanctions = Sanction::select("snis.desc_$locale", DB::raw('SUM(fine / currencies.value) AS sum'))
+            ->join('snis', 'sanctions.sni_id', '=', 'snis.id')
+            ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
+            ->groupBy("snis.desc_$locale")
+            ->orderBy('sum', 'desc')
+            ->get();
+
+        $data = $sanctions->pluck('sum');
+        $data = $data->map(function ($fine) {
+            return round($fine);
+        });
+
+        $sum = ['categories' => $sanctions->pluck("desc_$locale"), 'data' => $data];
+
+        $sanctions = Sanction::select("snis.desc_$locale", DB::raw('COUNT(1) AS count'))
+            ->join('snis', 'sanctions.sni_id', '=', 'snis.id')
+            ->groupBy("snis.desc_$locale")
+            ->orderBy('count', 'desc')
+            ->get();
+
+        $count = ['categories' => $sanctions->pluck("desc_$locale"), 'data' => $sanctions->pluck('count')];
+
+        return ['sum' => $sum, 'count' => $count];
+    }
+
+    private function sanctionsIndividual($locale)
+    {
+        $sanctions = Sanction::select('sanctions.title', 'sanctions.decided_at', "snis.desc_$locale AS sector", 'countries.name AS country', "types.text_$locale AS type", DB::raw('SUM(fine / currencies.value) AS sum'))
+            ->join('snis', 'sanctions.sni_id', '=', 'snis.id')
+            ->join('dpas', 'sanctions.dpa_id', '=', 'dpas.id')
+            ->join('countries', 'dpas.country_id', '=', 'countries.id')
+            ->join('types', 'sanctions.type_id', '=', 'types.id')
+            ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
+            ->groupBy('sanctions.title', 'sanctions.decided_at', "snis.desc_$locale", 'countries.name', "types.text_$locale")
+            ->orderBy('sum', 'desc')
+            ->take(10)
+            ->get();
+
+        $sanctions = $sanctions->map(function ($sanction) {
+            $sanction->decided_at = $sanction->decided_at_for_humans;
+            $sanction->sum = round($sanction->sum);
+
+            return $sanction;
+        });
+
+        return $sanctions->makeVisible(['sector', 'country', 'type', 'sum']);
     }
 }

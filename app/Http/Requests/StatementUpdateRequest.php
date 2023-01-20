@@ -41,10 +41,12 @@ class StatementUpdateRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $code = $this->input('code');
 
-                    $subCodeExists = Statement::where(['component_id' => $value, 'code' => $code])->exists();
+                    if ($this->route()->statement->component_id != $value || $this->route()->statement->code != $code) {
+                        $subCodeExists = Statement::where(['component_id' => $value, 'code' => $code])->exists();
 
-                    if ($subCodeExists) {
-                        $fail('Sub-code has already been taken.');
+                        if ($subCodeExists) {
+                            $fail('Sub-code has already been taken.');
+                        }
                     }
                 },
             ],

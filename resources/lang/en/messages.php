@@ -234,5 +234,18 @@ return [
     'no' => 'No',
     'links' => 'Links',
     'check' => 'Check',
+    'fines_by_component' => 'Fines by component',
+    'fines_by_statement' => 'Fines by statement',
+    'fines_imposed_over_time' => 'Fines imposed over time',
+    'fines_by_country' => 'Fines by country',
+    'fines_by_sector' => 'Fines by sector',
+    'individual_fines' => 'Individual fines',
+    'highest_individual_fines' => 'Highest individual fines',
+    'sum_of_fines' => 'Sum of fines',
+    'number_of_fines' => 'Number of fines',
+    'by_total_sum_of_fines' => 'By total sum of fines',
+    'by_total_number_of_fines' => 'By total number of fines',
+    'sector' => 'Sector',
+    'top' => 'Top',
 ];
 ?>

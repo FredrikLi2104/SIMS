@@ -239,4 +239,5 @@ return [
     'links' => 'Länkar',
     'links_create' => 'Länkar Skapa',
     'check' => 'Kontrollera',
+    'statistics' => 'Statistik',
 ];

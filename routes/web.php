@@ -21,6 +21,7 @@ use App\Http\Controllers\SanctionController;
 use App\Http\Controllers\SniController;
 use App\Http\Controllers\StatementController;
 use App\Http\Controllers\StatementTypeController;
+use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
@@ -75,6 +76,8 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('sanctions', [AxiosController::class, 'sanctions'])->middleware('can:moderator')->name('axios.sanctions.index');
     Route::get('sanctions/{sanction}', [AxiosController::class, 'sanctionsShow'])->middleware('can:user')->name('axios.sanctions.show');
     Route::get('sanctions/admin/{sanction}', [AxiosController::class, 'sanction'])->middleware('can:admin')->name('axios.sanctions.view');
+    Route::get('/statistics/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:auditor-user')->name('axios.statistics.sanctions');
+    Route::get('/statistics/sanctions/{by}', [AxiosController::class, 'sanctionsStats'])->middleware('can:auditor-user')->name('axios.statistics.sanctions.by');
     Route::get('tags', [AxiosController::class, 'tags'])->middleware('can:moderator')->name('axios.tags.index');
 });
 
@@ -105,6 +108,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::resource('sanctions', SanctionController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('statements', StatementController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('statement_types', StatementTypeController::class)->middleware('auth')->middleware('can:moderator');
+    Route::get('/statistics/sanctions', [StatisticsController::class, 'sanctionsStats'])->middleware('can:auditor-user')->name('statistics.sanctions');
     Route::resource('snis', SniController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('tags', TagController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('types', TypeController::class)->middleware('auth')->middleware('can:moderator');

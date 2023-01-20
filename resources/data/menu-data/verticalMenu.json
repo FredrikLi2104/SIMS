@@ -441,6 +441,22 @@
             ]
         },
         {
+            "name": "statistics",
+            "auth": "auditor-user",
+            "icon": "bar-chart-2",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "sanctions",
+                    "url": "statistics/sanctions",
+                    "icon": "circle",
+                    "slug": [
+                        "statistics.sanctions"
+                    ]
+                }
+            ]
+        },
+        {
             "name": "users",
             "auth": "moderator",
             "icon": "users",

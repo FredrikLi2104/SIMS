@@ -239,4 +239,5 @@ return [
     'links' => 'Links',
     'links_create' => 'Link Create',
     'check' => 'Check',
+    'statistics' => 'Statistics',
 ];

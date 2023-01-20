@@ -28,6 +28,7 @@
     "/js/models/risks/index/app.js": "/js/models/risks/index/app.js",
     "/js/models/sanctions/index/app.js": "/js/models/sanctions/index/app.js",
     "/js/models/sanctions/edit/app.js": "/js/models/sanctions/edit/app.js",
+    "/js/models/sanctions/statistics/app.js": "/js/models/sanctions/statistics/app.js",
     "/js/models/tags/index/app.js": "/js/models/tags/index/app.js",
     "/js/services/countries/seed/app.js": "/js/services/countries/seed/app.js",
     "/css/quill.css": "/css/quill.css",

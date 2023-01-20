@@ -98,6 +98,7 @@ mix
     .js('resources/js/models/risks/index/app.js', 'public/js/models/risks/index/app.js').vue()
     .js('resources/js/models/sanctions/index/app.js', 'public/js/models/sanctions/index/app.js').vue()
     .js('resources/js/models/sanctions/edit/app.js', 'public/js/models/sanctions/edit/app.js').vue()
+    .js('resources/js/models/sanctions/statistics/app.js', 'public/js/models/sanctions/statistics/app.js').vue()
     .js('resources/js/models/tags/index/app.js', 'public/js/models/tags/index/app.js').vue()
     // services
     .js('resources/js/services/countries/seed/app.js', 'public/js/services/countries/seed/app.js').vue()

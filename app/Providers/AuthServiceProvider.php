@@ -55,6 +55,6 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, ['super', 'admin', 'moderator', 'user', 'auditor']);
         });
 
-        
+
     }
 }
