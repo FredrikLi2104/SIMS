@@ -241,11 +241,12 @@ return [
     'fines_by_sector' => 'Fines by sector',
     'individual_fines' => 'Individual fines',
     'highest_individual_fines' => 'Highest individual fines',
-    'sector' => 'Sector',
     'sum_of_fines' => 'Sum of fines',
     'number_of_fines' => 'Number of fines',
     'by_total_sum_of_fines' => 'By total sum of fines',
     'by_total_number_of_fines' => 'By total number of fines',
+    'sector' => 'Sector',
     'top' => 'Top',
+    'empty' => 'Empty',
 ];
 ?>

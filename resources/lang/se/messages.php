@@ -249,4 +249,5 @@ return [
     'by_total_number_of_fines' => 'Efter totalt antal böter',
     'sector' => 'Sektor',
     'top' => 'Topp',
+    'empty' => 'Tom',
 ];

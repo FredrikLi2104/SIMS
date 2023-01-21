@@ -243,10 +243,11 @@ return [
     'fines_by_sector' => 'Böter per sektor',
     'individual_fines' => 'Individuella böter',
     'highest_individual_fines' => 'Högsta individuella böter',
-    'sector' => 'Sektor',
     'sum_of_fines' => 'Summan av böter',
     'number_of_fines' => 'Antal böter',
     'by_total_sum_of_fines' => 'Av den totala summan av böter',
     'by_total_number_of_fines' => 'Efter totalt antal böter',
+    'sector' => 'Sektor',
     'top' => 'Topp',
+    'empty' => 'Tom',
 ];

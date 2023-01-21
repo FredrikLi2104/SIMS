@@ -961,14 +961,26 @@ class AxiosController extends Controller
             })->when($filterByDpa, function ($query, $filterByDpa) {
                 $query->where('dpa_id', $filterByDpa);
             })->when($filterBySni, function ($query, $filterBySni) {
-                $query->where('sni_id', $filterBySni);
+                if ($filterBySni == -1) {
+                    $query->whereNull('sni_id');
+                } else {
+                    $query->where('sni_id', $filterBySni);
+                }
             })->when($filterByStatement, function ($query, $filterByStatement) {
-                $query->join('sanction_statement', function ($join) use ($filterByStatement) {
-                    $join->on('sanctions.id', '=', 'sanction_statement.sanction_id')
-                        ->where('sanction_statement.statement_id', $filterByStatement);
-                });
+                if ($filterByStatement == -1) {
+                    $query->whereDoesntHave('statements');
+                } else {
+                    $query->join('sanction_statement', function ($join) use ($filterByStatement) {
+                        $join->on('sanctions.id', '=', 'sanction_statement.sanction_id')
+                            ->where('sanction_statement.statement_id', $filterByStatement);
+                    });
+                }
             })->when($filterByType, function ($query, $filterByType) {
-                $query->where('type_id', $filterByType);
+                if ($filterByType == -1) {
+                    $query->whereNull('type_id');
+                } else {
+                    $query->where('type_id', $filterByType);
+                }
             })->when($filterByUser, function ($query, $filterByUser) {
                 $query->where('user_id', $filterByUser);
             })->when($orderByColName, function ($query, $orderByColName) use ($orderDir) {
@@ -997,14 +1009,26 @@ class AxiosController extends Controller
         })->when($filterByDpa, function ($query, $filterByDpa) {
             $query->where('dpa_id', $filterByDpa);
         })->when($filterBySni, function ($query, $filterBySni) {
-            $query->where('sni_id', $filterBySni);
+            if ($filterBySni == -1) {
+                $query->whereNull('sni_id');
+            } else {
+                $query->where('sni_id', $filterBySni);
+            }
         })->when($filterByStatement, function ($query, $filterByStatement) {
-            $query->join('sanction_statement', function ($join) use ($filterByStatement) {
-                $join->on('sanctions.id', '=', 'sanction_statement.sanction_id')
-                    ->where('sanction_statement.statement_id', $filterByStatement);
-            });
+            if ($filterByStatement == -1) {
+                $query->whereDoesntHave('statements');
+            } else {
+                $query->join('sanction_statement', function ($join) use ($filterByStatement) {
+                    $join->on('sanctions.id', '=', 'sanction_statement.sanction_id')
+                        ->where('sanction_statement.statement_id', $filterByStatement);
+                });
+            }
         })->when($filterByType, function ($query, $filterByType) {
-            $query->where('type_id', $filterByType);
+            if ($filterByType == -1) {
+                $query->whereNull('type_id');
+            } else {
+                $query->where('type_id', $filterByType);
+            }
         })->when($filterByUser, function ($query, $filterByUser) {
             $query->where('user_id', $filterByUser);
         })->count();

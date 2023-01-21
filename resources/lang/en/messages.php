@@ -247,5 +247,6 @@ return [
     'by_total_number_of_fines' => 'By total number of fines',
     'sector' => 'Sector',
     'top' => 'Top',
+    'empty' => 'Empty',
 ];
 ?>

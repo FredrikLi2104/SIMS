@@ -21,6 +21,7 @@
                                 <select id="sni-filter" class="form-select form-control" v-model="sniId"
                                         @change="filterTable">
                                     <option value="">{{ messages.pleaseSelect }}</option>
+                                    <option value="-1">{{ messages.empty }}</option>
                                     <option v-for="sni in snis" :value="sni.id">
                                         {{ `${sni.code} | ${sni[`desc_${locale}`]}` }}
                                     </option>
@@ -31,6 +32,7 @@
                                 <select id="type-filter" class="form-select form-control" v-model="typeId"
                                         @change="filterTable">
                                     <option value="">{{ messages.pleaseSelect }}</option>
+                                    <option value="-1">{{ messages.empty }}</option>
                                     <option v-for="type in types" :value="type.id">
                                         {{ `${type[`text_${locale}`]}` }}
                                     </option>
@@ -41,6 +43,7 @@
                                 <select id="type-filter" class="form-select form-control" v-model="statementId"
                                         @change="filterTable">
                                     <option value="">{{ messages.pleaseSelect }}</option>
+                                    <option value="-1">{{ messages.empty }}</option>
                                     <option v-for="statement in statements" :value="statement.id">
                                         {{ statement.subcode }}
                                     </option>
