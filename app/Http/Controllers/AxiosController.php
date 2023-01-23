@@ -380,7 +380,7 @@ class AxiosController extends Controller
         $components = Component::all()->load('period')->makeVisible(['code_name', 'period', 'periods']);
         foreach ($components as $component) {
             $op = $component->organisationUserPeriod(Auth::user()->organisation);
-            $component->periods = Period::all()->sortBy('sort_order');
+            $component->periods = Period::orderBy('sort_order')->get();
             foreach ($component->periods as $period) {
                 if ($period->id == $op->id) {
                     $period->selected = true;
