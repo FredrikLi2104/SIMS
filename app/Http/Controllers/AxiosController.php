@@ -1146,12 +1146,12 @@ class AxiosController extends Controller
 
     private function sanctionsByCmponent($locale)
     {
-        $sanctions = Sanction::select("components.name_$locale", DB::raw('SUM(fine / currencies.value) AS sum'))
+        $sanctions = Sanction::select(DB::raw("CONCAT(components.code, ' - ', components.name_$locale) AS name, SUM(fine / currencies.value) AS sum"))
             ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
             ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
             ->join('components', 'statements.component_id', '=', 'components.id')
             ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
-            ->groupBy("components.name_$locale")
+            ->groupBy('name')
             ->orderBy('sum', 'desc')
             ->get();
 
@@ -1160,17 +1160,17 @@ class AxiosController extends Controller
             return round($fine);
         });
 
-        $sum = ['categories' => $sanctions->pluck("name_$locale"), 'data' => $data];
+        $sum = ['categories' => $sanctions->pluck('name'), 'data' => $data];
 
-        $sanctions = Sanction::select("components.name_$locale", DB::raw('COUNT(1) AS count'))
+        $sanctions = Sanction::select(DB::raw("CONCAT(components.code, ' - ', components.name_$locale) AS name, COUNT(1) AS count"))
             ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
             ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
             ->join('components', 'statements.component_id', '=', 'components.id')
-            ->groupBy("components.name_$locale")
+            ->groupBy('name')
             ->orderBy('count', 'desc')
             ->get();
 
-        $count = ['categories' => $sanctions->pluck("name_$locale"), 'data' => $sanctions->pluck('count')];
+        $count = ['categories' => $sanctions->pluck('name'), 'data' => $sanctions->pluck('count')];
 
         return ['sum' => $sum, 'count' => $count];
     }
@@ -1212,8 +1212,8 @@ class AxiosController extends Controller
             ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
             ->whereNotNull('decided_at')
             ->groupBy('year', 'month', 'month_year')
-            ->orderBy('year')
-            ->orderBy('month')
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc')
             ->get();
 
         $sanctions = $sanctions->map(function ($sanction) {
@@ -1288,15 +1288,14 @@ class AxiosController extends Controller
 
     private function sanctionsIndividual($locale)
     {
-        $sanctions = Sanction::select('sanctions.title', 'sanctions.decided_at', "snis.desc_$locale AS sector", 'countries.name AS country', "types.text_$locale AS type", DB::raw('SUM(fine / currencies.value) AS sum'))
+        $sanctions = Sanction::select('sanctions.title', 'sanctions.party', 'sanctions.decided_at', "snis.desc_$locale AS sector", 'countries.name AS country', "types.text_$locale AS type", DB::raw('SUM(fine / currencies.value) AS sum'))
             ->join('snis', 'sanctions.sni_id', '=', 'snis.id')
             ->join('dpas', 'sanctions.dpa_id', '=', 'dpas.id')
             ->join('countries', 'dpas.country_id', '=', 'countries.id')
             ->join('types', 'sanctions.type_id', '=', 'types.id')
             ->join('currencies', 'sanctions.currency_id', '=', 'currencies.id')
-            ->groupBy('sanctions.title', 'sanctions.decided_at', "snis.desc_$locale", 'countries.name', "types.text_$locale")
+            ->groupBy('sanctions.title', 'sanctions.party', 'sanctions.decided_at', "snis.desc_$locale", 'countries.name', "types.text_$locale")
             ->orderBy('sum', 'desc')
-            ->take(10)
             ->get();
 
         $sanctions = $sanctions->map(function ($sanction) {
@@ -1306,6 +1305,6 @@ class AxiosController extends Controller
             return $sanction;
         });
 
-        return $sanctions->makeVisible(['sector', 'country', 'type', 'sum']);
+        return $sanctions->makeVisible(['party', 'sector', 'country', 'type', 'sum']);
     }
 }

@@ -157,7 +157,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="table-responsive">
-                                        <table class="table table-sm">
+                                        <table id="chronological-tbl" class="table table-sm">
                                             <thead>
                                             <tr>
                                                 <th>{{ messages.statement }}</th>
@@ -166,11 +166,6 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="(month, index) in chronological?.sum?.categories">
-                                                <td>{{ month }}</td>
-                                                <td>{{ chronological?.sum?.data[index].toLocaleString() }}</td>
-                                                <td>{{ chronological?.count?.data[index] }}</td>
-                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -290,12 +285,10 @@
                 <div class="tab-pane fade" id="individual" role="tabpanel">
                     <div class="card">
                         <div class="card-body mt-1">
-                            <h4 class="card-title">{{
-                                    `${messages.highest_individual_fines} (${messages.top} 10)`
-                                }}</h4>
+                            <h4 class="card-title">{{ messages.highest_individual_fines }}</h4>
                             <div class="row">
                                 <div class="col-12">
-                                    <table class="table table-sm">
+                                    <table id="individual-tbl" class="table table-sm">
                                         <thead>
                                         <tr>
                                             <th>{{ messages.title }}</th>
@@ -303,18 +296,11 @@
                                             <th>{{ messages.country }}</th>
                                             <th>{{ `${messages.fine} (€)` }}</th>
                                             <th>{{ messages.type }}</th>
+                                            <th>{{ messages.party }}</th>
                                             <th>{{ messages.decidedOn }}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr v-for="data in individual">
-                                            <td>{{ data.title }}</td>
-                                            <td>{{ data.sector }}</td>
-                                            <td>{{ data.country }}</td>
-                                            <td>{{ data.sum.toLocaleString() }}</td>
-                                            <td>{{ data.type }}</td>
-                                            <td>{{ data.decided_at }}</td>
-                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -516,6 +502,9 @@ export default {
             axios.get(`/${self.locale}/axios/statistics/sanctions/individual`)
                 .then(function (response) {
                     self.individual = response.data;
+                    self.$nextTick(() => {
+                        self.initIndividualTable();
+                    });
                 })
                 .catch(function (error) {
 
@@ -524,7 +513,6 @@ export default {
         horizontalBarConfig() {
             return {
                 chart: {
-                    height: 400,
                     type: 'bar',
                     parentHeightOffset: 0,
                     toolbar: {
@@ -663,6 +651,8 @@ export default {
             countChartConfig.series = [{data: self.chronological.count.data}];
             countChartConfig.xaxis = {categories: self.chronological.count.categories};
             new ApexCharts(countChartEl, countChartConfig).render();
+
+            self.initChronologicalTable();
         },
         initByCountryCharts() {
             const self = this;
@@ -843,6 +833,90 @@ export default {
                     `;
                     $("#sanctions-card-header").html(domHtml);
                 },
+            });
+        },
+        initChronologicalTable() {
+            let self = this;
+            $('#chronological-tbl').DataTable({
+                data: self.chronological.sum.categories,
+                columnDefs: [
+                    {
+                        targets: 0,
+                        render: function (data, type, row, meta) {
+                            return row;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: function (data, type, row, meta) {
+                            return self.chronological?.sum?.data[meta.row].toLocaleString();
+                        }
+                    },
+                    {
+                        targets: 2,
+                        render: function (data, type, row, meta) {
+                            return self.chronological?.count?.data[meta.row];
+                        }
+                    },
+                ],
+                lengthMenu: [[20, 50, -1], [20, 50, self.messages.all]],
+                pageLength: 20,
+                ordering: false,
+                searching: false
+            });
+        },
+        initIndividualTable() {
+            let self = this;
+            $('#individual-tbl').DataTable({
+                data: self.individual,
+                columnDefs: [
+                    {
+                        targets: 0,
+                        render: function (data, type, row, meta) {
+                            return row.title;
+                        }
+                    },
+                    {
+                        targets: 1,
+                        render: function (data, type, row, meta) {
+                            return row.sector;
+                        }
+                    },
+                    {
+                        targets: 2,
+                        render: function (data, type, row, meta) {
+                            return row.country;
+                        }
+                    },
+                    {
+                        targets: 3,
+                        render: function (data, type, row, meta) {
+                            return row.sum.toLocaleString();
+                        }
+                    },
+                    {
+                        targets: 4,
+                        render: function (data, type, row, meta) {
+                            return row.type;
+                        }
+                    },
+                    {
+                        targets: 5,
+                        render: function (data, type, row, meta) {
+                            return row.party;
+                        }
+                    },
+                    {
+                        targets: 6,
+                        render: function (data, type, row, meta) {
+                            return row.decided_at;
+                        }
+                    }
+                ],
+                lengthMenu: [[10, 20, 50, -1], [10, 20, 50, self.messages.all]],
+                pageLength: 10,
+                ordering: false,
+                searching: false
             });
         },
         initSanctionModal() {
