@@ -240,4 +240,8 @@ return [
     'links_create' => 'Länkar Skapa',
     'check' => 'Kontrollera',
     'statistics' => 'Statistik',
+    'tasks' => 'Uppgifter',
+    'tasks_create' => 'Uppgifter Skapa',
+    'task_statuses' => 'Uppgiftsstatus',
+    'task_statuses_create' => 'Uppgiftsstatus Skapa',
 ];

@@ -135,9 +135,6 @@ body.dark-layout {
 .dark-layout .header-navbar .navbar-container .nav .nav-item.nav-search .search-input.open .input::-moz-placeholder {
   color: #b4b7bd;
 }
-.dark-layout .header-navbar .navbar-container .nav .nav-item.nav-search .search-input.open .input:-ms-input-placeholder {
-  color: #b4b7bd;
-}
 .dark-layout .header-navbar .navbar-container .nav .nav-item.nav-search .search-input.open .input,
 .dark-layout .header-navbar .navbar-container .nav .nav-item.nav-search .search-input.open .input::placeholder,
 .dark-layout .header-navbar .navbar-container .nav .nav-item.nav-search .search-input.open .search-input-close {
@@ -667,9 +664,6 @@ body.dark-layout {
 .dark-layout input.form-control::-moz-placeholder, .dark-layout select.form-select::-moz-placeholder, .dark-layout textarea.form-control::-moz-placeholder {
   color: #676d7d;
 }
-.dark-layout input.form-control:-ms-input-placeholder, .dark-layout select.form-select:-ms-input-placeholder, .dark-layout textarea.form-control:-ms-input-placeholder {
-  color: #676d7d;
-}
 .dark-layout input.form-control::placeholder,
 .dark-layout select.form-select::placeholder,
 .dark-layout textarea.form-control::placeholder {
@@ -685,22 +679,12 @@ body.dark-layout {
 .dark-layout .form-floating textarea.form-control::-moz-placeholder {
   color: transparent;
 }
-.dark-layout .form-floating textarea.form-control:-ms-input-placeholder {
-  color: transparent;
-}
 .dark-layout .form-floating textarea.form-control::placeholder {
   color: transparent;
-}
-.dark-layout .form-control::-webkit-file-upload-button {
-  background-color: #283046;
-  color: #d0d2d6;
 }
 .dark-layout .form-control::file-selector-button {
   background-color: #283046;
   color: #d0d2d6;
-}
-.dark-layout .form-control:hover:not(:disabled):not([readonly])::-webkit-file-upload-button {
-  background-color: #333a4f;
 }
 .dark-layout .form-control:hover:not(:disabled):not([readonly])::file-selector-button {
   background-color: #333a4f;
@@ -778,9 +762,6 @@ body.dark-layout {
   box-shadow: none;
 }
 .dark-layout .form-label-group > input:not(:focus):not(:-moz-placeholder-shown) ~ label, .dark-layout .form-label-group > textarea:not(:focus):not(:-moz-placeholder-shown) ~ label {
-  color: #b4b7bd !important;
-}
-.dark-layout .form-label-group > input:not(:focus):not(:-ms-input-placeholder) ~ label, .dark-layout .form-label-group > textarea:not(:focus):not(:-ms-input-placeholder) ~ label {
   color: #b4b7bd !important;
 }
 .dark-layout .form-label-group > input:not(:focus):not(:placeholder-shown) ~ label, .dark-layout .form-label-group > textarea:not(:focus):not(:placeholder-shown) ~ label {
@@ -1204,9 +1185,6 @@ body.dark-layout {
   color: #b4b7bd;
 }
 .dark-layout .ecommerce-application .product-checkout .checkout-options .coupons input::-moz-placeholder {
-  color: #b4b7bd;
-}
-.dark-layout .ecommerce-application .product-checkout .checkout-options .coupons input:-ms-input-placeholder {
   color: #b4b7bd;
 }
 .dark-layout .ecommerce-application .product-checkout .checkout-options .coupons input::placeholder {

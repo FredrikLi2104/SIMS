@@ -248,5 +248,14 @@ return [
     'sector' => 'Sector',
     'top' => 'Top',
     'empty' => 'Empty',
+    'task' => 'Task',
+    'tasks' => 'Tasks',
+    'task_statuses' => 'Task Statuses',
+    'color' => 'Color',
+    'start_date' => 'Start Date',
+    'end_date' => 'End Date',
+    'hours' => 'Hours',
+    'assigned_to' => 'Assigned To',
+    'action' => 'Action',
 ];
 ?>

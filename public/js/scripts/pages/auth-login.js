@@ -11,12 +11,14 @@ var __webpack_exports__ = {};
   Author: PIXINVENT
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
+
 $(function () {
   'use strict';
 
-  var pageLoginForm = $('.auth-login-form'); // jQuery Validation
-  // --------------------------------------------------------------------
+  var pageLoginForm = $('.auth-login-form');
 
+  // jQuery Validation
+  // --------------------------------------------------------------------
   if (pageLoginForm.length) {
     pageLoginForm.validate({
       /*
@@ -24,7 +26,6 @@ $(function () {
       onkeyup: function (element) {
         $(element).valid();
       },*/
-
       /*
       * ? To enable validation on focusout
       onfocusout: function (element) {

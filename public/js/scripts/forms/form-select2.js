@@ -16,15 +16,15 @@ var __webpack_exports__ = {};
   "use strict";
 
   var select = $(".select2"),
-      selectIcons = $(".select2-icons"),
-      maxLength = $(".max-length"),
-      hideSearch = $(".hide-search"),
-      selectArray = $(".select2-data-array"),
-      selectAjax = $(".select2-data-ajax"),
-      selectLg = $(".select2-size-lg"),
-      selectSm = $(".select2-size-sm"),
-      selectInModal = $(".select2InModal"),
-      countrySelect = $("#country_id_select");
+    selectIcons = $(".select2-icons"),
+    maxLength = $(".max-length"),
+    hideSearch = $(".hide-search"),
+    selectArray = $(".select2-data-array"),
+    selectAjax = $(".select2-data-ajax"),
+    selectLg = $(".select2-size-lg"),
+    selectSm = $(".select2-size-sm"),
+    selectInModal = $(".select2InModal"),
+    countrySelect = $("#country_id_select");
   select.each(function () {
     var $this = $(this);
     $this.wrap('<div class="position-relative"></div>');
@@ -35,8 +35,9 @@ var __webpack_exports__ = {};
       width: "100%",
       dropdownParent: $this.parent()
     });
-  }); // Select With Icon
+  });
 
+  // Select With Icon
   selectIcons.each(function () {
     var $this = $(this);
     $this.wrap('<div class="position-relative"></div>');
@@ -51,21 +52,20 @@ var __webpack_exports__ = {};
         return es;
       }
     });
-  }); // Country format
+  });
 
+  // Country format
   function countryFormat(country) {
     var _country$element;
-
     var code = (_country$element = country.element) === null || _country$element === void 0 ? void 0 : _country$element.dataset.country;
-
     if (code) {
       return "<img src=\"/images/flags/svg/".concat(code, ".svg\" width=\"20px\"/>  ") + country.element.innerText;
     } else {
       return "Please Select";
     }
-  } // Country Select
+  }
 
-
+  // Country Select
   countrySelect.select2({
     templateResult: countryFormat,
     escapeMarkup: function escapeMarkup(es) {
@@ -89,33 +89,33 @@ var __webpack_exports__ = {};
       });
   });
   */
-  // Format icon
 
+  // Format icon
   function iconFormat(icon) {
     var originalOption = icon.element;
-
     if (!icon.id) {
       return icon.text;
     }
-
     var $icon = feather.icons[$(icon.element).data("icon")].toSvg() + icon.text;
     return $icon;
-  } // Limiting the number of selections
+  }
 
-
+  // Limiting the number of selections
   maxLength.wrap('<div class="position-relative"></div>').select2({
     dropdownAutoWidth: true,
     width: "100%",
     maximumSelectionLength: 2,
     dropdownParent: maxLength.parent(),
     placeholder: "Select maximum 2 items"
-  }); // Hide Search Box
+  });
 
+  // Hide Search Box
   hideSearch.select2({
     placeholder: "Select an option",
     minimumResultsForSearch: Infinity
-  }); // Loading array data
+  });
 
+  // Loading array data
   var data = [{
     id: 0,
     text: "enhancement"
@@ -137,8 +137,9 @@ var __webpack_exports__ = {};
     dropdownParent: selectArray.parent(),
     width: "100%",
     data: data
-  }); // Loading remote data
+  });
 
+  // Loading remote data
   selectAjax.wrap('<div class="position-relative"></div>').select2({
     dropdownAutoWidth: true,
     dropdownParent: selectAjax.parent(),
@@ -178,15 +179,12 @@ var __webpack_exports__ = {};
     templateResult: formatRepo,
     templateSelection: formatRepoSelection
   });
-
   function formatRepo(repo) {
     if (repo.loading) return repo.text;
     var markup = "<div class='select2-result-repository clearfix'>" + "<div class='select2-result-repository__avatar'><img src='" + repo.owner.avatar_url + "' /></div>" + "<div class='select2-result-repository__meta'>" + "<div class='select2-result-repository__title'>" + repo.full_name + "</div>";
-
     if (repo.description) {
       markup += "<div class='select2-result-repository__description'>" + repo.description + "</div>";
     }
-
     markup += "<div class='select2-result-repository__statistics'>" + "<div class='select2-result-repository__forks'>" + feather.icons["share-2"].toSvg({
       "class": "me-50"
     }) + repo.forks_count + " Forks</div>" + "<div class='select2-result-repository__stargazers'>" + feather.icons["star"].toSvg({
@@ -196,13 +194,13 @@ var __webpack_exports__ = {};
     }) + repo.watchers_count + " Watchers</div>" + "</div>" + "</div></div>";
     return markup;
   }
-
   function formatRepoSelection(repo) {
     return repo.full_name || repo.text;
-  } // Sizing options
+  }
+
+  // Sizing options
+
   // Large
-
-
   selectLg.each(function () {
     var $this = $(this);
     $this.wrap('<div class="position-relative"></div>');
@@ -212,8 +210,9 @@ var __webpack_exports__ = {};
       width: "100%",
       containerCssClass: "select-lg"
     });
-  }); // Small
+  });
 
+  // Small
   selectSm.each(function () {
     var $this = $(this);
     $this.wrap('<div class="position-relative"></div>');

@@ -240,4 +240,8 @@ return [
     'links_create' => 'Link Create',
     'check' => 'Check',
     'statistics' => 'Statistics',
+    'tasks' => 'Tasks',
+    'tasks_create' => 'Task Create',
+    'task_statuses' => 'Task Statuses',
+    'task_statuses_create' => 'Task Status Create',
 ];

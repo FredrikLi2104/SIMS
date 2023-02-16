@@ -250,4 +250,13 @@ return [
     'sector' => 'Sektor',
     'top' => 'Topp',
     'empty' => 'Tom',
+    'task' => 'Uppgift',
+    'tasks' => 'Uppgifter',
+    'task_statuses' => 'Uppgiftsstatus',
+    'color' => 'Färg',
+    'start_date' => 'Startdatum',
+    'end_date' => 'Slutdatum',
+    'hours' => 'Timmar',
+    'assigned_to' => 'Tilldelad till',
+    'action' => 'Åtgärd',
 ];

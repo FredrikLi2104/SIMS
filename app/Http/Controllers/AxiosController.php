@@ -32,7 +32,11 @@ use App\Models\RiskComment;
 use App\Models\Sanction;
 use App\Models\Statement;
 use App\Models\Tag;
+use App\Models\Task;
+use App\Models\TaskStatus;
+use App\Models\TaskStatuses;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\File;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -45,6 +49,13 @@ use Illuminate\Support\Facades\Storage;
 class AxiosController extends Controller
 {
     //
+    public function components($locale)
+    {
+        return Component::orderBy('code')
+            ->orderBy("name_$locale")
+            ->get()
+            ->makeHidden(['desc_en', 'desc_se', 'sort_order', 'created_at', 'updated_at']);
+    }
 
     /**
      * Return all countries along with dictionary
@@ -1144,6 +1155,81 @@ class AxiosController extends Controller
         return collect(['tags' => $tags, 'messages' => $messages]);
     }
 
+    public function taskStatuses()
+    {
+        return TaskStatus::all();
+    }
+
+    public function tasks($locale)
+    {
+        $localeForCarbon = $locale == 'se' ? 'sv-SE' : $locale;
+        Carbon::setLocale($localeForCarbon);
+
+        $tasks = Task::with('taskStatus')
+            ->where('created_by', auth()->user()->id)
+            ->orderBy('start')
+            ->get();
+
+        $since = Carbon::createFromDate(null, 1, 1);
+        $until = Carbon::createFromDate(null, 12, 31);
+        $period = CarbonPeriod::since($since)->months(1)->until($until);
+
+        $result = [];
+        foreach ($period as $date) {
+            $tasks->each(function ($task) use ($localeForCarbon, $date, &$result) {
+                if (Carbon::parse($task->start)->between($date->copy()->firstOfMonth(), $date->copy()->endOfMonth())) {
+                    $result[$date->locale($localeForCarbon)->isoFormat('MMMM YYYY')][] = $task;
+                }
+            });
+        }
+
+        return $result;
+    }
+
+    public function tasksForWheel($locale)
+    {
+        $localeForCarbon = $locale == 'se' ? 'sv-SE' : $locale;
+        Carbon::setLocale($localeForCarbon);
+
+        $tasks = Task::with('taskStatus')
+            ->where('created_by', auth()->user()->id)
+            ->get();
+
+        $tasksGrouped = collect();
+        foreach ($tasks as $task) {
+            $added = false;
+            $tasksGrouped->each(function ($group) use ($task, &$added) {
+                if ($added) {
+                    return;
+                }
+
+                $overlapExists = $group->contains(function ($item) use ($task) {
+                    return Carbon::parse($task->start)->between(Carbon::parse($item['start']), Carbon::parse($item['end'])) ||
+                        Carbon::parse($task->end)->between(Carbon::parse($item['start']), Carbon::parse($item['end']));
+                });
+
+                if (!$overlapExists) {
+                    $group->push([
+                        'start' => $task->start_for_humans,
+                        'end' => $task->end_for_humans,
+                        'color' => $task->taskStatus->color
+                    ]);
+                    $added = true;
+                }
+            });
+
+            if (!$added) {
+                $tasksGrouped->push(collect([[
+                    'start' => $task->start_for_humans,
+                    'end' => $task->end_for_humans,
+                    'color' => $task->taskStatus->color
+                ]]));
+            }
+        }
+
+        return $tasksGrouped;
+    }
+
     private function sanctionsByCmponent($locale)
     {
         $sanctions = Sanction::select(DB::raw("CONCAT(components.code, ' - ', components.name_$locale) AS name, SUM(fine / currencies.value) AS sum"))
@@ -1306,5 +1392,13 @@ class AxiosController extends Controller
         });
 
         return $sanctions->makeVisible(['party', 'sector', 'country', 'type', 'sum']);
+    }
+
+    public function statements($locale)
+    {
+        return Statement::all()
+            ->sortBy('subcode', SORT_NATURAL)
+            ->makeVisible(['subcode'])
+            ->makeHidden(['code', 'content_en', 'content_se', 'desc_en', 'desc_se', 'k1_en', 'k1_se', 'k2_en', 'k2_se', 'k3_en', 'k3_se', 'k4_en', 'k4_se', 'k5_en', 'k5_se', 'implementation_en', 'implementation_se', 'guide_en', 'guide_se', 'sort_order']);
     }
 }

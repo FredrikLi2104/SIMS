@@ -3,12 +3,12 @@
 }
 
 .badge-light-low-med {
-  background-color: #e4d33d1f;
+  background-color: rgba(228, 211, 61, 0.1215686275);
   color: #cab707 !important;
 }
 
 .badge-light-med-high {
-  background-color: #ff5f431f;
+  background-color: rgba(255, 95, 67, 0.1215686275);
   color: #ff5f43 !important;
 }
 

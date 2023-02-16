@@ -13,62 +13,63 @@ var __webpack_exports__ = {};
 ==========================================================================================*/
 (function (window, document, $) {
   'use strict';
+
   /*******  Flatpickr  *****/
-
   var basicPickr = $('.flatpickr-basic'),
-      timePickr = $('.flatpickr-time'),
-      dateTimePickr = $('.flatpickr-date-time'),
-      multiPickr = $('.flatpickr-multiple'),
-      rangePickr = $('.flatpickr-range'),
-      humanFriendlyPickr = $('.flatpickr-human-friendly'),
-      disabledRangePickr = $('.flatpickr-disabled-range'),
-      inlineRangePickr = $('.flatpickr-inline'); // Default
+    timePickr = $('.flatpickr-time'),
+    dateTimePickr = $('.flatpickr-date-time'),
+    multiPickr = $('.flatpickr-multiple'),
+    rangePickr = $('.flatpickr-range'),
+    humanFriendlyPickr = $('.flatpickr-human-friendly'),
+    disabledRangePickr = $('.flatpickr-disabled-range'),
+    inlineRangePickr = $('.flatpickr-inline');
 
+  // Default
   if (basicPickr.length) {
     basicPickr.flatpickr();
-  } // Time
+  }
 
-
+  // Time
   if (timePickr.length) {
     timePickr.flatpickr({
       enableTime: true,
       noCalendar: true
     });
-  } // Date & TIme
+  }
 
-
+  // Date & TIme
   if (dateTimePickr.length) {
     dateTimePickr.flatpickr({
       enableTime: true
     });
-  } // Multiple Dates
+  }
 
-
+  // Multiple Dates
   if (multiPickr.length) {
     multiPickr.flatpickr({
       weekNumbers: true,
       mode: 'multiple',
       minDate: 'today'
     });
-  } // Range
+  }
 
-
+  // Range
   if (rangePickr.length) {
     rangePickr.flatpickr({
       mode: 'range'
     });
-  } // Human Friendly
+  }
 
-
+  // Human Friendly
   if (humanFriendlyPickr.length) {
     humanFriendlyPickr.flatpickr({
       altInput: true,
       altFormat: 'F j, Y',
       dateFormat: 'Y-m-d'
     });
-  } // Disabled Range
+  }
 
-
+  // Disabled Range
   if (disabledRangePickr.length) {
     disabledRangePickr.flatpickr({
       dateFormat: 'Y-m-d',
@@ -77,9 +78,9 @@ var __webpack_exports__ = {};
         to: new Date().fp_incr(7)
       }]
     });
-  } // Inline
+  }
 
-
+  // Inline
   if (inlineRangePickr.length) {
     inlineRangePickr.flatpickr({
       inline: true
@@ -87,23 +88,26 @@ var __webpack_exports__ = {};
   }
   /*******  Pick-a-date Picker  *****/
   // Basic date
+  $('.pickadate').pickadate();
 
-
-  $('.pickadate').pickadate(); // Format Date Picker
-
+  // Format Date Picker
   $('.format-picker').pickadate({
     format: 'mmmm, d, yyyy'
-  }); // Date limits
+  });
 
+  // Date limits
   $('.pickadate-limits').pickadate({
     min: [2019, 3, 20],
     max: [2019, 5, 28]
-  }); // Disabled Dates & Weeks
+  });
+
+  // Disabled Dates & Weeks
 
   $('.pickadate-disable').pickadate({
     disable: [1, [2019, 3, 6], [2019, 3, 20]]
-  }); // Picker Translations
+  });
 
+  // Picker Translations
   $('.pickadate-translations').pickadate({
     formatSubmit: 'dd/mm/yyyy',
     monthsFull: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
@@ -112,31 +116,36 @@ var __webpack_exports__ = {};
     today: "aujourd'hui",
     clear: 'clair',
     close: 'Fermer'
-  }); // Month Select Picker
+  });
 
+  // Month Select Picker
   $('.pickadate-months').pickadate({
     selectYears: false,
     selectMonths: true
-  }); // Month and Year Select Picker
+  });
 
+  // Month and Year Select Picker
   $('.pickadate-months-year').pickadate({
     selectYears: true,
     selectMonths: true
-  }); // Short String Date Picker
+  });
 
+  // Short String Date Picker
   $('.pickadate-short-string').pickadate({
     weekdaysShort: ['S', 'M', 'Tu', 'W', 'Th', 'F', 'S'],
     showMonthsShort: true
-  }); // Change first weekday
+  });
 
+  // Change first weekday
   $('.pickadate-firstday').pickadate({
     firstDay: 1
   });
+
   /*******    Pick-a-time Picker  *****/
   // Basic time
+  $('.pickatime').pickatime();
 
-  $('.pickatime').pickatime(); // Format options
-
+  // Format options
   $('.pickatime-format').pickatime({
     // Escape any “rule” characters with an exclamation mark (!).
     format: 'T!ime selected: h:i a',
@@ -144,40 +153,48 @@ var __webpack_exports__ = {};
     formatSubmit: 'HH:i',
     hiddenPrefix: 'prefix__',
     hiddenSuffix: '__suffix'
-  }); // Format options
+  });
 
+  // Format options
   $('.pickatime-formatlabel').pickatime({
     formatLabel: function formatLabel(time) {
       var hours = (time.pick - this.get('now').pick) / 60,
-          label = hours < 0 ? ' !hours to now' : hours > 0 ? ' !hours from now' : 'now';
+        label = hours < 0 ? ' !hours to now' : hours > 0 ? ' !hours from now' : 'now';
       return 'h:i a <sm!all>' + (hours ? Math.abs(hours) : '') + label + '</sm!all>';
     }
-  }); // Min - Max Time to select
+  });
 
+  // Min - Max Time to select
   $('.pickatime-min-max').pickatime({
     // Using Javascript
     min: new Date(2015, 3, 20, 7),
-    max: new Date(2015, 7, 14, 18, 30) // Using Array
+    max: new Date(2015, 7, 14, 18, 30)
+
+    // Using Array
     // min: [7,30],
     // max: [14,0]
+  });
 
-  }); // Intervals
-
+  // Intervals
   $('.pickatime-intervals').pickatime({
     interval: 150
-  }); // Disable Time
+  });
 
+  // Disable Time
   $('.pickatime-disable').pickatime({
-    disable: [// Disable Using Integers
+    disable: [
+    // Disable Using Integers
     3, 5, 7, 13, 17, 21
+
     /* Using Array */
     // [0,30],
     // [2,0],
     // [8,30],
     // [9,0]
     ]
-  }); // Close on a user action
+  });
 
+  // Close on a user action
   $('.pickatime-close-action').pickatime({
     closeOnSelect: false,
     closeOnClear: false

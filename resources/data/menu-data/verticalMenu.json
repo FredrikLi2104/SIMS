@@ -11,6 +11,15 @@
             "auth": "all"
         },
         {
+            "name": "tasks",
+            "auth": "all",
+            "icon": "layers",
+            "url": "tasks",
+            "slug": [
+                "tasks.index"
+            ]
+        },
+        {
             "name": "plan",
             "auth": "auditor",
             "icon": "check-square",
@@ -452,6 +461,32 @@
                     "icon": "circle",
                     "slug": [
                         "statistics.sanctions"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "tasks",
+            "auth": "moderator",
+            "icon": "layers",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "task_statuses_create",
+                    "url": "task_statuses/create",
+                    "icon": "circle",
+                    "slug": [
+                        "task_statuses.create"
+                    ]
+                },
+                {
+                    "name": "task_statuses",
+                    "url": "task_statuses",
+                    "icon": "circle",
+                    "slug": [
+                        "task_statuses.index",
+                        "task_statuses.edit",
+                        "task_statuses.show"
                     ]
                 }
             ]
