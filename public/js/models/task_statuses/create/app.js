@@ -19713,6 +19713,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this$taskStatusData, _this$taskStatusData2, _this$taskStatusData3;
     return {
       errors: null,
+      taskStatusSortOrder: this.sortOrder,
       nameEn: (_this$taskStatusData = this.taskStatusData) === null || _this$taskStatusData === void 0 ? void 0 : _this$taskStatusData.name_en,
       nameSe: (_this$taskStatusData2 = this.taskStatusData) === null || _this$taskStatusData2 === void 0 ? void 0 : _this$taskStatusData2.name_se,
       colorHex: (_this$taskStatusData3 = this.taskStatusData) === null || _this$taskStatusData3 === void 0 ? void 0 : _this$taskStatusData3.color,
@@ -19901,17 +19902,20 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("".concat((_$data$errors5 = $data.errors) !== null && _$data$errors5 !== void 0 && _$data$errors5.color ? 'is-invalid' : '')),
     name: "color",
     value: $data.colorHex
-  }, null, 10 /* CLASS, PROPS */, _hoisted_14), (_$data$errors6 = $data.errors) !== null && _$data$errors6 !== void 0 && _$data$errors6.color ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.color[0]), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.sortOrder), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  }, null, 10 /* CLASS, PROPS */, _hoisted_14), (_$data$errors6 = $data.errors) !== null && _$data$errors6 !== void 0 && _$data$errors6.color ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.color[0]), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.sortOrder), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "text",
     id: "sort-order",
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("form-control ".concat((_$data$errors7 = $data.errors) !== null && _$data$errors7 !== void 0 && _$data$errors7.sort_order ? 'is-invalid' : '')),
     placeholder: $props.sortOrder,
-    name: "sort_order"
-  }, null, 10 /* CLASS, PROPS */, _hoisted_19), (_$data$errors8 = $data.errors) !== null && _$data$errors8 !== void 0 && _$data$errors8.sort_order ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.sort_order[0]), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    name: "sort_order",
+    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+      return $data.taskStatusSortOrder = $event;
+    })
+  }, null, 10 /* CLASS, PROPS */, _hoisted_19), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.taskStatusSortOrder]]), (_$data$errors8 = $data.errors) !== null && _$data$errors8 !== void 0 && _$data$errors8.sort_order ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.sort_order[0]), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-primary waves-effect waves-float waves-light",
     disabled: $data.isSubmitting,
-    onClick: _cache[2] || (_cache[2] = function () {
+    onClick: _cache[3] || (_cache[3] = function () {
       return $options.submit && $options.submit.apply($options, arguments);
     })
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.submit), 513 /* TEXT, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, !$data.isSubmitting]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_23, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.isSubmitting]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {

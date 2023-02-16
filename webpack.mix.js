@@ -16,11 +16,11 @@ const sassOptions = {
  */
 
 // Assets
-/*mix
+mix
     .copy('resources/data', 'public/data')
     .copy('resources/fonts', 'public/fonts')
     .copy('resources/images/', 'public/images/')
-    .copy('resources/lang/', 'public/lang/');*/
+    .copy('resources/lang/', 'public/lang/');
 
 // Sass
 mix
@@ -81,10 +81,10 @@ mix
     .js('resources/js/models/currencies/index/app.js', 'public/js/models/currencies/index/app.js').vue()
     .js('resources/js/models/dpas/index/app.js', 'public/js/models/dpas/index/app.js').vue()
     .js('resources/js/models/dpas/edit/app.js', 'public/js/models/dpas/edit/app.js').vue()
-    // .js('resources/js/models/faqs/create/app.js', 'public/js/models/faqs/create/app.js').vue()
+    .js('resources/js/models/faqs/create/app.js', 'public/js/models/faqs/create/app.js').vue()
     .js('resources/js/models/faqs/index/app.js', 'public/js/models/faqs/index/app.js').vue()
     .js('resources/js/models/kpis/index/app.js', 'public/js/models/kpis/index/app.js').vue()
-    // .js('resources/js/models/links/create/app.js', 'public/js/models/links/create/app.js').vue()
+    .js('resources/js/models/links/create/app.js', 'public/js/models/links/create/app.js').vue()
     .js('resources/js/models/links/index/app.js', 'public/js/models/links/index/app.js').vue()
     .js('resources/js/models/organisations/act/app.js', 'public/js/models/organisations/act/app.js').vue()
     .js('resources/js/models/organisations/check/app.js', 'public/js/models/organisations/check/app.js').vue()
@@ -101,7 +101,7 @@ mix
     .js('resources/js/models/sanctions/edit/app.js', 'public/js/models/sanctions/edit/app.js').vue()
     .js('resources/js/models/sanctions/statistics/app.js', 'public/js/models/sanctions/statistics/app.js').vue()
     .js('resources/js/models/tags/index/app.js', 'public/js/models/tags/index/app.js').vue()
-    // .js('resources/js/models/task_statuses/create/app.js', 'public/js/models/task_statuses/create/app.js').vue()
+    .js('resources/js/models/task_statuses/create/app.js', 'public/js/models/task_statuses/create/app.js').vue()
     .js('resources/js/models/task_statuses/index/app.js', 'public/js/models/task_statuses/index/app.js').vue()
     .js('resources/js/models/tasks/index/app.js', 'public/js/models/tasks/index/app.js').vue()
     // services

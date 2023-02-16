@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->string('title_se');
             $table->text('desc_en');
             $table->text('desc_se');
-            $table->timestamp('start');
-            $table->timestamp('end');
+            $table->dateTime('start');
+            $table->dateTime('end');
             $table->decimal('hours');
             $table->foreignIdFor(TaskStatus::class)->constrained();
             $table->foreignId('created_by')->constrained('users');

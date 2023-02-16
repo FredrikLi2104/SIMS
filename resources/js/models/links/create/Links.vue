@@ -6,7 +6,7 @@
                        for="sort-order">{{ messages.sortOrder }}</label>
                 <input type="text" id="sort-order"
                        :class="`form-control ${errors?.sort_order ? 'is-invalid' : ''}`"
-                       :placeholder="sortOrder" name="sort_order" v-model="sortOrder">
+                       :placeholder="sortOrder" name="sort_order" v-model="linkSortOrder">
                 <div v-if="errors?.sort_order" class="invalid-feedback">{{ errors.sort_order[0] }}</div>
             </div>
         </div>
@@ -61,6 +61,7 @@ export default {
     data() {
         return {
             errors: null,
+            linkSortOrder: this.sortOrder,
             contentEn: this.linkData?.content_en,
             contentSe: this.linkData?.content_se,
             live: this.linkData?.live,
