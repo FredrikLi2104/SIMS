@@ -4,11 +4,14 @@
             <div class="col-xl-2"></div>
             <div class="col-xl-8 d-flex justify-content-center">
                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradioa" autocomplete="off" @click="draw('components')" :checked="active == 'components'" />
-                    <label class="btn btn-primary btn-lg" for="btnradioa">{{ collection?.messages?.components }}</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradiob" autocomplete="off" @click="draw('statements')" :checked="active == 'statements'" />
+                    <!--<input type="radio" class="btn-check" name="btnradio" id="btnradioa" autocomplete="off"
+                           @click="draw('components')" :checked="active == 'components'"/>
+                    <label class="btn btn-primary btn-lg" for="btnradioa">{{ collection?.messages?.components }}</label>-->
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradiob" autocomplete="off"
+                           @click="draw('statements')" :checked="active == 'statements'"/>
                     <label class="btn btn-primary btn-lg" for="btnradiob">{{ collection?.messages?.statements }}</label>
-                    <input type="radio" class="btn-check" name="btnradio" id="btnradioc" autocomplete="off" @click="draw('report')" :checked="active == 'report'" />
+                    <input type="radio" class="btn-check" name="btnradio" id="btnradioc" autocomplete="off"
+                           @click="draw('report')" :checked="active == 'report'"/>
                     <label class="btn btn-primary btn-lg" for="btnradioc">{{ collection?.messages?.report }}</label>
                 </div>
             </div>
@@ -35,7 +38,9 @@
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="customFile1" class="form-label">{{ collection?.messages?.logo }}</label>
-                                    <input id="logoInput" :class="errors?.logo ? 'form-control is-invalid' : 'form-control'" type="file" @change="orgUpdate" />
+                                    <input id="logoInput"
+                                           :class="errors?.logo ? 'form-control is-invalid' : 'form-control'"
+                                           type="file" @change="orgUpdate"/>
                                     <p>
                                         <small class="text-muted">{{ collection?.messages?.logoRequirements }}</small>
                                     </p>
@@ -43,92 +48,128 @@
                                 </div>
                                 <div class="col-1"></div>
                                 <div class="col-3 mb-1 align-items-center text-center bg-white">
-                                    <img :src="collection?.organisation?.logo" height="64" />
+                                    <img :src="collection?.organisation?.logo" height="64"/>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
-                                    <label for="colorInput" class="form-label">{{ collection?.messages?.accentColor }}</label>
-                                    <input id="colorInput" type="color" class="form-control form-control-color" title="Choose your color" v-model="color" @change="orgUpdate" />
+                                    <label for="colorInput" class="form-label">{{
+                                            collection?.messages?.accentColor
+                                        }}</label>
+                                    <input id="colorInput" type="color" class="form-control form-control-color"
+                                           title="Choose your color" v-model="color" @change="orgUpdate"/>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
-                                    <label class="form-label">{{ collection?.messages?.component }} {{ collection?.messages?.graph }}</label>
+                                    <label class="form-label">{{ collection?.messages?.component }}
+                                        {{ collection?.messages?.graph }}</label>
                                     <div class="bg-white" style="position: relative; height: 30vh; width: 40vw">
-                                        <canvas id="graphelementlarge" class="polar-area-chart-ex chartjs" data-height="800"></canvas>
+                                        <canvas id="graphelementlarge" class="polar-area-chart-ex chartjs"
+                                                data-height="800"></canvas>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label class="form-label">{{ collection?.messages?.organisationDetails }}</label>
-                                    <div id="footer" class="bg-white" style="position: relative; height: 100px; width: 730px">
+                                    <div id="footer" class="bg-white"
+                                         style="position: relative; height: 100px; width: 730px">
                                         <svg height="100" width="660" style="position: absolute; left: 0">
-                                            <polygon points="0,0 504,0 660,100 0,100" :fill="`#484848`" />
+                                            <polygon points="0,0 504,0 660,100 0,100" :fill="`#484848`"/>
                                         </svg>
                                         <svg height="50" width="150" style="position: absolute; left: 440; bottom: 0">
-                                            <polygon points="40,0 150,0 110,50 0,50 " :fill="accentColor()" />
+                                            <polygon points="40,0 150,0 110,50 0,50 " :fill="accentColor()"/>
                                         </svg>
                                         <svg height="50" width="190" style="position: absolute; right: 0; bottom: 0">
-                                            <polygon points="40,0 190,0 190,50 0,50" :fill="color" />
+                                            <polygon points="40,0 190,0 190,50 0,50" :fill="color"/>
                                         </svg>
                                         <svg height="32" width="32" style="position: absolute; left: 16; top: 12">
-                                            <circle cx="16" cy="16" r="16" :fill="accentColor()" />
+                                            <circle cx="16" cy="16" r="16" :fill="accentColor()"/>
                                         </svg>
-                                        <img src="/images/icons/phone.png" width="16" height="16" style="position: absolute; left: 24px; top: 20px" />
-                                        <p style="position: absolute; left: 56px; top: 14px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.phone }}</p>
+                                        <img src="/images/icons/phone.png" width="16" height="16"
+                                             style="position: absolute; left: 24px; top: 20px"/>
+                                        <p style="position: absolute; left: 56px; top: 14px; font-family: 'Times New Roman', Times, serif; font-size: 14px"
+                                           class="text-white font-semibold">{{ collection?.organisation?.phone }}</p>
                                         <svg height="32" width="32" style="position: absolute; left: 232; top: 12">
-                                            <circle cx="16" cy="16" r="16" :fill="accentColor()" />
+                                            <circle cx="16" cy="16" r="16" :fill="accentColor()"/>
                                         </svg>
-                                        <img src="/images/icons/gps.png" width="16" height="16" style="position: absolute; left: 240px; top: 20px" />
-                                        <p style="position: absolute; left: 272px; top: 8px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.address1 }}</p>
-                                        <p style="position: absolute; left: 272px; top: 24px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.address2 }}</p>
+                                        <img src="/images/icons/gps.png" width="16" height="16"
+                                             style="position: absolute; left: 240px; top: 20px"/>
+                                        <p style="position: absolute; left: 272px; top: 8px; font-family: 'Times New Roman', Times, serif; font-size: 14px"
+                                           class="text-white font-semibold">{{ collection?.organisation?.address1 }}</p>
+                                        <p style="position: absolute; left: 272px; top: 24px; font-family: 'Times New Roman', Times, serif; font-size: 14px"
+                                           class="text-white font-semibold">{{ collection?.organisation?.address2 }}</p>
                                         <svg height="32" width="32" style="position: absolute; left: 16; top: 56">
-                                            <circle cx="16" cy="16" r="16" :fill="accentColor()" />
+                                            <circle cx="16" cy="16" r="16" :fill="accentColor()"/>
                                         </svg>
-                                        <img src="/images/icons/email.png" width="16" height="16" style="position: absolute; left: 24px; top: 64px" />
-                                        <p style="position: absolute; left: 56px; top: 60px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.email }}</p>
+                                        <img src="/images/icons/email.png" width="16" height="16"
+                                             style="position: absolute; left: 24px; top: 64px"/>
+                                        <p style="position: absolute; left: 56px; top: 60px; font-family: 'Times New Roman', Times, serif; font-size: 14px"
+                                           class="text-white font-semibold">{{ collection?.organisation?.email }}</p>
                                         <svg height="32" width="32" style="position: absolute; left: 232; top: 56">
-                                            <circle cx="16" cy="16" r="16" :fill="accentColor()" />
+                                            <circle cx="16" cy="16" r="16" :fill="accentColor()"/>
                                         </svg>
-                                        <img src="/images/icons/web.png" width="16" height="16" style="position: absolute; left: 240px; top: 64px" />
-                                        <p style="position: absolute; left: 272px; top: 60px; font-family: 'Times New Roman', Times, serif; font-size: 14px" class="text-white font-semibold">{{ collection?.organisation?.website }}</p>
+                                        <img src="/images/icons/web.png" width="16" height="16"
+                                             style="position: absolute; left: 240px; top: 64px"/>
+                                        <p style="position: absolute; left: 272px; top: 60px; font-family: 'Times New Roman', Times, serif; font-size: 14px"
+                                           class="text-white font-semibold">{{ collection?.organisation?.website }}</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="phoneInput" class="form-label">{{ collection?.messages?.phone }}</label>
-                                    <input id="phoneInput" type="text" :class="errors?.phone ? 'form-control is-invalid' : 'form-control'" placeholder="+4681234567" @blur="orgUpdate" :value="collection.organisation.phone" />
+                                    <input id="phoneInput" type="text"
+                                           :class="errors?.phone ? 'form-control is-invalid' : 'form-control'"
+                                           placeholder="+4681234567" @blur="orgUpdate"
+                                           :value="collection.organisation.phone"/>
                                     <div v-if="errors?.phone" class="invalid-feedback">{{ errors?.phone }}</div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
-                                    <label for="address1Input" class="form-label">{{ collection?.messages?.address1 }}</label>
-                                    <input id="address1Input" type="text" :class="errors?.address1 ? 'form-control is-invalid' : 'form-control'" placeholder="Birger Jarlsgatan 4" @blur="orgUpdate" :value="collection.organisation.address1" />
+                                    <label for="address1Input" class="form-label">{{
+                                            collection?.messages?.address1
+                                        }}</label>
+                                    <input id="address1Input" type="text"
+                                           :class="errors?.address1 ? 'form-control is-invalid' : 'form-control'"
+                                           placeholder="Birger Jarlsgatan 4" @blur="orgUpdate"
+                                           :value="collection.organisation.address1"/>
                                     <div v-if="errors?.address1" class="invalid-feedback">{{ errors?.address1 }}</div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
-                                    <label for="address2Input" class="form-label">{{ collection?.messages?.address2 }}</label>
-                                    <input id="address2Input" type="text" :class="errors?.address2 ? 'form-control is-invalid' : 'form-control'" placeholder="114 34 Stockholm, Sweden" @blur="orgUpdate" :value="collection.organisation.address2" />
+                                    <label for="address2Input" class="form-label">{{
+                                            collection?.messages?.address2
+                                        }}</label>
+                                    <input id="address2Input" type="text"
+                                           :class="errors?.address2 ? 'form-control is-invalid' : 'form-control'"
+                                           placeholder="114 34 Stockholm, Sweden" @blur="orgUpdate"
+                                           :value="collection.organisation.address2"/>
                                     <div v-if="errors?.address2" class="invalid-feedback">{{ errors?.address2 }}</div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="emailInput" class="form-label">{{ collection?.messages?.email }}</label>
-                                    <input id="emailInput" type="text" :class="errors?.email ? 'form-control is-invalid' : 'form-control'" placeholder="hello@organisation.se" @blur="orgUpdate" :value="collection.organisation.email" />
+                                    <input id="emailInput" type="text"
+                                           :class="errors?.email ? 'form-control is-invalid' : 'form-control'"
+                                           placeholder="hello@organisation.se" @blur="orgUpdate"
+                                           :value="collection.organisation.email"/>
                                     <div v-if="errors?.email" class="invalid-feedback">{{ errors?.email }}</div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
-                                    <label for="websiteInput" class="form-label">{{ collection?.messages?.website }}</label>
-                                    <input id="websiteInput" type="text" :class="errors?.website ? 'form-control is-invalid' : 'form-control'" placeholder="https://organisation.se" @blur="orgUpdate" :value="collection.organisation.website" />
+                                    <label for="websiteInput" class="form-label">{{
+                                            collection?.messages?.website
+                                        }}</label>
+                                    <input id="websiteInput" type="text"
+                                           :class="errors?.website ? 'form-control is-invalid' : 'form-control'"
+                                           placeholder="https://organisation.se" @blur="orgUpdate"
+                                           :value="collection.organisation.website"/>
                                     <div v-if="errors?.website" class="invalid-feedback">{{ errors?.website }}</div>
                                 </div>
                             </div>
@@ -142,7 +183,8 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center">
                                 <i data-feather="file-text" class="user-timeline-title-icon"></i>
-                                <h4 class="card-title" style="margin-left: 10px !important">{{ collection?.messages?.report }}</h4>
+                                <h4 class="card-title" style="margin-left: 10px !important">
+                                    {{ collection?.messages?.report }}</h4>
                             </div>
                         </div>
                         <div class="card-body">
@@ -151,7 +193,8 @@
                             </div>
                             <div class="mb-1">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked />
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                           id="inlineRadio1" value="option1" checked/>
                                     <label class="form-check-label" for="inlineRadio1">Modern</label>
                                 </div>
                                 <!--
@@ -163,11 +206,12 @@
                             </div>
                             <div class="bg-white">
                                 <div class="d-flex justify-content-between align-items-center mb-1 mt-1">
-                                    <div class="col-6" :style="'font-family: \'Times New Roman\'; font-weight: 900; color: ' + color + ';'">
+                                    <div class="col-6"
+                                         :style="'font-family: \'Times New Roman\'; font-weight: 900; color: ' + color + ';'">
                                         <p class="my-0 px-1">{{ collection?.messages?.planningReport }}</p>
                                     </div>
                                     <div class="col-6 d-flex justify-content-end px-1 py-1">
-                                        <img :src="collection?.organisation?.logo" height="60" />
+                                        <img :src="collection?.organisation?.logo" height="60"/>
                                     </div>
                                 </div>
                                 <div id="headerBar" class="d-flex justify-content-center align-items-end mb-2">
@@ -175,74 +219,89 @@
                                     <div class="col-3" :style="`height: 10px; background-color: ${color};`"></div>
                                 </div>
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="col-6" :style="'font-family: \'Times New Roman\'; font-weight: 900; color: ' + color + ';'">
+                                    <div class="col-6"
+                                         :style="'font-family: \'Times New Roman\'; font-weight: 900; color: ' + color + ';'">
                                         <p class="my-0 px-1">{{ collection?.messages?.summary }}</p>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="col-12 text-black" :style="`font-family: 'Times New Roman'; font-weight: 400;`">
+                                    <div class="col-12 text-black"
+                                         :style="`font-family: 'Times New Roman'; font-weight: 400;`">
                                         <p class="my-0 px-1">{{ collection?.messages?.summaryDesc }}</p>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-center align-items-center mb-2">
                                     <div class="col-12">
-                                        <canvas id="graphelement" class="polar-area-chart-ex chartjs" data-height="200"></canvas>
+                                        <canvas id="graphelement" class="polar-area-chart-ex chartjs"
+                                                data-height="200"></canvas>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-start align-items-center">
-                                    <div class="col-6" :style="'font-family: \'Times New Roman\'; font-weight: 900; color: ' + color + ';'">
+                                    <div class="col-6"
+                                         :style="'font-family: \'Times New Roman\'; font-weight: 900; color: ' + color + ';'">
                                         <p class="my-0 px-1">{{ collection?.messages?.dataProtectionPlan }}</p>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-start align-items-center mb-2">
-                                    <div class="col-12 text-black" :style="`font-family: 'Times New Roman'; font-weight: 400;`">
+                                    <div class="col-12 text-black"
+                                         :style="`font-family: 'Times New Roman'; font-weight: 400;`">
                                         <p class="my-0 px-1">{{ collection?.messages?.dataProtectionText }}</p>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center">
-                                    <div id="footer" class="bg-white" style="position: relative; height: 64px; width: 400px">
+                                    <div id="footer" class="bg-white"
+                                         style="position: relative; height: 64px; width: 400px">
                                         <svg height="64" width="400" style="position: absolute; left: 0">
-                                            <polygon points="0,0 212,0 320,64 0,64" :fill="`#484848`" />
+                                            <polygon points="0,0 212,0 320,64 0,64" :fill="`#484848`"/>
                                         </svg>
 
                                         <svg height="40" width="100" style="position: absolute; right: 150; bottom: 0">
-                                            <polygon points="30,0 100,0 70,40 0,40 " :fill="accentColor()" />
+                                            <polygon points="30,0 100,0 70,40 0,40 " :fill="accentColor()"/>
                                         </svg>
                                         <svg height="40" width="180" style="position: absolute; right: 0; bottom: 0">
-                                            <polygon points="30,0 180,0 180,40 0,40" :fill="color" />
+                                            <polygon points="30,0 180,0 180,40 0,40" :fill="color"/>
                                         </svg>
                                     </div>
                                 </div>
                             </div>
                             <div class="browser-states">
                                 <div class="d-flex flex-row">
-                                    <img src="/images/icons/word_icon.png" class="rounded me-1" height="30" alt="Google Chrome" />
+                                    <img src="/images/icons/word_icon.png" class="rounded me-1" height="30"
+                                         alt="Google Chrome"/>
                                     <h6 class="align-self-center mb-0">{{ collection?.messages?.downloadDocx }}</h6>
                                 </div>
                                 <div class="d-flex align-items-center" style="position: relative">
-                                    <button type="button" class="btn btn-icon btn-success waves-effect waves-float waves-light" @click="generateDocx">
+                                    <button type="button"
+                                            class="btn btn-icon btn-success waves-effect waves-float waves-light"
+                                            @click="generateDocx">
                                         <i data-feather="download"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="browser-states">
                                 <div class="d-flex flex-row">
-                                    <img src="/images/icons/pdf_icon.png" class="rounded me-1" height="30" alt="Acrobat Reader" />
+                                    <img src="/images/icons/pdf_icon.png" class="rounded me-1" height="30"
+                                         alt="Acrobat Reader"/>
                                     <h6 class="align-self-center mb-0">{{ collection?.messages?.downloadPdf }}</h6>
                                 </div>
                                 <div class="d-flex align-items-center" style="position: relative">
-                                    <button type="button" class="btn btn-icon btn-success waves-effect waves-float waves-light" @click="generatePdf">
+                                    <button type="button"
+                                            class="btn btn-icon btn-success waves-effect waves-float waves-light"
+                                            @click="generatePdf">
                                         <i data-feather="download"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="browser-states">
                                 <div class="d-flex flex-row">
-                                    <img src="/images/icons/powerpoint_icon.png" class="rounded me-1" height="30" alt="Power Point" />
+                                    <img src="/images/icons/powerpoint_icon.png" class="rounded me-1" height="30"
+                                         alt="Power Point"/>
                                     <h6 class="align-self-center mb-0">{{ collection?.messages?.downloadPptx }}</h6>
                                 </div>
                                 <div class="d-flex align-items-center" style="position: relative">
-                                    <button type="button" class="btn btn-icon btn-success waves-effect waves-float waves-light" @click="generatePptx">
+                                    <button type="button"
+                                            class="btn btn-icon btn-success waves-effect waves-float waves-light"
+                                            @click="generatePptx">
                                         <i data-feather="download"></i>
                                     </button>
                                 </div>
@@ -259,80 +318,92 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade text-start modal-primary" id="statementViewModal" tabindex="-1" aria-labelledby="statementViewLabel" aria-hidden="true">
+            <div class="modal fade text-start modal-primary" id="statementViewModal" tabindex="-1"
+                 aria-labelledby="statementViewLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-extra-wide">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="statementViewLabel">{{ collection?.messages?.statement }} {{ collection?.messages?.view }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="statementViewHide"></button>
+                            <h5 class="modal-title" id="statementViewLabel">{{ collection?.messages?.statement }}
+                                {{ collection?.messages?.view }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                    @click="statementViewHide"></button>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead class="table-light">
-                                            <tr>
-                                                <th>{{ collection?.messages?.key }}</th>
-                                                <th>{{ collection?.messages?.value }}</th>
-                                            </tr>
+                                        <tr>
+                                            <th>{{ collection?.messages?.key }}</th>
+                                            <th>{{ collection?.messages?.value }}</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>{{ collection?.messages?.period }}</td>
-                                                <td>{{ statementActive?.component?.organisation_period ? statementActive.component.organisation_period[`name_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{{ collection?.messages?.code }}</td>
-                                                <td>{{ statementActive?.component?.code }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{{ collection?.messages?.subcode }}</td>
-                                                <td>{{ statementActive?.subcode }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{{ collection?.messages?.component }}</td>
-                                                <td>{{ statementActive?.component[`name_${locale}`] }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{{ collection?.messages?.statement }}</td>
-                                                <td>{{ statementActive ? statementActive[`content_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{{ collection?.messages?.desc }}</td>
-                                                <td>{{ statementActive ? statementActive[`desc_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>K1</td>
-                                                <td>{{ statementActive ? statementActive[`k1_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>K2</td>
-                                                <td>{{ statementActive ? statementActive[`k2_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>K3</td>
-                                                <td>{{ statementActive ? statementActive[`k3_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>K4</td>
-                                                <td>{{ statementActive ? statementActive[`k4_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>K5</td>
-                                                <td>{{ statementActive ? statementActive[`k5_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{{ collection?.messages?.implementation + " " }}{{ collection?.messages?.example }}</td>
-                                                <td>{{ statementActive ? statementActive[`implementation_${locale}`] : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{{ collection?.messages?.implementation }}</td>
-                                                <td>{{ statementActive ? statementActive.implementation : null }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>{{ collection?.messages?.responsibility }}</td>
-                                                <td>{{ statementActive ? statementActive.responsibility : null }}</td>
-                                            </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.period }}</td>
+                                            <td>{{
+                                                    statementActive?.component?.organisation_period ? statementActive.component.organisation_period[`name_${locale}`] : null
+                                                }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.code }}</td>
+                                            <td>{{ statementActive?.component?.code }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.subcode }}</td>
+                                            <td>{{ statementActive?.subcode }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.component }}</td>
+                                            <td>{{ statementActive?.component[`name_${locale}`] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.statement }}</td>
+                                            <td>{{ statementActive ? statementActive[`content_${locale}`] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.desc }}</td>
+                                            <td>{{ statementActive ? statementActive[`desc_${locale}`] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>K1</td>
+                                            <td>{{ statementActive ? statementActive[`k1_${locale}`] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>K2</td>
+                                            <td>{{ statementActive ? statementActive[`k2_${locale}`] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>K3</td>
+                                            <td>{{ statementActive ? statementActive[`k3_${locale}`] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>K4</td>
+                                            <td>{{ statementActive ? statementActive[`k4_${locale}`] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>K5</td>
+                                            <td>{{ statementActive ? statementActive[`k5_${locale}`] : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{
+                                                    collection?.messages?.implementation + " "
+                                                }}{{ collection?.messages?.example }}
+                                            </td>
+                                            <td>{{
+                                                    statementActive ? statementActive[`implementation_${locale}`] : null
+                                                }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.implementation }}</td>
+                                            <td>{{ statementActive ? statementActive.implementation : null }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ collection?.messages?.responsibility }}</td>
+                                            <td>{{ statementActive ? statementActive.responsibility : null }}</td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -348,20 +419,41 @@
     </div>
 </template>
 <script>
-import { AlignmentType, BorderStyle, convertInchesToTwip, Document, Footer, Header, ImageRun, Packer, PageBreak, Paragraph, ShadingType, SymbolRun, Table, TableCell, TableRow, TextRun, VerticalAlign, WidthType } from "docx";
-import { saveAs } from "file-saver";
+import {
+    AlignmentType,
+    BorderStyle,
+    convertInchesToTwip,
+    Document,
+    Footer,
+    Header,
+    ImageRun,
+    Packer,
+    PageBreak,
+    Paragraph,
+    ShadingType,
+    SymbolRun,
+    Table,
+    TableCell,
+    TableRow,
+    TextRun,
+    VerticalAlign,
+    WidthType
+} from "docx";
+import {saveAs} from "file-saver";
 import domtoimage from "dom-to-image";
 import hsl from "hsl-to-hex";
-import { jsPDF } from "jspdf";
+import {jsPDF} from "jspdf";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import pptxgen from "pptxgenjs";
+
 export default {
-    props: ["locale"],
+    props: ["locale", 'type', 'actionId'],
     data() {
         return {
-            active: "components",
+            active: null,
             dataTable: null,
             collection: null,
             statementActive: null,
@@ -450,11 +542,11 @@ export default {
             var columns = [];
             switch (thisComponent.active) {
                 case "components":
-                    columns = [{ data: "code_name" }, { data: "desc_" + thisComponent.locale }, { data: "periods" }];
+                    columns = [{data: "code_name"}, {data: "desc_" + thisComponent.locale}, {data: "periods"}];
                     break;
 
                 case "statements":
-                    columns = [{ data: "component.organisation_period.sort_order" }, { data: "subcode" }, { data: "implementation_" + thisComponent.locale }, { data: "implementation" }, , { data: "responsibility" }];
+                    columns = [{data: "component.organisation_period.sort_order"}, {data: "subcode"}, {data: "implementation_" + thisComponent.locale}, {data: "implementation"}, , {data: "responsibility"}];
                     break;
             }
             var columnDefs = [];
@@ -837,11 +929,13 @@ export default {
                 },
             });
         },
-        deleteModel(id) {},
+        deleteModel(id) {
+        },
         async docData() {
             var thisComponent = this;
             let r = {};
             r.filename = thisComponent.collection?.organisation?.name + "_" + thisComponent.collection?.messages?.planningReport + "_" + new Date().toLocaleDateString();
+
             // header logo
             function getFile(url) {
                 return new Promise((resolve, reject) => {
@@ -851,6 +945,7 @@ export default {
                     logoImage.onerror = () => reject();
                 });
             }
+
             async function getbase(url) {
                 const data = await fetch(url);
                 const blob = await data.blob();
@@ -861,12 +956,14 @@ export default {
                     reader.onerror = () => reject();
                 });
             }
+
             const logoImageFile = await getFile(thisComponent.collection?.organisation?.logo);
             r.height = 48;
             r.width = Math.round((logoImageFile.width / logoImageFile.height) * 48);
             r.base = await getbase(thisComponent.collection?.organisation?.logo);
             const footerBlob = await domtoimage.toBlob(document.getElementById("footer")).then((blob) => blob);
             const graphBlob = await domtoimage.toBlob(document.getElementById("graphelementlarge")).then((blob) => blob);
+
             async function blobToBase(blob) {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -875,6 +972,7 @@ export default {
                     reader.onerror = () => reject();
                 });
             }
+
             r.footerBase = await blobToBase(footerBlob);
             r.graphBase = await blobToBase(graphBlob);
             return r;
@@ -884,7 +982,7 @@ export default {
             thisComponent.active = type;
             if (type == "report") {
                 axios
-                    .get("/" + thisComponent.locale + "/axios/organisations/plan", {})
+                    .get("/" + thisComponent.locale + "/axios/organisations/plan/user", {})
                     .then(function (response) {
                         //console.log(response.data);
                         thisComponent.collection = response.data;
@@ -907,7 +1005,7 @@ export default {
                 });
             } else {
                 axios
-                    .get("/" + thisComponent.locale + "/axios/organisations/plan", {})
+                    .get("/" + thisComponent.locale + "/axios/organisations/plan/user/" + thisComponent.actionId, {})
                     .then(function (response) {
                         console.log(response.data);
                         thisComponent.collection = response.data;
@@ -978,6 +1076,7 @@ export default {
                     logoImage.onerror = () => reject();
                 });
             }
+
             const logoImageFile = await getRatio(thisComponent.collection?.organisation?.logo);
             // end do ratio stuff
             const logoBlob = await fetch(thisComponent.collection?.organisation?.logo).then((r) => r.blob());
@@ -1448,7 +1547,12 @@ export default {
                 layout: "noBorders",
                 table: {
                     widths: [300, 216],
-                    body: [[[{ text: thisComponent.collection?.messages?.planningReport, style: "boldColor", alignment: "left", margin: [0, 16, 0, 0] }], [{ image: docData.base, width: docData.width, height: docData.height, alignment: "right" }]]],
+                    body: [[[{
+                        text: thisComponent.collection?.messages?.planningReport,
+                        style: "boldColor",
+                        alignment: "left",
+                        margin: [0, 16, 0, 0]
+                    }], [{image: docData.base, width: docData.width, height: docData.height, alignment: "right"}]]],
                 },
                 margin: [24, 8, 24, 0],
             };
@@ -1488,8 +1592,18 @@ export default {
             };
             let tableBody = [
                 [
-                    { text: thisComponent.collection?.messages?.quarter, style: "normal", fillColor: accentColor, alignment: "center" },
-                    { text: thisComponent.collection?.messages?.component, style: "normal", fillColor: accentColor, alignment: "center" },
+                    {
+                        text: thisComponent.collection?.messages?.quarter,
+                        style: "normal",
+                        fillColor: accentColor,
+                        alignment: "center"
+                    },
+                    {
+                        text: thisComponent.collection?.messages?.component,
+                        style: "normal",
+                        fillColor: accentColor,
+                        alignment: "center"
+                    },
                 ],
             ];
             for (let index = 0; index < 4; index++) {
@@ -1500,21 +1614,51 @@ export default {
                     carray = " ";
                 }
                 tableBody.push([
-                    { text: index + 1, style: "normal", alignment: "center" },
-                    { text: carray, style: "normal", alignment: "center" },
+                    {text: index + 1, style: "normal", alignment: "center"},
+                    {text: carray, style: "normal", alignment: "center"},
                 ]);
             }
             tableBody.push([
-                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [true, false, false, false] },
-                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [false, false, true, false] },
+                {
+                    text: "",
+                    style: "normal",
+                    fillColor: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    border: [true, false, false, false]
+                },
+                {
+                    text: "",
+                    style: "normal",
+                    fillColor: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    border: [false, false, true, false]
+                },
             ]);
             tableBody.push([
-                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [true, false, false, false] },
-                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [false, false, true, false] },
+                {
+                    text: "",
+                    style: "normal",
+                    fillColor: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    border: [true, false, false, false]
+                },
+                {
+                    text: "",
+                    style: "normal",
+                    fillColor: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    border: [false, false, true, false]
+                },
             ]);
             tableBody.push([
-                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [true, false, false, false] },
-                { text: "", style: "normal", fillColor: "#" + thisComponent.collection?.organisation?.orgcolor, border: [false, false, true, false] },
+                {
+                    text: "",
+                    style: "normal",
+                    fillColor: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    border: [true, false, false, false]
+                },
+                {
+                    text: "",
+                    style: "normal",
+                    fillColor: "#" + thisComponent.collection?.organisation?.orgcolor,
+                    border: [false, false, true, false]
+                },
             ]);
             const quartersTable = {
                 table: {
@@ -1755,6 +1899,7 @@ export default {
             };
             const secondaryColor = primaryToSecondary(primaryColor);
             const accentColor = primaryToAccent(primaryColor);
+
             async function getbase(url) {
                 const data = await fetch(url);
                 const blob = await data.blob();
@@ -1765,6 +1910,7 @@ export default {
                     reader.onerror = () => reject();
                 });
             }
+
             const docData = await thisComponent.docData();
             const logoBase = await getbase(thisComponent.collection?.organisation?.logo);
             const graphBase = docData.graphBase;
@@ -1791,14 +1937,14 @@ export default {
                 y: 0.75,
                 w: 7,
                 h: 0,
-                line: { color: primaryColor, width: 1 },
+                line: {color: primaryColor, width: 1},
             };
             const headerLineTwo = {
                 x: 7.35,
                 y: 0.745,
                 w: 2.15,
                 h: 0,
-                line: { color: primaryColor, width: 2 },
+                line: {color: primaryColor, width: 2},
             };
             const summaryOptions = {
                 x: 0.5,
@@ -1833,9 +1979,9 @@ export default {
                 y: ya,
                 w: 8,
                 h: 0.8,
-                line: { color: grayColor, width: 1 },
-                fill: { color: grayColor },
-                points: [{ x: 0, y: 0 }, { x: 7, y: 0 }, { x: 8, y: 0.8 }, { x: 0, y: 0.8 }, { close: true }],
+                line: {color: grayColor, width: 1},
+                fill: {color: grayColor},
+                points: [{x: 0, y: 0}, {x: 7, y: 0}, {x: 8, y: 0.8}, {x: 0, y: 0.8}, {close: true}],
             };
             const da = 0.05;
             const footerCircAOptions = {
@@ -1843,7 +1989,7 @@ export default {
                 y: ya + da,
                 w: 0.25,
                 h: 0.25,
-                fill: { color: secondaryColor },
+                fill: {color: secondaryColor},
             };
             const db = 0.05;
             const footerPhoneIcon = {
@@ -1870,7 +2016,7 @@ export default {
                 y: ya + da,
                 w: 0.25,
                 h: 0.25,
-                fill: { color: secondaryColor },
+                fill: {color: secondaryColor},
             };
             const xb = 0.05;
             const footerLocationIcon = {
@@ -1897,7 +2043,7 @@ export default {
                 y: ya + dc,
                 w: 0.25,
                 h: 0.25,
-                fill: { color: secondaryColor },
+                fill: {color: secondaryColor},
             };
             const footerEmailIcon = {
                 x: 0.3,
@@ -1915,14 +2061,14 @@ export default {
                 fontFace: "Times New Roman",
                 color: "FFFFFF",
                 fontSize: 9,
-                hyperlink: { url: "mailto:" + thisComponent.collection?.organisation?.email },
+                hyperlink: {url: "mailto:" + thisComponent.collection?.organisation?.email},
             };
             const footerCircDOptions = {
                 x: xa,
                 y: ya + dc,
                 w: 0.25,
                 h: 0.25,
-                fill: { color: secondaryColor },
+                fill: {color: secondaryColor},
             };
             const footerWebIcon = {
                 x: xa + xb,
@@ -1940,7 +2086,7 @@ export default {
                 fontFace: "Times New Roman",
                 color: "FFFFFF",
                 fontSize: 9,
-                hyperlink: { url: thisComponent.collection?.organisation?.website },
+                hyperlink: {url: thisComponent.collection?.organisation?.website},
             };
             const sbx = 6.15;
             const sby = ya + 0.3;
@@ -1952,9 +2098,9 @@ export default {
                 y: sby,
                 w: 4,
                 h: sbh,
-                line: { color: secondaryColor, width: 1 },
-                fill: { color: secondaryColor },
-                points: [{ x: sbt, y: 0 }, { x: sbw, y: 0 }, { x: sbw - sbt, y: sbh }, { x: 0, y: sbh }, { close: true }],
+                line: {color: secondaryColor, width: 1},
+                fill: {color: secondaryColor},
+                points: [{x: sbt, y: 0}, {x: sbw, y: 0}, {x: sbw - sbt, y: sbh}, {x: 0, y: sbh}, {close: true}],
             };
             const scw = 4.15 - sbw;
             const FooterShapeCOptions = {
@@ -1962,9 +2108,9 @@ export default {
                 y: sby,
                 w: scw,
                 h: sbh,
-                line: { color: primaryColor, width: 1 },
-                fill: { color: primaryColor },
-                points: [{ x: sbt, y: 0 }, { x: scw, y: 0 }, { x: scw, y: sbh }, { x: 0, y: sbh }, { close: true }],
+                line: {color: primaryColor, width: 1},
+                fill: {color: primaryColor},
+                points: [{x: sbt, y: 0}, {x: scw, y: 0}, {x: scw, y: sbh}, {x: 0, y: sbh}, {close: true}],
             };
             const dataPlanTextOptions = {
                 x: 0.5,
@@ -1987,8 +2133,8 @@ export default {
             };
             let tableRows = [
                 [
-                    { text: thisComponent.collection?.messages?.quarter, options: { fill: accentColor } },
-                    { text: thisComponent.collection?.messages?.component, options: { fill: accentColor } },
+                    {text: thisComponent.collection?.messages?.quarter, options: {fill: accentColor}},
+                    {text: thisComponent.collection?.messages?.component, options: {fill: accentColor}},
                 ],
             ];
             for (let index = 0; index < 4; index++) {
@@ -2001,8 +2147,8 @@ export default {
                 tableRows.push([index + 1, carray]);
             }
             tableRows.push([
-                { text: "", options: { fill: primaryColor } },
-                { text: "", options: { fill: primaryColor } },
+                {text: "", options: {fill: primaryColor}},
+                {text: "", options: {fill: primaryColor}},
             ]);
             const tableOptions = {
                 x: 0.5,
@@ -2011,7 +2157,7 @@ export default {
                 align: "center",
                 fontFace: "Times New Roman",
                 fontSize: 10,
-                border: { type: "solid", pt: 1, color: "000000" },
+                border: {type: "solid", pt: 1, color: "000000"},
                 colW: [1, 8],
                 autoPage: true,
             };
@@ -2063,11 +2209,20 @@ export default {
                         let componentImplementation = {};
                         for (let j = 0; j < 3; j++) {
                             if (components[j] != undefined || components[j] != null) {
-                                componentCode = { text: components[j]["codename"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10, color: primaryColor } };
-                                componentDesc = { text: components[j]["desc"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10 } };
-                                componentImplementation = { text: components[j]["implementation"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10, color: primaryColor } };
+                                componentCode = {
+                                    text: components[j]["codename"] + "\n",
+                                    options: {fontFace: "Times New Roman", fontSize: 10, color: primaryColor}
+                                };
+                                componentDesc = {
+                                    text: components[j]["desc"] + "\n",
+                                    options: {fontFace: "Times New Roman", fontSize: 10}
+                                };
+                                componentImplementation = {
+                                    text: components[j]["implementation"] + "\n",
+                                    options: {fontFace: "Times New Roman", fontSize: 10, color: primaryColor}
+                                };
                                 componentCellText = [componentCode, componentDesc, componentImplementation];
-                                componentsRows.push([{ text: componentCellText }]);
+                                componentsRows.push([{text: componentCellText}]);
                             }
                         }
                         const componentsTableAOptions = {
@@ -2076,7 +2231,7 @@ export default {
                             w: 9,
                             h: 2,
                             align: "left",
-                            border: { type: "none" },
+                            border: {type: "none"},
                         };
                         slide.addTable(componentsRows, componentsTableAOptions);
                         counter += 1;
@@ -2091,11 +2246,20 @@ export default {
                         componentsRows = [];
                         for (let k = o; k < o + 3; k++) {
                             if (components[k] != undefined || components[k] != null) {
-                                componentCode = { text: components[k]["codename"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10, color: primaryColor } };
-                                componentDesc = { text: components[k]["desc"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10 } };
-                                componentImplementation = { text: components[k]["implementation"] + "\n", options: { fontFace: "Times New Roman", fontSize: 10, color: primaryColor } };
+                                componentCode = {
+                                    text: components[k]["codename"] + "\n",
+                                    options: {fontFace: "Times New Roman", fontSize: 10, color: primaryColor}
+                                };
+                                componentDesc = {
+                                    text: components[k]["desc"] + "\n",
+                                    options: {fontFace: "Times New Roman", fontSize: 10}
+                                };
+                                componentImplementation = {
+                                    text: components[k]["implementation"] + "\n",
+                                    options: {fontFace: "Times New Roman", fontSize: 10, color: primaryColor}
+                                };
                                 componentCellText = [componentCode, componentDesc, componentImplementation];
-                                componentsRows.push([{ text: componentCellText }]);
+                                componentsRows.push([{text: componentCellText}]);
                             }
                         }
                         o += 3;
@@ -2105,7 +2269,7 @@ export default {
                             w: 9,
                             h: 2,
                             align: "left",
-                            border: { type: "none" },
+                            border: {type: "none"},
                         };
                         slide.addTable(componentsRows, componentsTableBOptions);
                         counter += 1;
@@ -2138,7 +2302,7 @@ export default {
             let slide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
             */
             const filename = thisComponent.collection?.organisation?.name + "_" + thisComponent.collection?.messages?.planningReport + "_" + new Date().toLocaleDateString() + ".pptx";
-            pptx.writeFile({ fileName: filename });
+            pptx.writeFile({fileName: filename});
         },
         orgUpdate() {
             var thisComponent = this;
@@ -2192,7 +2356,7 @@ export default {
         statementViewShow(id) {
             var thisComponent = this;
             axios
-                .get("/" + thisComponent.locale + "/axios/organisations/plan", {})
+                .get("/" + thisComponent.locale + "/axios/organisations/plan/user", {})
                 .then(function (response) {
                     //console.log(response.data);
                     let c = response.data;
@@ -2277,7 +2441,8 @@ export default {
     mounted() {
         window.thisComponent = this;
         //axios;
-        this.draw("components");
+        this.active = this.type;
+        this.draw(this.active);
     },
 };
 </script>

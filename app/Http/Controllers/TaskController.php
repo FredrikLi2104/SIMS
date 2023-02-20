@@ -6,6 +6,7 @@ use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
 use App\Models\Action;
 use App\Models\ActionType;
+use App\Models\Organisation;
 use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\User;
@@ -24,10 +25,22 @@ class TaskController extends Controller
     {
         $messages = __('messages');
         $statuses = TaskStatus::orderBy('sort_order')->get();
-        $assignees = User::where('organisation_id', auth()->user()->organisation_id)
-            ->orWhere('organisation_id', auth()->user()->organisation->organisation_id)
+        $assignees = User::where('organisation_id', auth()->user()->organisation->id)
             ->orderBy('name')
             ->get();
+
+        $subOrganisations = auth()->user()->organisation->organisations->all();
+
+        while (count($subOrganisations)) {
+            $next = [];
+            foreach ($subOrganisations as $organisation) {
+                $assignees = $assignees->merge($organisation->users);
+                $next = array_merge($next, $organisation->organisations->all());
+            }
+
+            $subOrganisations = $next;
+        }
+
         $actionTypes = ActionType::where('role', auth()->user()->role)
             ->orderBy("name_$locale")
             ->get();
@@ -90,9 +103,9 @@ class TaskController extends Controller
                     'action_status_id' => 1,
                 ]);
 
-                if ($actionTypeId == 1) { // Component
+                if (in_array($actionTypeId, [1, 2])) { // Component
                     $action->components()->attach($data['action_type_items'][$actionTypeId]);
-                } elseif (in_array($actionTypeId, [2, 3, 4])) { // Statement
+                } elseif (in_array($actionTypeId, [3, 4, 5])) { // Statement
                     $action->statements()->attach($data['action_type_items'][$actionTypeId]);
                 }
             }
@@ -159,17 +172,17 @@ class TaskController extends Controller
                     'action_status_id' => 1,
                 ]);
 
-                if ($actionTypeId == 1) { // Component
+                if (in_array($actionTypeId, [1, 2])) { // Component
                     $action->components()->attach($data['action_type_items'][$actionTypeId]);
-                } elseif (in_array($actionTypeId, [2, 3, 4])) { // Statement
+                } elseif (in_array($actionTypeId, [3, 4, 5])) { // Statement
                     $action->statements()->attach($data['action_type_items'][$actionTypeId]);
                 }
             }
 
             $toUpdate->each(function ($action) use ($data) {
-                if ($action->action_type_id == 1) { // Component
+                if (in_array($action->action_type_id, [1, 2])) { // Component
                     $action->components()->sync($data['action_type_items'][$action->action_type_id]);
-                } elseif (in_array($action->action_type_id, [2, 3, 4])) { // Statement
+                } elseif (in_array($action->action_type_id, [3, 4, 5])) { // Statement
                     $action->statements()->sync($data['action_type_items'][$action->action_type_id]);
                 }
             });

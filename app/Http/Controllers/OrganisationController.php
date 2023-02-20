@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrganisationStoreRequest;
 use App\Http\Requests\OrganisationUpdateRequest;
+use App\Models\Action;
 use App\Models\Faq;
 use App\Models\Link;
 use App\Models\Organisation;
@@ -31,9 +32,15 @@ class OrganisationController extends Controller
      * @return type
      * @throws conditon
      **/
-    public function auditorPlan()
+    public function auditorPlan($locale, Action $action = null)
     {
-        return view('models.organisations.auditor.plan');
+        if ($action !== null && auth()->user()->cannot('view', $action)) {
+            abort(403);
+        }
+
+        $actionId = $action?->id;
+
+        return view('models.organisations.auditor.plan', compact('actionId'));
     }
 
     /**
@@ -43,9 +50,14 @@ class OrganisationController extends Controller
      *
      * @return \Illuminate\Http\Response
      **/
-    public function do()
+    public function do($locale, Action $action = null)
     {
-        return view('models.organisations.do');
+        if ($action !== null && auth()->user()->cannot('view', $action)) {
+            abort(403);
+        }
+
+        $actionId = $action?->id;
+        return view('models.organisations.do', compact('actionId'));
     }
 
     /**
@@ -195,10 +207,16 @@ class OrganisationController extends Controller
         //
     }
 
-    public function plan()
+    public function plan($locale, Action $action = null)
     {
+        if ($action !== null && auth()->user()->cannot('view', $action)) {
+            abort(403);
+        }
+
+        $type = $action?->action_type_id == 6 ? 'report' : 'statements';
+        $actionId = $action?->id;
         $statements = Statement::all()->sortBy('sort_order');
-        return view('models.organisations.plan', compact('statements'));
+        return view('models.organisations.plan', compact('statements', 'type', 'actionId'));
     }
 
     public function check()

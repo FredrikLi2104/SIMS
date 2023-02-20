@@ -20,61 +20,37 @@ class ActionTypeSeeder extends Seeder
                 'name_en' => 'Plan Components',
                 'name_se' => 'Planerakomponenter',
                 'role' => 'user',
-                'url' => 'plan/components'
+                'url' => 'plan'
+            ],
+            [
+                'name_en' => 'Do Components',
+                'name_se' => 'Gör Komponenter',
+                'role' => 'user',
+                'url' => 'do'
             ],
             [
                 'name_en' => 'Plan Statements',
                 'name_se' => 'Planutlåtanden',
                 'role' => 'user',
-                'url' => 'plan/statements'
+                'url' => 'plan'
             ],
             [
                 'name_en' => 'Plan Statements',
                 'name_se' => 'Planutlåtanden',
                 'role' => 'auditor',
-                'url' => 'plan/statements'
+                'url' => 'auditor/plan'
             ],
             [
                 'name_en' => 'Do Statements',
                 'name_se' => 'Gör Uttalanden',
                 'role' => 'user',
-                'url' => 'do/statements'
+                'url' => 'do'
             ],
             [
                 'name_en' => 'Generate Plan Report',
                 'name_se' => 'Generera Planrapport',
                 'role' => 'user',
-                'url' => 'report'
-            ],
-            [
-                'name_en' => 'Generate Review Report',
-                'name_se' => 'Generera Granskningsrapport',
-                'role' => 'auditor',
-                'url' => 'report'
-            ],
-            [
-                'name_en' => 'View Risks',
-                'name_se' => 'Visa Risker',
-                'role' => 'user',
-                'url' => 'risks'
-            ],
-            [
-                'name_en' => 'View Risks',
-                'name_se' => 'Visa Risker',
-                'role' => 'auditor',
-                'url' => 'risks'
-            ],
-            [
-                'name_en' => 'View KPIs',
-                'name_se' => 'Visa KPIer',
-                'role' => 'user',
-                'url' => 'kpis'
-            ],
-            [
-                'name_en' => 'View KPIs',
-                'name_se' => 'Visa KPIer',
-                'role' => 'auditor',
-                'url' => 'kpis'
+                'url' => 'plan'
             ]
         ]);
     }

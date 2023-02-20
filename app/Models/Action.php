@@ -25,4 +25,9 @@ class Action extends Model
     {
         return $this->morphedByMany(Statement::class, 'actionable');
     }
+
+    public function task()
+    {
+        return $this->belongsTo(Task::class);
+    }
 }

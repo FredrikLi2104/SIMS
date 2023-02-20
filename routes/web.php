@@ -60,12 +60,12 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
     Route::get('organisations/act', [AxiosController::class, 'organisationsAct'])->middleware('can:user')->name('axios.organisations.act');
     Route::post('organisations/act/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:user')->name('axios.organisations.act.sanctions');
-    Route::get('organisations/do', [AxiosController::class, 'organisationsDo'])->middleware('can:user')->name('axios.organisations.do');
+    Route::get('organisations/do/{action?}', [AxiosController::class, 'organisationsDo'])->middleware('can:user')->name('axios.organisations.do');
     Route::post('organisations/kpicomments/store', [AxiosController::class, 'organisationsKpicommentsStore'])->middleware('can:user')->name('axios.organisations.kpicomments.store');
     Route::get('organisations/kpis/{kpi}', [AxiosController::class, 'organisationsKpisShow'])->middleware('can:auditor-user')->name('axios.organisations.kpis.show');
     Route::get('organisations/kpis', [AxiosController::class, 'organisationsKpis'])->middleware('can:auditor-user')->name('axios.organisations.kpis');
-    Route::get('organisations/plan', [AxiosController::class, 'organisationsPlan'])->middleware('can:user')->name('axios.organisations.plan');
-    Route::get('organisations/plan/auditor', [AxiosController::class, 'organisationsPlanAuditor'])->middleware('can:auditor')->name('axios.organisations.plan.auditor');
+    Route::get('organisations/plan/user/{action?}', [AxiosController::class, 'organisationsPlan'])->middleware('can:user')->name('axios.organisations.plan');
+    Route::get('organisations/plan/auditor/{action?}', [AxiosController::class, 'organisationsPlanAuditor'])->middleware('can:auditor')->name('axios.organisations.plan.auditor');
     Route::post('organisations/plan/auditor/update', [AxiosController::class, 'organisationsPlanAuditorUpdate'])->middleware('can:auditor')->name('axios.organisations.plan.auditor.update');
     Route::get('organisations/review', [AxiosController::class, 'organisationsReview'])->middleware('can:auditor')->name('axios.organisations.review');
     Route::post('organisations/components/periods/update', [AxiosController::class, 'organisationsComponentsPeriodsUpdate'])->middleware('can:user')->name('axios.organisations.components.periods.update');
@@ -85,8 +85,8 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('statements', [AxiosController::class, 'statements'])->middleware('can:all')->name('axios.statements.index');
     Route::get('tags', [AxiosController::class, 'tags'])->middleware('can:moderator')->name('axios.tags.index');
     Route::get('task_statuses', [AxiosController::class, 'taskStatuses'])->middleware('can:moderator')->name('axios.task_statuses.index');
-    Route::get('tasks', [AxiosController::class, 'tasks'])->middleware('can:all')->name('axios.tasks.index');
-    Route::get('tasks_for_wheel', [AxiosController::class, 'tasksForWheel'])->middleware('can:all')->name('axios.tasks_for_wheel.index');
+    Route::get('tasks/{year}', [AxiosController::class, 'tasks'])->middleware('can:all')->name('axios.tasks.index');
+    Route::get('tasks_for_wheel/{year}', [AxiosController::class, 'tasksForWheel'])->middleware('can:all')->name('axios.tasks_for_wheel.index');
 });
 
 /* Localized Routes */
@@ -95,7 +95,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('act', [OrganisationController::class, 'act'])->middleware('auth')->middleware('can:user')->name('organisations.act');
     Route::get('/check', [OrganisationController::class, 'check'])->middleware('auth')->middleware('can:user')->name('organisations.check');
     Route::resource('/currencies', CurrencyController::class)->middleware('auth')->middleware('can:moderator');
-    Route::get('do', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do');
+    Route::get('do/{action?}', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/faqs', FaqController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
@@ -108,8 +108,8 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::resource('organisations', OrganisationController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/outcomes', OutcomeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('periods', PeriodController::class)->middleware('auth')->middleware('can:moderator');
-    Route::get('auditor/plan', [OrganisationController::class, 'auditorPlan'])->middleware('auth')->middleware('can:auditor')->name('organisations.auditor.plan');
-    Route::get('plan', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan');
+    Route::get('auditor/plan/{action?}', [OrganisationController::class, 'auditorPlan'])->middleware('auth')->middleware('can:auditor')->name('organisations.auditor.plan');
+    Route::get('plan/{action?}', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan');
     Route::resource('plans', PlanController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('review', [OrganisationController::class, 'review'])->middleware('auth')->middleware('can:auditor')->name('organisations.review');
     Route::resource('risks', RiskController::class)->middleware('auth')->middleware('can:auditor-user');

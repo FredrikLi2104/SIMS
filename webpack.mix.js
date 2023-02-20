@@ -16,11 +16,11 @@ const sassOptions = {
  */
 
 // Assets
-mix
+/*mix
     .copy('resources/data', 'public/data')
     .copy('resources/fonts', 'public/fonts')
     .copy('resources/images/', 'public/images/')
-    .copy('resources/lang/', 'public/lang/');
+    .copy('resources/lang/', 'public/lang/');*/
 
 // Sass
 mix

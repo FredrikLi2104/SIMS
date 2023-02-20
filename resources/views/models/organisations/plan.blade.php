@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
-    
+
 @endsection
 @section('page-style')
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
@@ -27,7 +27,7 @@
             </div>
         </div>
     @endif
-    <organisation-plan locale="{{ App::currentLocale() }}" />
+    <organisation-plan locale="{{ App::currentLocale() }}" type="{{ $type }}" action-id="{{ $actionId }}"/>
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}

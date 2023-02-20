@@ -10,14 +10,15 @@
                 {{ selectedYear }}
             </button>
             <div class="dropdown-menu">
-                <a v-for="year in years" class="dropdown-item" href="#">{{ year }}</a>
+                <a v-for="year in years" class="dropdown-item" href="#" @click="updateYear(year)">{{ year }}</a>
             </div>
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-7 d-flex justify-content-center mb-1">
-            <tasks-wheel :months="months" :selected-year="selectedYear" :tasks="tasksForWheel"></tasks-wheel>
+            <tasks-wheel :months="months" :selected-year="selectedYear" :tasks="tasksForWheel"
+                         @edit-task="editTask"></tasks-wheel>
         </div>
         <div class="col-lg-5">
             <div class="card">
@@ -87,14 +88,14 @@
                 <div class="mb-50">
                     <label class="form-label" for="desc-en">{{ messages.descInEnglish }}</label>
                     <div id="desc-en-editor"></div>
-                    <input id="desc-en" name="desc_en" type="hidden" v-model="descEn"
+                    <input id="desc-en" name="desc_en" type="hidden" :value="descEn"
                            :class="`${errors?.desc_en ? 'is-invalid' : ''}`"/>
                     <div v-if="errors?.start" class="invalid-feedback">{{ errors.desc_en[0] }}</div>
                 </div>
                 <div class="mb-50">
                     <label class="form-label" for="desc-se">{{ messages.descInSwedish }}</label>
                     <div id="desc-se-editor"></div>
-                    <input id="desc-se" name="desc_se" type="hidden" v-model="descSe"
+                    <input id="desc-se" name="desc_se" type="hidden" :value="descSe"
                            :class="`${errors?.desc_se ? 'is-invalid' : ''}`"/>
                     <div v-if="errors?.start" class="invalid-feedback">{{ errors.desc_se[0] }}</div>
                 </div>
@@ -191,20 +192,12 @@
         </div>
         <div class="offcanvas-body mx-0 flex-grow-0">
             <div class="d-flex align-items-center mb-1">
-                <h6 class="text-sm font-weight-semibold me-1 mb-0">{{ `${messages.title} ${messages.inEnglish}:` }}</h6>
-                <span>{{ taskData?.title_en }}</span>
-            </div>
-            <div class="d-flex align-items-center mb-1">
-                <h6 class="text-sm font-weight-semibold me-1 mb-0">{{ `${messages.title} ${messages.inSwedish}:` }}</h6>
-                <span>{{ taskData?.title_se }}</span>
+                <h6 class="text-sm font-weight-semibold me-1 mb-0">{{ `${messages.title}:` }}</h6>
+                <span>{{ taskData?.[`title_${locale}`] }}</span>
             </div>
             <div class="mb-1">
-                <h6 class="text-sm font-weight-semibold me-1">{{ messages.descInEnglish }}:</h6>
-                <div id="desc-en-html" v-html="deltaToHtml(taskData?.desc_en)"></div>
-            </div>
-            <div class="mb-1">
-                <h6 class="text-sm font-weight-semibold me-1">{{ messages.descInSwedish }}:</h6>
-                <div id="desc-se-html" v-html="deltaToHtml(taskData?.desc_se)"></div>
+                <h6 class="text-sm font-weight-semibold me-1">{{ messages.desc }}:</h6>
+                <div id="desc-en-html" v-html="deltaToHtml(taskData?.[`desc_${locale}`])"></div>
             </div>
             <div class="d-flex align-items-center mb-1">
                 <h6 class="text-sm font-weight-semibold me-1 mb-0">{{ messages.start_date }}:</h6>
@@ -230,24 +223,12 @@
             </div>
             <div class="mb-1">
                 <h6 class="text-sm font-weight-semibold me-1">{{ messages.action }}:</h6>
-                <select class="select2" multiple disabled>
-                    <option v-for="actionType in actionTypes" :value="actionType.id"
-                            :selected="taskData?.actions?.some(action => action.action_type_id === actionType.id)">
-                        {{ actionType[`name_${locale}`] }}
-                    </option>
-                </select>
-            </div>
-            <div v-for="selectedAction in selectedActions" :key="selectedAction.id" class="mb-50">
-                <h6 class="text-sm font-weight-semibold me-1">{{ selectedAction.label }}:</h6>
-                <select class="select2" multiple disabled>
-                    <option v-for="item in selectedAction.data" :key="item.id" :value="item.id"
-                            :selected="selectedAction.selected?.includes(item.id)">
-                        {{
-                            selectedAction.type == 'component' ? `${item.code} | ${item[`name_${locale}`]}` :
-                                item.subcode
-                        }}
-                    </option>
-                </select>
+                <a :href="`/${locale}/${action.action_type.url}/${action.id}`"
+                   class="btn btn-outline-primary waves-effect mb-25"
+                   :class="index < taskData.actions.length - 1 ? 'me-25' : ''"
+                   v-for="(action, index) in taskData?.actions" target="_blank">
+                    {{ action.action_type[`name_${locale}`] }}
+                </a>
             </div>
         </div>
     </div>
@@ -379,7 +360,7 @@ export default {
         handleActionTypeChange() {
             let self = this;
             $('#action').on('select2:select', function (e) {
-                if (e.params.data.id == 1) {
+                if (['1', '2'].includes(e.params.data.id)) {
                     axios.get(`/${self.locale}/axios/components`)
                         .then(function (response) {
                             self.components = response.data;
@@ -396,7 +377,7 @@ export default {
                         .catch(function (error) {
 
                         });
-                } else if (['2', '3', '4'].includes(e.params.data.id)) {
+                } else if (['3', '4', '5'].includes(e.params.data.id)) {
                     axios.get(`/${self.locale}/axios/statements`)
                         .then(function (response) {
                             self.statements = response.data;
@@ -473,7 +454,7 @@ export default {
         },
         getTasks() {
             let self = this;
-            axios.get(`/${self.locale}/axios/tasks`)
+            axios.get(`/${self.locale}/axios/tasks/${self.selectedYear}`)
                 .then(function (response) {
                     self.tasks = response.data;
                     self.$nextTick(() => {
@@ -517,12 +498,12 @@ export default {
 
                     }
 
-                    if (self.taskData.actions.some(action => action.action_type_id === 1)) {
+                    if (self.taskData.actions.some(action => [1, 2].includes(action.action_type_id))) {
                         axios.get(`/${self.locale}/axios/components`)
                             .then(function (response) {
                                 self.components = response.data;
                                 self.taskData.actions.forEach(action => {
-                                    if (action.action_type_id === 1) {
+                                    if ([1, 2].includes(action.action_type_id)) {
                                         self.selectedActions[action.action_type.id] = {
                                             id: action.action_type.id,
                                             label: action.action_type[`name_${self.locale}`],
@@ -542,12 +523,12 @@ export default {
                             });
                     }
 
-                    if (self.taskData.actions.some(action => [2, 3, 4].includes(action.action_type_id))) {
+                    if (self.taskData.actions.some(action => [3, 4, 5].includes(action.action_type_id))) {
                         axios.get(`/${self.locale}/axios/statements`)
                             .then(function (response) {
                                 self.statements = response.data;
                                 self.taskData.actions.forEach(action => {
-                                    if ([2, 3, 4].includes(action.action_type_id)) {
+                                    if ([3, 4, 5].includes(action.action_type_id)) {
                                         self.selectedActions[action.action_type.id] = {
                                             id: action.action_type.id,
                                             label: action.action_type[`name_${self.locale}`],
@@ -587,10 +568,6 @@ export default {
                 self.errors = null;
                 self.resetForm();
             });
-
-            document.getElementById('task-view-offcanvas').addEventListener('hidden.bs.offcanvas', function () {
-                self.resetForm();
-            });
         },
         deltaToHtml(delta) {
             let deltaOps = [];
@@ -606,7 +583,7 @@ export default {
         },
         getTasksForWheel() {
             let self = this;
-            axios.get(`/${self.locale}/axios/tasks_for_wheel`)
+            axios.get(`/${self.locale}/axios/tasks_for_wheel/${self.selectedYear}`)
                 .then(function (response) {
                     self.tasksForWheel = response.data;
                 })
@@ -630,6 +607,11 @@ export default {
             $('#status').val(null).trigger('change');
             $('#assigned-to').val(null).trigger('change');
             $('#action').val(null).trigger('change');
+        },
+        updateYear(year) {
+            this.selectedYear = year;
+            this.getTasks();
+            this.getTasksForWheel();
         }
     },
     mounted() {

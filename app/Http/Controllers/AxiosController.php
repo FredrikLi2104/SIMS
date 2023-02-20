@@ -14,6 +14,7 @@ use App\Http\Requests\OrganisationsStatementsPlansUpdate;
 use App\Http\Requests\OrganisationsStatementsPlansUpdateRequest;
 use App\Http\Requests\OrganisationsStatementsReviewsUpdateRequest;
 use App\Http\Requests\RiskCommentStoreRequest;
+use App\Models\Action;
 use App\Models\Component;
 use App\Models\Country;
 use App\Models\Currency;
@@ -265,9 +266,25 @@ class AxiosController extends Controller
      * @param String $locale
      * @return \Illuminate\Http\Response
      **/
-    public function organisationsDo($locale)
+    public function organisationsDo($locale, Action $action = null)
     {
-        $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
+        if ($action) {
+            if (auth()->user()->cannot('view', $action)) {
+                return response()->json([], 403);
+            }
+
+            if ($action->actionType->id == 2) {
+                $components = $action->components;
+                $statements = $components->flatMap(function ($component) {
+                    return $component->statements->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
+                });
+            } elseif ($action->actionType->id == 5) {
+                $statements = $action->statements->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
+            }
+        } else {
+            $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
+        }
+
         foreach ($statements as $statement) {
             $op = $statement->component->organisationPeriod(Auth::user()->organisation);
             $statement->component->makeVisible(['organisation_period']);
@@ -386,7 +403,7 @@ class AxiosController extends Controller
         return $kpi;
     }
 
-    public function organisationsPlan($locale)
+    public function organisationsPlan($locale, Action $action = null)
     {
         $components = Component::all()->load('period')->makeVisible(['code_name', 'period', 'periods']);
         foreach ($components as $component) {
@@ -399,9 +416,26 @@ class AxiosController extends Controller
                     $period->selected = false;
                 }
             }
-        };
-        // statements periods for this organisation would be the same for their component organisationPeriod
-        $statements = Statement::all()->load('component')->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
+        }
+
+        if ($action) {
+            if (auth()->user()->cannot('view', $action)) {
+                return response()->json([], 403);
+            }
+
+            if ($action->actionType->id == 1) {
+                $components = $action->components;
+                $statements = $components->flatMap(function ($component) {
+                    return $component->statements->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
+                });
+            } elseif (in_array($action->actionType->id, [3, 4])) {
+                $statements = $action->statements->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
+            }
+        } else {
+            // statements periods for this organisation would be the same for their component organisationPeriod
+            $statements = Statement::all()->load('component')->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
+        }
+
         foreach ($statements as $statement) {
             // calculate component periods for this organisation
             $oup = $statement->component->organisationUserPeriod(Auth::user()->organisation);
@@ -467,9 +501,20 @@ class AxiosController extends Controller
      * @param string $locale AppLocale
      * @return Illuminate\Support\Collection the statements
      **/
-    public function organisationsPlanAuditor($locale)
+    public function organisationsPlanAuditor($locale, Action $action = null)
     {
-        $statements = Statement::all()->makeVisible(['concat', 'guide', 'plans']);
+        if ($action) {
+            if (auth()->user()->cannot('view', $action)) {
+                return response()->json([], 403);
+            }
+
+            if ($action->actionType->id == 4) {
+                $statements = $action->statements->makeVisible(['concat', 'guide', 'plans']);
+            }
+        } else {
+            $statements = Statement::all()->makeVisible(['concat', 'guide', 'plans']);
+        }
+
         $plans = Plan::all()->sortBy('sort_order');
         $statementPlans = [];
         foreach ($statements as $statement) {
@@ -1160,7 +1205,7 @@ class AxiosController extends Controller
         return TaskStatus::all();
     }
 
-    public function tasks($locale)
+    public function tasks($locale, $year)
     {
         $localeForCarbon = $locale == 'se' ? 'sv-SE' : $locale;
         Carbon::setLocale($localeForCarbon);
@@ -1170,8 +1215,8 @@ class AxiosController extends Controller
             ->orderBy('start')
             ->get();
 
-        $since = Carbon::createFromDate(null, 1, 1);
-        $until = Carbon::createFromDate(null, 12, 31);
+        $since = Carbon::createFromDate($year, 1, 1);
+        $until = Carbon::createFromDate($year, 12, 31);
         $period = CarbonPeriod::since($since)->months(1)->until($until);
 
         $result = [];
@@ -1186,30 +1231,35 @@ class AxiosController extends Controller
         return $result;
     }
 
-    public function tasksForWheel($locale)
+    public function tasksForWheel($locale, $year)
     {
         $localeForCarbon = $locale == 'se' ? 'sv-SE' : $locale;
         Carbon::setLocale($localeForCarbon);
 
         $tasks = Task::with('taskStatus')
             ->where('created_by', auth()->user()->id)
+            ->whereDate('start', '>=', Carbon::createFromDate($year)->startOfYear())
+            ->whereDate('end', '<=', Carbon::createFromDate($year)->endOfYear())
             ->get();
 
         $tasksGrouped = collect();
         foreach ($tasks as $task) {
             $added = false;
-            $tasksGrouped->each(function ($group) use ($task, &$added) {
+            $tasksGrouped->each(function ($group) use ($locale, $task, &$added) {
                 if ($added) {
                     return;
                 }
 
                 $overlapExists = $group->contains(function ($item) use ($task) {
                     return Carbon::parse($task->start)->between(Carbon::parse($item['start']), Carbon::parse($item['end'])) ||
-                        Carbon::parse($task->end)->between(Carbon::parse($item['start']), Carbon::parse($item['end']));
+                        Carbon::parse($task->end)->between(Carbon::parse($item['start']), Carbon::parse($item['end'])) ||
+                        (Carbon::parse($task->start)->lte(Carbon::parse($item['end'])) && Carbon::parse($task->end)->gte(Carbon::parse($item['start'])));
                 });
 
                 if (!$overlapExists) {
                     $group->push([
+                        'id' => $task->id,
+                        'title' => $task->{"title_$locale"},
                         'start' => $task->start_for_humans,
                         'end' => $task->end_for_humans,
                         'color' => $task->taskStatus->color
@@ -1220,6 +1270,8 @@ class AxiosController extends Controller
 
             if (!$added) {
                 $tasksGrouped->push(collect([[
+                    'id' => $task->id,
+                    'title' => $task->{"title_$locale"},
                     'start' => $task->start_for_humans,
                     'end' => $task->end_for_humans,
                     'color' => $task->taskStatus->color

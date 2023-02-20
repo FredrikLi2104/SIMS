@@ -26,7 +26,7 @@
             </div>
         </div>
     @endif
-    <organisation-auditor-plan locale="{{ App::currentLocale() }}" />
+    <organisation-auditor-plan locale="{{ App::currentLocale() }}" action-id="{{ $actionId }}"/>
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}

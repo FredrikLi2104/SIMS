@@ -7,100 +7,121 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade text-start modal-primary" id="statementViewModal" tabindex="-1" aria-labelledby="statementViewLabel" aria-hidden="true">
+        <div class="modal fade text-start modal-primary" id="statementViewModal" tabindex="-1"
+             aria-labelledby="statementViewLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-extra-wide">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="statementViewLabel">{{ collection?.messages?.statement }} {{ collection?.messages?.view }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="statementViewHide"></button>
+                        <h5 class="modal-title" id="statementViewLabel">{{ collection?.messages?.statement }}
+                            {{ collection?.messages?.view }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="statementViewHide"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>{{ collection?.messages?.key }}</th>
-                                            <th>{{ collection?.messages?.value }}</th>
-                                        </tr>
+                                    <tr>
+                                        <th>{{ collection?.messages?.key }}</th>
+                                        <th>{{ collection?.messages?.value }}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>{{ collection?.messages?.code }}</td>
-                                            <td>{{ statementActive?.component?.code }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.subcode }}</td>
-                                            <td>{{ statementActive?.subcode }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.component }}</td>
-                                            <td>{{ statementActive?.component[`name_${locale}`] }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.period }}</td>
-                                            <td>{{ statementActive?.component?.organisation_period ? statementActive.component.organisation_period[`name_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.statement }}</td>
-                                            <td>{{ statementActive ? statementActive[`content_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.desc }}</td>
-                                            <td>{{ statementActive ? statementActive[`desc_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>K1</td>
-                                            <td>{{ statementActive ? statementActive[`k1_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>K2</td>
-                                            <td>{{ statementActive ? statementActive[`k2_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>K3</td>
-                                            <td>{{ statementActive ? statementActive[`k3_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>K4</td>
-                                            <td>{{ statementActive ? statementActive[`k4_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>K5</td>
-                                            <td>{{ statementActive ? statementActive[`k5_${locale}`] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.implementation }}</td>
-                                            <td>{{ statementActive ? statementActive.implementation : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.value }}</td>
-                                            <td>{{ statementActive ? (statementActive.deed ? statementActive.deed.value : null) : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.comment }}</td>
-                                            <td>{{ statementActive ? (statementActive.deed ? statementActive.deed.comment : null) : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.lastUpdated }}</td>
-                                            <td>{{ statementActive ? (statementActive.deed ? statementActive.deed.updated_at_for_humans : null) : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.status }}</td>
-                                            <td>
-                                                <div class="d-flex justify-content-start align-items-start">
-                                                    <span :class="`badge rounded-pill badge-light-${statementActive?.review?.accepted == true ? 'success' : statementActive?.review?.accepted == false ? 'danger' : 'secondary'}`">{{ statementActive?.review?.accepted == true ? collection?.messages?.accepted : statementActive?.review?.accepted == false ? collection?.messages?.rejected : collection?.messages?.unreviewed }}</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.review }}</td>
-                                            <td>{{ statementActive?.review?.review }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.review+" "+collection?.messages?.lastUpdated }}</td>
-                                            <td>{{ statementActive?.review?.updated_at_for_humans }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.code }}</td>
+                                        <td>{{ statementActive?.component?.code }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.subcode }}</td>
+                                        <td>{{ statementActive?.subcode }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.component }}</td>
+                                        <td>{{ statementActive?.component[`name_${locale}`] }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.period }}</td>
+                                        <td>{{
+                                                statementActive?.component?.organisation_period ? statementActive.component.organisation_period[`name_${locale}`] : null
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.statement }}</td>
+                                        <td>{{ statementActive ? statementActive[`content_${locale}`] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.desc }}</td>
+                                        <td>{{ statementActive ? statementActive[`desc_${locale}`] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>K1</td>
+                                        <td>{{ statementActive ? statementActive[`k1_${locale}`] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>K2</td>
+                                        <td>{{ statementActive ? statementActive[`k2_${locale}`] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>K3</td>
+                                        <td>{{ statementActive ? statementActive[`k3_${locale}`] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>K4</td>
+                                        <td>{{ statementActive ? statementActive[`k4_${locale}`] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>K5</td>
+                                        <td>{{ statementActive ? statementActive[`k5_${locale}`] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.implementation }}</td>
+                                        <td>{{ statementActive ? statementActive.implementation : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.value }}</td>
+                                        <td>{{
+                                                statementActive ? (statementActive.deed ? statementActive.deed.value : null) : null
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.comment }}</td>
+                                        <td>{{
+                                                statementActive ? (statementActive.deed ? statementActive.deed.comment : null) : null
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.lastUpdated }}</td>
+                                        <td>{{
+                                                statementActive ? (statementActive.deed ? statementActive.deed.updated_at_for_humans : null) : null
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.status }}</td>
+                                        <td>
+                                            <div class="d-flex justify-content-start align-items-start">
+                                                <span
+                                                    :class="`badge rounded-pill badge-light-${statementActive?.review?.accepted == true ? 'success' : statementActive?.review?.accepted == false ? 'danger' : 'secondary'}`">{{
+                                                        statementActive?.review?.accepted == true ? collection?.messages?.accepted : statementActive?.review?.accepted == false ? collection?.messages?.rejected : collection?.messages?.unreviewed
+                                                    }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.review }}</td>
+                                        <td>{{ statementActive?.review?.review }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{
+                                                collection?.messages?.review + " " + collection?.messages?.lastUpdated
+                                            }}
+                                        </td>
+                                        <td>{{ statementActive?.review?.updated_at_for_humans }}</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -116,8 +137,9 @@
 </template>
 <script>
 import Swal from "sweetalert2";
+
 export default {
-    props: ["locale"],
+    props: ["locale", 'actionId'],
     data() {
         return {
             dataTable: null,
@@ -152,7 +174,7 @@ export default {
                 paging: false,
                 autoWidth: true,
                 searching: true,
-                columns: [{ data: "id" }, { data: "deed" }, { data: "deed" }, { data: "deed" }],
+                columns: [{data: "id"}, {data: "deed"}, {data: "deed"}, {data: "deed"}],
                 columnDefs: [
                     {
                         // statement
@@ -306,8 +328,8 @@ export default {
                     >
                     <"col-lg-3 d-flex justify-content-end align-items-center"f>
                     <"col-lg-2 d-flex justify-content-end align-items-center px-2"<"#updateAll">>
-                    
-                    
+
+
                 >t
                 <"d-flex justify-content-between mx-2 row"
                     <"col-sm-12 col-md-6"i>
@@ -334,7 +356,7 @@ export default {
                                 height: 14,
                             });
                         }
-                        $(document).find('[data-bs-toggle="tooltip"]').tooltip({ html: true });
+                        $(document).find('[data-bs-toggle="tooltip"]').tooltip({html: true});
                     });
                     $(".select2").select2();
                     /*
@@ -374,7 +396,7 @@ export default {
         draw() {
             var thisComponent = this;
             axios
-                .get("/" + thisComponent.locale + "/axios/organisations/do", {})
+                .get("/" + thisComponent.locale + "/axios/organisations/do/" + thisComponent.actionId, {})
                 .then(function (response) {
                     //console.log(response.data);
                     thisComponent.collection = response.data;
@@ -444,7 +466,11 @@ export default {
             let member = {};
             let load = [];
             thisComponent.collection?.statements.forEach((statement) => {
-                member = { id: statement.id, value: $(`#valueSelect${statement.id}`).select2("data")[0].id, comment: $(`#commentInput${statement.id}`).val() };
+                member = {
+                    id: statement.id,
+                    value: $(`#valueSelect${statement.id}`).select2("data")[0].id,
+                    comment: $(`#commentInput${statement.id}`).val()
+                };
                 load.push(member);
             });
             Swal.fire({

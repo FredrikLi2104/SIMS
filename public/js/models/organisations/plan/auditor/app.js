@@ -21845,7 +21845,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["locale"],
+  props: ["locale", 'actionId'],
   data: function data() {
     return {
       dataTable: null,
@@ -21982,7 +21982,7 @@ __webpack_require__.r(__webpack_exports__);
       //let y = this.collection?.statements.filter((x) => x.id == id);
       //this.statementActive = y[0];
       var thisComponent = this;
-      axios.get("/" + thisComponent.locale + "/axios/organisations/plan/auditor", {}).then(function (response) {
+      axios.get("/" + thisComponent.locale + "/axios/organisations/plan/auditor/" + thisComponent.actionId, {}).then(function (response) {
         console.log(response.data);
         var y = response.data.statements.filter(function (x) {
           return x.id == id;
@@ -22041,7 +22041,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     window.thisComponent = this;
     var thisComponent = this;
-    axios.get("/" + thisComponent.locale + "/axios/organisations/plan/auditor", {}).then(function (response) {
+    axios.get("/" + thisComponent.locale + "/axios/organisations/plan/auditor/" + thisComponent.actionId, {}).then(function (response) {
       console.log(response.data);
       thisComponent.collection = response.data;
       thisComponent.$nextTick(function () {

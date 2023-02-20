@@ -21848,7 +21848,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["locale"],
+  props: ["locale", 'actionId'],
   data: function data() {
     return {
       dataTable: null,
@@ -21979,7 +21979,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         }],
         order: [[0, "asc"]],
-        dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-7 d-flex justify-content-start align-items-center\"\n                        <\"#cardHeader\">\n                    >\n                    <\"col-lg-3 d-flex justify-content-end align-items-center\"f>\n                    <\"col-lg-2 d-flex justify-content-end align-items-center px-2\"<\"#updateAll\">>\n                    \n                    \n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
+        dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-7 d-flex justify-content-start align-items-center\"\n                        <\"#cardHeader\">\n                    >\n                    <\"col-lg-3 d-flex justify-content-end align-items-center\"f>\n                    <\"col-lg-2 d-flex justify-content-end align-items-center px-2\"<\"#updateAll\">>\n\n\n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
         initComplete: function initComplete() {
           var _thisComponent$collec20, _thisComponent$collec21, _thisComponent$collec22, _thisComponent$collec23, _thisComponent$collec24, _thisComponent$collec25, _thisComponent$collec26, _thisComponent$collec27;
           var domHtml = "\n                    <div class=\"card-body\">\n                        <h4 class=\"card-title\">".concat((_thisComponent$collec20 = thisComponent.collection) === null || _thisComponent$collec20 === void 0 ? void 0 : (_thisComponent$collec21 = _thisComponent$collec20.messages) === null || _thisComponent$collec21 === void 0 ? void 0 : _thisComponent$collec21.statements, "</h4>\n                        <h6 class=\"card-subtitle text-muted\">").concat((_thisComponent$collec22 = thisComponent.collection) === null || _thisComponent$collec22 === void 0 ? void 0 : (_thisComponent$collec23 = _thisComponent$collec22.messages) === null || _thisComponent$collec23 === void 0 ? void 0 : _thisComponent$collec23.statements, " ").concat((_thisComponent$collec24 = thisComponent.collection) === null || _thisComponent$collec24 === void 0 ? void 0 : (_thisComponent$collec25 = _thisComponent$collec24.messages) === null || _thisComponent$collec25 === void 0 ? void 0 : _thisComponent$collec25.actions, "</h6>\n                    </div>\n                    ");
@@ -22035,7 +22035,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     draw: function draw() {
       var thisComponent = this;
-      axios.get("/" + thisComponent.locale + "/axios/organisations/do", {}).then(function (response) {
+      axios.get("/" + thisComponent.locale + "/axios/organisations/do/" + thisComponent.actionId, {}).then(function (response) {
         //console.log(response.data);
         thisComponent.collection = response.data;
         thisComponent.$nextTick(function () {

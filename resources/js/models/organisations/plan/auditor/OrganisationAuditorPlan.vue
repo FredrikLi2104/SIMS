@@ -9,40 +9,46 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade text-start modal-primary" id="statementShowModal" tabindex="-1" aria-labelledby="statementShowLabel" aria-hidden="true">
+        <div class="modal fade text-start modal-primary" id="statementShowModal" tabindex="-1"
+             aria-labelledby="statementShowLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-extra-wide">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="statementShowLabel">{{ collection?.messages?.statement }} {{ collection?.messages?.show }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="statementHide"></button>
+                        <h5 class="modal-title" id="statementShowLabel">{{ collection?.messages?.statement }}
+                            {{ collection?.messages?.show }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="statementHide"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>{{ collection?.messages?.key }}</th>
-                                            <th>{{ collection?.messages?.value }}</th>
-                                        </tr>
+                                    <tr>
+                                        <th>{{ collection?.messages?.key }}</th>
+                                        <th>{{ collection?.messages?.value }}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>{{ collection?.messages?.statement }}</td>
-                                            <td>{{ statementActive?.concat }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.guide+' '+collection?.messages?.example }}</td>
-                                            <td>{{ statementActive ? statementActive['guide_'+locale] : '' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.guide+' '+collection?.messages?.plan }}</td>
-                                            <td>{{ statementActive?.guide }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.review+' '+collection?.messages?.plan }}</td>
-                                            <td>{{ statementActivePlan? statementActivePlan.plan['name_'+locale] : '' }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.statement }}</td>
+                                        <td>{{ statementActive?.concat }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.guide + ' ' + collection?.messages?.example }}</td>
+                                        <td>{{ statementActive ? statementActive['guide_' + locale] : '' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.guide + ' ' + collection?.messages?.plan }}</td>
+                                        <td>{{ statementActive?.guide }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.review + ' ' + collection?.messages?.plan }}</td>
+                                        <td>{{
+                                                statementActivePlan ? statementActivePlan.plan['name_' + locale] : ''
+                                            }}
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -58,7 +64,7 @@
 </template>
 <script>
 export default {
-    props: ["locale"],
+    props: ["locale", 'actionId'],
     data() {
         return {
             dataTable: null,
@@ -98,7 +104,7 @@ export default {
                 paging: false,
                 autoWidth: true,
                 searching: true,
-                columns: [{ data: "id" }, { data: "concat" }, { data: "guide_" + thisComponent.locale }, { data: "guide" }],
+                columns: [{data: "id"}, {data: "concat"}, {data: "guide_" + thisComponent.locale}, {data: "guide"}],
                 columnDefs: [
                     {
                         // ID
@@ -238,7 +244,7 @@ export default {
             //this.statementActive = y[0];
             var thisComponent = this;
             axios
-                .get("/" + thisComponent.locale + "/axios/organisations/plan/auditor", {})
+                .get("/" + thisComponent.locale + "/axios/organisations/plan/auditor/" + thisComponent.actionId, {})
                 .then(function (response) {
                     console.log(response.data);
                     let y = response.data.statements.filter((x) => x.id == id);
@@ -256,7 +262,7 @@ export default {
                     console.log(error);
                     console.log(error.response);
                 });
-            
+
         },
         statementUpdate(id) {
             var thisComponent = this;
@@ -298,7 +304,7 @@ export default {
         window.thisComponent = this;
         var thisComponent = this;
         axios
-            .get("/" + thisComponent.locale + "/axios/organisations/plan/auditor", {})
+            .get("/" + thisComponent.locale + "/axios/organisations/plan/auditor/" + thisComponent.actionId, {})
             .then(function (response) {
                 console.log(response.data);
                 thisComponent.collection = response.data;

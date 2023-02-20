@@ -26,7 +26,7 @@
             </div>
         </div>
     @endif
-    <organisation-do locale="{{ App::currentLocale() }}" />
+    <organisation-do locale="{{ App::currentLocale() }}" action-id="{{ $actionId }}"/>
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}
@@ -35,6 +35,6 @@
     <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
 @endsection
 @section('page-script')
-<script src="{{ asset(mix('js/scripts/forms/form-select2.js')) }}"></script>
-<script src="{{ asset(mix('js/models/organisations/do/app.js')) }}"></script>
+    <script src="{{ asset(mix('js/scripts/forms/form-select2.js')) }}"></script>
+    <script src="{{ asset(mix('js/models/organisations/do/app.js')) }}"></script>
 @endsection
