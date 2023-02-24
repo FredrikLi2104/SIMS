@@ -11,12 +11,13 @@ class TaskUpdateRequest extends FormRequest
 {
     public function withValidator($validator)
     {
+        for ($i = 1; $i <= 2; $i++) {
+            $validator->sometimes("action_type_items.$i", 'required|exists:components,id', function ($input) use ($i) {
+                return in_array($i, $input->action_type_id ?? []);
+            });
+        }
 
-        $validator->sometimes('action_type_items.1', 'required|exists:components,id', function ($input) {
-            return in_array(1, $input->action_type_id ?? []);
-        });
-
-        for ($i = 2; $i <= 4; $i++) {
+        for ($i = 3; $i <= 5; $i++) {
             $validator->sometimes("action_type_items.$i", 'required|exists:statements,id', function ($input) use ($i) {
                 return in_array($i, $input->action_type_id ?? []);
             });
@@ -85,7 +86,7 @@ class TaskUpdateRequest extends FormRequest
     public function attributes()
     {
         $locale = App::currentLocale();
-        $actionTypes = ActionType::whereIn('id', [1, 2, 3, 4])->get();
+        $actionTypes = ActionType::whereIn('id', [1, 2, 3, 4, 5])->get();
 
         $attributes = [];
         $actionTypes->each(function ($actionType) use ($locale, &$attributes) {

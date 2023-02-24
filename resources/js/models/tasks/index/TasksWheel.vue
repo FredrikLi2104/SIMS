@@ -67,8 +67,8 @@ export default {
                     let ringWidth = 20;
                     let gap = 4;
                     let radius = (canvasWidth / 2 - this.outerRingWidth - ringWidth / 2 - gap) - groupIndex * (ringWidth + gap);
-                    let startAngle = self.degreeToRadian(-90 + offset);
-                    endAngle = self.degreeToRadian(-90 + endAngle + offset);
+                    let startAngle = self.degreeToRadian(-90 + offset + .2);
+                    endAngle = self.degreeToRadian(-90 + endAngle + offset + .8);
                     context.beginPath();
                     let path = new Path2D();
                     path.arc(canvasWidth / 2, canvasHeight / 2, radius, startAngle, endAngle);
@@ -135,7 +135,7 @@ export default {
             context.fillStyle = '#7367f0';
             context.fill();
 
-            this.updateWheel(offset);
+            this.updateWheel(offset + 1);
         },
         handleTaskHover() {
             let self = this;

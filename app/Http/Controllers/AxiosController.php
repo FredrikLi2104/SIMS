@@ -1222,7 +1222,8 @@ class AxiosController extends Controller
         $result = [];
         foreach ($period as $date) {
             $tasks->each(function ($task) use ($localeForCarbon, $date, &$result) {
-                if (Carbon::parse($task->start)->between($date->copy()->firstOfMonth(), $date->copy()->endOfMonth())) {
+                if (Carbon::parse($task->start)->between($date->copy()->firstOfMonth(), $date->copy()->endOfMonth()) ||
+                    Carbon::parse($task->end)->between($date->copy()->firstOfMonth(), $date->copy()->endOfMonth())) {
                     $result[$date->locale($localeForCarbon)->isoFormat('MMMM YYYY')][] = $task;
                 }
             });
@@ -1233,27 +1234,48 @@ class AxiosController extends Controller
 
     public function tasksForWheel($locale, $year)
     {
+        $yearStart = Carbon::createFromDate($year)->startOfYear();
+        $yearEnd = Carbon::createFromDate($year)->endOfYear();
         $localeForCarbon = $locale == 'se' ? 'sv-SE' : $locale;
         Carbon::setLocale($localeForCarbon);
 
         $tasks = Task::with('taskStatus')
             ->where('created_by', auth()->user()->id)
-            ->whereDate('start', '>=', Carbon::createFromDate($year)->startOfYear())
-            ->whereDate('end', '<=', Carbon::createFromDate($year)->endOfYear())
+            ->where(function ($query) use ($yearStart, $yearEnd) {
+                $query->whereDate('start', '>=', $yearStart)
+                    ->whereDate('start', '<=', $yearEnd);
+            })
+            ->orWhere(function ($query) use ($yearStart, $yearEnd) {
+                $query->whereDate('end', '>=', $yearStart)
+                    ->whereDate('end', '<=', $yearEnd);
+            })
             ->get();
 
         $tasksGrouped = collect();
         foreach ($tasks as $task) {
+            $taskStart = Carbon::parse($task->start);
+            $taskEnd = Carbon::parse($task->end);
             $added = false;
-            $tasksGrouped->each(function ($group) use ($locale, $task, &$added) {
+
+            if ($task->start < $yearStart && $taskEnd->between($yearStart, $yearEnd)) {
+                $task->start = Carbon::createFromDate($year, 1, 1);
+            }
+
+            if ($task->end > $yearEnd && $taskStart->between($yearStart, $yearEnd)) {
+                $task->end = Carbon::createFromDate($year, 12, 31);
+            }
+
+            $tasksGrouped->each(function ($group) use ($locale, $task, $taskStart, $taskEnd, &$added) {
                 if ($added) {
                     return;
                 }
 
-                $overlapExists = $group->contains(function ($item) use ($task) {
-                    return Carbon::parse($task->start)->between(Carbon::parse($item['start']), Carbon::parse($item['end'])) ||
-                        Carbon::parse($task->end)->between(Carbon::parse($item['start']), Carbon::parse($item['end'])) ||
-                        (Carbon::parse($task->start)->lte(Carbon::parse($item['end'])) && Carbon::parse($task->end)->gte(Carbon::parse($item['start'])));
+                $overlapExists = $group->contains(function ($item) use ($task, $taskStart, $taskEnd) {
+                    $itemStart = Carbon::parse($item['start']);
+                    $itemEnd = Carbon::parse($item['end']);
+                    return $taskStart->between($itemStart, $itemEnd) ||
+                        $taskEnd->between($itemStart, $itemEnd) ||
+                        ($taskStart->lte($itemStart) && $taskEnd->gte($itemStart));
                 });
 
                 if (!$overlapExists) {

@@ -19710,8 +19710,6 @@ __webpack_require__.r(__webpack_exports__);
       start: null,
       end: null,
       hours: null,
-      descEnQuill: null,
-      descSeQuill: null,
       components: null,
       statements: null,
       selectedActions: {},
@@ -19761,16 +19759,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     initDescEnQuill: function initDescEnQuill() {
       var self = this;
-      self.descEnQuill = new Quill('#desc-en-editor', self.quillOptions());
-      self.descEnQuill.on('text-change', function () {
-        self.descEn = JSON.stringify(self.descEnQuill.getContents());
+      var descEnQuill = new Quill('#desc-en-editor', self.quillOptions());
+      descEnQuill.on('text-change', function () {
+        self.descEn = JSON.stringify(descEnQuill.getContents());
       });
     },
     initDescSeQuill: function initDescSeQuill() {
       var self = this;
-      self.descSeQuill = new Quill('#desc-se-editor', self.quillOptions());
-      self.descSeQuill.on('text-change', function () {
-        self.descSe = JSON.stringify(self.descSeQuill.getContents());
+      var descSeQuill = new Quill('#desc-se-editor', self.quillOptions());
+      descSeQuill.on('text-change', function () {
+        self.descSe = JSON.stringify(descSeQuill.getContents());
       });
     },
     initFlatpickr: function initFlatpickr() {
@@ -19901,9 +19899,11 @@ __webpack_require__.r(__webpack_exports__);
         self.start = response.data.start_for_humans;
         self.end = response.data.end_for_humans;
         self.hours = response.data.hours;
+        var descEnQuill = Quill.find(document.getElementById('desc-en-editor'));
+        var descSeQuill = Quill.find(document.getElementById('desc-se-editor'));
         try {
-          self.descEnQuill.setContents(JSON.parse(self.taskData.desc_en));
-          self.descSeQuill.setContents(JSON.parse(self.taskData.desc_se));
+          descEnQuill.setContents(JSON.parse(self.taskData.desc_en));
+          descSeQuill.setContents(JSON.parse(self.taskData.desc_se));
         } catch (error) {}
         if (self.taskData.actions.some(function (action) {
           return [1, 2].includes(action.action_type_id);
@@ -19985,15 +19985,16 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {});
     },
     resetForm: function resetForm() {
+      this.taskData = {};
       this.titleEn = null;
       this.titleSe = null;
+      Quill.find(document.getElementById('desc-en-editor')).setContents([]);
+      Quill.find(document.getElementById('desc-se-editor')).setContents([]);
       this.descEn = null;
       this.descSe = null;
       this.start = null;
       this.end = null;
       this.hours = null;
-      this.descEnQuill.setContents([]);
-      this.descSeQuill.setContents([]);
       this.components = null;
       this.statements = null;
       this.selectedActions = {};
@@ -20083,8 +20084,8 @@ __webpack_require__.r(__webpack_exports__);
           var ringWidth = 20;
           var gap = 4;
           var radius = canvasWidth / 2 - _this.outerRingWidth - ringWidth / 2 - gap - groupIndex * (ringWidth + gap);
-          var startAngle = self.degreeToRadian(-90 + offset);
-          endAngle = self.degreeToRadian(-90 + endAngle + offset);
+          var startAngle = self.degreeToRadian(-90 + offset + .2);
+          endAngle = self.degreeToRadian(-90 + endAngle + offset + .8);
           context.beginPath();
           var path = new Path2D();
           path.arc(canvasWidth / 2, canvasHeight / 2, radius, startAngle, endAngle);
@@ -20149,7 +20150,7 @@ __webpack_require__.r(__webpack_exports__);
       context.arc(canvasWidth / 2, 9, 12, self.degreeToRadian(-135), self.degreeToRadian(-45));
       context.fillStyle = '#7367f0';
       context.fill();
-      this.updateWheel(offset);
+      this.updateWheel(offset + 1);
     },
     handleTaskHover: function handleTaskHover() {
       var self = this;

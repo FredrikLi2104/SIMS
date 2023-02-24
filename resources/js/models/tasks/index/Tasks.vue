@@ -253,8 +253,6 @@ export default {
             start: null,
             end: null,
             hours: null,
-            descEnQuill: null,
-            descSeQuill: null,
             components: null,
             statements: null,
             selectedActions: {},
@@ -336,16 +334,16 @@ export default {
         },
         initDescEnQuill() {
             let self = this;
-            self.descEnQuill = new Quill('#desc-en-editor', self.quillOptions());
-            self.descEnQuill.on('text-change', function () {
-                self.descEn = JSON.stringify(self.descEnQuill.getContents());
+            let descEnQuill = new Quill('#desc-en-editor', self.quillOptions());
+            descEnQuill.on('text-change', function () {
+                self.descEn = JSON.stringify(descEnQuill.getContents());
             });
         },
         initDescSeQuill() {
             let self = this;
-            self.descSeQuill = new Quill('#desc-se-editor', self.quillOptions());
-            self.descSeQuill.on('text-change', function () {
-                self.descSe = JSON.stringify(self.descSeQuill.getContents());
+            let descSeQuill = new Quill('#desc-se-editor', self.quillOptions());
+            descSeQuill.on('text-change', function () {
+                self.descSe = JSON.stringify(descSeQuill.getContents());
             });
         },
         initFlatpickr() {
@@ -491,9 +489,11 @@ export default {
                     self.end = response.data.end_for_humans;
                     self.hours = response.data.hours;
 
+                    let descEnQuill = Quill.find(document.getElementById('desc-en-editor'));
+                    let descSeQuill = Quill.find(document.getElementById('desc-se-editor'));
                     try {
-                        self.descEnQuill.setContents(JSON.parse(self.taskData.desc_en));
-                        self.descSeQuill.setContents(JSON.parse(self.taskData.desc_se));
+                        descEnQuill.setContents(JSON.parse(self.taskData.desc_en));
+                        descSeQuill.setContents(JSON.parse(self.taskData.desc_se));
                     } catch (error) {
 
                     }
@@ -592,15 +592,16 @@ export default {
                 });
         },
         resetForm() {
+            this.taskData = {};
             this.titleEn = null;
             this.titleSe = null;
+            Quill.find(document.getElementById('desc-en-editor')).setContents([]);
+            Quill.find(document.getElementById('desc-se-editor')).setContents([]);
             this.descEn = null;
             this.descSe = null;
             this.start = null;
             this.end = null;
             this.hours = null;
-            this.descEnQuill.setContents([]);
-            this.descSeQuill.setContents([]);
             this.components = null;
             this.statements = null;
             this.selectedActions = {};
