@@ -257,5 +257,8 @@ return [
     'hours' => 'Hours',
     'assigned_to' => 'Assigned To',
     'action' => 'Action',
+    'insights' => 'Insights',
+    'news' => 'News',
+    'documents' => 'Documents',
 ];
 ?>

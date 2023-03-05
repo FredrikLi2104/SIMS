@@ -58,7 +58,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('kpis', [AxiosController::class, 'kpis'])->middleware('can:moderator')->name('axios.kpis.index');
     Route::get('links', [AxiosController::class, 'links'])->middleware('can:moderator')->name('axios.links.index');
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
-    Route::get('organisations/act', [AxiosController::class, 'organisationsAct'])->middleware('can:user')->name('axios.organisations.act');
+    Route::get('organisations/act', [AxiosController::class, 'organisationsAct'])->middleware('can:auditor-user')->name('axios.organisations.act');
     Route::post('organisations/act/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:user')->name('axios.organisations.act.sanctions');
     Route::get('organisations/do/{action?}', [AxiosController::class, 'organisationsDo'])->middleware('can:user')->name('axios.organisations.do');
     Route::post('organisations/kpicomments/store', [AxiosController::class, 'organisationsKpicommentsStore'])->middleware('can:user')->name('axios.organisations.kpicomments.store');

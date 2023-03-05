@@ -33,9 +33,9 @@
             <!--/ Statistics Card -->
         </div>
         --}}
-        @if (Auth::user()->role == 'user')
-            <organisation-dashboard locale="{{App::currentLocale()}}" />
-        @endif
+        @can('auditor-user')
+            <organisation-dashboard locale="{{App::currentLocale()}}"/>
+        @endcan
     </section>
     <!-- Dashboard Ecommerce ends -->
 @endsection
@@ -45,7 +45,8 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/datatables.buttons.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
-    <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.responsive.min.js')) }}"></script>  
+    <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.responsive.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
 @endsection
 @section('page-script')
     {{-- Page js files --}}

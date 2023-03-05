@@ -1,101 +1,199 @@
 <template>
-    <div class="row">
-        <div class="row match-height">
-            <div class="col-12">
-                <!-- Radar Chart-->
-                <div class="card">
-                    <div class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
-                        <div class="mb-1">
-                            <label class="form-label" for="basicSelect">{{ collection?.messages?.selectOrganisation }}</label>
-                            <select class="form-select" id="basicSelect" @change="updateOrg">
-                                <option v-for="org in collection?.data" :key="org">{{ org.name }}</option>
-                            </select>
-                        </div>
-                        <div class="mb-1">
-                            <label class="form-label" for="yearSelect">{{ collection?.messages?.selectYear }}</label>
-                            <select class="form-select" id="yearSelect" @change="updateOrg" style="width: 100px">
-                                <option v-for="year in Object.keys(activeOrg)" :key="year">{{ year }}</option>
-                            </select>
+    <div class="mb-1">
+        <div class="d-flex">
+            <div class="flex-column me-50">
+                <label class="form-label" for="basicSelect">{{ collection?.messages?.selectOrganisation }}</label>
+                <select class="form-select" id="basicSelect" @change="updateOrg">
+                    <option v-for="org in collection?.data" :key="org">{{ org.name }}</option>
+                </select>
+            </div>
+            <div class="flex-column">
+                <label class="form-label" for="yearSelect">{{ collection?.messages?.selectYear }}</label>
+                <select class="form-select" id="yearSelect" @change="updateOrg" style="width: 100px">
+                    <option v-for="year in Object.keys(activeOrg)" :key="year">{{ year }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row match-height">
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ collection?.messages?.insights }}</h4>
+                    <a :href="`/${locale}/act`" class="btn btn-warning waves-effect waves-float waves-light round"
+                       role="button" target="_blank">
+                        <i data-feather="pie-chart" class="me-25"></i>
+                        {{ collection?.messages?.act }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <canvas id="radar-chart" width="640" height="640"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ collection?.messages?.risks }}</h4>
+                    <a :href="`/${locale}/act`" class="btn btn-warning waves-effect waves-float waves-light round"
+                       role="button" target="_blank">
+                        <i data-feather="alert-triangle" class="me-25"></i>
+                        {{ collection?.messages?.risks }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <canvas class="bubble-chart-ex chartjs" width="640" height="640"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row match-height">
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ collection?.messages?.tasks }}</h4>
+                    <div class="btn-group ms-50">
+                        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            {{ selectedYearForWheel }}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a v-for="year in yearsForWheel" class="dropdown-item" href="#"
+                               @click="updateYear(year)">{{ year }}</a>
                         </div>
                     </div>
+                    <a :href="`/${locale}/tasks`"
+                       class="btn btn-warning waves-effect waves-float waves-light round ms-auto"
+                       role="button" target="_blank">
+                        <i data-feather="layers" class="me-25"></i>
+                        {{ collection?.messages?.tasks }}
+                    </a>
+                </div>
+                <div v-if="monthsFoWheel.length" class="card-body mx-auto">
+                    <tasks-wheel :months="monthsFoWheel" :selected-year="selectedYearForWheel"
+                                 :tasks="tasksForWheel"></tasks-wheel>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ collection?.messages?.news }}</h4>
+                </div>
+                <div class="card-body">
+                    Coming soon...
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row match-height">
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ collection?.messages?.sanctions }}</h4>
+                    <a :href="`/${locale}/statistics/sanctions`"
+                       class="btn btn-warning waves-effect waves-float waves-light round" role="button" target="_blank">
+                        <i data-feather="bar-chart-2" class="me-25"></i>{{ collection?.messages?.sanctions }}
+                    </a>
+                </div>
+                <div v-if="sanctions !== null" class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                        <tr>
+                            <th>{{ collection?.messages?.dpa }}</th>
+                            <th>{{ collection?.messages?.decidedOn }}</th>
+                            <th>{{ collection?.messages?.title }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="sanction in sanctions">
+                            <td class="py-50">
+                                <div class="d-flex align-items-center justify-content-start">
+                                    <div class="col-2" v-if="sanction.dpa.country">
+                                        <img :src="`/images/flags/svg/${sanction.dpa.country.code}.svg`" width="48"/>
+                                    </div>
+                                    <div class="col-10 align-items-center px-1">
+                                        <p class="mx-0 my-0">{{ sanction.dpa.name }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-50">{{ sanction.decided_at_for_humans }}</td>
+                            <td class="py-50">{{ sanction.title }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">{{ collection?.messages?.documents }}</h4>
+                </div>
+                <div class="card-body">
+                    Coming soon...
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row match-height">
+        <div class="col-12">
+            <div class="card invoice-list-wrapper">
+                <div class="card-datatable table-responsive">
+                    <table class="invoice-list-table table" id="dataTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-start modal-primary" id="componentShowModal" tabindex="-1"
+         aria-labelledby="componentShowLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-extra-wide">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="componentShowLabel">{{ collection?.messages?.component }}
+                        {{ collection?.messages?.show }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            @click="componentHide"></button>
+                </div>
+                <div class="modal-body">
                     <div class="row">
-                        <div class="col-6">
-                            <div class="card-header">
-                                <h4 class="card-title">{{ collection?.messages?.implementation }} {{ collection?.messages?.radar }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="radar-chart" width="640" height="640"></canvas>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <!-- Radar Chart End -->
-                            <div class="card-header">
-                                <h4 class="card-title">{{ collection?.messages?.risks }} {{ collection?.messages?.scatter }}</h4>
-                            </div>
-                            <div class="card-body">
-                                <canvas class="bubble-chart-ex chartjs" width="640" height="640"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row match-height">
-            <div class="col-12">
-                <div class="card invoice-list-wrapper">
-                    <div class="card-datatable table-responsive">
-                        <table class="invoice-list-table table" id="dataTable"></table>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>{{ collection?.messages?.key }}</th>
+                                    <th>{{ collection?.messages?.value }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{ collection?.messages?.code }}</td>
+                                    <td>{{ componentActive?.code }}</td>
+                                </tr>
 
-        <div class="modal fade text-start modal-primary" id="componentShowModal" tabindex="-1" aria-labelledby="componentShowLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-extra-wide">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="componentShowLabel">{{ collection?.messages?.component }} {{ collection?.messages?.show }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="componentHide"></button>
+                                <tr>
+                                    <td>{{ collection?.messages?.name }}</td>
+                                    <td>{{ componentActive?.fullname }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ collection?.messages?.statements }}</td>
+                                    <td></td>
+                                </tr>
+                                <tr v-for="deed in componentActive?.deeds" :key="deed">
+                                    <td>{{ deed.statement[`content_${locale}`] }}</td>
+                                    <td>{{ deed.value }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ collection?.messages?.implementation }}</td>
+                                    <td>{{ componentActive?.mean }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>{{ collection?.messages?.key }}</th>
-                                            <th>{{ collection?.messages?.value }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{{ collection?.messages?.code }}</td>
-                                            <td>{{ componentActive?.code }}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>{{ collection?.messages?.name }}</td>
-                                            <td>{{ componentActive?.fullname }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.statements }}</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr v-for="deed in componentActive?.deeds" :key="deed">
-                                            <td>{{deed.statement[`content_${locale}`]}}</td>
-                                            <td>{{deed.value}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.implementation }}</td>
-                                            <td>{{ componentActive?.mean }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="componentHide">Ok</button>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @click="componentHide">Ok</button>
                     </div>
                 </div>
             </div>
@@ -105,8 +203,11 @@
 <script>
 import Chart from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import TasksWheel from "../../tasks/index/TasksWheel.vue";
+
 export default {
     props: ["locale"],
+    components: {TasksWheel},
     data() {
         return {
             collection: null,
@@ -115,6 +216,11 @@ export default {
             radarChart: null,
             scatterChart: null,
             activeOrg: {},
+            yearsForWheel: [],
+            monthsFoWheel: [],
+            selectedYearForWheel: null,
+            tasksForWheel: [],
+            sanctions: null,
         };
     },
     methods: {
@@ -150,7 +256,7 @@ export default {
                 paging: true,
                 autoWidth: true,
                 searching: true,
-                columns: [{ data: "code" }, { data: "fullname" }, { data: "commitment" }, { data: "mean" }],
+                columns: [{data: "code"}, {data: "fullname"}, {data: "commitment"}, {data: "mean"}],
                 columnDefs: [
                     {
                         // columnA
@@ -203,7 +309,7 @@ export default {
                                 <div class="d-flex justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
                                         <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.componentShow(${full.id})">
-                                            ${feather.icons["eye"].toSvg({ class: "me-25" })}
+                                            ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.view}</span>
                                         </button>
                                     </div>
@@ -383,7 +489,7 @@ export default {
                                     let labels = [];
                                     for (const leg of riskData.legend) {
                                         //console.log(leg);
-                                        labels.push({ text: leg.text, fillStyle: leg.colour });
+                                        labels.push({text: leg.text, fillStyle: leg.colour});
                                     }
                                     return labels;
                                 },
@@ -464,6 +570,45 @@ export default {
                 //this.buildTable();
             });
         },
+        populateYearsForWheel() {
+            this.yearsForWheel.push(moment().subtract(1, 'year').year());
+            this.yearsForWheel.push(moment().year());
+            this.yearsForWheel.push(moment().add(1, 'year').year());
+            this.selectedYearForWheel = this.yearsForWheel[1];
+        },
+        populateMonthsForWheel() {
+            for (let i = 0; i < 12; i++) {
+                this.monthsFoWheel.push(moment().month(i).format('MMM'));
+            }
+        },
+        getTasksForWheel() {
+            let self = this;
+            axios.get(`/${self.locale}/axios/tasks_for_wheel/${self.selectedYearForWheel}`)
+                .then(function (response) {
+                    self.tasksForWheel = response.data;
+                })
+                .catch(function (error) {
+
+                });
+        },
+        updateYear(year) {
+            this.selectedYearForWheel = year;
+            this.getTasksForWheel();
+        },
+        getSanctions() {
+            let self = this;
+            axios.post(`/${self.locale}/axios/organisations/act/sanctions`, {
+                start: 0,
+                length: 5,
+                search: {value: null}
+            })
+                .then(function (response) {
+                    self.sanctions = response.data.data;
+                })
+                .catch(function (error) {
+
+                });
+        }
     },
     mounted() {
         var thisComponent = this;
@@ -477,6 +622,7 @@ export default {
                 //console.log(thisComponent.activeOrg);
                 thisComponent.$nextTick(() => {
                     thisComponent.drawRadar();
+                    thisComponent.getTasksForWheel();
                     //thisComponent.buildTable();
                 });
             })
@@ -484,6 +630,10 @@ export default {
                 console.log(error);
                 console.log(error.response);
             });
+
+        thisComponent.populateYearsForWheel();
+        thisComponent.populateMonthsForWheel();
+        thisComponent.getSanctions();
     },
 };
 </script>

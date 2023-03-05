@@ -259,4 +259,7 @@ return [
     'hours' => 'Timmar',
     'assigned_to' => 'Tilldelad till',
     'action' => 'Åtgärd',
+    'insights' => 'Insikter',
+    'news' => 'Nyheter',
+    'documents' => 'Dokument',
 ];
