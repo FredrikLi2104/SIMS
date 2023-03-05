@@ -160,9 +160,8 @@ class TaskController extends Controller
                 'assigned_to' => $data['assigned_to'],
             ]);
 
-            $actions = $task->actions();
-            $toUpdate = $actions->whereIn('action_type_id', $data['action_type_id'])->get();
-            $toDelete = $actions->whereNotIn('action_type_id', $data['action_type_id'])->get();
+            $toUpdate = $task->actions()->whereIn('action_type_id', $data['action_type_id'])->get();
+            $toDelete = $task->actions()->whereNotIn('action_type_id', $data['action_type_id'])->get();
             $toInsert = array_diff($data['action_type_id'], $toUpdate->pluck('action_type_id')->all(), $toDelete->pluck('action_type_id')->all());
 
             foreach ($toInsert as $actionTypeId) {
@@ -187,7 +186,13 @@ class TaskController extends Controller
                 }
             });
 
-            $toDelete->each(function ($action) {
+            $toDelete->each(function ($action) use ($data) {
+                if (in_array($action->action_type_id, [1, 2])) { // Component
+                    $action->components()->detach();
+                } elseif (in_array($action->action_type_id, [3, 4, 5])) { // Statement
+                    $action->statements()->detach();
+                }
+
                 $action->delete();
             });
         });

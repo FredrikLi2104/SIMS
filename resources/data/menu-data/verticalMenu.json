@@ -20,33 +20,6 @@
             ]
         },
         {
-            "name": "plan",
-            "auth": "auditor",
-            "icon": "check-square",
-            "url": "auditor/plan",
-            "slug": [
-                "organisations.auditor.plan"
-            ]
-        },
-        {
-            "name": "plan",
-            "auth": "user",
-            "icon": "check-square",
-            "url": "plan",
-            "slug": [
-                "organisations.plan"
-            ]
-        },
-        {
-            "name": "do",
-            "auth": "user",
-            "icon": "pen-tool",
-            "url": "do",
-            "slug": [
-                "organisations.do"
-            ]
-        },
-        {
             "name": "check",
             "auth": "user",
             "icon": "check",
@@ -82,15 +55,6 @@
                 "risks.index",
                 "risks.create",
                 "risks.edit"
-            ]
-        },
-        {
-            "name": "review",
-            "auth": "auditor",
-            "icon": "repeat",
-            "url": "review",
-            "slug": [
-                "organisations.review"
             ]
         },
         {

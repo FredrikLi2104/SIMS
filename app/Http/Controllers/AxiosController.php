@@ -1212,6 +1212,7 @@ class AxiosController extends Controller
 
         $tasks = Task::with('taskStatus')
             ->where('created_by', auth()->user()->id)
+            ->orWhere('assigned_to', auth()->user()->id)
             ->orderBy('start')
             ->get();
 
@@ -1240,14 +1241,18 @@ class AxiosController extends Controller
         Carbon::setLocale($localeForCarbon);
 
         $tasks = Task::with('taskStatus')
-            ->where('created_by', auth()->user()->id)
-            ->where(function ($query) use ($yearStart, $yearEnd) {
-                $query->whereDate('start', '>=', $yearStart)
-                    ->whereDate('start', '<=', $yearEnd);
+            ->where(function ($query) {
+                $query->where('created_by', auth()->user()->id)
+                    ->orWhere('assigned_to', auth()->user()->id);
             })
-            ->orWhere(function ($query) use ($yearStart, $yearEnd) {
-                $query->whereDate('end', '>=', $yearStart)
-                    ->whereDate('end', '<=', $yearEnd);
+            ->where(function ($query) use ($yearStart, $yearEnd) {
+                $query->where(function ($query) use ($yearStart, $yearEnd) {
+                    $query->whereDate('start', '>=', $yearStart)
+                        ->whereDate('start', '<=', $yearEnd);
+                })->orWhere(function ($query) use ($yearStart, $yearEnd) {
+                    $query->whereDate('end', '>=', $yearStart)
+                        ->whereDate('end', '<=', $yearEnd);
+                });
             })
             ->get();
 

@@ -30,7 +30,7 @@ class ActionPolicy
      */
     public function view(User $user, Action $action)
     {
-        return $action->task->created_by == $user->id;
+        return $action->task->created_by == $user->id || $action->task->assigned_to == $user->id;
     }
 
     /**
