@@ -35,7 +35,7 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">{{ collection?.messages?.risks }}</h4>
-                    <a :href="`/${locale}/act`" class="btn btn-warning waves-effect waves-float waves-light round"
+                    <a :href="`/${locale}/risks`" class="btn btn-warning waves-effect waves-float waves-light round"
                        role="button" target="_blank">
                         <i data-feather="alert-triangle" class="me-25"></i>
                         {{ collection?.messages?.risks }}

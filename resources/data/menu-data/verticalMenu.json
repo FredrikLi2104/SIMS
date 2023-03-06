@@ -480,6 +480,16 @@
                     ]
                 }
             ]
+        },
+        {
+            "navheader": "Chat"
+        },
+        {
+            "name": "Coming Soon",
+            "auth": "auditor-user",
+            "slug": [],
+            "icon": "message-square",
+            "classlist": "disabled"
         }
     ]
 }
