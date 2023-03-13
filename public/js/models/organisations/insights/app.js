@@ -21833,10 +21833,10 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=script&lang=js":
-/*!***********************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=script&lang=js ***!
-  \***********************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=script&lang=js":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=script&lang=js ***!
+  \*********************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -21846,53 +21846,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.mjs");
 /* harmony import */ var chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chartjs-plugin-datalabels */ "./node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.esm.js");
-/* harmony import */ var _tasks_index_TasksWheel_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../tasks/index/TasksWheel.vue */ "./resources/js/models/tasks/index/TasksWheel.vue");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["locale"],
-  components: {
-    TasksWheel: _tasks_index_TasksWheel_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
-  },
   data: function data() {
     return {
-      selectedYearForInsights: moment().format('Y'),
-      selectedYearForRisks: moment().format('Y'),
       collection: null,
       componentActive: null,
       dataTable: null,
+      kpiActive: null,
+      kpiChart: null,
+      kpiTable: null,
       radarChart: null,
+      sanctionActive: null,
+      sanctionsTable: null,
       scatterChart: null,
       activeOrg: {},
-      yearsForWheel: [],
-      monthsFoWheel: [],
-      selectedYearForWheel: null,
-      tasksForWheel: [],
-      sanctions: null
+      activeStatement: null
     };
   },
   methods: {
     buildTable: function buildTable() {
       var _thisComponent$collec, _thisComponent$collec2, _thisComponent$collec3, _thisComponent$collec4, _thisComponent$collec5, _thisComponent$collec6, _thisComponent$collec7, _thisComponent$collec8, _thisComponent$collec9, _thisComponent$collec10;
+      //console.log(this.dataTable);
+      // console.log("called");
       var thisComponent = this;
       if (thisComponent.dataTable) {
         thisComponent.dataTable.destroy();
         thisComponent.dataTable = null;
         document.getElementById("dataTable").innerHTML = "";
       }
+      //console.log(thisComponent.dataTable);
       var header = "\n            <thead>\n                <tr>\n                    <th class=\"\">".concat((_thisComponent$collec = thisComponent.collection) === null || _thisComponent$collec === void 0 ? void 0 : (_thisComponent$collec2 = _thisComponent$collec.messages) === null || _thisComponent$collec2 === void 0 ? void 0 : _thisComponent$collec2.code, "</th>\n                    <th>").concat((_thisComponent$collec3 = thisComponent.collection) === null || _thisComponent$collec3 === void 0 ? void 0 : (_thisComponent$collec4 = _thisComponent$collec3.messages) === null || _thisComponent$collec4 === void 0 ? void 0 : _thisComponent$collec4.component, "</th>\n                    <th class=\"text-center\">").concat((_thisComponent$collec5 = thisComponent.collection) === null || _thisComponent$collec5 === void 0 ? void 0 : (_thisComponent$collec6 = _thisComponent$collec5.messages) === null || _thisComponent$collec6 === void 0 ? void 0 : _thisComponent$collec6.commitment, "</th>\n                    <th class=\"text-center\">").concat((_thisComponent$collec7 = thisComponent.collection) === null || _thisComponent$collec7 === void 0 ? void 0 : (_thisComponent$collec8 = _thisComponent$collec7.messages) === null || _thisComponent$collec8 === void 0 ? void 0 : _thisComponent$collec8.implementation, "</th>\n                    <th class=\"text-center\">").concat((_thisComponent$collec9 = thisComponent.collection) === null || _thisComponent$collec9 === void 0 ? void 0 : (_thisComponent$collec10 = _thisComponent$collec9.messages) === null || _thisComponent$collec10 === void 0 ? void 0 : _thisComponent$collec10.actions, "</th>\n                </tr>\n            </thead>\n            ");
       var activeYear = document.getElementById("yearSelect").value;
       var dataSource = thisComponent.activeOrg[activeYear].table;
       document.getElementById("dataTable").innerHTML = header;
-      thisComponent.dataTable = $(".invoice-list-table").DataTable({
+      thisComponent.dataTable = $("#dataTable").DataTable({
         data: dataSource,
         createdRow: function createdRow(row, data, dataIndex) {
           //$(row).addClass("row-auth-bg");
@@ -21980,19 +21977,379 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         }
       });
     },
-    drawRadar: function drawRadar(year) {
-      var _thisComponent$collec19, _thisComponent$collec20, _thisComponent$collec21, _thisComponent$collec22, _ref;
+    buildKpiTable: function buildKpiTable() {
+      var _thisComponent$collec19, _thisComponent$collec20, _thisComponent$collec21, _thisComponent$collec22, _thisComponent$collec23, _thisComponent$collec24, _thisComponent$collec25, _thisComponent$collec26, _thisComponent$collec27, _thisComponent$collec28, _thisComponent$collec29, _thisComponent$collec30, _thisComponent$collec31, _thisComponent$collec32;
       var thisComponent = this;
-      thisComponent.selectedYearForInsights = year;
-      var orgData = thisComponent.activeOrg[year];
+      if (thisComponent.kpiTable) {
+        thisComponent.kpiTable.destroy();
+        thisComponent.kpiTable = null;
+        document.getElementById("kpiTable").innerHTML = "";
+      }
+      var header = "\n            <thead>\n                <tr>\n                    <th class=\"cell-fit\">".concat((_thisComponent$collec19 = thisComponent.collection) === null || _thisComponent$collec19 === void 0 ? void 0 : (_thisComponent$collec20 = _thisComponent$collec19.messages) === null || _thisComponent$collec20 === void 0 ? void 0 : _thisComponent$collec20.id, "</th>\n                    <th>").concat((_thisComponent$collec21 = thisComponent.collection) === null || _thisComponent$collec21 === void 0 ? void 0 : (_thisComponent$collec22 = _thisComponent$collec21.messages) === null || _thisComponent$collec22 === void 0 ? void 0 : _thisComponent$collec22.name, "</th>\n                    <th>").concat((_thisComponent$collec23 = thisComponent.collection) === null || _thisComponent$collec23 === void 0 ? void 0 : (_thisComponent$collec24 = _thisComponent$collec23.messages) === null || _thisComponent$collec24 === void 0 ? void 0 : _thisComponent$collec24.desc, "</th>\n                    <th>").concat((_thisComponent$collec25 = thisComponent.collection) === null || _thisComponent$collec25 === void 0 ? void 0 : (_thisComponent$collec26 = _thisComponent$collec25.messages) === null || _thisComponent$collec26 === void 0 ? void 0 : _thisComponent$collec26.target, "</th>\n                    <th>").concat((_thisComponent$collec27 = thisComponent.collection) === null || _thisComponent$collec27 === void 0 ? void 0 : (_thisComponent$collec28 = _thisComponent$collec27.messages) === null || _thisComponent$collec28 === void 0 ? void 0 : _thisComponent$collec28.value, "</th>\n                    <th>").concat((_thisComponent$collec29 = thisComponent.collection) === null || _thisComponent$collec29 === void 0 ? void 0 : (_thisComponent$collec30 = _thisComponent$collec29.messages) === null || _thisComponent$collec30 === void 0 ? void 0 : _thisComponent$collec30.comment, "</th>\n                    <th class=\"text-center\">").concat((_thisComponent$collec31 = thisComponent.collection) === null || _thisComponent$collec31 === void 0 ? void 0 : (_thisComponent$collec32 = _thisComponent$collec31.messages) === null || _thisComponent$collec32 === void 0 ? void 0 : _thisComponent$collec32.actions, "</th>\n                </tr>\n            </thead>\n            ");
+      var activeYear = document.getElementById("yearSelect").value;
+      var dataSource = thisComponent.activeOrg[activeYear].kpis;
+      //console.log(dataSource);
+      document.getElementById("kpiTable").innerHTML = header;
+      thisComponent.kpiTable = $("#kpiTable").DataTable({
+        data: dataSource,
+        createdRow: function createdRow(row, data, dataIndex) {
+          //$(row).addClass("row-auth-bg");
+        },
+        lengthMenu: [10, 20, 50, 100],
+        paging: true,
+        autoWidth: true,
+        searching: true,
+        columns: [{
+          data: "id"
+        }, {
+          data: "name"
+        }, {
+          data: "desc"
+        }, {
+          data: "target"
+        }, {
+          data: "value"
+        }, {
+          data: "comment"
+        }],
+        columnDefs: [{
+          // id
+          targets: 0,
+          responsivePriority: 0,
+          width: "5%",
+          render: function render(data, type, full, meta) {
+            var r = "<p>".concat(full.id, "</p>");
+            return r;
+          }
+        }, {
+          // name
+          targets: 1,
+          responsivePriority: 1,
+          width: "10%",
+          render: function render(data, type, full, meta) {
+            var r = "<p>".concat(full.name, "</p>");
+            return r;
+          }
+        }, {
+          // desc
+          targets: 2,
+          responsivePriority: 2,
+          width: "15%",
+          render: function render(data, type, full, meta) {
+            var r = "<p>".concat(full.desc, "</p>");
+            return r;
+          }
+        }, {
+          // target
+          targets: 3,
+          responsivePriority: 3,
+          width: "7.5%",
+          render: function render(data, type, full, meta) {
+            var r = "<p>".concat(full.target, "</p>");
+            return r;
+          }
+        }, {
+          // value
+          targets: 4,
+          responsivePriority: 4,
+          width: "7.5%",
+          render: function render(data, type, full, meta) {
+            var r = "<p>".concat(full.value, "</p>");
+            return r;
+          }
+        }, {
+          // comment
+          targets: 5,
+          responsivePriority: 5,
+          width: "15%",
+          render: function render(data, type, full, meta) {
+            var r = "<p>".concat(full.comment, "</p>");
+            return r;
+          }
+        }, {
+          // actions
+          targets: 6,
+          responsivePriority: 6,
+          width: "10%",
+          orderable: false,
+          render: function render(data, type, full, meta) {
+            var _thisComponent$collec33, _thisComponent$collec34;
+            var r = "\n                                <div class=\"d-flex justify-content-center align-items-center px-2\">\n                                    <div class=\"d-flex flex-column\">\n                                        <button type=\"button\" class=\"btn btn-outline-primary waves-effect mb-1\" onClick=\"window.component.kpiShow(".concat(full.id, ")\">\n                                            ").concat(feather.icons["eye"].toSvg({
+              "class": "me-25"
+            }), "\n                                            <span>").concat((_thisComponent$collec33 = thisComponent.collection) === null || _thisComponent$collec33 === void 0 ? void 0 : (_thisComponent$collec34 = _thisComponent$collec33.messages) === null || _thisComponent$collec34 === void 0 ? void 0 : _thisComponent$collec34.view, "</span>\n                                        </button>\n                                    </div>\n                                </div>\n                                ");
+            return r;
+          }
+        }],
+        order: [[0, "asc"]],
+        dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-8 d-flex justify-content-start align-items-center\"\n                        <\"#kpiCardHeader\">\n                    >\n                    <\"col-lg-4 d-flex justify-content-end align-items-center\"f>\n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
+        initComplete: function initComplete() {
+          var _thisComponent$collec35, _thisComponent$collec36, _thisComponent$collec37, _thisComponent$collec38, _thisComponent$collec39, _thisComponent$collec40;
+          var domHtml = "\n                            <div class=\"card-body\">\n                                <h4 class=\"card-title\">".concat((_thisComponent$collec35 = thisComponent.collection) === null || _thisComponent$collec35 === void 0 ? void 0 : (_thisComponent$collec36 = _thisComponent$collec35.messages) === null || _thisComponent$collec36 === void 0 ? void 0 : _thisComponent$collec36.kpis, "</h4>\n                                <h6 class=\"card-subtitle text-muted\">").concat((_thisComponent$collec37 = thisComponent.collection) === null || _thisComponent$collec37 === void 0 ? void 0 : (_thisComponent$collec38 = _thisComponent$collec37.messages) === null || _thisComponent$collec38 === void 0 ? void 0 : _thisComponent$collec38.kpis, " ").concat((_thisComponent$collec39 = thisComponent.collection) === null || _thisComponent$collec39 === void 0 ? void 0 : (_thisComponent$collec40 = _thisComponent$collec39.messages) === null || _thisComponent$collec40 === void 0 ? void 0 : _thisComponent$collec40.table, "</h6>\n                            </div>\n                            ");
+          $("#kpiCardHeader").html(domHtml);
+        },
+        drawCallback: function drawCallback() {
+          /*
+          if (window.thisComponent.scrollPos != null) {
+              window.thisComponent.$nextTick(() => {
+                  window.scrollTo(0, window.component.scrollPos);
+              });
+          } else {
+              window.component.scrollPos = 500;
+          }
+          */
+        }
+      });
+    },
+    buildSanctionsTable: function buildSanctionsTable() {
+      var _thisComponent$collec41, _thisComponent$collec42, _thisComponent$collec43, _thisComponent$collec44, _thisComponent$collec45, _thisComponent$collec46, _thisComponent$collec47, _thisComponent$collec48, _thisComponent$collec49, _thisComponent$collec50, _thisComponent$collec51, _thisComponent$collec52, _thisComponent$collec53, _thisComponent$collec54;
+      var thisComponent = this;
+      if (thisComponent.sanctionsTable) {
+        thisComponent.sanctionsTable.destroy();
+        thisComponent.sanctionsTable = null;
+        document.getElementById("sanctionsTable").innerHTML = "";
+      }
+      var header = "\n            <thead>\n                <tr>\n                    <th class=\"\">".concat((_thisComponent$collec41 = thisComponent.collection) === null || _thisComponent$collec41 === void 0 ? void 0 : (_thisComponent$collec42 = _thisComponent$collec41.messages) === null || _thisComponent$collec42 === void 0 ? void 0 : _thisComponent$collec42.id, "</th>\n                    <th class=\"\">").concat((_thisComponent$collec43 = thisComponent.collection) === null || _thisComponent$collec43 === void 0 ? void 0 : (_thisComponent$collec44 = _thisComponent$collec43.messages) === null || _thisComponent$collec44 === void 0 ? void 0 : _thisComponent$collec44.createdAt, "</th>\n                    <th class=\"\">").concat((_thisComponent$collec45 = thisComponent.collection) === null || _thisComponent$collec45 === void 0 ? void 0 : (_thisComponent$collec46 = _thisComponent$collec45.messages) === null || _thisComponent$collec46 === void 0 ? void 0 : _thisComponent$collec46.dpa, "</th>\n                    <th>").concat((_thisComponent$collec47 = thisComponent.collection) === null || _thisComponent$collec47 === void 0 ? void 0 : (_thisComponent$collec48 = _thisComponent$collec47.messages) === null || _thisComponent$collec48 === void 0 ? void 0 : _thisComponent$collec48.decidedOn, "</th>\n                    <th>").concat((_thisComponent$collec49 = thisComponent.collection) === null || _thisComponent$collec49 === void 0 ? void 0 : (_thisComponent$collec50 = _thisComponent$collec49.messages) === null || _thisComponent$collec50 === void 0 ? void 0 : _thisComponent$collec50.fine, "</th>\n                    <th>").concat((_thisComponent$collec51 = thisComponent.collection) === null || _thisComponent$collec51 === void 0 ? void 0 : (_thisComponent$collec52 = _thisComponent$collec51.messages) === null || _thisComponent$collec52 === void 0 ? void 0 : _thisComponent$collec52.title, "</th>\n                    <th class=\"text-center\">").concat((_thisComponent$collec53 = thisComponent.collection) === null || _thisComponent$collec53 === void 0 ? void 0 : (_thisComponent$collec54 = _thisComponent$collec53.messages) === null || _thisComponent$collec54 === void 0 ? void 0 : _thisComponent$collec54.actions, "</th>\n                </tr>\n            </thead>\n            ");
+      document.getElementById("sanctionsTable").innerHTML = header;
+      var ajaxUrl = "/".concat(thisComponent.locale, "/axios/organisations/insights/sanctions");
+      thisComponent.sanctionsTable = $("#sanctionsTable").DataTable({
+        processing: true,
+        serverSide: true,
+        paging: true,
+        autoWidth: true,
+        searching: true,
+        ajax: {
+          headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+          },
+          url: ajaxUrl,
+          type: "POST"
+          /*
+          complete: function (xhr, responseText) {
+              console.log(xhr);
+          },
+          */
+        },
+
+        columnDefs: [{
+          //id
+          targets: 0,
+          responsivePriority: 0,
+          width: "10%",
+          render: function render(data, type, full, meta) {
+            //console.log(full);
+            var r = "<p>".concat(full.id, "</p>");
+            return r;
+          }
+        }, {
+          //created_at
+          targets: 1,
+          responsivePriority: 1,
+          width: "10%",
+          render: function render(data, type, full, meta) {
+            //console.log(full);
+            var r = "<p>".concat(full.created_at_for_humans, "</p>");
+            return r;
+          }
+        }, {
+          // DPA
+          targets: 2,
+          responsivePriority: 2,
+          width: "20%",
+          render: function render(data, type, full, meta) {
+            var _full$dpa2;
+            // has image?
+            var r = "\n                            <div class=\"d-flex align-items-center justify-content-start\">\n                                <div class=\"col-2\">\n                            ";
+            if (full.dpa.country) {
+              var _full$dpa, _full$dpa$country;
+              r += "\n                                <img src='/images/flags/svg/".concat((_full$dpa = full.dpa) === null || _full$dpa === void 0 ? void 0 : (_full$dpa$country = _full$dpa.country) === null || _full$dpa$country === void 0 ? void 0 : _full$dpa$country.code, ".svg' width=\"48\"/>\n                                ");
+            }
+            r += "\n                                </div>\n                                <div class=\"col-10 align-items-center px-1\">\n                                    <p class=\"mx-0 my-0\">".concat((_full$dpa2 = full.dpa) === null || _full$dpa2 === void 0 ? void 0 : _full$dpa2.name, "</p>\n                                </div>\n                            </row>");
+            return r;
+          }
+        }, {
+          // decided_at
+          targets: 3,
+          responsivePriority: 3,
+          width: "10%",
+          render: function render(data, type, full, meta) {
+            if (type === "sort") {
+              return Date.parse(full.decided_at_for_humans);
+            } else {
+              var r = "<p>".concat(full.decided_at_for_humans, "</p>");
+              return r;
+            }
+          }
+        }, {
+          // fine
+          targets: 4,
+          responsivePriority: 4,
+          width: "10%",
+          type: "numeric",
+          render: function render(data, type, full, meta) {
+            if (type === "sort") {
+              return full.fine;
+            } else {
+              var r = "";
+              if (full.fine) {
+                var _full$currency, _full$currency2;
+                r = "<p>".concat(parseInt(full.fine), " ").concat((_full$currency = full.currency) !== null && _full$currency !== void 0 && _full$currency.symbol ? (_full$currency2 = full.currency) === null || _full$currency2 === void 0 ? void 0 : _full$currency2.symbol : "", "</p>");
+              }
+              return r;
+            }
+          }
+        }, {
+          // title
+          targets: 5,
+          responsivePriority: 5,
+          width: "20%",
+          render: function render(data, type, full, meta) {
+            var r = "<p>".concat(full.title, "</p>");
+            return r;
+          }
+        }, {
+          // actions
+          targets: 6,
+          responsivePriority: 6,
+          width: "15%",
+          orderable: false,
+          render: function render(data, type, full, meta) {
+            var _thisComponent$collec55, _thisComponent$collec56, _thisComponent$collec57, _thisComponent$collec58;
+            var r = "\n                                <div class=\"d-flex justify-content-center align-items-center px-2\">\n                                    <div class=\"d-flex flex-column\">\n                                        <button type=\"button\" class=\"btn btn-gradient-info waves-effect mb-1\" onClick=\"window.open('".concat(full.url, "','_blank')\">\n                                            ").concat(feather.icons["external-link"].toSvg({
+              "class": "me-25"
+            }), "\n                                            <span>").concat((_thisComponent$collec55 = thisComponent.collection) === null || _thisComponent$collec55 === void 0 ? void 0 : (_thisComponent$collec56 = _thisComponent$collec55.messages) === null || _thisComponent$collec56 === void 0 ? void 0 : _thisComponent$collec56.visit, "</span>\n                                        </button>\n                                        <button type=\"button\" class=\"btn btn-outline-primary waves-effect mb-1\" onClick=\"window.component.sanctionShow(").concat(full.id, ")\">\n                                            ").concat(feather.icons["eye"].toSvg({
+              "class": "me-25"
+            }), "\n                                            <span>").concat((_thisComponent$collec57 = thisComponent.collection) === null || _thisComponent$collec57 === void 0 ? void 0 : (_thisComponent$collec58 = _thisComponent$collec57.messages) === null || _thisComponent$collec58 === void 0 ? void 0 : _thisComponent$collec58.view, "</span>\n                                        </button>\n                                    </div>\n                                </div>\n                                ");
+            return r;
+          }
+        }],
+        order: [[0, "desc"]],
+        dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-8 d-flex justify-content-start align-items-center\"\n                        <\"#sanctionCardHeader\">\n                    >\n                    <\"col-lg-4 d-flex justify-content-end align-items-center\"f>\n                >\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-4\"l>\n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
+        initComplete: function initComplete() {
+          var _thisComponent$collec59, _thisComponent$collec60, _thisComponent$collec61, _thisComponent$collec62, _thisComponent$collec63, _thisComponent$collec64;
+          var domHtml = "\n                    <div class=\"card-body\">\n                        <h4 class=\"card-title\">".concat((_thisComponent$collec59 = thisComponent.collection) === null || _thisComponent$collec59 === void 0 ? void 0 : (_thisComponent$collec60 = _thisComponent$collec59.messages) === null || _thisComponent$collec60 === void 0 ? void 0 : _thisComponent$collec60.sanctions, "</h4>\n                        <h6 class=\"card-subtitle text-muted\">").concat((_thisComponent$collec61 = thisComponent.collection) === null || _thisComponent$collec61 === void 0 ? void 0 : (_thisComponent$collec62 = _thisComponent$collec61.messages) === null || _thisComponent$collec62 === void 0 ? void 0 : _thisComponent$collec62.sanctions, " ").concat((_thisComponent$collec63 = thisComponent.collection) === null || _thisComponent$collec63 === void 0 ? void 0 : (_thisComponent$collec64 = _thisComponent$collec63.messages) === null || _thisComponent$collec64 === void 0 ? void 0 : _thisComponent$collec64.table, "</h6>\n                    </div>\n                    ");
+          $("#sanctionCardHeader").html(domHtml);
+        }
+      });
+    },
+    drawKpiChart: function drawKpiChart() {
+      var _thisComponent$collec65, _thisComponent$collec66, _thisComponent$kpiAct, _thisComponent$collec67, _thisComponent$collec68, _thisComponent$kpiAct2, _thisComponent$kpiAct8;
+      var thisComponent = this;
+      var chartColors = {
+        column: {
+          series1: "#826af9",
+          series2: "#d2b0ff",
+          bg: "#f8d3ff"
+        },
+        success: {
+          shade_100: "#7eefc7",
+          shade_200: "#06774f"
+        },
+        donut: {
+          series1: "#ffe700",
+          series2: "#00d4bd",
+          series3: "#826bf8",
+          series4: "#2b9bf4",
+          series5: "#FFA1A1"
+        },
+        area: {
+          series3: "#a4f8cd",
+          series2: "#60f2ca",
+          series1: "#2bdac7"
+        }
+      };
+      var areaChartEl = document.querySelector("#kpi-history-chart"),
+        areaChartConfig = {
+          chart: {
+            height: 400,
+            type: "area",
+            parentHeightOffset: 0,
+            toolbar: {
+              show: false
+            }
+          },
+          colors: [chartColors.donut.series1, chartColors.donut.series3],
+          dataLabels: {
+            enabled: false
+          },
+          fill: {
+            type: "gradient",
+            gradient: {
+              shadeIntensity: 1,
+              opacityFrom: 0.7,
+              opacityTo: 0.9,
+              stops: [0, 90, 100]
+            }
+          },
+          legend: {
+            show: true,
+            position: "top",
+            horizontalAlign: "start"
+          },
+          grid: {
+            xaxis: {
+              lines: {
+                show: true
+              }
+            }
+          },
+          markers: {
+            size: [5, 5]
+          },
+          series: [{
+            name: (_thisComponent$collec65 = thisComponent.collection) === null || _thisComponent$collec65 === void 0 ? void 0 : (_thisComponent$collec66 = _thisComponent$collec65.messages) === null || _thisComponent$collec66 === void 0 ? void 0 : _thisComponent$collec66.target,
+            data: (_thisComponent$kpiAct = thisComponent.kpiActive) === null || _thisComponent$kpiAct === void 0 ? void 0 : _thisComponent$kpiAct.targets
+          }, {
+            name: (_thisComponent$collec67 = thisComponent.collection) === null || _thisComponent$collec67 === void 0 ? void 0 : (_thisComponent$collec68 = _thisComponent$collec67.messages) === null || _thisComponent$collec68 === void 0 ? void 0 : _thisComponent$collec68.value,
+            data: (_thisComponent$kpiAct2 = thisComponent.kpiActive) === null || _thisComponent$kpiAct2 === void 0 ? void 0 : _thisComponent$kpiAct2.values
+          }],
+          stroke: {
+            curve: "smooth",
+            width: 4
+          },
+          tooltip: {
+            enabled: true,
+            shared: true,
+            custom: function custom(_ref) {
+              var _thisComponent$kpiAct3, _thisComponent$collec69, _thisComponent$collec70, _thisComponent$kpiAct4, _thisComponent$collec71, _thisComponent$collec72, _thisComponent$kpiAct5, _thisComponent$collec73, _thisComponent$collec74, _thisComponent$kpiAct6, _thisComponent$collec75, _thisComponent$collec76, _thisComponent$kpiAct7;
+              var series = _ref.series,
+                seriesIndex = _ref.seriesIndex,
+                dataPointIndex = _ref.dataPointIndex,
+                w = _ref.w,
+                context = _ref.context;
+              var r = "\n                            <div class=\"arrow_box\" style=\"left: 445.159px; top: 124.792px;\">\n                                <div class=\"apexcharts-tooltip-title\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">".concat((_thisComponent$kpiAct3 = thisComponent.kpiActive) === null || _thisComponent$kpiAct3 === void 0 ? void 0 : _thisComponent$kpiAct3.targets[dataPointIndex].x, "</div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <span class=\"apexcharts-tooltip-marker\" style=\"background-color: ").concat(chartColors.donut.series1, ";\"></span>\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec69 = thisComponent.collection) === null || _thisComponent$collec69 === void 0 ? void 0 : (_thisComponent$collec70 = _thisComponent$collec69.messages) === null || _thisComponent$collec70 === void 0 ? void 0 : _thisComponent$collec70.target, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct4 = thisComponent.kpiActive) === null || _thisComponent$kpiAct4 === void 0 ? void 0 : _thisComponent$kpiAct4.targets[dataPointIndex].y, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <span class=\"apexcharts-tooltip-marker\" style=\"background-color: ").concat(chartColors.donut.series3, ";\"></span>\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec71 = thisComponent.collection) === null || _thisComponent$collec71 === void 0 ? void 0 : (_thisComponent$collec72 = _thisComponent$collec71.messages) === null || _thisComponent$collec72 === void 0 ? void 0 : _thisComponent$collec72.value, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct5 = thisComponent.kpiActive) === null || _thisComponent$kpiAct5 === void 0 ? void 0 : _thisComponent$kpiAct5.values[dataPointIndex].y, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec73 = thisComponent.collection) === null || _thisComponent$collec73 === void 0 ? void 0 : (_thisComponent$collec74 = _thisComponent$collec73.messages) === null || _thisComponent$collec74 === void 0 ? void 0 : _thisComponent$collec74.user, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct6 = thisComponent.kpiActive) === null || _thisComponent$kpiAct6 === void 0 ? void 0 : _thisComponent$kpiAct6.targets[dataPointIndex].user, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec75 = thisComponent.collection) === null || _thisComponent$collec75 === void 0 ? void 0 : (_thisComponent$collec76 = _thisComponent$collec75.messages) === null || _thisComponent$collec76 === void 0 ? void 0 : _thisComponent$collec76.comment, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct7 = thisComponent.kpiActive) === null || _thisComponent$kpiAct7 === void 0 ? void 0 : _thisComponent$kpiAct7.targets[dataPointIndex].comment, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            ");
+              return r;
+            }
+          },
+          xaxis: {
+            type: "category",
+            categories: (_thisComponent$kpiAct8 = thisComponent.kpiActive) === null || _thisComponent$kpiAct8 === void 0 ? void 0 : _thisComponent$kpiAct8.xaxis
+          },
+          yaxis: {
+            opposite: false
+          }
+        };
+      if (_typeof(areaChartEl) !== undefined && areaChartEl !== null) {
+        thisComponent.areaChart = new ApexCharts(areaChartEl, areaChartConfig);
+        thisComponent.areaChart.render();
+      }
+    },
+    drawRadar: function drawRadar() {
+      var _thisComponent$collec77, _thisComponent$collec78, _thisComponent$collec79, _thisComponent$collec80, _ref2, _thisComponent$collec87, _thisComponent$collec88, _thisComponent$collec89, _thisComponent$collec90;
+      var thisComponent = this;
+      var selectedYear = document.getElementById("yearSelect").value;
+      var orgData = thisComponent.activeOrg[selectedYear];
       if (thisComponent.radarChart) {
         thisComponent.radarChart.destroy();
       }
+      if (thisComponent.riskChart) {
+        thisComponent.riskChart.destroy();
+      }
+      //console.log(orgData);
       var chartData = {
         labels: orgData.components,
         datasets: [{
           data: orgData.mean,
-          label: (_thisComponent$collec19 = thisComponent.collection) === null || _thisComponent$collec19 === void 0 ? void 0 : (_thisComponent$collec20 = _thisComponent$collec19.messages) === null || _thisComponent$collec20 === void 0 ? void 0 : _thisComponent$collec20.implementation,
+          label: (_thisComponent$collec77 = thisComponent.collection) === null || _thisComponent$collec77 === void 0 ? void 0 : (_thisComponent$collec78 = _thisComponent$collec77.messages) === null || _thisComponent$collec78 === void 0 ? void 0 : _thisComponent$collec78.implementation,
           fill: true,
           backgroundColor: "rgba(230,62,98,0.5)",
           borderColor: "rgba(230,62,98,1.00)",
@@ -22002,15 +22359,15 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           pointHoverBorderColor: "rgba(230,62,98,1.00)",
           pointRadius: 8,
           pointHoverRadius: 12
-        }, (_ref = {
+        }, (_ref2 = {
           data: orgData.commitment,
-          label: (_thisComponent$collec21 = thisComponent.collection) === null || _thisComponent$collec21 === void 0 ? void 0 : (_thisComponent$collec22 = _thisComponent$collec21.messages) === null || _thisComponent$collec22 === void 0 ? void 0 : _thisComponent$collec22.commitment,
+          label: (_thisComponent$collec79 = thisComponent.collection) === null || _thisComponent$collec79 === void 0 ? void 0 : (_thisComponent$collec80 = _thisComponent$collec79.messages) === null || _thisComponent$collec80 === void 0 ? void 0 : _thisComponent$collec80.commitment,
           fill: true,
           backgroundColor: "rgba(102, 103, 171, 0.2)",
           borderColor: "rgb(102, 103, 171)",
           pointBackgroundColor: "rgb(102, 103, 171)",
           pointBorderColor: "#fff"
-        }, _defineProperty(_ref, "pointBackgroundColor", "rgb(114, 115, 183)"), _defineProperty(_ref, "pointHoverBorderColor", "rgb(102, 103, 171)"), _defineProperty(_ref, "pointRadius", 8), _defineProperty(_ref, "pointHoverRadius", 12), _ref)]
+        }, _defineProperty(_ref2, "pointBackgroundColor", "rgb(114, 115, 183)"), _defineProperty(_ref2, "pointHoverBorderColor", "rgb(102, 103, 171)"), _defineProperty(_ref2, "pointRadius", 8), _defineProperty(_ref2, "pointHoverRadius", 12), _ref2)]
       };
       var chartConfig = {
         type: "radar",
@@ -22068,15 +22425,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       };
       var chartElement = document.getElementById("radar-chart").getContext("2d");
       thisComponent.radarChart = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__["default"](chartElement, chartConfig);
-    },
-    drawRiskChart: function drawRiskChart(year) {
-      var _thisComponent$collec29, _thisComponent$collec30, _thisComponent$collec31, _thisComponent$collec32;
-      var thisComponent = this;
-      thisComponent.selectedYearForRisks = year;
-      var orgData = thisComponent.activeOrg[year];
-      if (thisComponent.riskChart) {
-        thisComponent.riskChart.destroy();
-      }
+      // Risk Chart
       var riskChart = $(".bubble-chart-ex");
       var riskData = orgData.risks;
       var riskChartConfig = {
@@ -22136,10 +22485,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
               enabled: true,
               callbacks: {
                 label: function label(context) {
-                  var _thisComponent$collec23, _thisComponent$collec24, _thisComponent$collec25, _thisComponent$collec26, _thisComponent$collec27, _thisComponent$collec28;
+                  var _thisComponent$collec81, _thisComponent$collec82, _thisComponent$collec83, _thisComponent$collec84, _thisComponent$collec85, _thisComponent$collec86;
                   console.log(context);
                   var v = riskData.datasets[context.datasetIndex];
-                  return "".concat(v.label, ":").concat((_thisComponent$collec23 = thisComponent.collection) === null || _thisComponent$collec23 === void 0 ? void 0 : (_thisComponent$collec24 = _thisComponent$collec23.messages) === null || _thisComponent$collec24 === void 0 ? void 0 : _thisComponent$collec24.consequence, ":").concat(v.data[0].x, ",").concat((_thisComponent$collec25 = thisComponent.collection) === null || _thisComponent$collec25 === void 0 ? void 0 : (_thisComponent$collec26 = _thisComponent$collec25.messages) === null || _thisComponent$collec26 === void 0 ? void 0 : _thisComponent$collec26.probability, ":").concat(v.data[0].y, ",").concat((_thisComponent$collec27 = thisComponent.collection) === null || _thisComponent$collec27 === void 0 ? void 0 : (_thisComponent$collec28 = _thisComponent$collec27.messages) === null || _thisComponent$collec28 === void 0 ? void 0 : _thisComponent$collec28.risk, ":").concat(parseInt(v.data[0].x) * parseInt(v.data[0].y));
+                  return "".concat(v.label, ":").concat((_thisComponent$collec81 = thisComponent.collection) === null || _thisComponent$collec81 === void 0 ? void 0 : (_thisComponent$collec82 = _thisComponent$collec81.messages) === null || _thisComponent$collec82 === void 0 ? void 0 : _thisComponent$collec82.consequence, ":").concat(v.data[0].x, ",").concat((_thisComponent$collec83 = thisComponent.collection) === null || _thisComponent$collec83 === void 0 ? void 0 : (_thisComponent$collec84 = _thisComponent$collec83.messages) === null || _thisComponent$collec84 === void 0 ? void 0 : _thisComponent$collec84.probability, ":").concat(v.data[0].y, ",").concat((_thisComponent$collec85 = thisComponent.collection) === null || _thisComponent$collec85 === void 0 ? void 0 : (_thisComponent$collec86 = _thisComponent$collec85.messages) === null || _thisComponent$collec86 === void 0 ? void 0 : _thisComponent$collec86.risk, ":").concat(parseInt(v.data[0].x) * parseInt(v.data[0].y));
                 }
               }
             }
@@ -22154,7 +22503,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
               max: 6,
               title: {
                 display: true,
-                text: (_thisComponent$collec29 = thisComponent.collection) === null || _thisComponent$collec29 === void 0 ? void 0 : (_thisComponent$collec30 = _thisComponent$collec29.messages) === null || _thisComponent$collec30 === void 0 ? void 0 : _thisComponent$collec30.consequence,
+                text: (_thisComponent$collec87 = thisComponent.collection) === null || _thisComponent$collec87 === void 0 ? void 0 : (_thisComponent$collec88 = _thisComponent$collec87.messages) === null || _thisComponent$collec88 === void 0 ? void 0 : _thisComponent$collec88.consequence,
                 font: {
                   size: 14,
                   weight: "bold"
@@ -22170,7 +22519,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
               max: 6,
               title: {
                 display: true,
-                text: (_thisComponent$collec31 = thisComponent.collection) === null || _thisComponent$collec31 === void 0 ? void 0 : (_thisComponent$collec32 = _thisComponent$collec31.messages) === null || _thisComponent$collec32 === void 0 ? void 0 : _thisComponent$collec32.probability,
+                text: (_thisComponent$collec89 = thisComponent.collection) === null || _thisComponent$collec89 === void 0 ? void 0 : (_thisComponent$collec90 = _thisComponent$collec89.messages) === null || _thisComponent$collec90 === void 0 ? void 0 : _thisComponent$collec90.probability,
                 font: {
                   size: 14,
                   weight: "bold"
@@ -22189,13 +22538,57 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       $("#componentShowModal").modal("hide");
     },
     componentShow: function componentShow(id) {
+      var _y$, _y$$deeds, _y$$deeds$;
       var activeYear = document.getElementById("yearSelect").value;
       var dataSource = this.activeOrg[activeYear].table;
       var y = dataSource.filter(function (x) {
         return x.id == id;
       });
       this.componentActive = y[0];
+      this.activeStatement = (_y$ = y[0]) === null || _y$ === void 0 ? void 0 : (_y$$deeds = _y$.deeds) === null || _y$$deeds === void 0 ? void 0 : (_y$$deeds$ = _y$$deeds[0]) === null || _y$$deeds$ === void 0 ? void 0 : _y$$deeds$.statement;
       $("#componentShowModal").modal("show");
+      this.$nextTick(function () {
+        feather.replace();
+      });
+    },
+    kpiHide: function kpiHide() {
+      $("#kpiViewModal").modal("hide");
+      this.kpiActive = null;
+      // kill chart
+      if (this.kpiChart) {
+        this.kpiChart.destroy();
+        this.kpiChart = null;
+      }
+    },
+    kpiShow: function kpiShow(id) {
+      var thisComponent = this;
+      axios.get("/".concat(thisComponent.locale, "/axios/organisations/kpis/").concat(id), {}).then(function (response) {
+        //console.log(response.data);
+        thisComponent.kpiActive = response.data;
+        $("#kpiViewModal").modal("show");
+        thisComponent.$nextTick(function () {
+          thisComponent.drawKpiChart();
+        });
+      })["catch"](function (error) {
+        console.log(error);
+        console.log(error.response);
+      });
+    },
+    sanctionShow: function sanctionShow(id) {
+      var thisComponent = this;
+      axios.get("/".concat(thisComponent.locale, "/axios/sanctions/").concat(id)).then(function (response) {
+        //console.log(response.data);
+        thisComponent.sanctionActive = response.data;
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+      //let y = this.collection?.sanctions?.filter((x) => x.id == id);
+      //this.sanctionActive = y[0];
+      $("#sanctionShowModal").modal("show");
+    },
+    sanctionHide: function sanctionHide() {
+      this.sanctionActive = null;
+      $("#sanctionShowModal").modal("hide");
     },
     updateOrg: function updateOrg() {
       var _this$collection,
@@ -22206,252 +22599,42 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         return e.name == org;
       });
       this.activeOrg = selectedOrg[0].data;
+      //console.log(this.activeOrg);
       this.$nextTick(function () {
-        _this.drawRadar(_this.selectedYearForInsights);
-        _this.drawRiskChart(_this.selectedYearForRisks);
+        _this.drawRadar();
+        _this.buildTable();
       });
     },
-    populateYearsForWheel: function populateYearsForWheel() {
-      this.yearsForWheel.push(moment().subtract(1, 'year').year());
-      this.yearsForWheel.push(moment().year());
-      this.yearsForWheel.push(moment().add(1, 'year').year());
-      this.selectedYearForWheel = this.yearsForWheel[1];
-    },
-    populateMonthsForWheel: function populateMonthsForWheel() {
-      for (var i = 0; i < 12; i++) {
-        this.monthsFoWheel.push(moment().month(i).format('MMM'));
-      }
-    },
-    getTasksForWheel: function getTasksForWheel() {
-      var self = this;
-      axios.get("/".concat(self.locale, "/axios/tasks_for_wheel/").concat(self.selectedYearForWheel)).then(function (response) {
-        self.tasksForWheel = response.data;
-      })["catch"](function (error) {});
-    },
-    updateYear: function updateYear(year) {
-      this.selectedYearForWheel = year;
-      this.getTasksForWheel();
-    },
-    getSanctions: function getSanctions() {
-      var self = this;
-      axios.post("/".concat(self.locale, "/axios/organisations/insights/sanctions"), {
-        start: 0,
-        length: 5,
-        search: {
-          value: null
-        }
-      }).then(function (response) {
-        self.sanctions = response.data.data;
-      })["catch"](function (error) {});
+    updateActiveStatement: function updateActiveStatement(index) {
+      var _this$componentActive, _this$componentActive2;
+      this.activeStatement = (_this$componentActive = this.componentActive) === null || _this$componentActive === void 0 ? void 0 : (_this$componentActive2 = _this$componentActive.deeds) === null || _this$componentActive2 === void 0 ? void 0 : _this$componentActive2[index].statement;
     }
   },
   mounted: function mounted() {
     var thisComponent = this;
     window.component = thisComponent;
     axios.get("/" + thisComponent.locale + "/axios/organisations/insights", {}).then(function (response) {
-      console.log(response.data);
       thisComponent.collection = response.data;
       thisComponent.activeOrg = response.data.data[0].data;
       thisComponent.$nextTick(function () {
-        thisComponent.drawRadar(thisComponent.selectedYearForInsights);
-        thisComponent.drawRiskChart(thisComponent.selectedYearForRisks);
-        thisComponent.getTasksForWheel();
+        thisComponent.drawRadar();
+        thisComponent.buildTable();
+        thisComponent.buildKpiTable();
+        thisComponent.buildSanctionsTable();
       });
     })["catch"](function (error) {
       console.log(error);
       console.log(error.response);
     });
-    thisComponent.populateYearsForWheel();
-    thisComponent.populateMonthsForWheel();
-    thisComponent.getSanctions();
   }
 });
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/tasks/index/TasksWheel.vue?vue&type=script&lang=js":
-/*!************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/tasks/index/TasksWheel.vue?vue&type=script&lang=js ***!
-  \************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "TasksWheel",
-  props: ['months', 'selectedYear', 'tasks'],
-  emits: ['editTask'],
-  data: function data() {
-    return {
-      outerRingWidth: 40,
-      taskSegments: [],
-      taskTitle: null,
-      taskColor: null,
-      taskStart: null,
-      taskEnd: null
-    };
-  },
-  methods: {
-    degreeToRadian: function degreeToRadian(deg) {
-      return deg / 180 * Math.PI;
-    },
-    updateWheel: function updateWheel(offsetForToday) {
-      var _this = this;
-      var self = this;
-      var canvas = document.getElementById('canvas');
-      var context = canvas.getContext('2d');
-      var canvasWidth = canvas.width;
-      var canvasHeight = canvas.height;
-      context.resetTransform();
-      context.beginPath();
-      self.taskSegments = [];
-      self.tasks.forEach(function (group, groupIndex) {
-        group.forEach(function (task) {
-          var start = moment(task.start);
-          var end = moment(task.end);
-          var offset = -1 * offsetForToday;
-          for (var i = 0; i < start.month(); i++) {
-            offset += 30;
-          }
-          offset += 30 / start.daysInMonth() * start.date();
-          var endAngle = 0;
-          for (var _i = start.month() + 1; _i < end.month(); _i++) {
-            endAngle += 30;
-          }
-          if (!start.isSame(end, 'month')) {
-            endAngle += 30 / end.daysInMonth() * end.date();
-            endAngle += 30 / start.daysInMonth() * (start.daysInMonth() - start.date());
-          } else {
-            endAngle += 30 / end.daysInMonth() * (end.date() - start.date());
-          }
-          var ringWidth = 20;
-          var gap = 4;
-          var radius = canvasWidth / 2 - _this.outerRingWidth - ringWidth / 2 - gap - groupIndex * (ringWidth + gap);
-          var startAngle = self.degreeToRadian(-90 + offset + .2);
-          endAngle = self.degreeToRadian(-90 + endAngle + offset + .8);
-          context.beginPath();
-          var path = new Path2D();
-          path.arc(canvasWidth / 2, canvasHeight / 2, radius, startAngle, endAngle);
-          self.taskSegments.push({
-            task: task,
-            path: path
-          });
-          context.lineWidth = 20;
-          context.strokeStyle = task.color;
-          context.stroke(path);
-        });
-      });
-    },
-    drawWheel: function drawWheel() {
-      var self = this;
-      var canvas = document.getElementById('canvas');
-      var context = canvas.getContext('2d');
-      var canvasWidth = canvas.width;
-      var canvasHeight = canvas.height;
-      var lineWidth = this.outerRingWidth;
-      context.resetTransform();
-      context.clearRect(0, 0, canvasWidth, canvasHeight);
-      context.beginPath();
-      context.arc(canvasWidth / 2, canvasHeight / 2, canvasWidth / 2, 0, 2 * Math.PI);
-      context.fillStyle = '#ededed';
-      context.fill();
-      var angle = this.degreeToRadian(360);
-      var today = moment();
-      var offset = -1;
-      for (var i = 0; i < today.month(); i++) {
-        offset += 30;
-      }
-      offset += 30 / today.daysInMonth() * today.date();
-      for (var _i2 = 0; _i2 < 12; _i2++) {
-        var startAngle = _i2 * angle / 12 - this.degreeToRadian(offset + 90);
-        context.beginPath();
-        context.arc(canvasWidth / 2, canvasHeight / 2, canvasWidth / 2 - lineWidth / 2, startAngle, startAngle + angle / 12);
-        context.lineWidth = lineWidth;
-        context.strokeStyle = _i2 % 2 === 0 ? '#ededed' : '#ffffff';
-        context.stroke();
-      }
-      context.font = '24px "Montserrat", Helvetica, Arial, serif';
-      context.fillStyle = '#636363';
-      context.textAlign = 'center';
-      context.beginPath();
-      context.translate(canvasWidth / 2, canvasHeight / 2);
-      context.rotate(0);
-      for (var _i3 = 0; _i3 < 12; _i3++) {
-        var _startAngle = angle / 12;
-        var center = _startAngle / 2;
-        context.save();
-        context.rotate(_i3 * _startAngle - this.degreeToRadian(offset) + center);
-        context.textBaseline = 'middle';
-        context.fillText(this.months[_i3], 0, lineWidth / 2 - canvasWidth / 2);
-        context.restore();
-      }
-
-      // today marker
-      context.resetTransform();
-      context.beginPath();
-      context.moveTo(canvasWidth / 2, 9);
-      context.arc(canvasWidth / 2, 9, 12, self.degreeToRadian(-135), self.degreeToRadian(-45));
-      context.fillStyle = '#7367f0';
-      context.fill();
-      this.updateWheel(offset + 1);
-    },
-    handleTaskHover: function handleTaskHover() {
-      var self = this;
-      var canvas = document.getElementById('canvas');
-      var context = canvas.getContext('2d');
-      canvas.addEventListener('mousemove', function (evt) {
-        var segment = self.taskSegments.find(function (segment) {
-          return context.isPointInStroke(segment.path, evt.offsetX, evt.offsetY);
-        });
-        if (segment !== undefined) {
-          self.taskTitle = segment.task.title;
-          self.taskColor = segment.task.color;
-          self.taskStart = segment.task.start;
-          self.taskEnd = segment.task.end;
-          document.getElementById('tooltip').style.top = evt.clientY + 'px';
-          document.getElementById('tooltip').style.left = evt.clientX + 1 + 'px';
-          document.getElementById('tooltip').classList.remove('d-none');
-        } else {
-          document.getElementById('tooltip').classList.add('d-none');
-        }
-      });
-    },
-    handleTaskClick: function handleTaskClick() {
-      var self = this;
-      var canvas = document.getElementById('canvas');
-      var context = canvas.getContext('2d');
-      canvas.addEventListener('click', function (evt) {
-        var segment = self.taskSegments.find(function (segment) {
-          return context.isPointInStroke(segment.path, evt.offsetX, evt.offsetY);
-        });
-        if (segment !== undefined) {
-          self.$emit('editTask', segment.task.id);
-          document.getElementById('tooltip').classList.add('d-none');
-        }
-      });
-    }
-  },
-  mounted: function mounted() {
-    this.drawWheel();
-    this.handleTaskHover();
-    this.handleTaskClick();
-  },
-  watch: {
-    tasks: function tasks() {
-      this.drawWheel();
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=template&id=4ba48ee2":
-/*!***************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=template&id=4ba48ee2 ***!
-  \***************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=template&id=048b7868":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=template&id=048b7868 ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -22462,264 +22645,304 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = {
-  "class": "mb-1"
+  "class": "row"
 };
 var _hoisted_2 = {
-  "class": "d-flex"
+  "class": "row match-height"
 };
 var _hoisted_3 = {
-  "class": "flex-column me-50 width-200"
+  "class": "col-12"
 };
 var _hoisted_4 = {
+  "class": "card"
+};
+var _hoisted_5 = {
+  "class": "card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start"
+};
+var _hoisted_6 = {
+  "class": "mb-1 width-200"
+};
+var _hoisted_7 = {
   "class": "form-label",
   "for": "basicSelect"
 };
-var _hoisted_5 = {
-  "class": "row match-height"
-};
-var _hoisted_6 = {
-  "class": "col-12 col-md-6"
-};
-var _hoisted_7 = {
-  "class": "card"
-};
 var _hoisted_8 = {
-  "class": "card-header"
+  "class": "mb-1"
 };
 var _hoisted_9 = {
-  "class": "card-title"
+  "class": "form-label",
+  "for": "yearSelect"
 };
 var _hoisted_10 = {
-  "class": "btn-group ms-50"
+  "class": "row"
 };
 var _hoisted_11 = {
-  type: "button",
-  "class": "btn btn-outline-primary dropdown-toggle",
-  "data-bs-toggle": "dropdown",
-  "aria-haspopup": "true",
-  "aria-expanded": "false"
+  "class": "col-6"
 };
 var _hoisted_12 = {
-  "class": "dropdown-menu"
+  "class": "card-header"
 };
-var _hoisted_13 = ["onClick"];
-var _hoisted_14 = ["href"];
-var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
-  "data-feather": "pie-chart",
-  "class": "me-25"
-}, null, -1 /* HOISTED */);
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_13 = {
+  "class": "card-title"
+};
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "card-body"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("canvas", {
   id: "radar-chart",
   width: "640",
   height: "640"
 })], -1 /* HOISTED */);
-var _hoisted_17 = {
-  "class": "col-12 col-md-6"
+var _hoisted_15 = {
+  "class": "col-6"
 };
-var _hoisted_18 = {
-  "class": "card"
-};
-var _hoisted_19 = {
+var _hoisted_16 = {
   "class": "card-header"
 };
-var _hoisted_20 = {
+var _hoisted_17 = {
   "class": "card-title"
 };
-var _hoisted_21 = {
-  "class": "btn-group ms-50"
-};
-var _hoisted_22 = {
-  type: "button",
-  "class": "btn btn-outline-primary dropdown-toggle",
-  "data-bs-toggle": "dropdown",
-  "aria-haspopup": "true",
-  "aria-expanded": "false"
-};
-var _hoisted_23 = {
-  "class": "dropdown-menu"
-};
-var _hoisted_24 = ["onClick"];
-var _hoisted_25 = ["href"];
-var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
-  "data-feather": "alert-triangle",
-  "class": "me-25"
-}, null, -1 /* HOISTED */);
-var _hoisted_27 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "card-body"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("canvas", {
   "class": "bubble-chart-ex chartjs",
   width: "640",
   height: "640"
 })], -1 /* HOISTED */);
-var _hoisted_28 = {
-  "class": "row match-height"
-};
-var _hoisted_29 = {
-  "class": "col-12 col-md-6"
-};
-var _hoisted_30 = {
-  "class": "card"
-};
-var _hoisted_31 = {
-  "class": "card-header"
-};
-var _hoisted_32 = {
-  "class": "card-title"
-};
-var _hoisted_33 = {
-  "class": "btn-group ms-50"
-};
-var _hoisted_34 = {
-  type: "button",
-  "class": "btn btn-outline-primary dropdown-toggle",
-  "data-bs-toggle": "dropdown",
-  "aria-haspopup": "true",
-  "aria-expanded": "false"
-};
-var _hoisted_35 = {
-  "class": "dropdown-menu"
-};
-var _hoisted_36 = ["onClick"];
-var _hoisted_37 = ["href"];
-var _hoisted_38 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
-  "data-feather": "layers",
-  "class": "me-25"
-}, null, -1 /* HOISTED */);
-var _hoisted_39 = {
-  key: 0,
-  "class": "card-body mx-auto"
-};
-var _hoisted_40 = {
-  "class": "col-12 col-md-6"
-};
-var _hoisted_41 = {
-  "class": "card"
-};
-var _hoisted_42 = {
-  "class": "card-header"
-};
-var _hoisted_43 = {
-  "class": "card-title"
-};
-var _hoisted_44 = ["href"];
-var _hoisted_45 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
-  "data-feather": "help-circle",
-  "class": "me-25"
-}, null, -1 /* HOISTED */);
-var _hoisted_46 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-  "class": "card-body"
-}, null, -1 /* HOISTED */);
-var _hoisted_47 = {
-  "class": "row match-height"
-};
-var _hoisted_48 = {
-  "class": "col-12 col-md-6"
-};
-var _hoisted_49 = {
-  "class": "card"
-};
-var _hoisted_50 = {
-  "class": "card-header"
-};
-var _hoisted_51 = {
-  "class": "card-title"
-};
-var _hoisted_52 = ["href"];
-var _hoisted_53 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
-  "data-feather": "bar-chart-2",
-  "class": "me-25"
-}, null, -1 /* HOISTED */);
-var _hoisted_54 = {
-  key: 0,
-  "class": "table-responsive"
-};
-var _hoisted_55 = {
-  "class": "table table-sm"
-};
-var _hoisted_56 = {
-  "class": "py-50"
-};
-var _hoisted_57 = {
-  "class": "d-flex align-items-center justify-content-start"
-};
-var _hoisted_58 = {
-  key: 0,
-  "class": "col-2"
-};
-var _hoisted_59 = ["src"];
-var _hoisted_60 = {
-  "class": "col-10 align-items-center px-1"
-};
-var _hoisted_61 = {
-  "class": "mx-0 my-0"
-};
-var _hoisted_62 = {
-  "class": "py-50"
-};
-var _hoisted_63 = {
-  "class": "py-50"
-};
-var _hoisted_64 = {
-  "class": "col-12 col-md-6"
-};
-var _hoisted_65 = {
-  "class": "card"
-};
-var _hoisted_66 = {
-  "class": "card-header"
-};
-var _hoisted_67 = {
-  "class": "card-title"
-};
-var _hoisted_68 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-  "class": "card-body"
-}, " Coming soon... ", -1 /* HOISTED */);
-var _hoisted_69 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"row match-height\"><div class=\"col-12\"><div class=\"card invoice-list-wrapper\"><div class=\"card-datatable table-responsive\"><table class=\"invoice-list-table table\" id=\"dataTable\"></table></div></div></div></div>", 1);
-var _hoisted_70 = {
+var _hoisted_19 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"row match-height\"><div class=\"col-12\"><div class=\"card invoice-list-wrapper\"><div class=\"card-datatable table-responsive\"><table class=\"invoice-list-table table\" id=\"dataTable\"></table></div></div></div></div><div class=\"row match-height\"><div class=\"col-12\"><div class=\"card invoice-list-wrapper\"><div class=\"card-datatable table-responsive\"><table class=\"invoice-list-table table\" id=\"kpiTable\"></table></div></div></div></div><div class=\"row match-height\"><div class=\"col-12\"><div class=\"card invoice-list-wrapper\"><div class=\"card-datatable table-responsive\"><table class=\"invoice-list-table table\" id=\"sanctionsTable\"></table></div></div></div></div>", 3);
+var _hoisted_22 = {
   "class": "modal fade text-start modal-primary",
   id: "componentShowModal",
   tabindex: "-1",
   "aria-labelledby": "componentShowLabel",
   "aria-hidden": "true"
 };
-var _hoisted_71 = {
-  "class": "modal-dialog modal-dialog-centered modal-extra-wide"
+var _hoisted_23 = {
+  "class": "modal-dialog modal-dialog-centered modal-xl"
 };
-var _hoisted_72 = {
+var _hoisted_24 = {
   "class": "modal-content"
 };
-var _hoisted_73 = {
+var _hoisted_25 = {
   "class": "modal-header"
 };
-var _hoisted_74 = {
+var _hoisted_26 = {
   "class": "modal-title",
   id: "componentShowLabel"
 };
-var _hoisted_75 = {
+var _hoisted_27 = {
   "class": "modal-body"
 };
-var _hoisted_76 = {
+var _hoisted_28 = {
   "class": "row"
 };
-var _hoisted_77 = {
+var _hoisted_29 = {
+  "class": "col-md-4"
+};
+var _hoisted_30 = {
+  "class": "mb-1"
+};
+var _hoisted_31 = {
+  "class": "text-sm font-weight-semibold me-1"
+};
+var _hoisted_32 = {
+  "class": "mb-1"
+};
+var _hoisted_33 = {
+  "class": "text-sm font-weight-semibold me-1"
+};
+var _hoisted_34 = {
+  "class": "d-flex align-items-center mb-1"
+};
+var _hoisted_35 = {
+  "class": "text-sm font-weight-semibold me-1 mb-0"
+};
+var _hoisted_36 = {
+  "class": "d-flex align-items-center mb-1"
+};
+var _hoisted_37 = {
+  "class": "text-sm font-weight-semibold me-1 mb-0"
+};
+var _hoisted_38 = {
+  "class": "mb-1"
+};
+var _hoisted_39 = {
+  href: "#",
+  "class": "btn btn-outline-primary waves-effect",
+  target: "_blank"
+};
+var _hoisted_40 = {
+  "class": "col-md-4"
+};
+var _hoisted_41 = {
   "class": "table-responsive"
 };
-var _hoisted_78 = {
+var _hoisted_42 = {
+  "class": "table table-sm"
+};
+var _hoisted_43 = {
+  colspan: "4"
+};
+var _hoisted_44 = ["onClick"];
+var _hoisted_45 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+  "data-feather": "chevron-right"
+}, null, -1 /* HOISTED */);
+var _hoisted_46 = [_hoisted_45];
+var _hoisted_47 = {
+  "class": "col-md-4"
+};
+var _hoisted_48 = {
+  "class": "divider divider-start mt-0"
+};
+var _hoisted_49 = {
+  "class": "divider-text text-uppercase fs-6 fw-bold"
+};
+var _hoisted_50 = {
+  "class": "mb-1"
+};
+var _hoisted_51 = {
+  "class": "text-sm font-weight-semibold me-1"
+};
+var _hoisted_52 = {
+  "class": "mb-1"
+};
+var _hoisted_53 = {
+  "class": "text-sm font-weight-semibold me-1"
+};
+var _hoisted_54 = {
+  "class": "mb-1"
+};
+var _hoisted_55 = {
+  "class": "text-sm font-weight-semibold me-1"
+};
+var _hoisted_56 = {
+  "class": "mb-1"
+};
+var _hoisted_57 = {
+  href: "#",
+  "class": "btn btn-outline-primary waves-effect",
+  target: "_blank"
+};
+var _hoisted_58 = {
+  "class": "modal-footer"
+};
+var _hoisted_59 = {
+  "class": "col-12 modal fade text-start modal-primary",
+  id: "kpiViewModal",
+  tabindex: "-1",
+  "aria-labelledby": "kpiLabel",
+  "aria-hidden": "true"
+};
+var _hoisted_60 = {
+  "class": "modal-dialog modal-dialog-centered modal-xl"
+};
+var _hoisted_61 = {
+  "class": "modal-content"
+};
+var _hoisted_62 = {
+  "class": "modal-header"
+};
+var _hoisted_63 = {
+  "class": "modal-title",
+  id: "kpiLabel"
+};
+var _hoisted_64 = {
+  "class": "modal-body"
+};
+var _hoisted_65 = {
+  "class": "row"
+};
+var _hoisted_66 = {
+  "class": "col-4 table-responsive"
+};
+var _hoisted_67 = {
   "class": "table"
 };
-var _hoisted_79 = {
+var _hoisted_68 = {
   "class": "table-light"
 };
-var _hoisted_80 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, null, -1 /* HOISTED */);
+var _hoisted_69 = {
+  "class": "col-8"
+};
+var _hoisted_70 = {
+  "class": "card"
+};
+var _hoisted_71 = {
+  "class": "card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start"
+};
+var _hoisted_72 = {
+  "class": "card-title"
+};
+var _hoisted_73 = {
+  "class": "card-subtitle text-muted"
+};
+var _hoisted_74 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "d-flex align-items-center"
+}, null, -1 /* HOISTED */);
+var _hoisted_75 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  id: "kpi-history-parent",
+  "class": "card-body"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  id: "kpi-history-chart"
+})], -1 /* HOISTED */);
+var _hoisted_76 = {
+  "class": "modal-footer"
+};
+var _hoisted_77 = {
+  "class": "modal fade text-start modal-primary",
+  id: "sanctionShowModal",
+  tabindex: "-1",
+  "aria-labelledby": "sanctionShowLabel",
+  "aria-hidden": "true"
+};
+var _hoisted_78 = {
+  "class": "modal-dialog modal-dialog-centered modal-extra-wide"
+};
+var _hoisted_79 = {
+  "class": "modal-content"
+};
+var _hoisted_80 = {
+  "class": "modal-header"
+};
 var _hoisted_81 = {
+  "class": "modal-title",
+  id: "sanctionShowLabel"
+};
+var _hoisted_82 = {
+  "class": "modal-body"
+};
+var _hoisted_83 = {
+  "class": "row"
+};
+var _hoisted_84 = {
+  "class": "table-responsive"
+};
+var _hoisted_85 = {
+  "class": "table"
+};
+var _hoisted_86 = {
+  "class": "table-light"
+};
+var _hoisted_87 = {
+  "class": "d-flex align-items-center justify-content-start"
+};
+var _hoisted_88 = {
+  key: 0,
+  "class": "col-2"
+};
+var _hoisted_89 = ["src"];
+var _hoisted_90 = {
+  "class": "col-10 align-items-center"
+};
+var _hoisted_91 = {
+  "class": "mx-0 my-0"
+};
+var _hoisted_92 = ["href"];
+var _hoisted_93 = {
   "class": "modal-footer"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$data$collection, _$data$collection$mes, _$data$collection2, _$data$collection3, _$data$collection3$me, _$data$collection4, _$data$collection4$me, _$data$collection5, _$data$collection5$me, _$data$collection6, _$data$collection6$me, _$data$collection7, _$data$collection7$me, _$data$collection8, _$data$collection8$me, _$data$collection9, _$data$collection9$me, _$data$collection10, _$data$collection10$m, _$data$collection11, _$data$collection11$m, _$data$collection12, _$data$collection12$m, _$data$collection13, _$data$collection13$m, _$data$collection14, _$data$collection14$m, _$data$collection15, _$data$collection15$m, _$data$collection16, _$data$collection16$m, _$data$collection17, _$data$collection17$m, _$data$collection18, _$data$collection18$m, _$data$collection19, _$data$collection19$m, _$data$collection20, _$data$collection20$m, _$data$collection21, _$data$collection21$m, _$data$componentActiv, _$data$collection22, _$data$collection22$m, _$data$componentActiv2, _$data$collection23, _$data$collection23$m, _$data$componentActiv3, _$data$collection24, _$data$collection24$m, _$data$componentActiv4;
-  var _component_tasks_wheel = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("tasks-wheel");
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection = $data.collection) === null || _$data$collection === void 0 ? void 0 : (_$data$collection$mes = _$data$collection.messages) === null || _$data$collection$mes === void 0 ? void 0 : _$data$collection$mes.selectOrganisation), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+  var _$data$collection, _$data$collection$mes, _$data$collection2, _$data$collection3, _$data$collection3$me, _$data$collection4, _$data$collection4$me, _$data$collection5, _$data$collection5$me, _$data$collection6, _$data$collection6$me, _$data$collection7, _$data$collection7$me, _$data$collection8, _$data$collection8$me, _$data$collection9, _$data$collection9$me, _$data$collection10, _$data$collection10$m, _$data$componentActiv, _$data$componentActiv2, _$data$collection11, _$data$collection11$m, _$data$componentActiv3, _$data$collection12, _$data$collection12$m, _$data$componentActiv4, _$data$collection13, _$data$collection13$m, _$data$componentActiv5, _$data$collection14, _$data$collection14$m, _$data$collection15, _$data$collection15$m, _$data$componentActiv6, _$data$collection16, _$data$collection16$m, _$data$collection17, _$data$collection17$m, _$data$activeStatemen, _$data$collection18, _$data$collection18$m, _$data$activeStatemen2, _$data$collection19, _$data$collection19$m, _$data$collection20, _$data$collection20$m, _$data$activeStatemen3, _$data$collection21, _$data$collection21$m, _$data$collection22, _$data$collection22$m, _$data$collection23, _$data$collection23$m, _$data$collection24, _$data$collection24$m, _$data$collection25, _$data$collection25$m, _$data$kpiActive, _$data$collection26, _$data$collection26$m, _$data$collection27, _$data$collection27$m, _$data$collection28, _$data$collection28$m, _$data$kpiActive2, _$data$collection29, _$data$collection29$m, _$data$kpiActive3, _$data$collection30, _$data$collection30$m, _$data$kpiActive4, _$data$collection31, _$data$collection31$m, _$data$kpiActive5, _$data$collection32, _$data$collection32$m, _$data$kpiActive6, _$data$collection33, _$data$collection33$m, _$data$collection34, _$data$collection34$m, _$data$collection35, _$data$collection35$m, _$data$sanctionActive, _$data$collection36, _$data$collection36$m, _$data$collection37, _$data$collection37$m, _$data$collection38, _$data$collection38$m, _$data$sanctionActive2, _$data$collection39, _$data$collection39$m, _$data$sanctionActive3, _$data$collection40, _$data$collection40$m, _$data$sanctionActive4, _$data$collection41, _$data$collection41$m, _$data$sanctionActive5, _$data$sanctionActive6, _$data$sanctionActive7, _$data$sanctionActive8, _$data$sanctionActive9, _$data$sanctionActive10, _$data$sanctionActive11, _$data$collection42, _$data$collection42$m, _$data$sanctionActive12, _$data$sanctionActive13, _$data$sanctionActive14, _$data$sanctionActive15, _$data$sanctionActive16, _$data$collection43, _$data$collection43$m, _$data$sanctionActive17, _$data$collection44, _$data$collection44$m, _$data$sanctionActive18, _$data$collection45, _$data$collection45$m, _$data$sanctionActive19, _$data$collection46, _$data$collection46$m, _$data$sanctionActive20;
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Radar Chart"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection = $data.collection) === null || _$data$collection === void 0 ? void 0 : (_$data$collection$mes = _$data$collection.messages) === null || _$data$collection$mes === void 0 ? void 0 : _$data$collection$mes.selectOrganisation), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
     "class": "form-select",
     id: "basicSelect",
     onChange: _cache[0] || (_cache[0] = function () {
@@ -22729,123 +22952,85 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: org
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(org.name), 1 /* TEXT */);
-  }), 128 /* KEYED_FRAGMENT */))], 32 /* HYDRATE_EVENTS */)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection3 = $data.collection) === null || _$data$collection3 === void 0 ? void 0 : (_$data$collection3$me = _$data$collection3.messages) === null || _$data$collection3$me === void 0 ? void 0 : _$data$collection3$me.insights), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.selectedYearForInsights), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(Object.keys($data.activeOrg), function (year) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
-      key: year,
-      "class": "dropdown-item",
-      href: "#",
-      onClick: function onClick($event) {
-        return $options.drawRadar(year);
-      }
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(year), 9 /* TEXT, PROPS */, _hoisted_13);
-  }), 128 /* KEYED_FRAGMENT */))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-    href: "/".concat($props.locale, "/insights"),
-    "class": "btn btn-warning waves-effect waves-float waves-light round ms-auto",
-    role: "button"
-  }, [_hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection4 = $data.collection) === null || _$data$collection4 === void 0 ? void 0 : (_$data$collection4$me = _$data$collection4.messages) === null || _$data$collection4$me === void 0 ? void 0 : _$data$collection4$me.insights), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_14)]), _hoisted_16])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection5 = $data.collection) === null || _$data$collection5 === void 0 ? void 0 : (_$data$collection5$me = _$data$collection5.messages) === null || _$data$collection5$me === void 0 ? void 0 : _$data$collection5$me.risks), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", _hoisted_22, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.selectedYearForRisks), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(Object.keys($data.activeOrg), function (year) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
-      key: year,
-      "class": "dropdown-item",
-      href: "#",
-      onClick: function onClick($event) {
-        return $options.drawRiskChart(year);
-      }
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(year), 9 /* TEXT, PROPS */, _hoisted_24);
-  }), 128 /* KEYED_FRAGMENT */))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-    href: "/".concat($props.locale, "/risks"),
-    "class": "btn btn-warning waves-effect waves-float waves-light round ms-auto",
-    role: "button"
-  }, [_hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection6 = $data.collection) === null || _$data$collection6 === void 0 ? void 0 : (_$data$collection6$me = _$data$collection6.messages) === null || _$data$collection6$me === void 0 ? void 0 : _$data$collection6$me.risks), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_25)]), _hoisted_27])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_30, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_32, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection7 = $data.collection) === null || _$data$collection7 === void 0 ? void 0 : (_$data$collection7$me = _$data$collection7.messages) === null || _$data$collection7$me === void 0 ? void 0 : _$data$collection7$me.tasks), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_33, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", _hoisted_34, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.selectedYearForWheel), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_35, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.yearsForWheel, function (year) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("a", {
-      "class": "dropdown-item",
-      href: "#",
-      onClick: function onClick($event) {
-        return $options.updateYear(year);
-      }
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(year), 9 /* TEXT, PROPS */, _hoisted_36);
-  }), 256 /* UNKEYED_FRAGMENT */))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-    href: "/".concat($props.locale, "/tasks"),
-    "class": "btn btn-warning waves-effect waves-float waves-light round ms-auto",
-    role: "button"
-  }, [_hoisted_38, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection8 = $data.collection) === null || _$data$collection8 === void 0 ? void 0 : (_$data$collection8$me = _$data$collection8.messages) === null || _$data$collection8$me === void 0 ? void 0 : _$data$collection8$me.tasks), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_37)]), $data.monthsFoWheel.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_39, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_tasks_wheel, {
-    months: $data.monthsFoWheel,
-    "selected-year": $data.selectedYearForWheel,
-    tasks: $data.tasksForWheel
-  }, null, 8 /* PROPS */, ["months", "selected-year", "tasks"])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_43, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection9 = $data.collection) === null || _$data$collection9 === void 0 ? void 0 : (_$data$collection9$me = _$data$collection9.messages) === null || _$data$collection9$me === void 0 ? void 0 : _$data$collection9$me.knowledge), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-    href: "/".concat($props.locale, "/knowledge"),
-    "class": "btn btn-warning waves-effect waves-float waves-light round ms-auto",
-    role: "button"
-  }, [_hoisted_45, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection10 = $data.collection) === null || _$data$collection10 === void 0 ? void 0 : (_$data$collection10$m = _$data$collection10.messages) === null || _$data$collection10$m === void 0 ? void 0 : _$data$collection10$m.knowledge), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_44)]), _hoisted_46])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_47, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_48, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_49, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_50, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_51, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection11 = $data.collection) === null || _$data$collection11 === void 0 ? void 0 : (_$data$collection11$m = _$data$collection11.messages) === null || _$data$collection11$m === void 0 ? void 0 : _$data$collection11$m.sanctions), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-    href: "/".concat($props.locale, "/statistics/sanctions"),
-    "class": "btn btn-warning waves-effect waves-float waves-light round",
-    role: "button"
-  }, [_hoisted_53, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection12 = $data.collection) === null || _$data$collection12 === void 0 ? void 0 : (_$data$collection12$m = _$data$collection12.messages) === null || _$data$collection12$m === void 0 ? void 0 : _$data$collection12$m.sanctions), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_52)]), $data.sanctions !== null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_54, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_55, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection13 = $data.collection) === null || _$data$collection13 === void 0 ? void 0 : (_$data$collection13$m = _$data$collection13.messages) === null || _$data$collection13$m === void 0 ? void 0 : _$data$collection13$m.dpa), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection14 = $data.collection) === null || _$data$collection14 === void 0 ? void 0 : (_$data$collection14$m = _$data$collection14.messages) === null || _$data$collection14$m === void 0 ? void 0 : _$data$collection14$m.decidedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection15 = $data.collection) === null || _$data$collection15 === void 0 ? void 0 : (_$data$collection15$m = _$data$collection15.messages) === null || _$data$collection15$m === void 0 ? void 0 : _$data$collection15$m.title), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.sanctions, function (sanction) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_56, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_57, [sanction.dpa.country ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_58, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
-      src: "/images/flags/svg/".concat(sanction.dpa.country.code, ".svg"),
-      width: "48"
-    }, null, 8 /* PROPS */, _hoisted_59)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_60, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_61, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(sanction.dpa.name), 1 /* TEXT */)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_62, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(sanction.decided_at_for_humans), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_63, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(sanction.title), 1 /* TEXT */)]);
-  }), 256 /* UNKEYED_FRAGMENT */))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_64, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_65, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_66, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_67, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection16 = $data.collection) === null || _$data$collection16 === void 0 ? void 0 : (_$data$collection16$m = _$data$collection16.messages) === null || _$data$collection16$m === void 0 ? void 0 : _$data$collection16$m.documents), 1 /* TEXT */)]), _hoisted_68])])]), _hoisted_69, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_70, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_71, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_72, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_73, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_74, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection17 = $data.collection) === null || _$data$collection17 === void 0 ? void 0 : (_$data$collection17$m = _$data$collection17.messages) === null || _$data$collection17$m === void 0 ? void 0 : _$data$collection17$m.component) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection18 = $data.collection) === null || _$data$collection18 === void 0 ? void 0 : (_$data$collection18$m = _$data$collection18.messages) === null || _$data$collection18$m === void 0 ? void 0 : _$data$collection18$m.show), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }), 128 /* KEYED_FRAGMENT */))], 32 /* HYDRATE_EVENTS */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection3 = $data.collection) === null || _$data$collection3 === void 0 ? void 0 : (_$data$collection3$me = _$data$collection3.messages) === null || _$data$collection3$me === void 0 ? void 0 : _$data$collection3$me.selectYear), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    "class": "form-select",
+    id: "yearSelect",
+    onChange: _cache[1] || (_cache[1] = function () {
+      return $options.updateOrg && $options.updateOrg.apply($options, arguments);
+    }),
+    style: {
+      "width": "100px"
+    }
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(Object.keys($data.activeOrg), function (year) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
+      key: year
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(year), 1 /* TEXT */);
+  }), 128 /* KEYED_FRAGMENT */))], 32 /* HYDRATE_EVENTS */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection4 = $data.collection) === null || _$data$collection4 === void 0 ? void 0 : (_$data$collection4$me = _$data$collection4.messages) === null || _$data$collection4$me === void 0 ? void 0 : _$data$collection4$me.implementation) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection5 = $data.collection) === null || _$data$collection5 === void 0 ? void 0 : (_$data$collection5$me = _$data$collection5.messages) === null || _$data$collection5$me === void 0 ? void 0 : _$data$collection5$me.radar), 1 /* TEXT */)]), _hoisted_14]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Radar Chart End "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection6 = $data.collection) === null || _$data$collection6 === void 0 ? void 0 : (_$data$collection6$me = _$data$collection6.messages) === null || _$data$collection6$me === void 0 ? void 0 : _$data$collection6$me.risks) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection7 = $data.collection) === null || _$data$collection7 === void 0 ? void 0 : (_$data$collection7$me = _$data$collection7.messages) === null || _$data$collection7$me === void 0 ? void 0 : _$data$collection7$me.scatter), 1 /* TEXT */)]), _hoisted_18])])])])]), _hoisted_19, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection8 = $data.collection) === null || _$data$collection8 === void 0 ? void 0 : (_$data$collection8$me = _$data$collection8.messages) === null || _$data$collection8$me === void 0 ? void 0 : _$data$collection8$me.component) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection9 = $data.collection) === null || _$data$collection9 === void 0 ? void 0 : (_$data$collection9$me = _$data$collection9.messages) === null || _$data$collection9$me === void 0 ? void 0 : _$data$collection9$me.show), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn-close",
     "data-bs-dismiss": "modal",
     "aria-label": "Close",
-    onClick: _cache[1] || (_cache[1] = function () {
-      return $options.componentHide && $options.componentHide.apply($options, arguments);
-    })
-  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_75, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_76, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_77, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_78, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_79, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection19 = $data.collection) === null || _$data$collection19 === void 0 ? void 0 : (_$data$collection19$m = _$data$collection19.messages) === null || _$data$collection19$m === void 0 ? void 0 : _$data$collection19$m.key), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection20 = $data.collection) === null || _$data$collection20 === void 0 ? void 0 : (_$data$collection20$m = _$data$collection20.messages) === null || _$data$collection20$m === void 0 ? void 0 : _$data$collection20$m.value), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection21 = $data.collection) === null || _$data$collection21 === void 0 ? void 0 : (_$data$collection21$m = _$data$collection21.messages) === null || _$data$collection21$m === void 0 ? void 0 : _$data$collection21$m.code), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$componentActiv = $data.componentActive) === null || _$data$componentActiv === void 0 ? void 0 : _$data$componentActiv.code), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection22 = $data.collection) === null || _$data$collection22 === void 0 ? void 0 : (_$data$collection22$m = _$data$collection22.messages) === null || _$data$collection22$m === void 0 ? void 0 : _$data$collection22$m.name), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$componentActiv2 = $data.componentActive) === null || _$data$componentActiv2 === void 0 ? void 0 : _$data$componentActiv2.fullname), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection23 = $data.collection) === null || _$data$collection23 === void 0 ? void 0 : (_$data$collection23$m = _$data$collection23.messages) === null || _$data$collection23$m === void 0 ? void 0 : _$data$collection23$m.statements), 1 /* TEXT */), _hoisted_80]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$componentActiv3 = $data.componentActive) === null || _$data$componentActiv3 === void 0 ? void 0 : _$data$componentActiv3.deeds, function (deed) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
-      key: deed
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(deed.statement["content_".concat($props.locale)]), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(deed.value), 1 /* TEXT */)]);
-  }), 128 /* KEYED_FRAGMENT */)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection24 = $data.collection) === null || _$data$collection24 === void 0 ? void 0 : (_$data$collection24$m = _$data$collection24.messages) === null || _$data$collection24$m === void 0 ? void 0 : _$data$collection24$m.implementation), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$componentActiv4 = $data.componentActive) === null || _$data$componentActiv4 === void 0 ? void 0 : _$data$componentActiv4.mean), 1 /* TEXT */)])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_81, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    type: "button",
-    "class": "btn btn-primary",
     onClick: _cache[2] || (_cache[2] = function () {
       return $options.componentHide && $options.componentHide.apply($options, arguments);
     })
-  }, "Ok")])])])])])], 64 /* STABLE_FRAGMENT */);
-}
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/tasks/index/TasksWheel.vue?vue&type=template&id=4f0eaa02":
-/*!****************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/tasks/index/TasksWheel.vue?vue&type=template&id=4f0eaa02 ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* binding */ render)
-/* harmony export */ });
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-
-var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("canvas", {
-  id: "canvas",
-  width: "550",
-  height: "550"
-}, null, -1 /* HOISTED */);
-var _hoisted_2 = {
-  id: "tooltip",
-  "class": "position-fixed shadow-sm bg-body rounded overflow-hidden width-250 d-none"
-};
-var _hoisted_3 = {
-  "class": "row"
-};
-var _hoisted_4 = {
-  "class": "col-10 p-1"
-};
-var _hoisted_5 = {
-  "class": "fw-bold text-black mb-0"
-};
-var _hoisted_6 = {
-  "class": "fw-bold text-primary"
-};
-function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-    "class": "col-2",
-    style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-color: ".concat($data.taskColor, ";"))
-  }, null, 4 /* STYLE */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.taskTitle), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat($data.taskStart, " - ").concat($data.taskEnd)), 1 /* TEXT */)])])])], 64 /* STABLE_FRAGMENT */);
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_30, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_31, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection10 = $data.collection) === null || _$data$collection10 === void 0 ? void 0 : (_$data$collection10$m = _$data$collection10.messages) === null || _$data$collection10$m === void 0 ? void 0 : _$data$collection10$m.component), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$componentActiv = $data.componentActive) === null || _$data$componentActiv === void 0 ? void 0 : _$data$componentActiv.code, " | ").concat((_$data$componentActiv2 = $data.componentActive) === null || _$data$componentActiv2 === void 0 ? void 0 : _$data$componentActiv2.fullname)), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_32, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_33, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection11 = $data.collection) === null || _$data$collection11 === void 0 ? void 0 : (_$data$collection11$m = _$data$collection11.messages) === null || _$data$collection11$m === void 0 ? void 0 : _$data$collection11$m.desc), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$componentActiv3 = $data.componentActive) === null || _$data$componentActiv3 === void 0 ? void 0 : _$data$componentActiv3.desc), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_35, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$collection12 = $data.collection) === null || _$data$collection12 === void 0 ? void 0 : (_$data$collection12$m = _$data$collection12.messages) === null || _$data$collection12$m === void 0 ? void 0 : _$data$collection12$m.value, ":")), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$componentActiv4 = $data.componentActive) === null || _$data$componentActiv4 === void 0 ? void 0 : _$data$componentActiv4.mean), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_36, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_37, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$collection13 = $data.collection) === null || _$data$collection13 === void 0 ? void 0 : (_$data$collection13$m = _$data$collection13.messages) === null || _$data$collection13$m === void 0 ? void 0 : _$data$collection13$m.commitment, ":")), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$componentActiv5 = $data.componentActive) === null || _$data$componentActiv5 === void 0 ? void 0 : _$data$componentActiv5.commitment), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_38, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", _hoisted_39, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection14 = $data.collection) === null || _$data$collection14 === void 0 ? void 0 : (_$data$collection14$m = _$data$collection14.messages) === null || _$data$collection14$m === void 0 ? void 0 : _$data$collection14$m.sanctions), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_43, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection15 = $data.collection) === null || _$data$collection15 === void 0 ? void 0 : (_$data$collection15$m = _$data$collection15.messages) === null || _$data$collection15$m === void 0 ? void 0 : _$data$collection15$m.statements), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$componentActiv6 = $data.componentActive) === null || _$data$componentActiv6 === void 0 ? void 0 : _$data$componentActiv6.deeds, function (deed, index) {
+    var _$data$componentActiv7;
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
+      key: deed.id
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$componentActiv7 = $data.componentActive) === null || _$data$componentActiv7 === void 0 ? void 0 : _$data$componentActiv7.code, ".").concat(deed.statement.code)), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(deed.statement["content_".concat($props.locale)]), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(deed.value), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      type: "button",
+      "class": "btn btn-icon btn-outline-primary waves-effect",
+      onClick: function onClick($event) {
+        return $options.updateActiveStatement(index);
+      }
+    }, _hoisted_46, 8 /* PROPS */, _hoisted_44)])]);
+  }), 128 /* KEYED_FRAGMENT */))])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_47, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_48, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_49, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection16 = $data.collection) === null || _$data$collection16 === void 0 ? void 0 : (_$data$collection16$m = _$data$collection16.messages) === null || _$data$collection16$m === void 0 ? void 0 : _$data$collection16$m.details), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_50, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_51, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection17 = $data.collection) === null || _$data$collection17 === void 0 ? void 0 : (_$data$collection17$m = _$data$collection17.messages) === null || _$data$collection17$m === void 0 ? void 0 : _$data$collection17$m.desc), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$activeStatemen = $data.activeStatement) === null || _$data$activeStatemen === void 0 ? void 0 : _$data$activeStatemen["desc_".concat($props.locale)]), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_52, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_53, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection18 = $data.collection) === null || _$data$collection18 === void 0 ? void 0 : (_$data$collection18$m = _$data$collection18.messages) === null || _$data$collection18$m === void 0 ? void 0 : _$data$collection18$m.implementation), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$activeStatemen2 = $data.activeStatement) === null || _$data$activeStatemen2 === void 0 ? void 0 : _$data$activeStatemen2["implementation_".concat($props.locale)]), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_54, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_55, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$collection19 = $data.collection) === null || _$data$collection19 === void 0 ? void 0 : (_$data$collection19$m = _$data$collection19.messages) === null || _$data$collection19$m === void 0 ? void 0 : _$data$collection19$m.organisation, " ").concat((_$data$collection20 = $data.collection) === null || _$data$collection20 === void 0 ? void 0 : (_$data$collection20$m = _$data$collection20.messages) === null || _$data$collection20$m === void 0 ? void 0 : _$data$collection20$m.implementation)), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$activeStatemen3 = $data.activeStatement) === null || _$data$activeStatemen3 === void 0 ? void 0 : _$data$activeStatemen3.implementation), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_56, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", _hoisted_57, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection21 = $data.collection) === null || _$data$collection21 === void 0 ? void 0 : (_$data$collection21$m = _$data$collection21.messages) === null || _$data$collection21$m === void 0 ? void 0 : _$data$collection21$m.sanctions), 1 /* TEXT */)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_58, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": "btn btn-primary",
+    onClick: _cache[3] || (_cache[3] = function () {
+      return $options.componentHide && $options.componentHide.apply($options, arguments);
+    })
+  }, "Ok")])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_59, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_60, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_61, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_62, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_63, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection22 = $data.collection) === null || _$data$collection22 === void 0 ? void 0 : (_$data$collection22$m = _$data$collection22.messages) === null || _$data$collection22$m === void 0 ? void 0 : _$data$collection22$m.kpi), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": "btn-close",
+    "data-bs-dismiss": "modal",
+    "aria-label": "Close",
+    onClick: _cache[4] || (_cache[4] = function () {
+      return $options.kpiHide && $options.kpiHide.apply($options, arguments);
+    })
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_64, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_65, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_66, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_67, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_68, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection23 = $data.collection) === null || _$data$collection23 === void 0 ? void 0 : (_$data$collection23$m = _$data$collection23.messages) === null || _$data$collection23$m === void 0 ? void 0 : _$data$collection23$m.key), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection24 = $data.collection) === null || _$data$collection24 === void 0 ? void 0 : (_$data$collection24$m = _$data$collection24.messages) === null || _$data$collection24$m === void 0 ? void 0 : _$data$collection24$m.value), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection25 = $data.collection) === null || _$data$collection25 === void 0 ? void 0 : (_$data$collection25$m = _$data$collection25.messages) === null || _$data$collection25$m === void 0 ? void 0 : _$data$collection25$m.id), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive = $data.kpiActive) === null || _$data$kpiActive === void 0 ? void 0 : _$data$kpiActive.id), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection26 = $data.collection) === null || _$data$collection26 === void 0 ? void 0 : (_$data$collection26$m = _$data$collection26.messages) === null || _$data$collection26$m === void 0 ? void 0 : _$data$collection26$m.name), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.kpiActive ? $data.kpiActive["name_" + $props.locale] : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection27 = $data.collection) === null || _$data$collection27 === void 0 ? void 0 : (_$data$collection27$m = _$data$collection27.messages) === null || _$data$collection27$m === void 0 ? void 0 : _$data$collection27$m.desc), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.kpiActive ? $data.kpiActive["desc_" + $props.locale] : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection28 = $data.collection) === null || _$data$collection28 === void 0 ? void 0 : (_$data$collection28$m = _$data$collection28.messages) === null || _$data$collection28$m === void 0 ? void 0 : _$data$collection28$m.target), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive2 = $data.kpiActive) !== null && _$data$kpiActive2 !== void 0 && _$data$kpiActive2.kpicomment ? $data.kpiActive.kpicomment.target : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection29 = $data.collection) === null || _$data$collection29 === void 0 ? void 0 : (_$data$collection29$m = _$data$collection29.messages) === null || _$data$collection29$m === void 0 ? void 0 : _$data$collection29$m.value), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive3 = $data.kpiActive) !== null && _$data$kpiActive3 !== void 0 && _$data$kpiActive3.kpicomment ? $data.kpiActive.kpicomment.value : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection30 = $data.collection) === null || _$data$collection30 === void 0 ? void 0 : (_$data$collection30$m = _$data$collection30.messages) === null || _$data$collection30$m === void 0 ? void 0 : _$data$collection30$m.comment), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive4 = $data.kpiActive) !== null && _$data$kpiActive4 !== void 0 && _$data$kpiActive4.kpicomment ? $data.kpiActive.kpicomment.comment : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection31 = $data.collection) === null || _$data$collection31 === void 0 ? void 0 : (_$data$collection31$m = _$data$collection31.messages) === null || _$data$collection31$m === void 0 ? void 0 : _$data$collection31$m.lastUpdated), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive5 = $data.kpiActive) !== null && _$data$kpiActive5 !== void 0 && _$data$kpiActive5.kpicomment ? $data.kpiActive.kpicomment.created_at_for_humans : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection32 = $data.collection) === null || _$data$collection32 === void 0 ? void 0 : (_$data$collection32$m = _$data$collection32.messages) === null || _$data$collection32$m === void 0 ? void 0 : _$data$collection32$m.by), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive6 = $data.kpiActive) !== null && _$data$kpiActive6 !== void 0 && _$data$kpiActive6.kpicomment ? $data.kpiActive.kpicomment.user.name + " [" + $data.kpiActive.kpicomment.user.role + "]" : null), 1 /* TEXT */)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_69, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_70, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_71, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_72, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection33 = $data.collection) === null || _$data$collection33 === void 0 ? void 0 : (_$data$collection33$m = _$data$collection33.messages) === null || _$data$collection33$m === void 0 ? void 0 : _$data$collection33$m.kpi) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection34 = $data.collection) === null || _$data$collection34 === void 0 ? void 0 : (_$data$collection34$m = _$data$collection34.messages) === null || _$data$collection34$m === void 0 ? void 0 : _$data$collection34$m.history), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_73, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection35 = $data.collection) === null || _$data$collection35 === void 0 ? void 0 : (_$data$collection35$m = _$data$collection35.messages) === null || _$data$collection35$m === void 0 ? void 0 : _$data$collection35$m.kpiHistorySubtitle), 1 /* TEXT */)]), _hoisted_74]), _hoisted_75])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_76, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": "btn btn-primary",
+    onClick: _cache[5] || (_cache[5] = function () {
+      return $options.kpiHide && $options.kpiHide.apply($options, arguments);
+    })
+  }, "Ok")])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_77, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_78, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_79, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_80, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_81, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive = $data.sanctionActive) === null || _$data$sanctionActive === void 0 ? void 0 : _$data$sanctionActive.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": "btn-close",
+    "data-bs-dismiss": "modal",
+    "aria-label": "Close",
+    onClick: _cache[6] || (_cache[6] = function () {
+      return $options.sanctionHide && $options.sanctionHide.apply($options, arguments);
+    })
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_82, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_83, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_84, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_85, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_86, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection36 = $data.collection) === null || _$data$collection36 === void 0 ? void 0 : (_$data$collection36$m = _$data$collection36.messages) === null || _$data$collection36$m === void 0 ? void 0 : _$data$collection36$m.key), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection37 = $data.collection) === null || _$data$collection37 === void 0 ? void 0 : (_$data$collection37$m = _$data$collection37.messages) === null || _$data$collection37$m === void 0 ? void 0 : _$data$collection37$m.value), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection38 = $data.collection) === null || _$data$collection38 === void 0 ? void 0 : (_$data$collection38$m = _$data$collection38.messages) === null || _$data$collection38$m === void 0 ? void 0 : _$data$collection38$m.id), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive2 = $data.sanctionActive) === null || _$data$sanctionActive2 === void 0 ? void 0 : _$data$sanctionActive2.id), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection39 = $data.collection) === null || _$data$collection39 === void 0 ? void 0 : (_$data$collection39$m = _$data$collection39.messages) === null || _$data$collection39$m === void 0 ? void 0 : _$data$collection39$m.createdAt), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive3 = $data.sanctionActive) === null || _$data$sanctionActive3 === void 0 ? void 0 : _$data$sanctionActive3.created_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection40 = $data.collection) === null || _$data$collection40 === void 0 ? void 0 : (_$data$collection40$m = _$data$collection40.messages) === null || _$data$collection40$m === void 0 ? void 0 : _$data$collection40$m.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive4 = $data.sanctionActive) === null || _$data$sanctionActive4 === void 0 ? void 0 : _$data$sanctionActive4.title), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection41 = $data.collection) === null || _$data$collection41 === void 0 ? void 0 : (_$data$collection41$m = _$data$collection41.messages) === null || _$data$collection41$m === void 0 ? void 0 : _$data$collection41$m.dpa), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_87, [((_$data$sanctionActive5 = $data.sanctionActive) === null || _$data$sanctionActive5 === void 0 ? void 0 : (_$data$sanctionActive6 = _$data$sanctionActive5.dpa) === null || _$data$sanctionActive6 === void 0 ? void 0 : _$data$sanctionActive6.country) != undefined ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_88, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    src: "/images/flags/svg/".concat((_$data$sanctionActive7 = $data.sanctionActive) === null || _$data$sanctionActive7 === void 0 ? void 0 : (_$data$sanctionActive8 = _$data$sanctionActive7.dpa) === null || _$data$sanctionActive8 === void 0 ? void 0 : (_$data$sanctionActive9 = _$data$sanctionActive8.country) === null || _$data$sanctionActive9 === void 0 ? void 0 : _$data$sanctionActive9.code, ".svg"),
+    style: {
+      "width": "30px"
+    }
+  }, null, 8 /* PROPS */, _hoisted_89)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_90, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_91, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive10 = $data.sanctionActive) === null || _$data$sanctionActive10 === void 0 ? void 0 : (_$data$sanctionActive11 = _$data$sanctionActive10.dpa) === null || _$data$sanctionActive11 === void 0 ? void 0 : _$data$sanctionActive11.name), 1 /* TEXT */)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection42 = $data.collection) === null || _$data$collection42 === void 0 ? void 0 : (_$data$collection42$m = _$data$collection42.messages) === null || _$data$collection42$m === void 0 ? void 0 : _$data$collection42$m.fine), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive12 = $data.sanctionActive) !== null && _$data$sanctionActive12 !== void 0 && _$data$sanctionActive12.fine ? parseInt((_$data$sanctionActive13 = $data.sanctionActive) === null || _$data$sanctionActive13 === void 0 ? void 0 : _$data$sanctionActive13.fine) + " " + ((_$data$sanctionActive14 = $data.sanctionActive) !== null && _$data$sanctionActive14 !== void 0 && (_$data$sanctionActive15 = _$data$sanctionActive14.currency) !== null && _$data$sanctionActive15 !== void 0 && _$data$sanctionActive15.symbol ? (_$data$sanctionActive16 = $data.sanctionActive) === null || _$data$sanctionActive16 === void 0 ? void 0 : _$data$sanctionActive16.currency.symbol : "") : ""), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection43 = $data.collection) === null || _$data$collection43 === void 0 ? void 0 : (_$data$collection43$m = _$data$collection43.messages) === null || _$data$collection43$m === void 0 ? void 0 : _$data$collection43$m.startedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive17 = $data.sanctionActive) === null || _$data$sanctionActive17 === void 0 ? void 0 : _$data$sanctionActive17.started_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection44 = $data.collection) === null || _$data$collection44 === void 0 ? void 0 : (_$data$collection44$m = _$data$collection44.messages) === null || _$data$collection44$m === void 0 ? void 0 : _$data$collection44$m.decidedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive18 = $data.sanctionActive) === null || _$data$sanctionActive18 === void 0 ? void 0 : _$data$sanctionActive18.decided_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection45 = $data.collection) === null || _$data$collection45 === void 0 ? void 0 : (_$data$collection45$m = _$data$collection45.messages) === null || _$data$collection45$m === void 0 ? void 0 : _$data$collection45$m.publishedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive19 = $data.sanctionActive) === null || _$data$sanctionActive19 === void 0 ? void 0 : _$data$sanctionActive19.published_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection46 = $data.collection) === null || _$data$collection46 === void 0 ? void 0 : (_$data$collection46$m = _$data$collection46.messages) === null || _$data$collection46$m === void 0 ? void 0 : _$data$collection46$m.articles), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$sanctionActive20 = $data.sanctionActive) === null || _$data$sanctionActive20 === void 0 ? void 0 : _$data$sanctionActive20.articlesSorted, function (article) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+      key: article.title
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+      href: article === null || article === void 0 ? void 0 : article.url,
+      target: "_blank"
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(article === null || article === void 0 ? void 0 : article.title), 9 /* TEXT, PROPS */, _hoisted_92)]);
+  }), 128 /* KEYED_FRAGMENT */))])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_93, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": "btn btn-primary",
+    onClick: _cache[7] || (_cache[7] = function () {
+      return $options.sanctionHide && $options.sanctionHide.apply($options, arguments);
+    })
+  }, "Ok")])])])])])]);
 }
 
 /***/ }),
@@ -24434,10 +24619,10 @@ exports["default"] = (sfc, props) => {
 
 /***/ }),
 
-/***/ "./resources/js/models/organisations/dashboard/OrganisationDashboard.vue":
-/*!*******************************************************************************!*\
-  !*** ./resources/js/models/organisations/dashboard/OrganisationDashboard.vue ***!
-  \*******************************************************************************/
+/***/ "./resources/js/models/organisations/insights/OrganisationInsights.vue":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/models/organisations/insights/OrganisationInsights.vue ***!
+  \*****************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -24445,15 +24630,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _OrganisationDashboard_vue_vue_type_template_id_4ba48ee2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrganisationDashboard.vue?vue&type=template&id=4ba48ee2 */ "./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=template&id=4ba48ee2");
-/* harmony import */ var _OrganisationDashboard_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrganisationDashboard.vue?vue&type=script&lang=js */ "./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=script&lang=js");
+/* harmony import */ var _OrganisationInsights_vue_vue_type_template_id_048b7868__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrganisationInsights.vue?vue&type=template&id=048b7868 */ "./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=template&id=048b7868");
+/* harmony import */ var _OrganisationInsights_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrganisationInsights.vue?vue&type=script&lang=js */ "./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=script&lang=js");
 /* harmony import */ var _var_www_html_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
 
 ;
-const __exports__ = /*#__PURE__*/(0,_var_www_html_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_OrganisationDashboard_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_OrganisationDashboard_vue_vue_type_template_id_4ba48ee2__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/dashboard/OrganisationDashboard.vue"]])
+const __exports__ = /*#__PURE__*/(0,_var_www_html_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_OrganisationInsights_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_OrganisationInsights_vue_vue_type_template_id_048b7868__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/insights/OrganisationInsights.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -24462,94 +24647,34 @@ if (false) {}
 
 /***/ }),
 
-/***/ "./resources/js/models/tasks/index/TasksWheel.vue":
-/*!********************************************************!*\
-  !*** ./resources/js/models/tasks/index/TasksWheel.vue ***!
-  \********************************************************/
+/***/ "./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=script&lang=js":
+/*!*****************************************************************************************************!*\
+  !*** ./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=script&lang=js ***!
+  \*****************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_OrganisationInsights_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
 /* harmony export */ });
-/* harmony import */ var _TasksWheel_vue_vue_type_template_id_4f0eaa02__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TasksWheel.vue?vue&type=template&id=4f0eaa02 */ "./resources/js/models/tasks/index/TasksWheel.vue?vue&type=template&id=4f0eaa02");
-/* harmony import */ var _TasksWheel_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TasksWheel.vue?vue&type=script&lang=js */ "./resources/js/models/tasks/index/TasksWheel.vue?vue&type=script&lang=js");
-/* harmony import */ var _var_www_html_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
-
-
-
-
-;
-const __exports__ = /*#__PURE__*/(0,_var_www_html_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_TasksWheel_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_TasksWheel_vue_vue_type_template_id_4f0eaa02__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/tasks/index/TasksWheel.vue"]])
-/* hot reload */
-if (false) {}
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__exports__);
-
-/***/ }),
-
-/***/ "./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=script&lang=js":
-/*!*******************************************************************************************************!*\
-  !*** ./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=script&lang=js ***!
-  \*******************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_OrganisationDashboard_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_OrganisationDashboard_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./OrganisationDashboard.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=script&lang=js");
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_OrganisationInsights_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./OrganisationInsights.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=script&lang=js");
  
 
 /***/ }),
 
-/***/ "./resources/js/models/tasks/index/TasksWheel.vue?vue&type=script&lang=js":
-/*!********************************************************************************!*\
-  !*** ./resources/js/models/tasks/index/TasksWheel.vue?vue&type=script&lang=js ***!
-  \********************************************************************************/
+/***/ "./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=template&id=048b7868":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=template&id=048b7868 ***!
+  \***********************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_TasksWheel_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_OrganisationInsights_vue_vue_type_template_id_048b7868__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_TasksWheel_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./TasksWheel.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/tasks/index/TasksWheel.vue?vue&type=script&lang=js");
- 
-
-/***/ }),
-
-/***/ "./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=template&id=4ba48ee2":
-/*!*************************************************************************************************************!*\
-  !*** ./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=template&id=4ba48ee2 ***!
-  \*************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_OrganisationDashboard_vue_vue_type_template_id_4ba48ee2__WEBPACK_IMPORTED_MODULE_0__.render)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_OrganisationDashboard_vue_vue_type_template_id_4ba48ee2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./OrganisationDashboard.vue?vue&type=template&id=4ba48ee2 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/dashboard/OrganisationDashboard.vue?vue&type=template&id=4ba48ee2");
-
-
-/***/ }),
-
-/***/ "./resources/js/models/tasks/index/TasksWheel.vue?vue&type=template&id=4f0eaa02":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/models/tasks/index/TasksWheel.vue?vue&type=template&id=4f0eaa02 ***!
-  \**************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_TasksWheel_vue_vue_type_template_id_4f0eaa02__WEBPACK_IMPORTED_MODULE_0__.render)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_TasksWheel_vue_vue_type_template_id_4f0eaa02__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./TasksWheel.vue?vue&type=template&id=4f0eaa02 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/tasks/index/TasksWheel.vue?vue&type=template&id=4f0eaa02");
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_OrganisationInsights_vue_vue_type_template_id_048b7868__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./OrganisationInsights.vue?vue&type=template&id=048b7868 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/models/organisations/insights/OrganisationInsights.vue?vue&type=template&id=048b7868");
 
 
 /***/ }),
@@ -39417,17 +39542,17 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!************************************************************!*\
-  !*** ./resources/js/models/organisations/dashboard/app.js ***!
-  \************************************************************/
+/*!***********************************************************!*\
+  !*** ./resources/js/models/organisations/insights/app.js ***!
+  \***********************************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-/* harmony import */ var _OrganisationDashboard_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrganisationDashboard.vue */ "./resources/js/models/organisations/dashboard/OrganisationDashboard.vue");
+/* harmony import */ var _OrganisationInsights_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrganisationInsights.vue */ "./resources/js/models/organisations/insights/OrganisationInsights.vue");
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 
 var app = (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)({});
-app.component('OrganisationDashboard', _OrganisationDashboard_vue__WEBPACK_IMPORTED_MODULE_1__["default"]);
+app.component('OrganisationInsights', _OrganisationInsights_vue__WEBPACK_IMPORTED_MODULE_1__["default"]);
 app.mount('#app');
 })();
 

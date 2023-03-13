@@ -4,9 +4,12 @@
             <div class="col-12">
                 <!-- Radar Chart-->
                 <div class="card">
-                    <div class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
-                        <div class="mb-1">
-                            <label class="form-label" for="basicSelect">{{ collection?.messages?.selectOrganisation }}</label>
+                    <div
+                        class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
+                        <div class="mb-1 width-200">
+                            <label class="form-label" for="basicSelect">{{
+                                    collection?.messages?.selectOrganisation
+                                }}</label>
                             <select class="form-select" id="basicSelect" @change="updateOrg">
                                 <option v-for="org in collection?.data" :key="org">{{ org.name }}</option>
                             </select>
@@ -21,7 +24,8 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="card-header">
-                                <h4 class="card-title">{{ collection?.messages?.implementation }} {{ collection?.messages?.radar }}</h4>
+                                <h4 class="card-title">{{ collection?.messages?.implementation }}
+                                    {{ collection?.messages?.radar }}</h4>
                             </div>
                             <div class="card-body">
                                 <canvas id="radar-chart" width="640" height="640"></canvas>
@@ -30,7 +34,8 @@
                         <div class="col-6">
                             <!-- Radar Chart End -->
                             <div class="card-header">
-                                <h4 class="card-title">{{ collection?.messages?.risks }} {{ collection?.messages?.scatter }}</h4>
+                                <h4 class="card-title">{{ collection?.messages?.risks }}
+                                    {{ collection?.messages?.scatter }}</h4>
                             </div>
                             <div class="card-body">
                                 <canvas class="bubble-chart-ex chartjs" width="640" height="640"></canvas>
@@ -67,47 +72,97 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade text-start modal-primary" id="componentShowModal" tabindex="-1" aria-labelledby="componentShowLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-extra-wide">
+        <div class="modal fade text-start modal-primary" id="componentShowModal" tabindex="-1"
+             aria-labelledby="componentShowLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="componentShowLabel">{{ collection?.messages?.component }} {{ collection?.messages?.show }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="componentHide"></button>
+                        <h5 class="modal-title" id="componentShowLabel">{{ collection?.messages?.component }}
+                            {{ collection?.messages?.show }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="componentHide"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead class="table-light">
+                            <div class="col-md-4">
+                                <div class="mb-1">
+                                    <h6 class="text-sm font-weight-semibold me-1">{{
+                                            collection?.messages?.component
+                                        }}</h6>
+                                    <span>{{ `${componentActive?.code} | ${componentActive?.fullname}` }}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <h6 class="text-sm font-weight-semibold me-1">{{
+                                            collection?.messages?.desc
+                                        }}</h6>
+                                    <span>{{ componentActive?.desc }}</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-1">
+                                    <h6 class="text-sm font-weight-semibold me-1 mb-0">
+                                        {{ `${collection?.messages?.value}:` }}</h6>
+                                    <span>{{ componentActive?.mean }}</span>
+                                </div>
+                                <div class="d-flex align-items-center mb-1">
+                                    <h6 class="text-sm font-weight-semibold me-1 mb-0">
+                                        {{ `${collection?.messages?.commitment}:` }}</h6>
+                                    <span>{{ componentActive?.commitment }}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <a href="#" class="btn btn-outline-primary waves-effect"
+                                       target="_blank">{{ collection?.messages?.sanctions }}</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
                                         <tr>
-                                            <th>{{ collection?.messages?.key }}</th>
-                                            <th>{{ collection?.messages?.value }}</th>
+                                            <th colspan="4">{{ collection?.messages?.statements }}</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{{ collection?.messages?.code }}</td>
-                                            <td>{{ componentActive?.code }}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>{{ collection?.messages?.name }}</td>
-                                            <td>{{ componentActive?.fullname }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.statements }}</td>
-                                            <td></td>
-                                        </tr>
-                                        <tr v-for="deed in componentActive?.deeds" :key="deed">
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="(deed, index) in componentActive?.deeds" :key="deed.id">
+                                            <td>{{ `${componentActive?.code}.${deed.statement.code}` }}</td>
                                             <td>{{ deed.statement[`content_${locale}`] }}</td>
                                             <td>{{ deed.value }}</td>
+                                            <td>
+                                                <button type="button"
+                                                        class="btn btn-icon btn-outline-primary waves-effect"
+                                                        @click="updateActiveStatement(index)">
+                                                    <i data-feather="chevron-right"></i>
+                                                </button>
+                                            </td>
                                         </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.implementation }}</td>
-                                            <td>{{ componentActive?.mean }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="divider divider-start mt-0">
+                                    <div class="divider-text text-uppercase fs-6 fw-bold">
+                                        {{ collection?.messages?.details }}
+                                    </div>
+                                </div>
+                                <div class="mb-1">
+                                    <h6 class="text-sm font-weight-semibold me-1">{{ collection?.messages?.desc }}</h6>
+                                    <span>{{ activeStatement?.[`desc_${locale}`] }}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <h6 class="text-sm font-weight-semibold me-1">
+                                        {{ collection?.messages?.implementation }}</h6>
+                                    <span>{{ activeStatement?.[`implementation_${locale}`] }}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <h6 class="text-sm font-weight-semibold me-1">
+                                        {{
+                                            `${collection?.messages?.organisation} ${collection?.messages?.implementation}`
+                                        }}</h6>
+                                    <span>{{ activeStatement?.implementation }}</span>
+                                </div>
+                                <div class="mb-1">
+                                    <a href="#" class="btn btn-outline-primary waves-effect"
+                                       target="_blank">{{ collection?.messages?.sanctions }}</a>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -117,65 +172,78 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 modal fade text-start modal-primary" id="kpiViewModal" tabindex="-1" aria-labelledby="kpiLabel" aria-hidden="true">
+        <div class="col-12 modal fade text-start modal-primary" id="kpiViewModal" tabindex="-1"
+             aria-labelledby="kpiLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="kpiLabel">{{ collection?.messages?.kpi }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="kpiHide"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="kpiHide"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-4 table-responsive">
                                 <table class="table">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>{{ collection?.messages?.key }}</th>
-                                            <th>{{ collection?.messages?.value }}</th>
-                                        </tr>
+                                    <tr>
+                                        <th>{{ collection?.messages?.key }}</th>
+                                        <th>{{ collection?.messages?.value }}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>{{ collection?.messages?.id }}</td>
-                                            <td>{{ kpiActive?.id }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.name }}</td>
-                                            <td>{{ kpiActive ? kpiActive["name_" + locale] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.desc }}</td>
-                                            <td>{{ kpiActive ? kpiActive["desc_" + locale] : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.target }}</td>
-                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.target : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.value }}</td>
-                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.value : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.comment }}</td>
-                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.comment : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.lastUpdated }}</td>
-                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.created_at_for_humans : null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.by }}</td>
-                                            <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.user.name + " [" + kpiActive.kpicomment.user.role + "]" : null }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.id }}</td>
+                                        <td>{{ kpiActive?.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.name }}</td>
+                                        <td>{{ kpiActive ? kpiActive["name_" + locale] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.desc }}</td>
+                                        <td>{{ kpiActive ? kpiActive["desc_" + locale] : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.target }}</td>
+                                        <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.target : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.value }}</td>
+                                        <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.value : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.comment }}</td>
+                                        <td>{{ kpiActive?.kpicomment ? kpiActive.kpicomment.comment : null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.lastUpdated }}</td>
+                                        <td>{{
+                                                kpiActive?.kpicomment ? kpiActive.kpicomment.created_at_for_humans : null
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.by }}</td>
+                                        <td>{{
+                                                kpiActive?.kpicomment ? kpiActive.kpicomment.user.name + " [" +
+                                                    kpiActive.kpicomment.user.role + "]" : null
+                                            }}
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
                             <div class="col-8">
                                 <div class="card">
-                                    <div class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
+                                    <div
+                                        class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
                                         <div>
-                                            <h4 class="card-title">{{ collection?.messages?.kpi }} {{ collection?.messages?.history }}</h4>
-                                            <span class="card-subtitle text-muted">{{ collection?.messages?.kpiHistorySubtitle }}</span>
+                                            <h4 class="card-title">{{ collection?.messages?.kpi }}
+                                                {{ collection?.messages?.history }}</h4>
+                                            <span class="card-subtitle text-muted">{{
+                                                    collection?.messages?.kpiHistorySubtitle
+                                                }}</span>
                                         </div>
                                         <div class="d-flex align-items-center"></div>
                                     </div>
@@ -192,73 +260,82 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade text-start modal-primary" id="sanctionShowModal" tabindex="-1" aria-labelledby="sanctionShowLabel" aria-hidden="true">
+        <div class="modal fade text-start modal-primary" id="sanctionShowModal" tabindex="-1"
+             aria-labelledby="sanctionShowLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-extra-wide">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="sanctionShowLabel">{{ sanctionActive?.title }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="sanctionHide"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                @click="sanctionHide"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>{{ collection?.messages?.key }}</th>
-                                            <th>{{ collection?.messages?.value }}</th>
-                                        </tr>
+                                    <tr>
+                                        <th>{{ collection?.messages?.key }}</th>
+                                        <th>{{ collection?.messages?.value }}</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>{{ collection?.messages?.id }}</td>
-                                            <td>{{ sanctionActive?.id }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.createdAt }}</td>
-                                            <td>{{ sanctionActive?.created_at_for_humans }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.title }}</td>
-                                            <td>{{ sanctionActive?.title }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.dpa }}</td>
-                                            <td>
-                                                <div class="d-flex align-items-center justify-content-start">
-                                                    <div v-if="sanctionActive?.dpa?.country != undefined" class="col-2">
-                                                        <img :src="`/images/flags/svg/${sanctionActive?.dpa?.country?.code}.svg`" style="width: 30px" />
-                                                    </div>
-                                                    <div class="col-10 align-items-center">
-                                                        <p class="mx-0 my-0">{{ sanctionActive?.dpa?.name }}</p>
-                                                    </div>
+                                    <tr>
+                                        <td>{{ collection?.messages?.id }}</td>
+                                        <td>{{ sanctionActive?.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.createdAt }}</td>
+                                        <td>{{ sanctionActive?.created_at_for_humans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.title }}</td>
+                                        <td>{{ sanctionActive?.title }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.dpa }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-start">
+                                                <div v-if="sanctionActive?.dpa?.country != undefined" class="col-2">
+                                                    <img
+                                                        :src="`/images/flags/svg/${sanctionActive?.dpa?.country?.code}.svg`"
+                                                        style="width: 30px"/>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.fine }}</td>
-                                            <td>{{ sanctionActive?.fine ? parseInt(sanctionActive?.fine) + " " + (sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : "") : "" }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.startedOn }}</td>
-                                            <td>{{ sanctionActive?.started_at_for_humans }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.decidedOn }}</td>
-                                            <td>{{ sanctionActive?.decided_at_for_humans }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.publishedOn }}</td>
-                                            <td>{{ sanctionActive?.published_at_for_humans }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ collection?.messages?.articles }}</td>
-                                            <td>
-                                                <div v-for="article in sanctionActive?.articlesSorted" :key="article.title">
-                                                    <a :href="article?.url" target="_blank">{{ article?.title }}</a>
+                                                <div class="col-10 align-items-center">
+                                                    <p class="mx-0 my-0">{{ sanctionActive?.dpa?.name }}</p>
                                                 </div>
-                                            </td>
-                                        </tr>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.fine }}</td>
+                                        <td>{{
+                                                sanctionActive?.fine ? parseInt(sanctionActive?.fine) + " " +
+                                                    (sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : "") :
+                                                    ""
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.startedOn }}</td>
+                                        <td>{{ sanctionActive?.started_at_for_humans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.decidedOn }}</td>
+                                        <td>{{ sanctionActive?.decided_at_for_humans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.publishedOn }}</td>
+                                        <td>{{ sanctionActive?.published_at_for_humans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ collection?.messages?.articles }}</td>
+                                        <td>
+                                            <div v-for="article in sanctionActive?.articlesSorted" :key="article.title">
+                                                <a :href="article?.url" target="_blank">{{ article?.title }}</a>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -275,6 +352,7 @@
 <script>
 import Chart from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+
 export default {
     props: ["locale"],
     data() {
@@ -290,6 +368,7 @@ export default {
             sanctionsTable: null,
             scatterChart: null,
             activeOrg: {},
+            activeStatement: null
         };
     },
     methods: {
@@ -326,7 +405,7 @@ export default {
                 paging: true,
                 autoWidth: true,
                 searching: true,
-                columns: [{ data: "code" }, { data: "fullname" }, { data: "commitment" }, { data: "mean" }],
+                columns: [{data: "code"}, {data: "fullname"}, {data: "commitment"}, {data: "mean"}],
                 columnDefs: [
                     {
                         // columnA
@@ -379,7 +458,7 @@ export default {
                                 <div class="d-flex justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
                                         <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.componentShow(${full.id})">
-                                            ${feather.icons["eye"].toSvg({ class: "me-25" })}
+                                            ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.view}</span>
                                         </button>
                                     </div>
@@ -456,7 +535,7 @@ export default {
                 paging: true,
                 autoWidth: true,
                 searching: true,
-                columns: [{ data: "id" }, { data: "name" }, { data: "desc" }, { data: "target" }, { data: "value" }, { data: "comment" }],
+                columns: [{data: "id"}, {data: "name"}, {data: "desc"}, {data: "target"}, {data: "value"}, {data: "comment"}],
                 columnDefs: [
                     {
                         // id
@@ -529,7 +608,7 @@ export default {
                                 <div class="d-flex justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
                                         <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.kpiShow(${full.id})">
-                                            ${feather.icons["eye"].toSvg({ class: "me-25" })}
+                                            ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.view}</span>
                                         </button>
                                     </div>
@@ -594,7 +673,7 @@ export default {
             </thead>
             `;
             document.getElementById("sanctionsTable").innerHTML = header;
-            const ajaxUrl = `/${thisComponent.locale}/axios/organisations/act/sanctions`;
+            const ajaxUrl = `/${thisComponent.locale}/axios/organisations/insights/sanctions`;
             thisComponent.sanctionsTable = $("#sanctionsTable").DataTable({
                 processing: true,
                 serverSide: true,
@@ -612,7 +691,7 @@ export default {
                         console.log(xhr);
                     },
                     */
-                    
+
                 },
                 columnDefs: [
                     {
@@ -715,11 +794,11 @@ export default {
                                 <div class="d-flex justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
                                         <button type="button" class="btn btn-gradient-info waves-effect mb-1" onClick="window.open('${full.url}','_blank')">
-                                            ${feather.icons["external-link"].toSvg({ class: "me-25" })}
+                                            ${feather.icons["external-link"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.visit}</span>
                                         </button>
                                         <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.sanctionShow(${full.id})">
-                                            ${feather.icons["eye"].toSvg({ class: "me-25" })}
+                                            ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.view}</span>
                                         </button>
                                     </div>
@@ -835,7 +914,7 @@ export default {
                     tooltip: {
                         enabled: true,
                         shared: true,
-                        custom: function ({ series, seriesIndex, dataPointIndex, w, context }) {
+                        custom: function ({series, seriesIndex, dataPointIndex, w, context}) {
                             let r = `
                             <div class="arrow_box" style="left: 445.159px; top: 124.792px;">
                                 <div class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">${thisComponent.kpiActive?.targets[dataPointIndex].x}</div>
@@ -1027,7 +1106,7 @@ export default {
                                     let labels = [];
                                     for (const leg of riskData.legend) {
                                         //console.log(leg);
-                                        labels.push({ text: leg.text, fillStyle: leg.colour });
+                                        labels.push({text: leg.text, fillStyle: leg.colour});
                                     }
                                     return labels;
                                 },
@@ -1094,7 +1173,11 @@ export default {
             const dataSource = this.activeOrg[activeYear].table;
             let y = dataSource.filter((x) => x.id == id);
             this.componentActive = y[0];
+            this.activeStatement = y[0]?.deeds?.[0]?.statement;
             $("#componentShowModal").modal("show");
+            this.$nextTick(() => {
+                feather.replace();
+            });
         },
         kpiHide() {
             $("#kpiViewModal").modal("hide");
@@ -1153,17 +1236,18 @@ export default {
                 this.buildTable();
             });
         },
+        updateActiveStatement(index) {
+            this.activeStatement = this.componentActive?.deeds?.[index].statement;
+        }
     },
     mounted() {
         var thisComponent = this;
         window.component = thisComponent;
         axios
-            .get("/" + thisComponent.locale + "/axios/organisations/act", {})
+            .get("/" + thisComponent.locale + "/axios/organisations/insights", {})
             .then(function (response) {
-                //console.log(response.data);
                 thisComponent.collection = response.data;
                 thisComponent.activeOrg = response.data.data[0].data;
-                //console.log(thisComponent.activeOrg);
                 thisComponent.$nextTick(() => {
                     thisComponent.drawRadar();
                     thisComponent.buildTable();

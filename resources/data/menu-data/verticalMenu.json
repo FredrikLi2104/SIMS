@@ -20,21 +20,21 @@
             ]
         },
         {
-            "name": "check",
-            "auth": "user",
-            "icon": "check",
-            "url": "check",
+            "name": "knowledge",
+            "auth": "auditor-user",
+            "icon": "help-circle",
+            "url": "knowledge",
             "slug": [
-                "organisations.check"
+                "organisations.knowledge"
             ]
         },
         {
-            "name": "act",
+            "name": "insights",
             "auth": "user",
             "icon": "pie-chart",
-            "url": "act",
+            "url": "insights",
             "slug": [
-                "organisations.act"
+                "organisations.insights"
             ]
         },
         {

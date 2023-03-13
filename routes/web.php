@@ -58,8 +58,8 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('kpis', [AxiosController::class, 'kpis'])->middleware('can:moderator')->name('axios.kpis.index');
     Route::get('links', [AxiosController::class, 'links'])->middleware('can:moderator')->name('axios.links.index');
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
-    Route::get('organisations/act', [AxiosController::class, 'organisationsAct'])->middleware('can:auditor-user')->name('axios.organisations.act');
-    Route::post('organisations/act/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:user')->name('axios.organisations.act.sanctions');
+    Route::get('organisations/insights', [AxiosController::class, 'organisationsInsights'])->middleware('can:auditor-user')->name('axios.organisations.insights');
+    Route::post('organisations/insights/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:auditor-user')->name('axios.organisations.insights.sanctions');
     Route::get('organisations/do/{action?}', [AxiosController::class, 'organisationsDo'])->middleware('can:user')->name('axios.organisations.do');
     Route::post('organisations/kpicomments/store', [AxiosController::class, 'organisationsKpicommentsStore'])->middleware('can:user')->name('axios.organisations.kpicomments.store');
     Route::get('organisations/kpis/{kpi}', [AxiosController::class, 'organisationsKpisShow'])->middleware('can:auditor-user')->name('axios.organisations.kpis.show');
@@ -92,8 +92,8 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
 /* Localized Routes */
 Route::prefix('{locale}')->middleware('locale')->group(function () {
     require __DIR__ . '/auth.php';
-    Route::get('act', [OrganisationController::class, 'act'])->middleware('auth')->middleware('can:user')->name('organisations.act');
-    Route::get('/check', [OrganisationController::class, 'check'])->middleware('auth')->middleware('can:user')->name('organisations.check');
+    Route::get('insights', [OrganisationController::class, 'insights'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.insights');
+    Route::get('/knowledge', [OrganisationController::class, 'knowledge'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.knowledge');
     Route::resource('/currencies', CurrencyController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('do/{action?}', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');

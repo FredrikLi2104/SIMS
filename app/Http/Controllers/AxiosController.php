@@ -176,7 +176,7 @@ class AxiosController extends Controller
      * @param String $locale AppLocale
      * @return Illuminate\Database\Eloquent\Collection
      **/
-    public function organisationsAct($locale)
+    public function organisationsInsights($locale)
     {
         App::setlocale($locale);
         $messages = Lang::get('messages');
@@ -186,13 +186,18 @@ class AxiosController extends Controller
         foreach ($organisation->organisations->makeVisible(['risks']) as $v) {
             $organisations[] = $v;
         }
+
+        $currentyear = Carbon::now()->format('Y');
         foreach ($organisations as $org) {
             $data = [];
             $years = $org->deedsYears();
             if ($years == []) {
-                $years = [Carbon::now()->format('Y')];
+                $years = [$currentyear];
             }
-            sort($years);
+            if (!in_array($currentyear, $years)) {
+                $years[] = $currentyear;
+            }
+            rsort($years);
             foreach ($years as $year) {
                 $data[$year] = [];
                 $components = Component::all();
@@ -202,8 +207,15 @@ class AxiosController extends Controller
                     $data[$year]['mean'][] = $comp->statementMeanValue($org, $year);
                     $data[$year]['codenames'][] = $comp->codeName;
                     $name = mb_strlen($comp->{'name_' . App::currentLocale()}) > 16 ? mb_substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
-                    //$name = strlen($comp->{'name_' . App::currentLocale()}) > 16 ? substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
-                    $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_' . App::currentLocale()}, 'deeds' => $comp->organisationStatementsYear($org, $year)];
+
+                    $deeds = $comp->organisationStatementsYear($org, $year);
+                    $deeds = $deeds->map(function ($deed) use ($org) {
+                        $op = $deed->statement->organisationPlan($org);
+                        $deed->statement->implementation = $op->implementation ?? '';
+                        $deed->statement->makeVisible('implementation');
+                        return $deed;
+                    });
+                    $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'desc' => $comp->{"desc_$locale"}, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_' . App::currentLocale()}, 'deeds' => $deeds];
                 }
                 // Kpis
                 $kpis = Kpi::all();
@@ -1162,7 +1174,13 @@ class AxiosController extends Controller
             $needle = $request->search['value'];
             // spider search
             $sanctions = Sanction::where(function ($query) use ($needle) {
-                $query->where('title', 'like', '%' . $needle . '%')->orWhere('started_at', 'like', '%' . $needle . '%')->orWhere('decided_at', 'like', '%' . $needle . '%')->orWhere('published_at', 'like', '%' . $needle . '%')->orWhere('fine', 'like', '%' . $needle . '%');
+                $query->where('title', 'like', '%' . $needle . '%')
+                    ->orWhereDate('started_at', 'like', '%' . $needle . '%')
+                    ->orWhereDate('decided_at', 'like', '%' . $needle . '%')
+                    ->orWhere('published_at', 'like', '%' . $needle . '%')
+                    ->orWhere('fine', 'like', '%' . $needle . '%')
+                    ->orWhereRelation('dpa', 'title', 'like', "Category:%$needle%");
+
             })->get();
             $sanctions = $sanctions->sortByDesc('id');
         }
@@ -1171,9 +1189,9 @@ class AxiosController extends Controller
         $recordsFiltered = $sanctions->count();
         $data = $sanctions->chunk($request->length);
         if (is_int($request->start / $request->length)) {
-            $data = $data[$request->start / $request->length];
+            $data = $data[$request->start / $request->length] ?? $data;
         } else {
-            $data = $data[count($data) - 1];
+            $data = $data[count($data) - 1] ?? $data;
         }
         $data = $data->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'decided_at_for_humans', 'dpa', 'url'])->take($request->length);
         foreach ($data as $sanction) {
@@ -1207,8 +1225,7 @@ class AxiosController extends Controller
 
     public function tasks($locale, $year)
     {
-        $localeForCarbon = $locale == 'se' ? 'sv-SE' : $locale;
-        Carbon::setLocale($localeForCarbon);
+        App::setLocale($locale);
 
         $tasks = Task::with('taskStatus')
             ->where('created_by', auth()->user()->id)
@@ -1220,12 +1237,19 @@ class AxiosController extends Controller
         $until = Carbon::createFromDate($year, 12, 31);
         $period = CarbonPeriod::since($since)->months(1)->until($until);
 
+        $actionColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
         $result = [];
         foreach ($period as $date) {
-            $tasks->each(function ($task) use ($localeForCarbon, $date, &$result) {
+            $tasks->each(function ($task) use ($locale, $date, $actionColors, &$result) {
                 if (Carbon::parse($task->start)->between($date->copy()->firstOfMonth(), $date->copy()->endOfMonth()) ||
                     Carbon::parse($task->end)->between($date->copy()->firstOfMonth(), $date->copy()->endOfMonth())) {
-                    $result[$date->locale($localeForCarbon)->isoFormat('MMMM YYYY')][] = $task;
+                    $task->actions->each(function ($action) use ($locale, $task, $actionColors, &$result) {
+                        $actionName = $action->actionType->{"name_$locale"};
+                        if (!isset($result[$actionName]['color'])) {
+                            $result[$actionName]['color'] = $actionColors[$action->actionType->id - 1] ?? null;
+                        }
+                        $result[$actionName]['tasks'][] = $task;
+                    });
                 }
             });
         }

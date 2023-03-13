@@ -77,12 +77,12 @@ class Component extends Model
     {
         $statements = Deed::where('organisation_id', $organisation->id)->whereIn('statement_id', $this->statements->pluck('id'))->get();
         $statements = $statements->filter(function ($item, $value) use ($year) {
-            return Carbon::parse($item->created_at)->format('Y') == $year;
+            return Carbon::parse($item->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear());
         });
         $mean = $statements->avg('value');
         if ($mean == null) {
             $mean = 0;
         }
-        return $mean;
+        return round($mean, 2);
     }
 }

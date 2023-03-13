@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'act' => 'Act',
+    'insights' => 'Insights',
     "actions" => "Actions",
     "actionCreate" => "Action Create",
     'actionType' => 'ActionType',
@@ -238,7 +238,7 @@ return [
     'faqs_create' => 'FAQ Create',
     'links' => 'Links',
     'links_create' => 'Link Create',
-    'check' => 'Check',
+    'knowledge' => 'Knowledge',
     'statistics' => 'Statistics',
     'tasks' => 'Tasks',
     'tasks_create' => 'Task Create',

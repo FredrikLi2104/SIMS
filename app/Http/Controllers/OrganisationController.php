@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Storage;
 
 class OrganisationController extends Controller
 {
-    public function act()
+    public function insights()
     {
-        return view('models.organisations.act');
+        return view('models.organisations.insights');
     }
 
     /**
@@ -219,12 +219,12 @@ class OrganisationController extends Controller
         return view('models.organisations.plan', compact('statements', 'type', 'actionId'));
     }
 
-    public function check()
+    public function knowledge()
     {
         $data['faqs'] = Faq::where('live', true)->orderBy('sort_order')->get();
         $data['links'] = Link::where('live', true)->orderBy('sort_order')->get();
         $data['messages'] = __('messages');
 
-        return view('models.organisations.check', $data);
+        return view('models.organisations.knowledge', $data);
     }
 }

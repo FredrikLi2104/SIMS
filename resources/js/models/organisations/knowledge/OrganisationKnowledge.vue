@@ -57,7 +57,7 @@
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 
 export default {
-    name: "OrganisationCheck",
+    name: "OrganisationKnowledge",
     props: ['locale', 'messages', 'faqs', 'links'],
     methods: {
         deltaToHtml(delta) {

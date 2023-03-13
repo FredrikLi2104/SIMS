@@ -206,8 +206,11 @@ class TaskController extends Controller
      * @param \App\Models\Task $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Task $task)
+    public function destroy($locale, Task $task)
     {
-        //
+        $result = $task->delete();
+        $data = $result ? ['success' => true, 'msg' => __('messages.delete_success')] : ['error' => true, 'msg' => __('messages.error')];
+
+        return response()->json($data);
     }
 }

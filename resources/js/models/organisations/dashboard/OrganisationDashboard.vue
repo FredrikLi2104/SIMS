@@ -1,16 +1,10 @@
 <template>
     <div class="mb-1">
         <div class="d-flex">
-            <div class="flex-column me-50">
+            <div class="flex-column me-50 width-200">
                 <label class="form-label" for="basicSelect">{{ collection?.messages?.selectOrganisation }}</label>
                 <select class="form-select" id="basicSelect" @change="updateOrg">
                     <option v-for="org in collection?.data" :key="org">{{ org.name }}</option>
-                </select>
-            </div>
-            <div class="flex-column">
-                <label class="form-label" for="yearSelect">{{ collection?.messages?.selectYear }}</label>
-                <select class="form-select" id="yearSelect" @change="updateOrg" style="width: 100px">
-                    <option v-for="year in Object.keys(activeOrg)" :key="year">{{ year }}</option>
                 </select>
             </div>
         </div>
@@ -20,10 +14,21 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">{{ collection?.messages?.insights }}</h4>
-                    <a :href="`/${locale}/act`" class="btn btn-warning waves-effect waves-float waves-light round"
-                       role="button" target="_blank">
+                    <div class="btn-group ms-50">
+                        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            {{ selectedYearForInsights }}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a v-for="year in Object.keys(activeOrg)" :key="year" class="dropdown-item" href="#"
+                               @click="drawRadar(year)">{{ year }}</a>
+                        </div>
+                    </div>
+                    <a :href="`/${locale}/insights`"
+                       class="btn btn-warning waves-effect waves-float waves-light round ms-auto"
+                       role="button">
                         <i data-feather="pie-chart" class="me-25"></i>
-                        {{ collection?.messages?.act }}
+                        {{ collection?.messages?.insights }}
                     </a>
                 </div>
                 <div class="card-body">
@@ -35,8 +40,19 @@
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-title">{{ collection?.messages?.risks }}</h4>
-                    <a :href="`/${locale}/risks`" class="btn btn-warning waves-effect waves-float waves-light round"
-                       role="button" target="_blank">
+                    <div class="btn-group ms-50">
+                        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            {{ selectedYearForRisks }}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a v-for="year in Object.keys(activeOrg)" :key="year" class="dropdown-item" href="#"
+                               @click="drawRiskChart(year)">{{ year }}</a>
+                        </div>
+                    </div>
+                    <a :href="`/${locale}/risks`"
+                       class="btn btn-warning waves-effect waves-float waves-light round ms-auto"
+                       role="button">
                         <i data-feather="alert-triangle" class="me-25"></i>
                         {{ collection?.messages?.risks }}
                     </a>
@@ -64,7 +80,7 @@
                     </div>
                     <a :href="`/${locale}/tasks`"
                        class="btn btn-warning waves-effect waves-float waves-light round ms-auto"
-                       role="button" target="_blank">
+                       role="button">
                         <i data-feather="layers" class="me-25"></i>
                         {{ collection?.messages?.tasks }}
                     </a>
@@ -78,11 +94,15 @@
         <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title">{{ collection?.messages?.news }}</h4>
+                    <h4 class="card-title">{{ collection?.messages?.knowledge }}</h4>
+                    <a :href="`/${locale}/knowledge`"
+                       class="btn btn-warning waves-effect waves-float waves-light round ms-auto"
+                       role="button">
+                        <i data-feather="help-circle" class="me-25"></i>
+                        {{ collection?.messages?.knowledge }}
+                    </a>
                 </div>
-                <div class="card-body">
-                    Coming soon...
-                </div>
+                <div class="card-body"></div>
             </div>
         </div>
     </div>
@@ -92,7 +112,7 @@
                 <div class="card-header">
                     <h4 class="card-title">{{ collection?.messages?.sanctions }}</h4>
                     <a :href="`/${locale}/statistics/sanctions`"
-                       class="btn btn-warning waves-effect waves-float waves-light round" role="button" target="_blank">
+                       class="btn btn-warning waves-effect waves-float waves-light round" role="button">
                         <i data-feather="bar-chart-2" class="me-25"></i>{{ collection?.messages?.sanctions }}
                     </a>
                 </div>
@@ -210,6 +230,8 @@ export default {
     components: {TasksWheel},
     data() {
         return {
+            selectedYearForInsights: moment().format('Y'),
+            selectedYearForRisks: moment().format('Y'),
             collection: null,
             componentActive: null,
             dataTable: null,
@@ -225,14 +247,12 @@ export default {
     },
     methods: {
         buildTable() {
-            // console.log("called");
             var thisComponent = this;
             if (thisComponent.dataTable) {
                 thisComponent.dataTable.destroy();
                 thisComponent.dataTable = null;
                 document.getElementById("dataTable").innerHTML = "";
             }
-            //console.log(thisComponent.dataTable);
             let header = `
             <thead>
                 <tr>
@@ -353,17 +373,13 @@ export default {
                 },
             });
         },
-        drawRadar() {
+        drawRadar(year) {
             var thisComponent = this;
-            let selectedYear = document.getElementById("yearSelect").value;
-            const orgData = thisComponent.activeOrg[selectedYear];
+            thisComponent.selectedYearForInsights = year;
+            const orgData = thisComponent.activeOrg[year];
             if (thisComponent.radarChart) {
                 thisComponent.radarChart.destroy();
             }
-            if (thisComponent.riskChart) {
-                thisComponent.riskChart.destroy();
-            }
-            //console.log(orgData);
             const chartData = {
                 labels: orgData.components,
                 datasets: [
@@ -452,7 +468,14 @@ export default {
             };
             var chartElement = document.getElementById("radar-chart").getContext("2d");
             thisComponent.radarChart = new Chart(chartElement, chartConfig);
-            // Risk Chart
+        },
+        drawRiskChart(year) {
+            var thisComponent = this;
+            thisComponent.selectedYearForRisks = year;
+            const orgData = thisComponent.activeOrg[year];
+            if (thisComponent.riskChart) {
+                thisComponent.riskChart.destroy();
+            }
             const riskChart = $(".bubble-chart-ex");
             const riskData = orgData.risks;
             const riskChartConfig = {
@@ -564,10 +587,9 @@ export default {
                 return e.name == org;
             });
             this.activeOrg = selectedOrg[0].data;
-            //console.log(this.activeOrg);
             this.$nextTick(() => {
-                this.drawRadar();
-                //this.buildTable();
+                this.drawRadar(this.selectedYearForInsights);
+                this.drawRiskChart(this.selectedYearForRisks);
             });
         },
         populateYearsForWheel() {
@@ -597,7 +619,7 @@ export default {
         },
         getSanctions() {
             let self = this;
-            axios.post(`/${self.locale}/axios/organisations/act/sanctions`, {
+            axios.post(`/${self.locale}/axios/organisations/insights/sanctions`, {
                 start: 0,
                 length: 5,
                 search: {value: null}
@@ -614,16 +636,15 @@ export default {
         var thisComponent = this;
         window.component = thisComponent;
         axios
-            .get("/" + thisComponent.locale + "/axios/organisations/act", {})
+            .get("/" + thisComponent.locale + "/axios/organisations/insights", {})
             .then(function (response) {
                 console.log(response.data);
                 thisComponent.collection = response.data;
                 thisComponent.activeOrg = response.data.data[0].data;
-                //console.log(thisComponent.activeOrg);
                 thisComponent.$nextTick(() => {
-                    thisComponent.drawRadar();
+                    thisComponent.drawRadar(thisComponent.selectedYearForInsights);
+                    thisComponent.drawRiskChart(thisComponent.selectedYearForRisks);
                     thisComponent.getTasksForWheel();
-                    //thisComponent.buildTable();
                 });
             })
             .catch(function (error) {

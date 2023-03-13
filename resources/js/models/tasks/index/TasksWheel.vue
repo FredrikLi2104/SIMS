@@ -150,7 +150,7 @@ export default {
                     self.taskStart = segment.task.start;
                     self.taskEnd = segment.task.end;
                     document.getElementById('tooltip').style.top = evt.clientY + 'px';
-                    document.getElementById('tooltip').style.left = evt.clientX + 'px';
+                    document.getElementById('tooltip').style.left = (evt.clientX + 1) + 'px';
                     document.getElementById('tooltip').classList.remove('d-none');
                 } else {
                     document.getElementById('tooltip').classList.add('d-none');

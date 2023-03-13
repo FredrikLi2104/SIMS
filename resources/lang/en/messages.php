@@ -3,7 +3,6 @@ return [
     'accentColor' => 'Accent Color',
     'accepted' => 'Accepted',
     'account' => 'Account',
-    'act' => 'Act',
     'actions' => 'Actions',
     'accumulative_risk_history' => 'Accumulative monthly risk history',
     'address1' => 'Address1',
@@ -258,7 +257,8 @@ return [
     'assigned_to' => 'Assigned To',
     'action' => 'Action',
     'insights' => 'Insights',
-    'news' => 'News',
+    'knowledge' => 'Knowledge',
     'documents' => 'Documents',
+    'details' => 'Details',
 ];
 ?>

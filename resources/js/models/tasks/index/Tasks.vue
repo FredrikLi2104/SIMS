@@ -23,16 +23,23 @@
         <div class="col-lg-5">
             <div class="card">
                 <div class="table-responsive">
-                    <table class="table table-sm">
+                    <table class="table table-sm table-borderless">
                         <tbody>
                         <template v-for="(tasksGroup, index) in tasks">
                             <tr>
-                                <th colspan="5" class="text-dark fs-5">{{ index }}</th>
+                                <th colspan="5" class="text-dark fs-5">
+                                    <div class="divider divider-start my-25"
+                                         :class="tasksGroup.color ? `divider-${tasksGroup.color}` : ''">
+                                        <div class="divider-text"
+                                             :class="tasksGroup.color ? `text-${tasksGroup.color}` : ''">{{ index }}
+                                        </div>
+                                    </div>
+                                </th>
                             </tr>
-                            <tr v-for="task in tasksGroup">
-                                <td class="text-nowrap">
-                                    <a href="#" @click="viewTask(task.id)">
-                                        {{ task[`title_${locale}`] }}
+                            <tr v-for="task in tasksGroup.tasks">
+                                <td>
+                                    <a href="#" @click="viewTask(task.id)" class="link-secondary fw-bolder">
+                                        {{ task.title_truncated }}
                                     </a>
                                 </td>
                                 <td>
@@ -55,6 +62,10 @@
                                                 @click="editTask(task.id)">
                                             <i data-feather="edit"></i>
                                         </button>
+                                        <button class="btn btn-icon btn-flat-danger waves-effect"
+                                                @click="deleteTask(task.id)">
+                                            <i data-feather="trash-2"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -68,7 +79,7 @@
 
     <div class="offcanvas offcanvas-end width-600" tabindex="-1" id="task-offcanvas">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title">{{ `${messages.task} ${messages.create}` }}</h5>
+            <h5 class="offcanvas-title">{{ taskOffCanvasTitle }}</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body mx-0 flex-grow-0">
@@ -237,6 +248,7 @@
 <script>
 import TasksWheel from "./TasksWheel.vue";
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
+import Swal from "sweetalert2";
 
 export default {
     props: ['locale', 'messages', 'statuses', 'assignees', 'actionTypes', 'months', 'years'],
@@ -476,6 +488,55 @@ export default {
             let offCanvas = new bootstrap.Offcanvas(document.getElementById('task-view-offcanvas'));
             offCanvas.show();
         },
+        deleteTask(id) {
+            let self = this;
+            const swal = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-gradient-danger me-1',
+                    cancelButton: 'btn btn-gradient-secondary'
+                },
+                buttonsStyling: false
+            });
+
+            swal.fire({
+                title: `${self.messages.delete_confirm}`,
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonText: `${self.messages.ok}`,
+                cancelButtonText: `${self.messages.cancel}`,
+                buttonsStyling: false
+            }).then(result => {
+                if (result.value === true) {
+                    axios
+                        .delete(`/${self.locale}/tasks/${id}`, {})
+                        .then(function (response) {
+                            if (response.data.success) {
+                                toastr["success"](response.data.msg, `${self.messages.success}`, {
+                                    showMethod: "slideDown",
+                                    hideMethod: "slideUp",
+                                    timeOut: 3000,
+                                    progressBar: true,
+                                    "positionClass": "toast-top-center",
+                                });
+                            } else {
+                                toastr["error"](response.data.msg, `${self.messages.error}`, {
+                                    showMethod: "slideDown",
+                                    hideMethod: "slideUp",
+                                    timeOut: 3000,
+                                    progressBar: true,
+                                    "positionClass": "toast-top-center",
+                                });
+                            }
+
+                            self.getTasks();
+                            self.getTasksForWheel();
+                        })
+                        .catch(function (error) {
+
+                        });
+                }
+            });
+        },
         getTaskData(id) {
             let self = this;
             axios.get(`/${self.locale}/tasks/${id}`)
@@ -625,6 +686,11 @@ export default {
         this.handleActionTypeChange();
         this.handleOffCanvasShown();
         this.handleOffCanvasHidden();
+    },
+    computed: {
+        taskOffCanvasTitle() {
+            return this.isUpdate ? `${this.messages.task} ${this.messages.edit}` : `${this.messages.task} ${this.messages.create}`;
+        }
     }
 }
 </script>

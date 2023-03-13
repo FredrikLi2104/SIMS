@@ -2,7 +2,6 @@
 return [
     'accentColor' => 'Accentfärg',
     'accepted' => 'Accepterad',
-    'act' => 'Agera',
     'actions' => 'Åtgärder',
     'accumulative_risk_history' => 'Ackumulerande månatlig riskhistorik',
     'actionType' => 'Åtgärdstyp',
@@ -260,6 +259,7 @@ return [
     'assigned_to' => 'Tilldelad till',
     'action' => 'Åtgärd',
     'insights' => 'Insikter',
-    'news' => 'Nyheter',
+    'knowledge' => 'Kunskap',
     'documents' => 'Dokument',
+    'details' => 'Detaljer',
 ];
