@@ -16,7 +16,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-7 d-flex justify-content-center mb-1">
+        <div class="col-lg-7 d-flex justify-content-center align-items-start mb-1">
             <tasks-wheel :months="months" :selected-year="selectedYear" :tasks="tasksForWheel"
                          @edit-task="editTask"></tasks-wheel>
         </div>
