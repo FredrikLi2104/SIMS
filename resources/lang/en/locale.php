@@ -244,4 +244,6 @@ return [
     'tasks_create' => 'Task Create',
     'task_statuses' => 'Task Statuses',
     'task_statuses_create' => 'Task Status Create',
+    'configs' => 'Configs',
+    'configs_create' => 'Configs Create',
 ];

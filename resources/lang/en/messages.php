@@ -260,5 +260,6 @@ return [
     'knowledge' => 'Knowledge',
     'documents' => 'Documents',
     'details' => 'Details',
+    'configs' => 'Configs',
 ];
 ?>

@@ -101,14 +101,14 @@
                     <div id="desc-en-editor"></div>
                     <input id="desc-en" name="desc_en" type="hidden" :value="descEn"
                            :class="`${errors?.desc_en ? 'is-invalid' : ''}`"/>
-                    <div v-if="errors?.start" class="invalid-feedback">{{ errors.desc_en[0] }}</div>
+                    <div v-if="errors?.desc_en" class="invalid-feedback">{{ errors.desc_en[0] }}</div>
                 </div>
                 <div class="mb-50">
                     <label class="form-label" for="desc-se">{{ messages.descInSwedish }}</label>
                     <div id="desc-se-editor"></div>
                     <input id="desc-se" name="desc_se" type="hidden" :value="descSe"
                            :class="`${errors?.desc_se ? 'is-invalid' : ''}`"/>
-                    <div v-if="errors?.start" class="invalid-feedback">{{ errors.desc_se[0] }}</div>
+                    <div v-if="errors?.desc_se" class="invalid-feedback">{{ errors.desc_se[0] }}</div>
                 </div>
                 <div class="mb-50">
                     <label class="form-label" for="start">{{ messages.start_date }}</label>

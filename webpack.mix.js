@@ -78,6 +78,8 @@ mix
     .js('resources/js/scripts/pages/auth-login.js', 'public/js/scripts/pages/auth-login.js')
     .js('resources/vendors/js/ui/jquery.sticky.js', 'public/vendors/js/ui/jquery.sticky.js')
     // models
+    .js('resources/js/models/configs/create/app.js', 'public/js/models/configs/create/app.js').vue()
+    .js('resources/js/models/configs/index/app.js', 'public/js/models/configs/index/app.js').vue()
     .js('resources/js/models/currencies/index/app.js', 'public/js/models/currencies/index/app.js').vue()
     .js('resources/js/models/dpas/index/app.js', 'public/js/models/dpas/index/app.js').vue()
     .js('resources/js/models/dpas/edit/app.js', 'public/js/models/dpas/edit/app.js').vue()
@@ -87,6 +89,8 @@ mix
     .js('resources/js/models/links/create/app.js', 'public/js/models/links/create/app.js').vue()
     .js('resources/js/models/links/index/app.js', 'public/js/models/links/index/app.js').vue()
     .js('resources/js/models/organisations/insights/app.js', 'public/js/models/organisations/insights/app.js').vue()
+    .js('resources/js/models/organisations/insights/component-sanctions/app.js', 'public/js/models/organisations/insights/component-sanctions/app.js').vue()
+    .js('resources/js/models/organisations/insights/statement-sanctions/app.js', 'public/js/models/organisations/insights/statement-sanctions/app.js').vue()
     .js('resources/js/models/organisations/knowledge/app.js', 'public/js/models/organisations/knowledge/app.js').vue()
     .js('resources/js/models/organisations/plan/auditor/app.js', 'public/js/models/organisations/plan/auditor/app.js').vue()
     .js('resources/js/models/organisations/dashboard/app.js', 'public/js/models/organisations/dashboard/app.js').vue()

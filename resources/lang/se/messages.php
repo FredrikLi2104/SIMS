@@ -262,4 +262,5 @@ return [
     'knowledge' => 'Kunskap',
     'documents' => 'Dokument',
     'details' => 'Detaljer',
+    'configs' => 'Konfigurationer',
 ];

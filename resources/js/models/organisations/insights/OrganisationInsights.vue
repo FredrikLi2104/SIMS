@@ -108,7 +108,8 @@
                                     <span>{{ componentActive?.commitment }}</span>
                                 </div>
                                 <div class="mb-1">
-                                    <a href="#" class="btn btn-outline-primary waves-effect"
+                                    <a :href="`/${locale}/insights/component/sanctions/${componentActive?.id}`"
+                                       class="btn btn-outline-primary waves-effect"
                                        target="_blank">{{ collection?.messages?.sanctions }}</a>
                                 </div>
                             </div>
@@ -159,8 +160,9 @@
                                         }}</h6>
                                     <span>{{ activeStatement?.implementation }}</span>
                                 </div>
-                                <div class="mb-1">
-                                    <a href="#" class="btn btn-outline-primary waves-effect"
+                                <div v-show="activeStatement !== undefined" class="mb-1">
+                                    <a :href="`/${locale}/insights/statement/sanctions/${activeStatement?.id}`"
+                                       class="btn btn-outline-primary waves-effect"
                                        target="_blank">{{ collection?.messages?.sanctions }}</a>
                                 </div>
                             </div>

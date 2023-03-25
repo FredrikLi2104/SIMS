@@ -119,4 +119,9 @@ class Statement extends Model
     {
         return $this->belongsTo(StatementType::class);
     }
+
+    public function template_actions()
+    {
+        return $this->morphToMany(TemplateAction::class, 'tmpl_actionable');
+    }
 }

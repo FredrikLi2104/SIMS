@@ -34,7 +34,9 @@
             "icon": "pie-chart",
             "url": "insights",
             "slug": [
-                "organisations.insights"
+                "organisations.insights",
+                "organisations.insights.component.sanctions",
+                "organisations.insights.statement.sanctions"
             ]
         },
         {
@@ -451,6 +453,32 @@
                         "task_statuses.index",
                         "task_statuses.edit",
                         "task_statuses.show"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "configs",
+            "auth": "moderator",
+            "icon": "settings",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "configs_create",
+                    "url": "configs/create",
+                    "icon": "circle",
+                    "slug": [
+                        "configs.create"
+                    ]
+                },
+                {
+                    "name": "configs",
+                    "url": "configs",
+                    "icon": "circle",
+                    "slug": [
+                        "configs.index",
+                        "configs.edit",
+                        "configs.show"
                     ]
                 }
             ]

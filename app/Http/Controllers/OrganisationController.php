@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrganisationStoreRequest;
 use App\Http\Requests\OrganisationUpdateRequest;
 use App\Models\Action;
+use App\Models\Component;
 use App\Models\Faq;
 use App\Models\Link;
 use App\Models\Organisation;
@@ -226,5 +227,17 @@ class OrganisationController extends Controller
         $data['messages'] = __('messages');
 
         return view('models.organisations.knowledge', $data);
+    }
+
+    public function componentSanctions($locale, Component $component)
+    {
+        $componentCode = $component->code;
+        return view('models.organisations.component-sanctions', compact('componentCode'));
+    }
+
+    public function statementSanctions($locale, Statement $statement)
+    {
+        $statementSubCode = $statement->subcode;
+        return view('models.organisations.statement-sanctions', compact('statementSubCode'));
     }
 }

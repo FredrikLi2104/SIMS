@@ -16,6 +16,7 @@ use App\Http\Requests\OrganisationsStatementsReviewsUpdateRequest;
 use App\Http\Requests\RiskCommentStoreRequest;
 use App\Models\Action;
 use App\Models\Component;
+use App\Models\Config;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Deed;
@@ -36,6 +37,7 @@ use App\Models\Tag;
 use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\TaskStatuses;
+use App\Models\Template;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\File;
@@ -56,6 +58,11 @@ class AxiosController extends Controller
             ->orderBy("name_$locale")
             ->get()
             ->makeHidden(['desc_en', 'desc_se', 'sort_order', 'created_at', 'updated_at']);
+    }
+
+    public function configs()
+    {
+        return Config::all();
     }
 
     /**
@@ -1331,6 +1338,109 @@ class AxiosController extends Controller
         }
 
         return $tasksGrouped;
+    }
+
+    public function templates($locale)
+    {
+        return Template::orderBy("name_$locale")->get();
+    }
+
+    public function componentSanctionsTable(Request $request, $locale)
+    {
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $searchVal = $request->get('search')['value'];
+
+        $sanctions = Sanction::select('sanctions.*')
+            ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+            ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+            ->join('components', 'statements.component_id', '=', 'components.id')
+            ->where('components.code', $searchVal)
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+        $sanctionsTotal = Sanction::count();
+        $sanctionsFiltered = Sanction::select('sanctions.*')
+            ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+            ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+            ->join('components', 'statements.component_id', '=', 'components.id')
+            ->where('components.code', $searchVal)
+            ->count();
+
+        $sanctions->load(['articles', 'dpa', 'user'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party']);
+
+        foreach ($sanctions as $sanction) {
+            $articles = $sanction->articles;
+            $sanction->articlesSorted = $articles->sortBy('title')->values();
+            $sanction->dpa->load('country')->makeVisible(['country', 'name']);
+
+            if ($sanction->currency?->symbol && $sanction->currency->symbol != 'EUR') {
+                $currency = Currency::where('symbol', $sanction->currency->symbol)->first();
+
+                if ($currency) {
+                    try {
+                        $sanction->fine = $sanction->fine / $currency->value;
+                    } catch (\Throwable $th) {
+
+                    }
+                }
+            }
+        }
+
+        App::setlocale($locale);
+        $r = ['sanctions' => $sanctions, 'draw' => $request->get('draw'), 'recordsTotal' => $sanctionsTotal, 'recordsFiltered' => $sanctionsFiltered];
+        $r = collect($r);
+        return $r;
+    }
+
+    public function statementSanctionsTable(Request $request, $locale)
+    {
+        $start = $request->get('start');
+        $length = $request->get('length');
+        $searchVal = $request->get('search')['value'];
+
+        $sanctions = Sanction::select('sanctions.*')
+            ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+            ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+            ->join('components', 'statements.component_id', '=', 'components.id')
+            ->whereRaw("CONCAT(components.code, '.', statements.code) = ?", $searchVal)
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+        $sanctionsTotal = Sanction::count();
+        $sanctionsFiltered = Sanction::select('sanctions.*')
+            ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+            ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+            ->join('components', 'statements.component_id', '=', 'components.id')
+            ->whereRaw("CONCAT(components.code, '.', statements.code) = ?", $searchVal)
+            ->count();
+
+        $sanctions->load(['articles', 'dpa', 'user'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party']);
+
+        foreach ($sanctions as $sanction) {
+            $articles = $sanction->articles;
+            $sanction->articlesSorted = $articles->sortBy('title')->values();
+            $sanction->dpa->load('country')->makeVisible(['country', 'name']);
+
+            if ($sanction->currency?->symbol && $sanction->currency->symbol != 'EUR') {
+                $currency = Currency::where('symbol', $sanction->currency->symbol)->first();
+
+                if ($currency) {
+                    try {
+                        $sanction->fine = $sanction->fine / $currency->value;
+                    } catch (\Throwable $th) {
+
+                    }
+                }
+            }
+        }
+
+        App::setlocale($locale);
+        $r = ['sanctions' => $sanctions, 'draw' => $request->get('draw'), 'recordsTotal' => $sanctionsTotal, 'recordsFiltered' => $sanctionsFiltered];
+        $r = collect($r);
+        return $r;
     }
 
     private function sanctionsByCmponent($locale)

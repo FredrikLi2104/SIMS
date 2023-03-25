@@ -244,4 +244,6 @@ return [
     'tasks_create' => 'Uppgifter Skapa',
     'task_statuses' => 'Uppgiftsstatus',
     'task_statuses_create' => 'Uppgiftsstatus Skapa',
+    'configs' => 'Konfigurationer',
+    'configs_create' => 'Konfigurationer Skapa',
 ];

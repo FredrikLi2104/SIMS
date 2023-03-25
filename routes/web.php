@@ -4,6 +4,7 @@ use App\Http\Controllers\ActionController;
 use App\Http\Controllers\ActionTypeController;
 use App\Http\Controllers\AxiosController;
 use App\Http\Controllers\ComponentController;
+use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DpaController;
 use App\Http\Controllers\FaqController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskStatusController;
 use App\Http\Controllers\TaskStatusesController;
+use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +52,7 @@ Route::post('/theme-switch', [RoutingController::class, 'themeSwitcher'])->name(
 /* Axios */
 Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('components', [AxiosController::class, 'components'])->middleware('can:all')->name('axios.components.index');
+    Route::get('configs', [AxiosController::class, 'configs'])->middleware('can:all')->name('axios.configs.index');
     Route::get('countries', [AxiosController::class, 'countries'])->middleware('can:moderator')->name('axios.countries.index');
     Route::get('currencies', [AxiosController::class, 'currencies'])->middleware('can:moderator')->name('axios.currencies.index');
     Route::post('currencies/rates/update', [AxiosController::class, 'currenciesRatesUpdate'])->middleware('can:moderator')->name('axios.currencies.rates.update');
@@ -60,6 +63,8 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
     Route::get('organisations/insights', [AxiosController::class, 'organisationsInsights'])->middleware('can:auditor-user')->name('axios.organisations.insights');
     Route::post('organisations/insights/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:auditor-user')->name('axios.organisations.insights.sanctions');
+    Route::get('organisations/insights/component/sanctions', [AxiosController::class, 'componentSanctionsTable'])->middleware('can:auditor-user')->name('axios.organisations.insights.component.sanctions');
+    Route::get('organisations/insights/statement/sanctions', [AxiosController::class, 'statementSanctionsTable'])->middleware('can:auditor-user')->name('axios.organisations.insights.statement.sanctions');
     Route::get('organisations/do/{action?}', [AxiosController::class, 'organisationsDo'])->middleware('can:user')->name('axios.organisations.do');
     Route::post('organisations/kpicomments/store', [AxiosController::class, 'organisationsKpicommentsStore'])->middleware('can:user')->name('axios.organisations.kpicomments.store');
     Route::get('organisations/kpis/{kpi}', [AxiosController::class, 'organisationsKpisShow'])->middleware('can:auditor-user')->name('axios.organisations.kpis.show');
@@ -87,13 +92,16 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('task_statuses', [AxiosController::class, 'taskStatuses'])->middleware('can:moderator')->name('axios.task_statuses.index');
     Route::get('tasks/{year}', [AxiosController::class, 'tasks'])->middleware('can:all')->name('axios.tasks.index');
     Route::get('tasks_for_wheel/{year}', [AxiosController::class, 'tasksForWheel'])->middleware('can:all')->name('axios.tasks_for_wheel.index');
+    Route::get('templates', [AxiosController::class, 'templates'])->middleware('can:moderator')->name('axios.templates.index');
 });
 
 /* Localized Routes */
 Route::prefix('{locale}')->middleware('locale')->group(function () {
     require __DIR__ . '/auth.php';
+    Route::resource('configs', ConfigController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('insights', [OrganisationController::class, 'insights'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.insights');
-    Route::get('/knowledge', [OrganisationController::class, 'knowledge'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.knowledge');
+    Route::get('insights/component/sanctions/{component}', [OrganisationController::class, 'componentSanctions'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.insights.component.sanctions');
+    Route::get('insights/statement/sanctions/{statement}', [OrganisationController::class, 'statementSanctions'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.insights.statement.sanctions');
     Route::resource('/currencies', CurrencyController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('do/{action?}', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');
@@ -102,6 +110,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
     Route::resource('/issue_categories', IssueCategoryController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('components', ComponentController::class)->middleware('auth')->middleware('can:moderator');
+    Route::get('/knowledge', [OrganisationController::class, 'knowledge'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.knowledge');
     Route::resource('kpis', KpiController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/links', LinkController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('organisations/kpis', [OrganisationController::class, 'kpisIndex'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.kpis');
@@ -121,6 +130,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::resource('task_statuses', TaskStatusController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('tasks', TaskController::class)->middleware('auth')->middleware('can:all');
     Route::resource('tags', TagController::class)->middleware('auth')->middleware('can:moderator');
+    Route::resource('templates', TemplateController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('types', TypeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('users', UserController::class)->middleware('auth')->middleware('can:moderator');
 });

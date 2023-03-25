@@ -20300,7 +20300,7 @@ var _hoisted_8 = {
   "class": "row"
 };
 var _hoisted_9 = {
-  "class": "col-lg-7 d-flex justify-content-center mb-1"
+  "class": "col-lg-7 d-flex justify-content-center align-items-start mb-1"
 };
 var _hoisted_10 = {
   "class": "col-lg-5"
@@ -20683,13 +20683,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "hidden",
     value: $data.descEn,
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("".concat((_$data$errors5 = $data.errors) !== null && _$data$errors5 !== void 0 && _$data$errors5.desc_en ? 'is-invalid' : ''))
-  }, null, 10 /* CLASS, PROPS */, _hoisted_45), (_$data$errors6 = $data.errors) !== null && _$data$errors6 !== void 0 && _$data$errors6.start ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_46, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.desc_en[0]), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_47, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_48, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.descInSwedish), 1 /* TEXT */), _hoisted_49, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  }, null, 10 /* CLASS, PROPS */, _hoisted_45), (_$data$errors6 = $data.errors) !== null && _$data$errors6 !== void 0 && _$data$errors6.desc_en ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_46, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.desc_en[0]), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_47, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_48, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.descInSwedish), 1 /* TEXT */), _hoisted_49, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     id: "desc-se",
     name: "desc_se",
     type: "hidden",
     value: $data.descSe,
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("".concat((_$data$errors7 = $data.errors) !== null && _$data$errors7 !== void 0 && _$data$errors7.desc_se ? 'is-invalid' : ''))
-  }, null, 10 /* CLASS, PROPS */, _hoisted_50), (_$data$errors8 = $data.errors) !== null && _$data$errors8 !== void 0 && _$data$errors8.start ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_51, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.desc_se[0]), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_52, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_53, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.start_date), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  }, null, 10 /* CLASS, PROPS */, _hoisted_50), (_$data$errors8 = $data.errors) !== null && _$data$errors8 !== void 0 && _$data$errors8.desc_se ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_51, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.desc_se[0]), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_52, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_53, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.messages.start_date), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "text",
     id: "start",
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("form-control flatpickr ".concat((_$data$errors9 = $data.errors) !== null && _$data$errors9 !== void 0 && _$data$errors9.start ? 'is-invalid' : '')),
