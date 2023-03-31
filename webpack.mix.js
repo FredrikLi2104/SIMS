@@ -80,6 +80,8 @@ mix
     // models
     .js('resources/js/models/configs/create/app.js', 'public/js/models/configs/create/app.js').vue()
     .js('resources/js/models/configs/index/app.js', 'public/js/models/configs/index/app.js').vue()
+    .js('resources/js/models/action_types/create/app.js', 'public/js/models/action_types/create/app.js').vue()
+    .js('resources/js/models/action_types/index/app.js', 'public/js/models/action_types/index/app.js').vue()
     .js('resources/js/models/currencies/index/app.js', 'public/js/models/currencies/index/app.js').vue()
     .js('resources/js/models/dpas/index/app.js', 'public/js/models/dpas/index/app.js').vue()
     .js('resources/js/models/dpas/edit/app.js', 'public/js/models/dpas/edit/app.js').vue()

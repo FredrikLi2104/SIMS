@@ -86,6 +86,32 @@
             ]
         },
         {
+            "name": "actionTypes",
+            "auth": "moderator",
+            "icon": "check-square",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "actionTypeCreate",
+                    "url": "action_types/create",
+                    "icon": "circle",
+                    "slug": [
+                        "action_types.create"
+                    ]
+                },
+                {
+                    "name": "actionTypes",
+                    "url": "action_types",
+                    "icon": "circle",
+                    "slug": [
+                        "action_types.index",
+                        "action_types.edit",
+                        "action_types.show"
+                    ]
+                }
+            ]
+        },
+        {
             "name": "organisations",
             "auth": "moderator",
             "icon": "briefcase",

@@ -15,6 +15,7 @@ use App\Http\Requests\OrganisationsStatementsPlansUpdateRequest;
 use App\Http\Requests\OrganisationsStatementsReviewsUpdateRequest;
 use App\Http\Requests\RiskCommentStoreRequest;
 use App\Models\Action;
+use App\Models\ActionType;
 use App\Models\Component;
 use App\Models\Config;
 use App\Models\Country;
@@ -51,7 +52,11 @@ use Illuminate\Support\Facades\Storage;
 
 class AxiosController extends Controller
 {
-    //
+    public function actionTypes()
+    {
+        return ActionType::all();
+    }
+
     public function components($locale)
     {
         return Component::orderBy('code')
@@ -442,12 +447,12 @@ class AxiosController extends Controller
                 return response()->json([], 403);
             }
 
-            if ($action->actionType->id == 1) {
+            if ($action->actionType->model == 'component') {
                 $components = $action->components;
                 $statements = $components->flatMap(function ($component) {
                     return $component->statements->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
                 });
-            } elseif (in_array($action->actionType->id, [3, 4])) {
+            } elseif ($action->actionType->model == 'statement') {
                 $statements = $action->statements->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
             }
         } else {
@@ -577,6 +582,7 @@ class AxiosController extends Controller
     {
         // as exists?
         try {
+            $request->guide = $request->guide ?? '';
             $as = DB::table('auditor_statement')->where('statement_id', $request->statement_id)->get()->first();
             if ($as) {
                 DB::table('auditor_statement')->where('id', $as->id)->update(['plan_id' => $request->plan_id, 'user_id' => Auth::user()->id, 'guide' => $request->guide, 'updated_at' => Carbon::now()]);

@@ -397,7 +397,8 @@ export default {
         handleActionTypeChange() {
             let self = this;
             $('#action').on('select2:select', function (e) {
-                if (['1', '2'].includes(e.params.data.id)) {
+                let actionType = self.actionTypes.find(actionType => actionType.id == e.params.data.id);
+                if (actionType.model == 'component') {
                     axios.get(`/${self.locale}/axios/components`)
                         .then(function (response) {
                             self.template.components = response.data;
@@ -414,7 +415,7 @@ export default {
                         .catch(function (error) {
 
                         });
-                } else if (['3', '4', '5'].includes(e.params.data.id)) {
+                } else if (actionType.model == 'statement') {
                     axios.get(`/${self.locale}/axios/statements`)
                         .then(function (response) {
                             self.template.statements = response.data;

@@ -51,8 +51,9 @@ Route::post('/theme-switch', [RoutingController::class, 'themeSwitcher'])->name(
 
 /* Axios */
 Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
+    Route::get('action_types', [AxiosController::class, 'actionTypes'])->middleware('can:moderator')->name('axios.action_types.index');
     Route::get('components', [AxiosController::class, 'components'])->middleware('can:all')->name('axios.components.index');
-    Route::get('configs', [AxiosController::class, 'configs'])->middleware('can:all')->name('axios.configs.index');
+    Route::get('configs', [AxiosController::class, 'configs'])->middleware('can:moderator')->name('axios.configs.index');
     Route::get('countries', [AxiosController::class, 'countries'])->middleware('can:moderator')->name('axios.countries.index');
     Route::get('currencies', [AxiosController::class, 'currencies'])->middleware('can:moderator')->name('axios.currencies.index');
     Route::post('currencies/rates/update', [AxiosController::class, 'currenciesRatesUpdate'])->middleware('can:moderator')->name('axios.currencies.rates.update');
@@ -98,12 +99,14 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
 /* Localized Routes */
 Route::prefix('{locale}')->middleware('locale')->group(function () {
     require __DIR__ . '/auth.php';
+    Route::resource('action_types', ActionTypeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('configs', ConfigController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('insights', [OrganisationController::class, 'insights'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.insights');
     Route::get('insights/component/sanctions/{component}', [OrganisationController::class, 'componentSanctions'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.insights.component.sanctions');
     Route::get('insights/statement/sanctions/{statement}', [OrganisationController::class, 'statementSanctions'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.insights.statement.sanctions');
     Route::resource('/currencies', CurrencyController::class)->middleware('auth')->middleware('can:moderator');
-    Route::get('do/{action?}', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do');
+    Route::get('do/components/{action?}', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do.components');
+    Route::get('do/statements/{action?}', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do.statements');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/faqs', FaqController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
@@ -118,7 +121,8 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::resource('/outcomes', OutcomeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('periods', PeriodController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('auditor/plan/{action?}', [OrganisationController::class, 'auditorPlan'])->middleware('auth')->middleware('can:auditor')->name('organisations.auditor.plan');
-    Route::get('plan/{action?}', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan');
+    Route::get('plan/components/{action?}', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan.components');
+    Route::get('plan/statements/{action?}', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan.statements');
     Route::resource('plans', PlanController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('review', [OrganisationController::class, 'review'])->middleware('auth')->middleware('can:auditor')->name('organisations.review');
     Route::resource('risks', RiskController::class)->middleware('auth')->middleware('can:auditor-user');

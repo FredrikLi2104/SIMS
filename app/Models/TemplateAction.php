@@ -11,6 +11,11 @@ class TemplateAction extends Model
 
     protected $guarded = ['id'];
 
+    public function actionType()
+    {
+        return $this->belongsTo(ActionType::class);
+    }
+
     public function components()
     {
         return $this->morphedByMany(Component::class, 'tmpl_actionable');

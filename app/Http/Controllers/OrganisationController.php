@@ -214,7 +214,7 @@ class OrganisationController extends Controller
             abort(403);
         }
 
-        $type = $action?->action_type_id == 6 ? 'report' : 'statements';
+        $type = in_array($action?->actionType->model, ['component', 'statement']) ? 'statements' : 'report';
         $actionId = $action?->id;
         $statements = Statement::all()->sortBy('sort_order');
         return view('models.organisations.plan', compact('statements', 'type', 'actionId'));

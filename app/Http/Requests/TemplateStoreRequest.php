@@ -10,15 +10,16 @@ class TemplateStoreRequest extends FormRequest
 {
     public function withValidator($validator)
     {
-        for ($i = 1; $i <= 2; $i++) {
-            $validator->sometimes("action_type_items.$i", 'required|exists:components,id', function ($input) use ($i) {
-                return in_array($i, $input->action_type_id ?? []);
-            });
-        }
+        $actionTypeIds = $this->action_type_id ?? [];
+        foreach ($actionTypeIds as $actionTypeId) {
+            $actionType = ActionType::find($actionTypeId);
 
-        for ($i = 3; $i <= 5; $i++) {
-            $validator->sometimes("action_type_items.$i", 'required|exists:statements,id', function ($input) use ($i) {
-                return in_array($i, $input->action_type_id ?? []);
+            $validator->sometimes("action_type_items.$actionTypeId", 'required|exists:components,id', function ($input) use ($actionType) {
+                return $actionType->model == 'component';
+            });
+
+            $validator->sometimes("action_type_items.$actionTypeId", 'required|exists:statements,id', function ($input) use ($actionType) {
+                return $actionType->model == 'statement';
             });
         }
     }
@@ -56,8 +57,7 @@ class TemplateStoreRequest extends FormRequest
     public function attributes()
     {
         $locale = App::currentLocale();
-        $actionTypes = ActionType::whereIn('id', [1, 2, 3, 4, 5])->get();
-
+        $actionTypes = ActionType::whereIn('model', ['component', 'statement'])->get();
         $attributes = [];
         $actionTypes->each(function ($actionType) use ($locale, &$attributes) {
             $attributes["action_type_items.$actionType->id"] = $actionType->{"name_$locale"};

@@ -103,9 +103,9 @@ class TaskController extends Controller
                     'action_status_id' => 1,
                 ]);
 
-                if (in_array($actionTypeId, [1, 2])) { // Component
+                if ($action->actionType->model == 'component') {
                     $action->components()->attach($data['action_type_items'][$actionTypeId]);
-                } elseif (in_array($actionTypeId, [3, 4, 5])) { // Statement
+                } elseif ($action->actionType->model == 'statement') {
                     $action->statements()->attach($data['action_type_items'][$actionTypeId]);
                 }
             }
@@ -171,25 +171,25 @@ class TaskController extends Controller
                     'action_status_id' => 1,
                 ]);
 
-                if (in_array($actionTypeId, [1, 2])) { // Component
+                if ($action->actionType->model == 'component') {
                     $action->components()->attach($data['action_type_items'][$actionTypeId]);
-                } elseif (in_array($actionTypeId, [3, 4, 5])) { // Statement
+                } elseif ($action->actionType->model == 'statement') {
                     $action->statements()->attach($data['action_type_items'][$actionTypeId]);
                 }
             }
 
             $toUpdate->each(function ($action) use ($data) {
-                if (in_array($action->action_type_id, [1, 2])) { // Component
+                if ($action->actionType->model == 'component') {
                     $action->components()->sync($data['action_type_items'][$action->action_type_id]);
-                } elseif (in_array($action->action_type_id, [3, 4, 5])) { // Statement
+                } elseif ($action->actionType->model == 'statement') {
                     $action->statements()->sync($data['action_type_items'][$action->action_type_id]);
                 }
             });
 
             $toDelete->each(function ($action) use ($data) {
-                if (in_array($action->action_type_id, [1, 2])) { // Component
+                if ($action->actionType->model == 'component') {
                     $action->components()->detach();
-                } elseif (in_array($action->action_type_id, [3, 4, 5])) { // Statement
+                } elseif ($action->actionType->model == 'statement') {
                     $action->statements()->detach();
                 }
 

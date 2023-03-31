@@ -6,7 +6,6 @@ return [
     'accumulative_risk_history' => 'Ackumulerande månatlig riskhistorik',
     'actionType' => 'Åtgärdstyp',
     'actionTypes' => 'Åtgärdstyper',
-    'actionTypeCreate' => 'Åtgärdstyp Skapa',
     'account' => 'Konto',
     'address1' => 'Adress1',
     'address2' => 'Adress2',
@@ -263,4 +262,5 @@ return [
     'documents' => 'Dokument',
     'details' => 'Detaljer',
     'configs' => 'Konfigurationer',
+    'model' => 'Modell',
 ];

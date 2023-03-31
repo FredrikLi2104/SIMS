@@ -5,6 +5,8 @@ return [
     'account' => 'Account',
     'actions' => 'Actions',
     'accumulative_risk_history' => 'Accumulative monthly risk history',
+    'actionType' => 'ActionType',
+    'actionTypes' => 'ActionTypes',
     'address1' => 'Address1',
     'address2' => 'Address2',
     'all' => 'All',
@@ -261,5 +263,6 @@ return [
     'documents' => 'Documents',
     'details' => 'Details',
     'configs' => 'Configs',
+    'model' => 'Model',
 ];
 ?>

@@ -370,7 +370,8 @@ export default {
         handleActionTypeChange() {
             let self = this;
             $('#action').on('select2:select', function (e) {
-                if (['1', '2'].includes(e.params.data.id)) {
+                let actionType = self.actionTypes.find(actionType => actionType.id == e.params.data.id);
+                if (actionType.model == 'component') {
                     axios.get(`/${self.locale}/axios/components`)
                         .then(function (response) {
                             self.components = response.data;
@@ -387,7 +388,7 @@ export default {
                         .catch(function (error) {
 
                         });
-                } else if (['3', '4', '5'].includes(e.params.data.id)) {
+                } else if (actionType.model == 'statement') {
                     axios.get(`/${self.locale}/axios/statements`)
                         .then(function (response) {
                             self.statements = response.data;
@@ -559,12 +560,12 @@ export default {
 
                     }
 
-                    if (self.taskData.actions.some(action => [1, 2].includes(action.action_type_id))) {
+                    if (self.taskData.actions.some(action => action.action_type.model == 'component')) {
                         axios.get(`/${self.locale}/axios/components`)
                             .then(function (response) {
                                 self.components = response.data;
                                 self.taskData.actions.forEach(action => {
-                                    if ([1, 2].includes(action.action_type_id)) {
+                                    if (action.action_type.model == 'component') {
                                         self.selectedActions[action.action_type.id] = {
                                             id: action.action_type.id,
                                             label: action.action_type[`name_${self.locale}`],
@@ -584,12 +585,12 @@ export default {
                             });
                     }
 
-                    if (self.taskData.actions.some(action => [3, 4, 5].includes(action.action_type_id))) {
+                    if (self.taskData.actions.some(action => action.action_type.model == 'statement')) {
                         axios.get(`/${self.locale}/axios/statements`)
                             .then(function (response) {
                                 self.statements = response.data;
                                 self.taskData.actions.forEach(action => {
-                                    if ([3, 4, 5].includes(action.action_type_id)) {
+                                    if (action.action_type.model == 'statement') {
                                         self.selectedActions[action.action_type.id] = {
                                             id: action.action_type.id,
                                             label: action.action_type[`name_${self.locale}`],

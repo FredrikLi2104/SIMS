@@ -1,67 +1,40 @@
-@extends('layouts/contentLayoutMaster')
-@section('title', trans('messages.actionType') . ' ' . trans('messages.create'))
+@extends('layouts.contentLayoutMaster')
+@section('title', __('messages.actionType') . ' ' . ($is_update ?? null ? __('messages.update') : __('messages.create')))
+@section('vendor-style')
+    {{-- vendor css files --}}
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
+@endsection
+@section('page-style')
+    <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+    </style>
+@endsection
 @section('content')
     <section id="multiple-column-form">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">@lang('messages.actionType') @lang('messages.create') @lang('messages.allFields')</h4>
+                        <h4 class="card-title">@lang('messages.actionType') {{ $action_msg }} @lang('messages.allFields')</h4>
                     </div>
                     <div class="card-body">
-                        @if (count($errors->all()) > 0)
-                            <div class="alert alert-danger" role="alert">
-                                <h4 class="alert-heading">Error!</h4>
-                                @foreach ($errors->all() as $error)
-                                    <div class="alert-body">
-                                        {{ $error }}
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-                        <form id="form" class="form" action="{{ route('action_types.store', App::currentLocale()) }}" method="POST">
+                        <form id="form" class="form">
                             @csrf
-                            <div class="row">
-                                <div class="col-md-6 col-12">
-                                    <div class="mb-1">
-                                        <label class="form-label" for="name_en">@lang('messages.name_en')</label>
-                                        <input type="text" id="name_en" class="form-control @error('name_en') is-invalid @enderror" placeholder="Exam" name="name_en" value="{{ old('name_en') }}" />
-                                        @error('name_en')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <div class="mb-1">
-                                        <label class="form-label" for="name_se">@lang('messages.name_se')</label>
-                                        <input type="text" id="name_se" class="form-control @error('name_se') is-invalid @enderror" placeholder="Undersökning" name="name_se" value="{{ old('name_se') }}" />
-                                        @error('name_se')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <div class="mb-1">
-                                        <label class="form-label" for="desc_en">@lang('messages.desc_en')</label>
-                                        <input type="text" id="desc_en" class="form-control @error('desc_en') is-invalid @enderror" placeholder="The statement is reviewed by sending a question via email to the respondent" name="desc_en" value="{{ old('desc_en') }}" />
-                                        @error('desc_en')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <div class="mb-1">
-                                        <label class="form-label" for="desc_se">@lang('messages.desc_se')</label>
-                                        <input type="text" id="desc_se" class="form-control @error('desc_se') is-invalid @enderror" placeholder="Påstående granskas genom att skicka fråga via mail till respondent" name="desc_se" value="{{ old('desc_se') }}" />
-                                        @error('desc_se')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary me-1">@lang('messages.submit')</button>
-                                </div>
-                            </div>
+                            @if($is_update ?? false)
+                                @method('PUT')
+                            @endif
+                            <action-types locale="{{ App::currentLocale() }}"
+                                          :messages="{{ Js::from($messages) }}"
+                                          :is-update="{{ $is_update ?? Js::from(false) }}"
+                                          :roles="{{ Js::from($roles) }}"
+                                          :urls="{{ Js::from($urls) }}"
+                                          :models="{{ Js::from($models) }}"
+                                          :action-type-data="{{ $action_type ?? Js::from([]) }}">
+                            </action-types>
                         </form>
                     </div>
                 </div>
@@ -69,8 +42,12 @@
         </div>
     </section>
 @endsection
+@section('vendor-script')
+    {{-- vendor files --}}
+    <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
+@endsection
 @section('page-script')
     <!-- Page js files -->
-    <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js') }}"></script>
-    {!! JsValidator::formRequest('App\Http\Requests\ActionTypeStoreRequest', '#form') !!}
+    <script src="{{ asset(mix('js/models/action_types/create/app.js')) }}"></script>
 @endsection
