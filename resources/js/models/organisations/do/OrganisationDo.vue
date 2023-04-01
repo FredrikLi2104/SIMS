@@ -497,7 +497,8 @@ export default {
                     locale: thisComponent.locale,
                 })
                 .then(function (response) {
-                    console.log(response.data);
+                    thisComponent.dataTable.destroy();
+                    thisComponent.draw();
                     Swal.fire({
                         title: `${thisComponent.collection?.messages?.success}!`,
                         text: `${thisComponent.collection?.messages?.itemsUpdatedSuccessfully}!`,

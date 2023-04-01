@@ -814,6 +814,10 @@ class AxiosController extends Controller
 
             $review = Review::where('organisation_id', $o->id)
                 ->where('statement_id', $data['statement_id'])
+                ->where(function ($query) {
+                    $query->whereRelation('reviewStatus', 'name_en', 'Accepted')
+                        ->orWhereRelation('reviewStatus', 'name_en', 'Rejected');
+                })
                 ->first();
 
             if ($review) {
@@ -848,6 +852,20 @@ class AxiosController extends Controller
                         $deed->update(['user_id' => Auth::user()->id, 'value' => $statement['value'], 'comment' => $statement['comment']]);
                     } else {
                         Deed::create(['organisation_id' => $organisation->id, 'statement_id' => $statement['id'], 'user_id' => Auth::user()->id, 'value' => $statement['value'], 'comment' => $statement['comment']]);
+                    }
+
+                    $review = Review::where('organisation_id', $organisation->id)
+                        ->where('statement_id', $statement['id'])
+                        ->where(function ($query) {
+                            $query->whereRelation('reviewStatus', 'name_en', 'Accepted')
+                                ->orWhereRelation('reviewStatus', 'name_en', 'Rejected');
+                        })
+                        ->first();
+
+                    if ($review) {
+                        $reviewStatus = ReviewStatus::where('name_en', 'Pending')->first();
+                        $review->reviewStatus()->associate($reviewStatus);
+                        $review->save();
                     }
                 }
             });

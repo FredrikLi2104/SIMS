@@ -22130,7 +22130,8 @@ __webpack_require__.r(__webpack_exports__);
         locale: thisComponent.locale
       }).then(function (response) {
         var _thisComponent$collec41, _thisComponent$collec42, _thisComponent$collec43, _thisComponent$collec44;
-        console.log(response.data);
+        thisComponent.dataTable.destroy();
+        thisComponent.draw();
         sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
           title: "".concat((_thisComponent$collec41 = thisComponent.collection) === null || _thisComponent$collec41 === void 0 ? void 0 : (_thisComponent$collec42 = _thisComponent$collec41.messages) === null || _thisComponent$collec42 === void 0 ? void 0 : _thisComponent$collec42.success, "!"),
           text: "".concat((_thisComponent$collec43 = thisComponent.collection) === null || _thisComponent$collec43 === void 0 ? void 0 : (_thisComponent$collec44 = _thisComponent$collec43.messages) === null || _thisComponent$collec44 === void 0 ? void 0 : _thisComponent$collec44.itemsUpdatedSuccessfully, "!"),
