@@ -104,9 +104,8 @@
                                         <td>{{ collection?.messages?.status }}</td>
                                         <td>
                                             <div class="d-flex justify-content-start align-items-start">
-                                                <span
-                                                    :class="`badge rounded-pill badge-light-${statementActive?.review?.accepted == true ? 'success' : statementActive?.review?.accepted == false ? 'danger' : 'secondary'}`">{{
-                                                        statementActive?.review?.accepted == true ? collection?.messages?.accepted : statementActive?.review?.accepted == false ? collection?.messages?.rejected : collection?.messages?.unreviewed
+                                                <span class="badge rounded-pill" :class="badgeColorClass">{{
+                                                        statementActive?.review?.review_status[`name_${locale}`]
                                                     }}</span>
                                             </div>
                                         </td>
@@ -255,18 +254,19 @@ export default {
                         orderable: false,
                         render: function (data, type, full, meta) {
                             let c = "";
-                            let t = "";
+                            let t = full.review === null ? '' : `${full.review?.review_status[`name_${thisComponent.locale}`]}`;
                             let b = "";
-                            switch (full.review?.accepted) {
+                            switch (full.review?.review_status.name_en) {
                                 case null:
                                     break;
-                                case 1:
-                                    c = "success";
-                                    t = thisComponent.collection?.messages.accepted;
+                                case 'Pending':
+                                    c = "warning";
                                     break;
-                                case 0:
+                                case 'Accepted':
+                                    c = "success";
+                                    break;
+                                case 'Rejected':
                                     c = "danger";
-                                    t = thisComponent.collection?.messages.rejected;
                                     break;
                                 default:
                                     break;
@@ -424,6 +424,8 @@ export default {
                     comment: c,
                 })
                 .then(function (response) {
+                    thisComponent.dataTable.destroy();
+                    thisComponent.draw();
                     //console.log(response.data);
                     // remove new tag
                     // find this statement in collection
@@ -542,6 +544,25 @@ export default {
                     console.log(error.response);
                 });
         },
+    },
+    computed: {
+        badgeColorClass() {
+            let reviewStatus = this.statementActive?.review?.review_status.name_en;
+            let colorClass = '';
+            switch (reviewStatus) {
+                case 'Pending':
+                    colorClass = 'badge-light-warning';
+                    break;
+                case 'Accepted':
+                    colorClass = 'badge-light-success';
+                    break;
+                case 'Rejected':
+                    colorClass = 'badge-light-danger';
+                    break;
+            }
+
+            return colorClass;
+        }
     },
     mounted() {
         window.thisComponent = this;

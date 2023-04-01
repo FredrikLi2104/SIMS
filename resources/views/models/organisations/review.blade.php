@@ -8,6 +8,11 @@
 @endsection
 @section('page-style')
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+    </style>
 @endsection
 @section('content')
     @if (session()->get('success'))
@@ -26,7 +31,7 @@
             </div>
         </div>
     @endif
-    <organisation-review locale="{{ App::currentLocale() }}" />
+    <organisation-review locale="{{ App::currentLocale() }}" :review-statuses="{{ Js::from($reviewStatuses) }}"/>
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}

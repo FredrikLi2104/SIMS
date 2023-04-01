@@ -61,6 +61,10 @@ class Statement extends Model
 
     public function organisationReview(Organisation $organisation)
     {
+        $this->reviews = $this->reviews->map(function ($review) {
+            return $review->load('reviewStatus')->makeVisible('reviewStatus');
+        });
+
         return $this->reviews->where('organisation_id', $organisation->id)->first();
     }
 

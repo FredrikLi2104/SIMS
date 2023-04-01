@@ -9,6 +9,7 @@ use App\Models\Component;
 use App\Models\Faq;
 use App\Models\Link;
 use App\Models\Organisation;
+use App\Models\ReviewStatus;
 use App\Models\Sni;
 use App\Models\Statement;
 use Illuminate\Http\Request;
@@ -108,7 +109,8 @@ class OrganisationController extends Controller
      **/
     public function review()
     {
-        return view('models.organisations.review');
+        $reviewStatuses = ReviewStatus::all();
+        return view('models.organisations.review', compact('reviewStatuses'));
     }
 
     /**
@@ -214,10 +216,20 @@ class OrganisationController extends Controller
             abort(403);
         }
 
-        $type = in_array($action?->actionType->model, ['component', 'statement']) ? 'statements' : 'report';
+        $type = 'statements';
         $actionId = $action?->id;
-        $statements = Statement::all()->sortBy('sort_order');
-        return view('models.organisations.plan', compact('statements', 'type', 'actionId'));
+        return view('models.organisations.plan', compact('type', 'actionId'));
+    }
+
+    public function report($locale, Action $action = null)
+    {
+        if ($action !== null && auth()->user()->cannot('view', $action)) {
+            abort(403);
+        }
+
+        $type = 'report';
+        $actionId = $action?->id;
+        return view('models.organisations.plan', compact('type', 'actionId'));
     }
 
     public function knowledge()

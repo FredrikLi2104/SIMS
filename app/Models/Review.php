@@ -16,9 +16,14 @@ class Review extends Model
     protected $appends = ['updated_at_for_humans'];
 
     public function updatedAtForHumans(): Attribute
-        {
-            return new Attribute(
-                get: fn ($value) => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
-            );
-        }
+    {
+        return new Attribute(
+            get: fn($value) => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
+        );
+    }
+
+    public function reviewStatus()
+    {
+        return $this->belongsTo(ReviewStatus::class);
+    }
 }

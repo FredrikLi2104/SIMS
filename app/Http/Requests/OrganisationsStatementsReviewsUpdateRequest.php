@@ -26,7 +26,7 @@ class OrganisationsStatementsReviewsUpdateRequest extends FormRequest
         return [
             //
             'statement_id' => ['required', 'exists:statements,id'],
-            'accepted' => ['required', 'boolean'],
+            'review_status_id' => ['required', 'exists:review_statuses,id'],
             'review' => ['required']
         ];
     }

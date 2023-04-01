@@ -124,6 +124,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('plan/components/{action?}', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan.components');
     Route::get('plan/statements/{action?}', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan.statements');
     Route::resource('plans', PlanController::class)->middleware('auth')->middleware('can:moderator');
+    Route::get('report/{action?}', [OrganisationController::class, 'report'])->middleware('auth')->middleware('can:user')->name('organisations.report');
     Route::get('review', [OrganisationController::class, 'review'])->middleware('auth')->middleware('can:auditor')->name('organisations.review');
     Route::resource('risks', RiskController::class)->middleware('auth')->middleware('can:auditor-user');
     Route::resource('sanctions', SanctionController::class)->middleware('auth')->middleware('can:moderator');

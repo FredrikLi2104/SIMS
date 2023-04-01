@@ -30,6 +30,7 @@ use App\Models\Organisation;
 use App\Models\Period;
 use App\Models\Plan;
 use App\Models\Review;
+use App\Models\ReviewStatus;
 use App\Models\Risk;
 use App\Models\RiskComment;
 use App\Models\Sanction;
@@ -801,14 +802,26 @@ class AxiosController extends Controller
     public function organisationsStatementsDeedsUpdate(OrganisationsStatementsDeedsUpdateRequest $request)
     {
         $data = $request->validated();
-        $o = Auth::user()->organisation;
-        // find if this statement already has an organisation deed
-        $d = Deed::where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
-        if ($d) {
-            $d->update(['user_id' => Auth::user()->id, 'value' => $data['value'], 'comment' => $data['comment']]);
-        } else {
-            Deed::create(['organisation_id' => $o->id, 'statement_id' => $data['statement_id'], 'user_id' => Auth::user()->id, 'value' => $data['value'], 'comment' => $data['comment']]);
-        }
+        DB::transaction(function () use ($data) {
+            $o = Auth::user()->organisation;
+            // find if this statement already has an organisation deed
+            $d = Deed::where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
+            if ($d) {
+                $d->update(['user_id' => Auth::user()->id, 'value' => $data['value'], 'comment' => $data['comment']]);
+            } else {
+                Deed::create(['organisation_id' => $o->id, 'statement_id' => $data['statement_id'], 'user_id' => Auth::user()->id, 'value' => $data['value'], 'comment' => $data['comment']]);
+            }
+
+            $review = Review::where('organisation_id', $o->id)
+                ->where('statement_id', $data['statement_id'])
+                ->first();
+
+            if ($review) {
+                $reviewStatus = ReviewStatus::where('name_en', 'Pending')->first();
+                $review->reviewStatus()->associate($reviewStatus);
+                $review->save();
+            }
+        });
         return response('success', 200);
     }
 
@@ -885,10 +898,10 @@ class AxiosController extends Controller
         $r = Review::where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
         if ($r) {
             // update
-            $r->update(['user_id' => Auth::user()->id, 'accepted' => $data['accepted'], 'review' => $data['review']]);
+            $r->update(['user_id' => Auth::user()->id, 'review_status_id' => $data['review_status_id'], 'review' => $data['review']]);
         } else {
             // create
-            Review::create(['organisation_id' => $o->id, 'statement_id' => $data['statement_id'], 'user_id' => Auth::user()->id, 'accepted' => $data['accepted'], 'review' => $data['review']]);
+            Review::create(['organisation_id' => $o->id, 'statement_id' => $data['statement_id'], 'user_id' => Auth::user()->id, 'review_status_id' => $data['review_status_id'], 'review' => $data['review']]);
         }
         return response('success', 200);
     }
