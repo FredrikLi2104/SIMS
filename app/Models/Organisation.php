@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 class Organisation extends Model
 {
     use HasFactory;
+
     protected $guarded = ['id'];
     protected $visible = ['id', 'name', 'turnover', 'employees', 'number', 'commitment', 'logofile', 'color', 'phone', 'address1', 'address2', 'email', 'website'];
     protected $appends = ['orgcolor', 'logo'];
@@ -22,6 +23,7 @@ class Organisation extends Model
     {
         return $this->belongsToMany(Component::class)->withPivot('period_id');
     }
+
     public function logo(): Attribute
     {
         $logo = $this->logofile;
@@ -31,9 +33,10 @@ class Organisation extends Model
             $logo = Storage::url($logo);
         }
         return new Attribute(
-            get: fn ($value) => $logo
+            get: fn($value) => $logo
         );
     }
+
     public function kpis()
     {
         $kpis = Kpi::all();
@@ -52,10 +55,12 @@ class Organisation extends Model
         }
         return $kpis;
     }
+
     public function organisations()
     {
         return $this->hasMany(Organisation::class);
     }
+
     public function orgcolor(): Attribute
     {
         $color = $this->color;
@@ -63,9 +68,10 @@ class Organisation extends Model
             $color = '00315c';
         }
         return new Attribute(
-            get: fn ($value) => $color
+            get: fn($value) => $color
         );
     }
+
     public function sni()
     {
         return $this->belongsTo(Sni::class);
@@ -78,7 +84,7 @@ class Organisation extends Model
 
     public function statements()
     {
-        return $this->belongsToMany(Statement::class);
+        return $this->belongsToMany(Statement::class)->withPivot('implementation')->withTimestamps();
     }
 
     public function users()
@@ -92,7 +98,7 @@ class Organisation extends Model
         $deeds = Deed::where('organisation_id', $this->id)->get();
         foreach ($deeds as $deed) {
             $year = Carbon::parse($deed->created_at)->format('Y');
-            if(!(in_array($year, $years))) {
+            if (!(in_array($year, $years))) {
                 $years[] = $year;
             }
         }

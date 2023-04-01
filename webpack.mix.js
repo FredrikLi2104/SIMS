@@ -112,6 +112,7 @@ mix
     .js('resources/js/models/tasks/index/app.js', 'public/js/models/tasks/index/app.js').vue()
     // services
     .js('resources/js/services/countries/seed/app.js', 'public/js/services/countries/seed/app.js').vue()
+    .js('resources/js/features/app.js', 'public/js/features/app.js').vue()
 
 // Js validation
 mix

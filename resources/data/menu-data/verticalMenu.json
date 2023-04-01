@@ -20,6 +20,15 @@
             ]
         },
         {
+            "name": "features",
+            "auth": "super-auditor",
+            "icon": "star",
+            "url": "features",
+            "slug": [
+                "features.index"
+            ]
+        },
+        {
             "name": "knowledge",
             "auth": "auditor-user",
             "icon": "help-circle",

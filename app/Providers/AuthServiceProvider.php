@@ -47,7 +47,7 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, ['auditor']);
         });
 
-        Gate::define('auditor-user', function(User $user) {
+        Gate::define('auditor-user', function (User $user) {
             return in_array($user->role, ['auditor', 'user']);
         });
 
@@ -55,6 +55,8 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, ['super', 'admin', 'moderator', 'user', 'auditor']);
         });
 
-
+        Gate::define('super-auditor', function (User $user) {
+            return $user->role == 'auditor' && $user->organisation->organisation_id === null;
+        });
     }
 }

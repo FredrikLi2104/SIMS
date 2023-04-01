@@ -8,6 +8,7 @@ use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\DpaController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\IssueCategoryController;
 use App\Http\Controllers\KpiController;
@@ -109,6 +110,8 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('do/statements/{action?}', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do.statements');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/faqs', FaqController::class)->middleware('auth')->middleware('can:moderator');
+    Route::get('/features', [FeatureController::class, 'index'])->middleware('auth')->middleware('can:super-auditor');
+    Route::post('/features/implementations/update', [FeatureController::class, 'updateImplementations'])->middleware('auth')->middleware('can:super-auditor');
     Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
     Route::resource('/issue_categories', IssueCategoryController::class)->middleware('auth')->middleware('can:moderator');

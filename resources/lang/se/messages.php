@@ -263,4 +263,7 @@ return [
     'details' => 'Detaljer',
     'configs' => 'Konfigurationer',
     'model' => 'Modell',
+    'features' => 'Funktioner',
+    'implementations_overwrite_title' => 'Skriv över implementeringar av organisationsförklaringar',
+    'implementations_overwrite_warning' => 'Är du säker på att du vill sålla alla dessa implementeringsvärden till utvalda underorganisationer? Detta kommer att skriva över någon av sina egna implementeringar och denna åtgärd kan inte ångras.',
 ];
