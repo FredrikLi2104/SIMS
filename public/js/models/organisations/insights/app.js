@@ -22538,14 +22538,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       $("#componentShowModal").modal("hide");
     },
     componentShow: function componentShow(id) {
-      var _y$, _y$$deeds, _y$$deeds$;
+      var _y$, _y$$statements;
       var activeYear = document.getElementById("yearSelect").value;
       var dataSource = this.activeOrg[activeYear].table;
       var y = dataSource.filter(function (x) {
         return x.id == id;
       });
       this.componentActive = y[0];
-      this.activeStatement = (_y$ = y[0]) === null || _y$ === void 0 ? void 0 : (_y$$deeds = _y$.deeds) === null || _y$$deeds === void 0 ? void 0 : (_y$$deeds$ = _y$$deeds[0]) === null || _y$$deeds$ === void 0 ? void 0 : _y$$deeds$.statement;
+      this.activeStatement = (_y$ = y[0]) === null || _y$ === void 0 ? void 0 : (_y$$statements = _y$.statements) === null || _y$$statements === void 0 ? void 0 : _y$$statements[0];
       $("#componentShowModal").modal("show");
       this.$nextTick(function () {
         feather.replace();
@@ -22607,7 +22607,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
     },
     updateActiveStatement: function updateActiveStatement(index) {
       var _this$componentActive, _this$componentActive2;
-      this.activeStatement = (_this$componentActive = this.componentActive) === null || _this$componentActive === void 0 ? void 0 : (_this$componentActive2 = _this$componentActive.deeds) === null || _this$componentActive2 === void 0 ? void 0 : _this$componentActive2[index].statement;
+      this.activeStatement = (_this$componentActive = this.componentActive) === null || _this$componentActive === void 0 ? void 0 : (_this$componentActive2 = _this$componentActive.statements) === null || _this$componentActive2 === void 0 ? void 0 : _this$componentActive2[index];
     }
   },
   mounted: function mounted() {
@@ -22969,11 +22969,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     href: "/".concat($props.locale, "/insights/component/sanctions/").concat((_$data$componentActiv6 = $data.componentActive) === null || _$data$componentActiv6 === void 0 ? void 0 : _$data$componentActiv6.id),
     "class": "btn btn-outline-primary waves-effect",
     target: "_blank"
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection14 = $data.collection) === null || _$data$collection14 === void 0 ? void 0 : (_$data$collection14$m = _$data$collection14.messages) === null || _$data$collection14$m === void 0 ? void 0 : _$data$collection14$m.sanctions), 9 /* TEXT, PROPS */, _hoisted_39)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_43, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection15 = $data.collection) === null || _$data$collection15 === void 0 ? void 0 : (_$data$collection15$m = _$data$collection15.messages) === null || _$data$collection15$m === void 0 ? void 0 : _$data$collection15$m.statements), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$componentActiv7 = $data.componentActive) === null || _$data$componentActiv7 === void 0 ? void 0 : _$data$componentActiv7.deeds, function (deed, index) {
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection14 = $data.collection) === null || _$data$collection14 === void 0 ? void 0 : (_$data$collection14$m = _$data$collection14.messages) === null || _$data$collection14$m === void 0 ? void 0 : _$data$collection14$m.sanctions), 9 /* TEXT, PROPS */, _hoisted_39)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_43, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection15 = $data.collection) === null || _$data$collection15 === void 0 ? void 0 : (_$data$collection15$m = _$data$collection15.messages) === null || _$data$collection15$m === void 0 ? void 0 : _$data$collection15$m.statements), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$componentActiv7 = $data.componentActive) === null || _$data$componentActiv7 === void 0 ? void 0 : _$data$componentActiv7.statements, function (statement, index) {
     var _$data$componentActiv8;
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
-      key: deed.id
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$componentActiv8 = $data.componentActive) === null || _$data$componentActiv8 === void 0 ? void 0 : _$data$componentActiv8.code, ".").concat(deed.statement.code)), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(deed.statement["content_".concat($props.locale)]), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(deed.value), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      key: statement.id
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$componentActiv8 = $data.componentActive) === null || _$data$componentActiv8 === void 0 ? void 0 : _$data$componentActiv8.code, ".").concat(statement.code)), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(statement["content_".concat($props.locale)]), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(statement.deed === null ? 0 : statement.deed.value), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
       type: "button",
       "class": "btn btn-icon btn-outline-primary waves-effect",
       onClick: function onClick($event) {

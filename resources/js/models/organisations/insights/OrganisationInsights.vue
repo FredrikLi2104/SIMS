@@ -122,10 +122,11 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr v-for="(deed, index) in componentActive?.deeds" :key="deed.id">
-                                            <td>{{ `${componentActive?.code}.${deed.statement.code}` }}</td>
-                                            <td>{{ deed.statement[`content_${locale}`] }}</td>
-                                            <td>{{ deed.value }}</td>
+                                        <tr v-for="(statement, index) in componentActive?.statements"
+                                            :key="statement.id">
+                                            <td>{{ `${componentActive?.code}.${statement.code}` }}</td>
+                                            <td>{{ statement[`content_${locale}`] }}</td>
+                                            <td>{{ statement.deed === null ? 0 : statement.deed.value }}</td>
                                             <td>
                                                 <button type="button"
                                                         class="btn btn-icon btn-outline-primary waves-effect"
@@ -1175,7 +1176,7 @@ export default {
             const dataSource = this.activeOrg[activeYear].table;
             let y = dataSource.filter((x) => x.id == id);
             this.componentActive = y[0];
-            this.activeStatement = y[0]?.deeds?.[0]?.statement;
+            this.activeStatement = y[0]?.statements?.[0];
             $("#componentShowModal").modal("show");
             this.$nextTick(() => {
                 feather.replace();
@@ -1239,7 +1240,7 @@ export default {
             });
         },
         updateActiveStatement(index) {
-            this.activeStatement = this.componentActive?.deeds?.[index].statement;
+            this.activeStatement = this.componentActive?.statements?.[index];
         }
     },
     mounted() {

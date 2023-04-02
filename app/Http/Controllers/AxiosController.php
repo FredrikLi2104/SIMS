@@ -222,14 +222,16 @@ class AxiosController extends Controller
                     $data[$year]['codenames'][] = $comp->codeName;
                     $name = mb_strlen($comp->{'name_' . App::currentLocale()}) > 16 ? mb_substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
 
-                    $deeds = $comp->organisationStatementsYear($org, $year);
-                    $deeds = $deeds->map(function ($deed) use ($org) {
-                        $op = $deed->statement->organisationPlan($org);
-                        $deed->statement->implementation = $op->implementation ?? '';
-                        $deed->statement->makeVisible('implementation');
-                        return $deed;
+                    $comp->load('statements');
+                    $comp->statements->each(function ($statement) use ($org) {
+                        $op = $statement->organisationPlan($org);
+                        $statement->implementation = $op->implementation ?? '';
+                        $od = $statement->organisationDeed($org);
+                        $statement->deed = $od;
+                        $statement->makeVisible('implementation', 'deed');
                     });
-                    $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'desc' => $comp->{"desc_$locale"}, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_' . App::currentLocale()}, 'deeds' => $deeds];
+
+                    $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'desc' => $comp->{"desc_$locale"}, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_' . App::currentLocale()}, 'statements' => $comp->statements];
                 }
                 // Kpis
                 $kpis = Kpi::all();
