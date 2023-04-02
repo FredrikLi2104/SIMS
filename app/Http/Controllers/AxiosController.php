@@ -1224,8 +1224,10 @@ class AxiosController extends Controller
                     ->orWhereDate('decided_at', 'like', '%' . $needle . '%')
                     ->orWhere('published_at', 'like', '%' . $needle . '%')
                     ->orWhere('fine', 'like', '%' . $needle . '%')
-                    ->orWhereRelation('dpa', 'title', 'like', "Category:%$needle%");
-
+                    ->orWhere('sanctions.title', 'like', "%$needle%")
+                    ->orWhereRelation('dpa', 'title', 'like', "Category:%$needle%")
+                    ->orWhereRaw('LOWER(sanctions.desc_en) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%")
+                    ->orWhereRaw('LOWER(sanctions.desc_se) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%");
             })->get();
             $sanctions = $sanctions->sortByDesc('id');
         }

@@ -243,7 +243,7 @@
                                         <thead>
                                         <tr>
                                             <th>{{ messages.sector }}</th>
-                                            {{ `${messages.sum_of_fines} (€)` }}
+                                            <th>{{ `${messages.sum_of_fines} (€)` }}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
