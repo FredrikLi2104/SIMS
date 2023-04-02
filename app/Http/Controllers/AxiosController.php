@@ -1234,17 +1234,26 @@ class AxiosController extends Controller
         } else {
             $needle = $request->search['value'];
             // spider search
-            $sanctions = Sanction::where(function ($query) use ($needle) {
-                $query->where('title', 'like', '%' . $needle . '%')
-                    ->orWhereDate('started_at', 'like', '%' . $needle . '%')
-                    ->orWhereDate('decided_at', 'like', '%' . $needle . '%')
-                    ->orWhere('published_at', 'like', '%' . $needle . '%')
-                    ->orWhere('fine', 'like', '%' . $needle . '%')
-                    ->orWhere('sanctions.title', 'like', "%$needle%")
-                    ->orWhereRelation('dpa', 'title', 'like', "Category:%$needle%")
-                    ->orWhereRaw('LOWER(sanctions.desc_en) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%")
-                    ->orWhereRaw('LOWER(sanctions.desc_se) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%");
-            })->get();
+            $sanctions = Sanction::select('sanctions.*')
+                ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
+                ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
+                ->join('components', 'statements.component_id', '=', 'components.id')
+                ->join('snis', 'sanctions.sni_id', '=', 'snis.id')
+                ->where(function ($query) use ($needle) {
+                    $query->where('title', 'like', '%' . $needle . '%')
+                        ->orWhereDate('started_at', 'like', '%' . $needle . '%')
+                        ->orWhereDate('decided_at', 'like', '%' . $needle . '%')
+                        ->orWhere('published_at', 'like', '%' . $needle . '%')
+                        ->orWhere('fine', 'like', '%' . $needle . '%')
+                        ->orWhere('sanctions.title', 'like', "%$needle%")
+                        ->orWhereRelation('dpa', 'title', 'like', "Category:%$needle%")
+                        ->orWhereRaw('LOWER(sanctions.desc_en) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%")
+                        ->orWhereRaw('LOWER(sanctions.desc_se) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%")
+                        ->orwhere('components.code', $needle)
+                        ->orwhereRaw("CONCAT(components.code, '.', statements.code) = ?", $needle)
+                        ->orwhere('snis.desc_en', $needle)
+                        ->orwhere('snis.desc_se', $needle);
+                })->get();
             $sanctions = $sanctions->sortByDesc('id');
         }
         $draw = $request->draw;
