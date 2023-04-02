@@ -74,7 +74,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('organisations/plan/user/{action?}', [AxiosController::class, 'organisationsPlan'])->middleware('can:user')->name('axios.organisations.plan');
     Route::get('organisations/plan/auditor/{action?}', [AxiosController::class, 'organisationsPlanAuditor'])->middleware('can:auditor')->name('axios.organisations.plan.auditor');
     Route::post('organisations/plan/auditor/update', [AxiosController::class, 'organisationsPlanAuditorUpdate'])->middleware('can:auditor')->name('axios.organisations.plan.auditor.update');
-    Route::get('organisations/review', [AxiosController::class, 'organisationsReview'])->middleware('can:auditor')->name('axios.organisations.review');
+    Route::get('organisations/review/{action?}', [AxiosController::class, 'organisationsReview'])->middleware('can:auditor')->name('axios.organisations.review');
     Route::post('organisations/components/periods/update', [AxiosController::class, 'organisationsComponentsPeriodsUpdate'])->middleware('can:user')->name('axios.organisations.components.periods.update');
     Route::get('organisations/risks', [AxiosController::class, 'organisationsRisksIndex'])->middleware('can:auditor-user')->name('axios.organisations.risks.index');
     Route::post('organisations/statements/deeds/update', [AxiosController::class, 'organisationsStatementsDeedsUpdate'])->middleware('can:user')->name('axios.organisations.statements.deeds.update');
@@ -128,7 +128,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('plan/statements/{action?}', [OrganisationController::class, 'plan'])->middleware('auth')->middleware('can:user')->name('organisations.plan.statements');
     Route::resource('plans', PlanController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('report/{action?}', [OrganisationController::class, 'report'])->middleware('auth')->middleware('can:user')->name('organisations.report');
-    Route::get('review', [OrganisationController::class, 'review'])->middleware('auth')->middleware('can:auditor')->name('organisations.review');
+    Route::get('review/{action?}', [OrganisationController::class, 'review'])->middleware('auth')->middleware('can:auditor')->name('organisations.review');
     Route::resource('risks', RiskController::class)->middleware('auth')->middleware('can:auditor-user');
     Route::resource('sanctions', SanctionController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('statements', StatementController::class)->middleware('auth')->middleware('can:moderator');

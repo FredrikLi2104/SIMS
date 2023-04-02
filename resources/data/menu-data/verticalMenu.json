@@ -29,23 +29,23 @@
             ]
         },
         {
-            "name": "knowledge",
-            "auth": "auditor-user",
-            "icon": "help-circle",
-            "url": "knowledge",
-            "slug": [
-                "organisations.knowledge"
-            ]
-        },
-        {
             "name": "insights",
-            "auth": "user",
+            "auth": "auditor-user",
             "icon": "pie-chart",
             "url": "insights",
             "slug": [
                 "organisations.insights",
                 "organisations.insights.component.sanctions",
                 "organisations.insights.statement.sanctions"
+            ]
+        },
+        {
+            "name": "knowledge",
+            "auth": "auditor-user",
+            "icon": "help-circle",
+            "url": "knowledge",
+            "slug": [
+                "organisations.knowledge"
             ]
         },
         {

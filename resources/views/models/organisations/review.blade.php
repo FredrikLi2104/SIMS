@@ -31,7 +31,8 @@
             </div>
         </div>
     @endif
-    <organisation-review locale="{{ App::currentLocale() }}" :review-statuses="{{ Js::from($reviewStatuses) }}"/>
+    <organisation-review locale="{{ App::currentLocale() }}" :review-statuses="{{ Js::from($reviewStatuses) }}"
+                         action-id="{{ $actionId }}"/>
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}

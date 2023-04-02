@@ -107,10 +107,15 @@ class OrganisationController extends Controller
      *
      * @return Illuminate\Support\Facades\View
      **/
-    public function review()
+    public function review($locale, Action $action = null)
     {
+        if ($action !== null && auth()->user()->cannot('view', $action)) {
+            abort(403);
+        }
+
+        $actionId = $action?->id;
         $reviewStatuses = ReviewStatus::all();
-        return view('models.organisations.review', compact('reviewStatuses'));
+        return view('models.organisations.review', compact('reviewStatuses', 'actionId'));
     }
 
     /**

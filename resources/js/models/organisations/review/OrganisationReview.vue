@@ -114,7 +114,7 @@
 </template>
 <script>
 export default {
-    props: ['locale', 'reviewStatuses'],
+    props: ['locale', 'reviewStatuses', 'actionId'],
     data() {
         return {
             dataTable: null,
@@ -349,7 +349,7 @@ export default {
         draw() {
             var thisComponent = this;
             axios
-                .get("/" + thisComponent.locale + "/axios/organisations/review", {})
+                .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
                     console.log(response.data);
                     thisComponent.collection = response.data;

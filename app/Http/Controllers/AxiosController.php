@@ -299,12 +299,12 @@ class AxiosController extends Controller
                 return response()->json([], 403);
             }
 
-            if ($action->actionType->id == 2) {
+            if ($action->actionType->model == 'component') {
                 $components = $action->components;
                 $statements = $components->flatMap(function ($component) {
                     return $component->statements->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
                 });
-            } elseif ($action->actionType->id == 5) {
+            } elseif ($action->actionType->model == 'statement') {
                 $statements = $action->statements->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
             }
         } else {
@@ -534,7 +534,7 @@ class AxiosController extends Controller
                 return response()->json([], 403);
             }
 
-            if ($action->actionType->id == 4) {
+            if ($action->actionType->model == 'statement') {
                 $statements = $action->statements->makeVisible(['concat', 'guide', 'plans']);
             }
         } else {
@@ -606,9 +606,25 @@ class AxiosController extends Controller
      * @param String $locale
      * @return \Illuminate\Http\Response
      **/
-    public function organisationsReview($locale)
+    public function organisationsReview($locale, Action $action = null)
     {
-        $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
+        if ($action) {
+            if (auth()->user()->cannot('view', $action)) {
+                return response()->json([], 403);
+            }
+
+            if ($action->actionType->model == 'component') {
+                $components = $action->components;
+                $statements = $components->flatMap(function ($component) {
+                    return $component->statements->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
+                });
+            } elseif ($action->actionType->model == 'statement') {
+                $statements = $action->statements->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
+            }
+        } else {
+            $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
+        }
+
         $plans = Plan::all()->sortBy('sort_order');
         foreach ($statements as $statement) {
             $op = $statement->component->organisationPeriod(Auth::user()->organisation);

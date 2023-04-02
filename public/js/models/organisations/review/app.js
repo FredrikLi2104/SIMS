@@ -21845,7 +21845,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['locale', 'reviewStatuses'],
+  props: ['locale', 'reviewStatuses', 'actionId'],
   data: function data() {
     return {
       dataTable: null,
@@ -22034,7 +22034,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     draw: function draw() {
       var thisComponent = this;
-      axios.get("/" + thisComponent.locale + "/axios/organisations/review", {}).then(function (response) {
+      axios.get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {}).then(function (response) {
         console.log(response.data);
         thisComponent.collection = response.data;
         thisComponent.$nextTick(function () {
