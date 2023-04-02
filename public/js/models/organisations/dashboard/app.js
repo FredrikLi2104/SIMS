@@ -22407,14 +22407,16 @@ __webpack_require__.r(__webpack_exports__);
           return context.isPointInStroke(segment.path, evt.offsetX, evt.offsetY);
         });
         if (segment !== undefined) {
+          canvas.style.cursor = 'pointer';
           self.taskTitle = segment.task.title;
           self.taskColor = segment.task.color;
           self.taskStart = segment.task.start;
           self.taskEnd = segment.task.end;
-          document.getElementById('tooltip').style.top = evt.clientY + 'px';
-          document.getElementById('tooltip').style.left = evt.clientX + 1 + 'px';
+          document.getElementById('tooltip').style.top = evt.clientY + 14 + 'px';
+          document.getElementById('tooltip').style.left = evt.clientX + 14 + 'px';
           document.getElementById('tooltip').classList.remove('d-none');
         } else {
+          canvas.style.cursor = 'auto';
           document.getElementById('tooltip').classList.add('d-none');
         }
       });
@@ -22827,7 +22829,10 @@ var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 }, null, -1 /* HOISTED */);
 var _hoisted_2 = {
   id: "tooltip",
-  "class": "position-fixed shadow-sm bg-body rounded overflow-hidden width-250 d-none"
+  "class": "position-fixed shadow-sm bg-body rounded overflow-hidden width-250 d-none",
+  style: {
+    "z-index": "1"
+  }
 };
 var _hoisted_3 = {
   "class": "row"

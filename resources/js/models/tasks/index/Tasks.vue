@@ -22,57 +22,56 @@
         </div>
         <div class="col-lg-5">
             <div class="card">
-                <div class="table-responsive">
-                    <table class="table table-sm table-borderless">
-                        <tbody>
-                        <template v-for="(tasksGroup, index) in tasks">
-                            <tr>
-                                <th colspan="5" class="text-dark fs-5">
-                                    <div class="divider divider-start my-25"
-                                         :class="tasksGroup.color ? `divider-${tasksGroup.color}` : ''">
-                                        <div class="divider-text"
-                                             :class="tasksGroup.color ? `text-${tasksGroup.color}` : ''">{{ index }}
-                                        </div>
+                <table class="table table-sm table-borderless">
+                    <tbody>
+                    <template v-for="(tasksGroup, index) in tasks">
+                        <tr>
+                            <th colspan="5" class="text-dark fs-5">
+                                <div class="divider divider-start my-25"
+                                     :class="tasksGroup.color ? `divider-${tasksGroup.color}` : ''">
+                                    <div class="divider-text"
+                                         :class="tasksGroup.color ? `text-${tasksGroup.color}` : ''">{{ index }}
                                     </div>
-                                </th>
-                            </tr>
-                            <tr v-for="task in tasksGroup.tasks">
-                                <td>
-                                    <a href="#" @click="viewTask(task.id)" class="link-secondary fw-bolder">
-                                        {{ task.title_truncated }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <i data-feather="clock" class="me-25"></i> {{ task.hours }}
-                                    </div>
-                                </td>
-                                <td class="text-nowrap">
+                                </div>
+                            </th>
+                        </tr>
+                        <tr v-for="task in tasksGroup.tasks">
+                            <td>
+                                <a href="#" @click="viewTask(task.id)" class="link-secondary fw-bolder">
+                                    {{ task.title_truncated }}
+                                </a>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i data-feather="clock" class="me-25"></i>
+                                    {{ parseFloat(task.hours).toLocaleString() }}
+                                </div>
+                            </td>
+                            <td class="text-nowrap">
                                     <span :style="`color: ${task.task_status.color}`"
                                           class="fw-bold">{{ task.task_status[`name_${locale}`] }}</span>
-                                </td>
-                                <td class="text-nowrap">{{ `${task.start_for_humans} - ${task.end_for_humans}` }}</td>
-                                <td>
-                                    <div class="d-flex">
-                                        <button class="btn btn-icon btn-flat-primary waves-effect"
-                                                @click="viewTask(task.id)">
-                                            <i data-feather="eye"></i>
-                                        </button>
-                                        <button class="btn btn-icon btn-flat-primary waves-effect"
-                                                @click="editTask(task.id)">
-                                            <i data-feather="edit"></i>
-                                        </button>
-                                        <button class="btn btn-icon btn-flat-danger waves-effect"
-                                                @click="deleteTask(task.id)">
-                                            <i data-feather="trash-2"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </template>
-                        </tbody>
-                    </table>
-                </div>
+                            </td>
+                            <td style="width: 20%;">{{ `${task.start_for_humans} - ${task.end_for_humans}` }}</td>
+                            <td>
+                                <div class="d-flex">
+                                    <button class="btn btn-icon btn-flat-primary waves-effect"
+                                            @click="viewTask(task.id)">
+                                        <i data-feather="eye"></i>
+                                    </button>
+                                    <button v-if="task.can_update" class="btn btn-icon btn-flat-primary waves-effect"
+                                            @click="editTask(task.id)">
+                                        <i data-feather="edit"></i>
+                                    </button>
+                                    <button v-if="task.can_delete" class="btn btn-icon btn-flat-danger waves-effect"
+                                            @click="deleteTask(task.id)">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

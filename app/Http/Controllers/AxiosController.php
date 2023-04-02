@@ -43,6 +43,7 @@ use App\Models\Template;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -1271,32 +1272,31 @@ class AxiosController extends Controller
     {
         App::setLocale($locale);
 
+        $since = Carbon::createFromDate($year, 1, 1);
+        $until = Carbon::createFromDate($year, 12, 31);
         $tasks = Task::with('taskStatus')
-            ->where('created_by', auth()->user()->id)
-            ->orWhere('assigned_to', auth()->user()->id)
+            ->where(function ($query) {
+                $query->where('created_by', auth()->user()->id)
+                    ->orWhere('assigned_to', auth()->user()->id);
+            })
+            ->whereDate('start', '>=', $since)
+            ->whereDate('start', '<=', $until)
             ->orderBy('start')
             ->get();
 
-        $since = Carbon::createFromDate($year, 1, 1);
-        $until = Carbon::createFromDate($year, 12, 31);
-        $period = CarbonPeriod::since($since)->months(1)->until($until);
-
         $actionColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
         $result = [];
-        foreach ($period as $date) {
-            $tasks->each(function ($task) use ($locale, $date, $actionColors, &$result) {
-                if (Carbon::parse($task->start)->between($date->copy()->firstOfMonth(), $date->copy()->endOfMonth()) ||
-                    Carbon::parse($task->end)->between($date->copy()->firstOfMonth(), $date->copy()->endOfMonth())) {
-                    $task->actions->each(function ($action) use ($locale, $task, $actionColors, &$result) {
-                        $actionName = $action->actionType->{"name_$locale"};
-                        if (!isset($result[$actionName]['color'])) {
-                            $result[$actionName]['color'] = $actionColors[$action->actionType->id - 1] ?? null;
-                        }
-                        $result[$actionName]['tasks'][] = $task;
-                    });
+        $tasks->each(function ($task) use ($locale, $actionColors, &$result) {
+            $task->can_update = Gate::allows('update', $task);
+            $task->can_delete = Gate::allows('delete', $task);
+            $task->actions->each(function ($action) use ($locale, $task, $actionColors, &$result) {
+                $actionName = $action->actionType->{"name_$locale"};
+                if (!isset($result[$actionName]['color'])) {
+                    $result[$actionName]['color'] = $actionColors[$action->actionType->id - 1] ?? null;
                 }
+                $result[$actionName]['tasks'][] = $task;
             });
-        }
+        });
 
         return $result;
     }

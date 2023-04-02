@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\DB;
 
 class TaskController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Task::class, 'task');
+    }
+
     /**
      * Display a listing of the resource.
      *

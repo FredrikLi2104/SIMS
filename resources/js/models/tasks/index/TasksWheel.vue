@@ -1,7 +1,8 @@
 <template>
     <canvas id="canvas" width="550" height="550"></canvas>
 
-    <div id="tooltip" class="position-fixed shadow-sm bg-body rounded overflow-hidden width-250 d-none">
+    <div id="tooltip" class="position-fixed shadow-sm bg-body rounded overflow-hidden width-250 d-none"
+         style="z-index: 1;">
         <div class="row">
             <div class="col-2" :style="`background-color: ${taskColor};`"></div>
             <div class="col-10 p-1">
@@ -145,14 +146,16 @@ export default {
                 let segment = self.taskSegments.find(segment => context.isPointInStroke(segment.path, evt.offsetX, evt.offsetY));
 
                 if (segment !== undefined) {
+                    canvas.style.cursor = 'pointer';
                     self.taskTitle = segment.task.title;
                     self.taskColor = segment.task.color;
                     self.taskStart = segment.task.start;
                     self.taskEnd = segment.task.end;
-                    document.getElementById('tooltip').style.top = evt.clientY + 'px';
-                    document.getElementById('tooltip').style.left = (evt.clientX + 1) + 'px';
+                    document.getElementById('tooltip').style.top = (evt.clientY + 14) + 'px';
+                    document.getElementById('tooltip').style.left = (evt.clientX + 14) + 'px';
                     document.getElementById('tooltip').classList.remove('d-none');
                 } else {
+                    canvas.style.cursor = 'auto';
                     document.getElementById('tooltip').classList.add('d-none');
                 }
             });
