@@ -267,5 +267,6 @@ return [
     'features' => 'Features',
     'implementations_overwrite_title' => 'Overwrite Organisation Statement Implementations',
     'implementations_overwrite_warning' => 'Are you sure you want to seed all these implementation values to selected sub-organizations? This will overwrite any of their own implementations and this action can not be undone.',
+    'pending' => 'Pending',
 ];
 ?>

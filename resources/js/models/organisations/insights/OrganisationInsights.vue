@@ -146,6 +146,12 @@
                                     </div>
                                 </div>
                                 <div class="mb-1">
+                                    <h6 class="text-sm font-weight-semibold me-1">{{
+                                            collection?.messages?.statement
+                                        }}</h6>
+                                    <span>{{ `${componentActive?.code}.${activeStatement?.code}` }}</span>
+                                </div>
+                                <div class="mb-1">
                                     <h6 class="text-sm font-weight-semibold me-1">{{ collection?.messages?.desc }}</h6>
                                     <span>{{ activeStatement?.[`desc_${locale}`] }}</span>
                                 </div>

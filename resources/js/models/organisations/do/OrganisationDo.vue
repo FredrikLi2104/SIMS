@@ -253,8 +253,8 @@ export default {
                         width: "10%",
                         orderable: false,
                         render: function (data, type, full, meta) {
-                            let c = "";
-                            let t = full.review === null ? '' : `${full.review?.review_status[`name_${thisComponent.locale}`]}`;
+                            let c = full.deed === null ? '' : 'warning';
+                            let t = full.review === null ? (full.deed === null ? '' : thisComponent.collection?.messages?.pending) : `${full.review?.review_status[`name_${thisComponent.locale}`]}`;
                             let b = "";
                             switch (full.review?.review_status.name_en) {
                                 case null:

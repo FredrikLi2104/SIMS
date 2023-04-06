@@ -21852,7 +21852,8 @@ __webpack_require__.r(__webpack_exports__);
       collection: null,
       statementActive: null,
       status: null,
-      review: null
+      review: null,
+      toUpdate: []
     };
   },
   methods: {
@@ -21978,15 +21979,31 @@ __webpack_require__.r(__webpack_exports__);
           width: "10%",
           orderable: false,
           render: function render(data, type, full, meta) {
-            var _thisComponent$collec27, _thisComponent$collec28;
-            var r = "\n                                <div class=\"d-flex\">\n                                    <select id=\"statementReviewSelect".concat(full.id, "\" class=\"select2 form-select form-control\" onchange=\"window.thisComponent.statementReviewButtonEnable(").concat(full.id, ")\">\n                                ");
-            var o = "<option value=\"\">".concat((_thisComponent$collec27 = thisComponent.collection) === null || _thisComponent$collec27 === void 0 ? void 0 : (_thisComponent$collec28 = _thisComponent$collec27.messages) === null || _thisComponent$collec28 === void 0 ? void 0 : _thisComponent$collec28.pleaseSelect, "</option>");
+            var _full$review, _thisComponent$collec27, _thisComponent$collec28, _thisComponent$collec29, _thisComponent$collec30, _full$review2, _full$review2$review_, _full$review3, _full$review3$review_;
+            var dropDownClass = full.deed === null ? 'btn-flat-secondary' : 'btn-flat-warning';
+            var dropDownText = ((_full$review = full.review) === null || _full$review === void 0 ? void 0 : _full$review.review_status) === undefined ? full.deed === null ? (_thisComponent$collec27 = thisComponent.collection) === null || _thisComponent$collec27 === void 0 ? void 0 : (_thisComponent$collec28 = _thisComponent$collec27.messages) === null || _thisComponent$collec28 === void 0 ? void 0 : _thisComponent$collec28.pleaseSelect : (_thisComponent$collec29 = thisComponent.collection) === null || _thisComponent$collec29 === void 0 ? void 0 : (_thisComponent$collec30 = _thisComponent$collec29.messages) === null || _thisComponent$collec30 === void 0 ? void 0 : _thisComponent$collec30.pending : (_full$review2 = full.review) === null || _full$review2 === void 0 ? void 0 : (_full$review2$review_ = _full$review2.review_status) === null || _full$review2$review_ === void 0 ? void 0 : _full$review2$review_["name_".concat(thisComponent.locale)];
+            switch ((_full$review3 = full.review) === null || _full$review3 === void 0 ? void 0 : (_full$review3$review_ = _full$review3.review_status) === null || _full$review3$review_ === void 0 ? void 0 : _full$review3$review_.name_en) {
+              case 'Pending':
+                dropDownClass = 'btn-flat-warning';
+                break;
+              case 'Accepted':
+                dropDownClass = 'btn-flat-success';
+                break;
+              case 'Rejected':
+                dropDownClass = 'btn-flat-danger';
+                break;
+            }
+            var r = "\n                                <div class=\"btn-group\">\n                                    <button id=\"status-dropdown-btn-".concat(full.id, "\" class=\"btn ").concat(dropDownClass, " dropdown-toggle\" type=\"button\" data-bs-toggle=\"dropdown\">").concat(dropDownText, "</button>\n                                    <div id=\"status-dropdown-menu-").concat(full.id, "\" class=\"dropdown-menu\">\n                            ");
             thisComponent.reviewStatuses.forEach(function (reviewStatus) {
-              var _full$review, _full$review$review_s;
-              o += "\n                                <option ".concat(((_full$review = full.review) === null || _full$review === void 0 ? void 0 : (_full$review$review_s = _full$review.review_status) === null || _full$review$review_s === void 0 ? void 0 : _full$review$review_s.name_en) == reviewStatus.name_en ? "selected" : "", " value=\"").concat(reviewStatus.id, "\">").concat(reviewStatus["name_".concat(thisComponent.locale)], "</option>\n                                ");
+              var itemColor = '';
+              if (reviewStatus["name_".concat(thisComponent.locale)] == 'Accepted') {
+                itemColor = 'text-success';
+              } else if (reviewStatus["name_".concat(thisComponent.locale)] == 'Rejected') {
+                itemColor = 'text-danger';
+              }
+              r += "<a class=\"dropdown-item\" href=\"#\" onclick=\"window.thisComponent.statementReviewButtonEnable(".concat(full.id, ", ").concat(reviewStatus.id, ")\"><span class=\"").concat(itemColor, " fw-bold\">").concat(reviewStatus["name_".concat(thisComponent.locale)], "</span></a>");
             });
-            r += o;
-            r += "\n                                    </select>\n                                ";
+            r += "</div>\n                                </div>\n                            ";
             return r;
           }
         }, {
@@ -22006,16 +22023,16 @@ __webpack_require__.r(__webpack_exports__);
           width: "10%",
           orderable: false,
           render: function render(data, type, full, meta) {
-            var _thisComponent$collec29, _thisComponent$collec30, _thisComponent$collec31, _thisComponent$collec32;
-            var r = "\n                                <div class=\"d-flex justify-content-center align-items-center px-2\">\n                                    <div class=\"d-flex flex-column\">\n                                    <div class=\"mb-1 row mr-1\">\n                                            <button type=\"button\" class=\"btn btn-primary waves-effect\" id=\"statementReviewButton".concat(full.id, "\" onclick=\"window.thisComponent.statementReviewUpdate(").concat(full.id, ")\" disabled>").concat((_thisComponent$collec29 = thisComponent.collection) === null || _thisComponent$collec29 === void 0 ? void 0 : (_thisComponent$collec30 = _thisComponent$collec29.messages) === null || _thisComponent$collec30 === void 0 ? void 0 : _thisComponent$collec30.update, "</button>\n                                        </div>\n                                        <div class=\"row mr-1\">\n                                            <button type=\"button\" class=\"btn btn-outline-primary waves-effect\" onclick=\"window.thisComponent.statementViewShow(").concat(full.id, ")\">").concat((_thisComponent$collec31 = thisComponent.collection) === null || _thisComponent$collec31 === void 0 ? void 0 : (_thisComponent$collec32 = _thisComponent$collec31.messages) === null || _thisComponent$collec32 === void 0 ? void 0 : _thisComponent$collec32.view, "</button>\n                                        </div>\n\n                                    </div>\n                                </div>\n                                ");
+            var _thisComponent$collec31, _thisComponent$collec32, _thisComponent$collec33, _thisComponent$collec34;
+            var r = "\n                                <div class=\"d-flex justify-content-center align-items-center px-2\">\n                                    <div class=\"d-flex flex-column\">\n                                    <div class=\"mb-1 row mr-1\">\n                                            <button type=\"button\" class=\"btn btn-primary waves-effect\" id=\"statementReviewButton".concat(full.id, "\" onclick=\"window.thisComponent.statementReviewUpdate(").concat(full.id, ")\" disabled>").concat((_thisComponent$collec31 = thisComponent.collection) === null || _thisComponent$collec31 === void 0 ? void 0 : (_thisComponent$collec32 = _thisComponent$collec31.messages) === null || _thisComponent$collec32 === void 0 ? void 0 : _thisComponent$collec32.update, "</button>\n                                        </div>\n                                        <div class=\"row mr-1\">\n                                            <button type=\"button\" class=\"btn btn-outline-primary waves-effect\" onclick=\"window.thisComponent.statementViewShow(").concat(full.id, ")\">").concat((_thisComponent$collec33 = thisComponent.collection) === null || _thisComponent$collec33 === void 0 ? void 0 : (_thisComponent$collec34 = _thisComponent$collec33.messages) === null || _thisComponent$collec34 === void 0 ? void 0 : _thisComponent$collec34.view, "</button>\n                                        </div>\n\n                                    </div>\n                                </div>\n                                ");
             return r;
           }
         }],
         order: [[0, "asc"]],
         dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-8 d-flex justify-content-start align-items-center\"\n                        <\"#cardHeader\">\n                    >\n                    <\"col-lg-4 d-flex justify-content-end align-items-center\"f>\n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
         initComplete: function initComplete() {
-          var _thisComponent$collec33, _thisComponent$collec34, _thisComponent$collec35, _thisComponent$collec36, _thisComponent$collec37, _thisComponent$collec38;
-          var domHtml = "\n                    <div class=\"card-body\">\n                        <h4 class=\"card-title\">".concat((_thisComponent$collec33 = thisComponent.collection) === null || _thisComponent$collec33 === void 0 ? void 0 : (_thisComponent$collec34 = _thisComponent$collec33.messages) === null || _thisComponent$collec34 === void 0 ? void 0 : _thisComponent$collec34.statements, "</h4>\n                        <h6 class=\"card-subtitle text-muted\">").concat((_thisComponent$collec35 = thisComponent.collection) === null || _thisComponent$collec35 === void 0 ? void 0 : (_thisComponent$collec36 = _thisComponent$collec35.messages) === null || _thisComponent$collec36 === void 0 ? void 0 : _thisComponent$collec36.statements, " ").concat((_thisComponent$collec37 = thisComponent.collection) === null || _thisComponent$collec37 === void 0 ? void 0 : (_thisComponent$collec38 = _thisComponent$collec37.messages) === null || _thisComponent$collec38 === void 0 ? void 0 : _thisComponent$collec38.review, "</h6>\n                    </div>\n                    ");
+          var _thisComponent$collec35, _thisComponent$collec36, _thisComponent$collec37, _thisComponent$collec38, _thisComponent$collec39, _thisComponent$collec40;
+          var domHtml = "\n                    <div class=\"card-body\">\n                        <h4 class=\"card-title\">".concat((_thisComponent$collec35 = thisComponent.collection) === null || _thisComponent$collec35 === void 0 ? void 0 : (_thisComponent$collec36 = _thisComponent$collec35.messages) === null || _thisComponent$collec36 === void 0 ? void 0 : _thisComponent$collec36.statements, "</h4>\n                        <h6 class=\"card-subtitle text-muted\">").concat((_thisComponent$collec37 = thisComponent.collection) === null || _thisComponent$collec37 === void 0 ? void 0 : (_thisComponent$collec38 = _thisComponent$collec37.messages) === null || _thisComponent$collec38 === void 0 ? void 0 : _thisComponent$collec38.statements, " ").concat((_thisComponent$collec39 = thisComponent.collection) === null || _thisComponent$collec39 === void 0 ? void 0 : (_thisComponent$collec40 = _thisComponent$collec39.messages) === null || _thisComponent$collec40 === void 0 ? void 0 : _thisComponent$collec40.review, "</h6>\n                    </div>\n                    ");
           $("#cardHeader").html(domHtml);
         },
         drawCallback: function drawCallback() {
@@ -22045,21 +22062,51 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
       });
     },
-    statementReviewButtonEnable: function statementReviewButtonEnable(id) {
+    statementReviewButtonEnable: function statementReviewButtonEnable(id, reviewStatusId) {
+      this.toUpdate = this.toUpdate.filter(function (statement) {
+        return statement.id != id;
+      });
+      this.toUpdate.push({
+        id: id,
+        status: reviewStatusId
+      });
+      var selectedStatus = this.reviewStatuses.find(function (status) {
+        return status.id == reviewStatusId;
+      });
+      var dropDownText = selectedStatus["name_".concat(this.locale)];
+      var dropDownClass = '';
+      if (selectedStatus["name_".concat(this.locale)] == 'Accepted') {
+        dropDownClass = 'btn-flat-success';
+      } else if (selectedStatus["name_".concat(this.locale)] == 'Rejected') {
+        dropDownClass = 'btn-flat-danger';
+      }
+      var dropDownBtn = document.getElementById('status-dropdown-btn-' + id);
+      var classList = dropDownBtn.classList.value.split(' ');
+      var className = classList.find(function (className) {
+        return className.includes('btn-flat');
+      });
+      dropDownBtn.classList.remove(className);
+      dropDownBtn.classList.add(dropDownClass);
+      dropDownBtn.innerHTML = dropDownText;
       $("#statementReviewButton" + id).prop("disabled", false);
     },
     statementReviewUpdate: function statementReviewUpdate(id) {
+      var self = this;
       $("#statementReviewButton" + id).prop("disabled", true);
-      var a = $("#statementReviewSelect".concat(id)).select2("data")[0].id;
+      var a = this.toUpdate.find(function (statement) {
+        return statement.id == id;
+      }).status;
       var r = $("#statementReviewInput".concat(id)).val();
       axios.post("/".concat(thisComponent.locale, "/axios/organisations/statements/reviews/update"), {
         statement_id: id,
         review_status_id: a,
         review: r
       }).then(function (response) {
-        var _thisComponent$collec39, _thisComponent$collec40, _thisComponent$collec41, _thisComponent$collec42;
-        //console.log(response.data);
-        toastr["success"]("".concat((_thisComponent$collec39 = thisComponent.collection) === null || _thisComponent$collec39 === void 0 ? void 0 : (_thisComponent$collec40 = _thisComponent$collec39.messages) === null || _thisComponent$collec40 === void 0 ? void 0 : _thisComponent$collec40.itemUpdatedSuccessfully, "."), "".concat((_thisComponent$collec41 = thisComponent.collection) === null || _thisComponent$collec41 === void 0 ? void 0 : (_thisComponent$collec42 = _thisComponent$collec41.messages) === null || _thisComponent$collec42 === void 0 ? void 0 : _thisComponent$collec42.success, "!"), {
+        var _thisComponent$collec41, _thisComponent$collec42, _thisComponent$collec43, _thisComponent$collec44;
+        self.toUpdate = self.toUpdate.filter(function (statement) {
+          return statement.id != id;
+        });
+        toastr["success"]("".concat((_thisComponent$collec41 = thisComponent.collection) === null || _thisComponent$collec41 === void 0 ? void 0 : (_thisComponent$collec42 = _thisComponent$collec41.messages) === null || _thisComponent$collec42 === void 0 ? void 0 : _thisComponent$collec42.itemUpdatedSuccessfully, "."), "".concat((_thisComponent$collec43 = thisComponent.collection) === null || _thisComponent$collec43 === void 0 ? void 0 : (_thisComponent$collec44 = _thisComponent$collec43.messages) === null || _thisComponent$collec44 === void 0 ? void 0 : _thisComponent$collec44.success, "!"), {
           showMethod: "slideDown",
           hideMethod: "slideUp",
           timeOut: 3000,
@@ -22067,10 +22114,10 @@ __webpack_require__.r(__webpack_exports__);
           rtl: false
         });
       })["catch"](function (error) {
-        var _error$response, _error$response$data, _thisComponent$collec43, _thisComponent$collec44;
+        var _error$response, _error$response$data, _thisComponent$collec45, _thisComponent$collec46;
         //console.log(error);
         //console.log(error.response);
-        toastr["error"]((_error$response = error.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message, "".concat((_thisComponent$collec43 = thisComponent.collection) === null || _thisComponent$collec43 === void 0 ? void 0 : (_thisComponent$collec44 = _thisComponent$collec43.messages) === null || _thisComponent$collec44 === void 0 ? void 0 : _thisComponent$collec44.error, "!"), {
+        toastr["error"]((_error$response = error.response) === null || _error$response === void 0 ? void 0 : (_error$response$data = _error$response.data) === null || _error$response$data === void 0 ? void 0 : _error$response$data.message, "".concat((_thisComponent$collec45 = thisComponent.collection) === null || _thisComponent$collec45 === void 0 ? void 0 : (_thisComponent$collec46 = _thisComponent$collec45.messages) === null || _thisComponent$collec46 === void 0 ? void 0 : _thisComponent$collec46.error, "!"), {
           showMethod: "slideDown",
           hideMethod: "slideUp",
           timeOut: 5000,
@@ -22090,7 +22137,7 @@ __webpack_require__.r(__webpack_exports__);
         return x.id == id;
       });
       this.statementActive = f[0];
-      this.status = $("#statementReviewSelect".concat(id)).select2("data")[0].text;
+      // this.status = $(`#statementReviewSelect${id}`).select2("data")[0].text;
       this.review = $("#statementReviewInput".concat(id)).val();
       $("#statementViewModal").modal("show");
     }

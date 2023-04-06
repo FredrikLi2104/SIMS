@@ -122,6 +122,7 @@ export default {
             statementActive: null,
             status: null,
             review: null,
+            toUpdate: [],
         };
     },
     methods: {
@@ -255,20 +256,36 @@ export default {
                         width: "10%",
                         orderable: false,
                         render: function (data, type, full, meta) {
+                            let dropDownClass = full.deed === null ? 'btn-flat-secondary' : 'btn-flat-warning';
+                            let dropDownText = full.review?.review_status === undefined ? (full.deed === null ? thisComponent.collection?.messages?.pleaseSelect : thisComponent.collection?.messages?.pending) : full.review?.review_status?.[`name_${thisComponent.locale}`];
+                            switch (full.review?.review_status?.name_en) {
+                                case 'Pending':
+                                    dropDownClass = 'btn-flat-warning';
+                                    break;
+                                case 'Accepted':
+                                    dropDownClass = 'btn-flat-success';
+                                    break;
+                                case 'Rejected':
+                                    dropDownClass = 'btn-flat-danger';
+                                    break;
+                            }
                             let r = `
-                                <div class="d-flex">
-                                    <select id="statementReviewSelect${full.id}" class="select2 form-select form-control" onchange="window.thisComponent.statementReviewButtonEnable(${full.id})">
-                                `;
-                            let o = `<option value="">${thisComponent.collection?.messages?.pleaseSelect}</option>`;
+                                <div class="btn-group">
+                                    <button id="status-dropdown-btn-${full.id}" class="btn ${dropDownClass} dropdown-toggle" type="button" data-bs-toggle="dropdown">${dropDownText}</button>
+                                    <div id="status-dropdown-menu-${full.id}" class="dropdown-menu">
+                            `;
                             thisComponent.reviewStatuses.forEach(reviewStatus => {
-                                o += `
-                                <option ${full.review?.review_status?.name_en == reviewStatus.name_en ? `selected` : ``} value="${reviewStatus.id}">${reviewStatus[`name_${thisComponent.locale}`]}</option>
-                                `;
+                                let itemColor = '';
+                                if (reviewStatus[`name_${thisComponent.locale}`] == 'Accepted') {
+                                    itemColor = 'text-success';
+                                } else if (reviewStatus[`name_${thisComponent.locale}`] == 'Rejected') {
+                                    itemColor = 'text-danger';
+                                }
+                                r += `<a class="dropdown-item" href="#" onclick="window.thisComponent.statementReviewButtonEnable(${full.id}, ${reviewStatus.id})"><span class="${itemColor} fw-bold">${reviewStatus[`name_${thisComponent.locale}`]}</span></a>`;
                             });
-                            r += o;
-                            r += `
-                                    </select>
-                                `;
+                            r += `</div>
+                                </div>
+                            `;
                             return r;
                         },
                     },
@@ -362,12 +379,29 @@ export default {
                     console.log(error.response);
                 });
         },
-        statementReviewButtonEnable(id) {
+        statementReviewButtonEnable(id, reviewStatusId) {
+            this.toUpdate = this.toUpdate.filter(statement => statement.id != id);
+            this.toUpdate.push({id: id, status: reviewStatusId});
+            let selectedStatus = this.reviewStatuses.find(status => status.id == reviewStatusId);
+            let dropDownText = selectedStatus[`name_${this.locale}`];
+            let dropDownClass = '';
+            if (selectedStatus[`name_${this.locale}`] == 'Accepted') {
+                dropDownClass = 'btn-flat-success';
+            } else if (selectedStatus[`name_${this.locale}`] == 'Rejected') {
+                dropDownClass = 'btn-flat-danger';
+            }
+            let dropDownBtn = document.getElementById('status-dropdown-btn-' + id);
+            let classList = dropDownBtn.classList.value.split(' ');
+            let className = classList.find(className => className.includes('btn-flat'));
+            dropDownBtn.classList.remove(className);
+            dropDownBtn.classList.add(dropDownClass);
+            dropDownBtn.innerHTML = dropDownText;
             $("#statementReviewButton" + id).prop("disabled", false);
         },
         statementReviewUpdate(id) {
+            let self = this;
             $("#statementReviewButton" + id).prop("disabled", true);
-            let a = $(`#statementReviewSelect${id}`).select2("data")[0].id;
+            let a = this.toUpdate.find(statement => statement.id == id).status;
             let r = $(`#statementReviewInput${id}`).val();
             axios
                 .post(`/${thisComponent.locale}/axios/organisations/statements/reviews/update`, {
@@ -376,7 +410,7 @@ export default {
                     review: r,
                 })
                 .then(function (response) {
-                    //console.log(response.data);
+                    self.toUpdate = self.toUpdate.filter(statement => statement.id != id);
                     toastr["success"](`${thisComponent.collection?.messages?.itemUpdatedSuccessfully}.`, `${thisComponent.collection?.messages?.success}!`, {
                         showMethod: "slideDown",
                         hideMethod: "slideUp",
@@ -406,7 +440,7 @@ export default {
         statementViewShow(id) {
             let f = this.collection.statements.filter((x) => x.id == id);
             this.statementActive = f[0];
-            this.status = $(`#statementReviewSelect${id}`).select2("data")[0].text;
+            // this.status = $(`#statementReviewSelect${id}`).select2("data")[0].text;
             this.review = $(`#statementReviewInput${id}`).val();
             $("#statementViewModal").modal("show");
         },

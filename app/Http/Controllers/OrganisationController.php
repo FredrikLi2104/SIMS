@@ -114,7 +114,7 @@ class OrganisationController extends Controller
         }
 
         $actionId = $action?->id;
-        $reviewStatuses = ReviewStatus::all();
+        $reviewStatuses = ReviewStatus::where('name_en', '<>', 'Pending')->get();
         return view('models.organisations.review', compact('reviewStatuses', 'actionId'));
     }
 
