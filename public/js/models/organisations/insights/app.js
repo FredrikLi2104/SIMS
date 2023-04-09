@@ -21870,7 +21870,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       sanctionsTable: null,
       scatterChart: null,
       activeOrg: {},
-      activeStatement: null
+      activeStatement: null,
+      statementsChart: null
     };
   },
   methods: {
@@ -22533,6 +22534,116 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       };
       thisComponent.riskChart = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__["default"](riskChart, riskChartConfig);
     },
+    drawStatementsChart: function drawStatementsChart() {
+      var _this = this,
+        _self$collection,
+        _self$collection$mess;
+      var self = this;
+      var statements = this.componentActive.statements;
+      var filtered = [];
+      statements.forEach(function (statement) {
+        if (statement.deed !== null) {
+          filtered.push({
+            name: "".concat(_this.componentActive.code, ".").concat(statement.code),
+            date: moment(statement.deed.updated_at).format('YYYY-MM-DD'),
+            value: statement.deed.value,
+            comment: statement.deed.comment
+          });
+        }
+      });
+      var sorted = filtered.sort(function (a, b) {
+        if (moment(a.date).isBefore(b.date)) {
+          return -1;
+        } else if (moment(a.date).isAfter(b.date)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      var categories = [];
+      sorted.forEach(function (statement) {
+        if (categories.indexOf(statement.date) === -1) {
+          categories.push(statement.date);
+        }
+      });
+      var series = [];
+      categories.forEach(function (category, index) {
+        sorted.forEach(function (statement) {
+          var name = statement.name;
+          var itemIndex = series.findIndex(function (item) {
+            return item.name == name;
+          });
+          var data = 0;
+          var comment = null;
+          if (statement.date === category) {
+            data = statement.value;
+            comment = statement.comment;
+          }
+          if (itemIndex === -1) {
+            series.push({
+              name: name,
+              data: [data],
+              comment: [comment]
+            });
+          } else {
+            series[itemIndex].data[index] = data;
+            series[itemIndex].comment[index] = comment;
+          }
+        });
+      });
+      var options = {
+        series: series,
+        chart: {
+          type: 'bar',
+          height: 350,
+          toolbar: {
+            show: false
+          }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: '30%',
+            borderRadius: 0
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ['transparent']
+        },
+        xaxis: {
+          categories: categories
+        },
+        yaxis: {
+          title: {
+            text: (_self$collection = self.collection) === null || _self$collection === void 0 ? void 0 : (_self$collection$mess = _self$collection.messages) === null || _self$collection$mess === void 0 ? void 0 : _self$collection$mess.value
+          }
+        },
+        fill: {
+          opacity: 1
+        },
+        tooltip: {
+          y: {
+            formatter: function formatter(value, _ref3) {
+              var series = _ref3.series,
+                seriesIndex = _ref3.seriesIndex,
+                dataPointIndex = _ref3.dataPointIndex,
+                w = _ref3.w;
+              return w.config.series[seriesIndex].comment[dataPointIndex];
+            }
+          }
+        }
+      };
+      if (self.statementsChart !== null) {
+        self.statementsChart.destroy();
+      }
+      self.statementsChart = new ApexCharts(document.getElementById('statements-chart'), options);
+      self.statementsChart.render();
+    },
     componentHide: function componentHide() {
       this.componentActive = null;
       $("#componentShowModal").modal("hide");
@@ -22547,6 +22658,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       this.componentActive = y[0];
       this.activeStatement = (_y$ = y[0]) === null || _y$ === void 0 ? void 0 : (_y$$statements = _y$.statements) === null || _y$$statements === void 0 ? void 0 : _y$$statements[0];
       $("#componentShowModal").modal("show");
+      this.drawStatementsChart();
       this.$nextTick(function () {
         feather.replace();
       });
@@ -22593,7 +22705,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
     updateOrg: function updateOrg() {
       var _this$collection,
         _this$collection$data,
-        _this = this;
+        _this2 = this;
       var org = document.getElementById("basicSelect").value;
       var selectedOrg = (_this$collection = this.collection) === null || _this$collection === void 0 ? void 0 : (_this$collection$data = _this$collection.data) === null || _this$collection$data === void 0 ? void 0 : _this$collection$data.filter(function (e) {
         return e.name == org;
@@ -22601,13 +22713,26 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       this.activeOrg = selectedOrg[0].data;
       //console.log(this.activeOrg);
       this.$nextTick(function () {
-        _this.drawRadar();
-        _this.buildTable();
+        _this2.drawRadar();
+        _this2.buildTable();
       });
     },
     updateActiveStatement: function updateActiveStatement(index) {
-      var _this$componentActive, _this$componentActive2;
+      var _this$componentActive, _this$componentActive2, _this$componentActive3;
+      var self = this;
       this.activeStatement = (_this$componentActive = this.componentActive) === null || _this$componentActive === void 0 ? void 0 : (_this$componentActive2 = _this$componentActive.statements) === null || _this$componentActive2 === void 0 ? void 0 : _this$componentActive2[index];
+      (_this$componentActive3 = this.componentActive) === null || _this$componentActive3 === void 0 ? void 0 : _this$componentActive3.statements.forEach(function (statement) {
+        var _statement$deed;
+        if ((statement === null || statement === void 0 ? void 0 : (_statement$deed = statement.deed) === null || _statement$deed === void 0 ? void 0 : _statement$deed.value) > 0) {
+          var _self$componentActive;
+          var subCode = "".concat((_self$componentActive = self.componentActive) === null || _self$componentActive === void 0 ? void 0 : _self$componentActive.code, ".").concat(statement.code);
+          if (statement.id === self.activeStatement.id) {
+            self.statementsChart.showSeries(subCode);
+          } else {
+            self.statementsChart.hideSeries(subCode);
+          }
+        }
+      });
     }
   },
   mounted: function mounted() {
@@ -22820,122 +22945,126 @@ var _hoisted_58 = {
   "class": "mb-1"
 };
 var _hoisted_59 = ["href"];
-var _hoisted_60 = {
+var _hoisted_60 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("hr", null, null, -1 /* HOISTED */);
+var _hoisted_61 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  id: "statements-chart"
+}, null, -1 /* HOISTED */);
+var _hoisted_62 = {
   "class": "modal-footer"
 };
-var _hoisted_61 = {
+var _hoisted_63 = {
   "class": "col-12 modal fade text-start modal-primary",
   id: "kpiViewModal",
   tabindex: "-1",
   "aria-labelledby": "kpiLabel",
   "aria-hidden": "true"
 };
-var _hoisted_62 = {
+var _hoisted_64 = {
   "class": "modal-dialog modal-dialog-centered modal-xl"
 };
-var _hoisted_63 = {
+var _hoisted_65 = {
   "class": "modal-content"
 };
-var _hoisted_64 = {
+var _hoisted_66 = {
   "class": "modal-header"
 };
-var _hoisted_65 = {
+var _hoisted_67 = {
   "class": "modal-title",
   id: "kpiLabel"
 };
-var _hoisted_66 = {
+var _hoisted_68 = {
   "class": "modal-body"
 };
-var _hoisted_67 = {
+var _hoisted_69 = {
   "class": "row"
 };
-var _hoisted_68 = {
+var _hoisted_70 = {
   "class": "col-4 table-responsive"
 };
-var _hoisted_69 = {
+var _hoisted_71 = {
   "class": "table"
 };
-var _hoisted_70 = {
+var _hoisted_72 = {
   "class": "table-light"
 };
-var _hoisted_71 = {
+var _hoisted_73 = {
   "class": "col-8"
 };
-var _hoisted_72 = {
+var _hoisted_74 = {
   "class": "card"
 };
-var _hoisted_73 = {
+var _hoisted_75 = {
   "class": "card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start"
 };
-var _hoisted_74 = {
+var _hoisted_76 = {
   "class": "card-title"
 };
-var _hoisted_75 = {
+var _hoisted_77 = {
   "class": "card-subtitle text-muted"
 };
-var _hoisted_76 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_78 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "d-flex align-items-center"
 }, null, -1 /* HOISTED */);
-var _hoisted_77 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_79 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   id: "kpi-history-parent",
   "class": "card-body"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   id: "kpi-history-chart"
 })], -1 /* HOISTED */);
-var _hoisted_78 = {
+var _hoisted_80 = {
   "class": "modal-footer"
 };
-var _hoisted_79 = {
+var _hoisted_81 = {
   "class": "modal fade text-start modal-primary",
   id: "sanctionShowModal",
   tabindex: "-1",
   "aria-labelledby": "sanctionShowLabel",
   "aria-hidden": "true"
 };
-var _hoisted_80 = {
+var _hoisted_82 = {
   "class": "modal-dialog modal-dialog-centered modal-extra-wide"
 };
-var _hoisted_81 = {
+var _hoisted_83 = {
   "class": "modal-content"
 };
-var _hoisted_82 = {
+var _hoisted_84 = {
   "class": "modal-header"
 };
-var _hoisted_83 = {
+var _hoisted_85 = {
   "class": "modal-title",
   id: "sanctionShowLabel"
 };
-var _hoisted_84 = {
+var _hoisted_86 = {
   "class": "modal-body"
 };
-var _hoisted_85 = {
+var _hoisted_87 = {
   "class": "row"
 };
-var _hoisted_86 = {
+var _hoisted_88 = {
   "class": "table-responsive"
 };
-var _hoisted_87 = {
+var _hoisted_89 = {
   "class": "table"
 };
-var _hoisted_88 = {
+var _hoisted_90 = {
   "class": "table-light"
 };
-var _hoisted_89 = {
+var _hoisted_91 = {
   "class": "d-flex align-items-center justify-content-start"
 };
-var _hoisted_90 = {
+var _hoisted_92 = {
   key: 0,
   "class": "col-2"
 };
-var _hoisted_91 = ["src"];
-var _hoisted_92 = {
+var _hoisted_93 = ["src"];
+var _hoisted_94 = {
   "class": "col-10 align-items-center"
 };
-var _hoisted_93 = {
+var _hoisted_95 = {
   "class": "mx-0 my-0"
 };
-var _hoisted_94 = ["href"];
-var _hoisted_95 = {
+var _hoisted_96 = ["href"];
+var _hoisted_97 = {
   "class": "modal-footer"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -22990,13 +23119,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     href: "/".concat($props.locale, "/insights/statement/sanctions/").concat((_$data$activeStatemen5 = $data.activeStatement) === null || _$data$activeStatemen5 === void 0 ? void 0 : _$data$activeStatemen5.id),
     "class": "btn btn-outline-primary waves-effect",
     target: "_blank"
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection22 = $data.collection) === null || _$data$collection22 === void 0 ? void 0 : (_$data$collection22$m = _$data$collection22.messages) === null || _$data$collection22$m === void 0 ? void 0 : _$data$collection22$m.sanctions), 9 /* TEXT, PROPS */, _hoisted_59)], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.activeStatement !== undefined]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_60, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection22 = $data.collection) === null || _$data$collection22 === void 0 ? void 0 : (_$data$collection22$m = _$data$collection22.messages) === null || _$data$collection22$m === void 0 ? void 0 : _$data$collection22$m.sanctions), 9 /* TEXT, PROPS */, _hoisted_59)], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.activeStatement !== undefined]]), _hoisted_60, _hoisted_61])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_62, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-primary",
     onClick: _cache[3] || (_cache[3] = function () {
       return $options.componentHide && $options.componentHide.apply($options, arguments);
     })
-  }, "Ok")])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_61, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_62, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_63, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_64, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_65, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection23 = $data.collection) === null || _$data$collection23 === void 0 ? void 0 : (_$data$collection23$m = _$data$collection23.messages) === null || _$data$collection23$m === void 0 ? void 0 : _$data$collection23$m.kpi), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, "Ok")])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_63, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_64, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_65, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_66, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_67, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection23 = $data.collection) === null || _$data$collection23 === void 0 ? void 0 : (_$data$collection23$m = _$data$collection23.messages) === null || _$data$collection23$m === void 0 ? void 0 : _$data$collection23$m.kpi), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn-close",
     "data-bs-dismiss": "modal",
@@ -23004,13 +23133,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[4] || (_cache[4] = function () {
       return $options.kpiHide && $options.kpiHide.apply($options, arguments);
     })
-  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_66, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_67, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_68, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_69, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_70, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection24 = $data.collection) === null || _$data$collection24 === void 0 ? void 0 : (_$data$collection24$m = _$data$collection24.messages) === null || _$data$collection24$m === void 0 ? void 0 : _$data$collection24$m.key), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection25 = $data.collection) === null || _$data$collection25 === void 0 ? void 0 : (_$data$collection25$m = _$data$collection25.messages) === null || _$data$collection25$m === void 0 ? void 0 : _$data$collection25$m.value), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection26 = $data.collection) === null || _$data$collection26 === void 0 ? void 0 : (_$data$collection26$m = _$data$collection26.messages) === null || _$data$collection26$m === void 0 ? void 0 : _$data$collection26$m.id), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive = $data.kpiActive) === null || _$data$kpiActive === void 0 ? void 0 : _$data$kpiActive.id), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection27 = $data.collection) === null || _$data$collection27 === void 0 ? void 0 : (_$data$collection27$m = _$data$collection27.messages) === null || _$data$collection27$m === void 0 ? void 0 : _$data$collection27$m.name), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.kpiActive ? $data.kpiActive["name_" + $props.locale] : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection28 = $data.collection) === null || _$data$collection28 === void 0 ? void 0 : (_$data$collection28$m = _$data$collection28.messages) === null || _$data$collection28$m === void 0 ? void 0 : _$data$collection28$m.desc), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.kpiActive ? $data.kpiActive["desc_" + $props.locale] : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection29 = $data.collection) === null || _$data$collection29 === void 0 ? void 0 : (_$data$collection29$m = _$data$collection29.messages) === null || _$data$collection29$m === void 0 ? void 0 : _$data$collection29$m.target), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive2 = $data.kpiActive) !== null && _$data$kpiActive2 !== void 0 && _$data$kpiActive2.kpicomment ? $data.kpiActive.kpicomment.target : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection30 = $data.collection) === null || _$data$collection30 === void 0 ? void 0 : (_$data$collection30$m = _$data$collection30.messages) === null || _$data$collection30$m === void 0 ? void 0 : _$data$collection30$m.value), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive3 = $data.kpiActive) !== null && _$data$kpiActive3 !== void 0 && _$data$kpiActive3.kpicomment ? $data.kpiActive.kpicomment.value : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection31 = $data.collection) === null || _$data$collection31 === void 0 ? void 0 : (_$data$collection31$m = _$data$collection31.messages) === null || _$data$collection31$m === void 0 ? void 0 : _$data$collection31$m.comment), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive4 = $data.kpiActive) !== null && _$data$kpiActive4 !== void 0 && _$data$kpiActive4.kpicomment ? $data.kpiActive.kpicomment.comment : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection32 = $data.collection) === null || _$data$collection32 === void 0 ? void 0 : (_$data$collection32$m = _$data$collection32.messages) === null || _$data$collection32$m === void 0 ? void 0 : _$data$collection32$m.lastUpdated), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive5 = $data.kpiActive) !== null && _$data$kpiActive5 !== void 0 && _$data$kpiActive5.kpicomment ? $data.kpiActive.kpicomment.created_at_for_humans : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection33 = $data.collection) === null || _$data$collection33 === void 0 ? void 0 : (_$data$collection33$m = _$data$collection33.messages) === null || _$data$collection33$m === void 0 ? void 0 : _$data$collection33$m.by), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive6 = $data.kpiActive) !== null && _$data$kpiActive6 !== void 0 && _$data$kpiActive6.kpicomment ? $data.kpiActive.kpicomment.user.name + " [" + $data.kpiActive.kpicomment.user.role + "]" : null), 1 /* TEXT */)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_71, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_72, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_73, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_74, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection34 = $data.collection) === null || _$data$collection34 === void 0 ? void 0 : (_$data$collection34$m = _$data$collection34.messages) === null || _$data$collection34$m === void 0 ? void 0 : _$data$collection34$m.kpi) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection35 = $data.collection) === null || _$data$collection35 === void 0 ? void 0 : (_$data$collection35$m = _$data$collection35.messages) === null || _$data$collection35$m === void 0 ? void 0 : _$data$collection35$m.history), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_75, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection36 = $data.collection) === null || _$data$collection36 === void 0 ? void 0 : (_$data$collection36$m = _$data$collection36.messages) === null || _$data$collection36$m === void 0 ? void 0 : _$data$collection36$m.kpiHistorySubtitle), 1 /* TEXT */)]), _hoisted_76]), _hoisted_77])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_78, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_68, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_69, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_70, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_71, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_72, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection24 = $data.collection) === null || _$data$collection24 === void 0 ? void 0 : (_$data$collection24$m = _$data$collection24.messages) === null || _$data$collection24$m === void 0 ? void 0 : _$data$collection24$m.key), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection25 = $data.collection) === null || _$data$collection25 === void 0 ? void 0 : (_$data$collection25$m = _$data$collection25.messages) === null || _$data$collection25$m === void 0 ? void 0 : _$data$collection25$m.value), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection26 = $data.collection) === null || _$data$collection26 === void 0 ? void 0 : (_$data$collection26$m = _$data$collection26.messages) === null || _$data$collection26$m === void 0 ? void 0 : _$data$collection26$m.id), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive = $data.kpiActive) === null || _$data$kpiActive === void 0 ? void 0 : _$data$kpiActive.id), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection27 = $data.collection) === null || _$data$collection27 === void 0 ? void 0 : (_$data$collection27$m = _$data$collection27.messages) === null || _$data$collection27$m === void 0 ? void 0 : _$data$collection27$m.name), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.kpiActive ? $data.kpiActive["name_" + $props.locale] : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection28 = $data.collection) === null || _$data$collection28 === void 0 ? void 0 : (_$data$collection28$m = _$data$collection28.messages) === null || _$data$collection28$m === void 0 ? void 0 : _$data$collection28$m.desc), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.kpiActive ? $data.kpiActive["desc_" + $props.locale] : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection29 = $data.collection) === null || _$data$collection29 === void 0 ? void 0 : (_$data$collection29$m = _$data$collection29.messages) === null || _$data$collection29$m === void 0 ? void 0 : _$data$collection29$m.target), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive2 = $data.kpiActive) !== null && _$data$kpiActive2 !== void 0 && _$data$kpiActive2.kpicomment ? $data.kpiActive.kpicomment.target : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection30 = $data.collection) === null || _$data$collection30 === void 0 ? void 0 : (_$data$collection30$m = _$data$collection30.messages) === null || _$data$collection30$m === void 0 ? void 0 : _$data$collection30$m.value), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive3 = $data.kpiActive) !== null && _$data$kpiActive3 !== void 0 && _$data$kpiActive3.kpicomment ? $data.kpiActive.kpicomment.value : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection31 = $data.collection) === null || _$data$collection31 === void 0 ? void 0 : (_$data$collection31$m = _$data$collection31.messages) === null || _$data$collection31$m === void 0 ? void 0 : _$data$collection31$m.comment), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive4 = $data.kpiActive) !== null && _$data$kpiActive4 !== void 0 && _$data$kpiActive4.kpicomment ? $data.kpiActive.kpicomment.comment : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection32 = $data.collection) === null || _$data$collection32 === void 0 ? void 0 : (_$data$collection32$m = _$data$collection32.messages) === null || _$data$collection32$m === void 0 ? void 0 : _$data$collection32$m.lastUpdated), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive5 = $data.kpiActive) !== null && _$data$kpiActive5 !== void 0 && _$data$kpiActive5.kpicomment ? $data.kpiActive.kpicomment.created_at_for_humans : null), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection33 = $data.collection) === null || _$data$collection33 === void 0 ? void 0 : (_$data$collection33$m = _$data$collection33.messages) === null || _$data$collection33$m === void 0 ? void 0 : _$data$collection33$m.by), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$kpiActive6 = $data.kpiActive) !== null && _$data$kpiActive6 !== void 0 && _$data$kpiActive6.kpicomment ? $data.kpiActive.kpicomment.user.name + " [" + $data.kpiActive.kpicomment.user.role + "]" : null), 1 /* TEXT */)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_73, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_74, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_75, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_76, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection34 = $data.collection) === null || _$data$collection34 === void 0 ? void 0 : (_$data$collection34$m = _$data$collection34.messages) === null || _$data$collection34$m === void 0 ? void 0 : _$data$collection34$m.kpi) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection35 = $data.collection) === null || _$data$collection35 === void 0 ? void 0 : (_$data$collection35$m = _$data$collection35.messages) === null || _$data$collection35$m === void 0 ? void 0 : _$data$collection35$m.history), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_77, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection36 = $data.collection) === null || _$data$collection36 === void 0 ? void 0 : (_$data$collection36$m = _$data$collection36.messages) === null || _$data$collection36$m === void 0 ? void 0 : _$data$collection36$m.kpiHistorySubtitle), 1 /* TEXT */)]), _hoisted_78]), _hoisted_79])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_80, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-primary",
     onClick: _cache[5] || (_cache[5] = function () {
       return $options.kpiHide && $options.kpiHide.apply($options, arguments);
     })
-  }, "Ok")])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_79, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_80, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_81, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_82, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_83, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive = $data.sanctionActive) === null || _$data$sanctionActive === void 0 ? void 0 : _$data$sanctionActive.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, "Ok")])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_81, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_82, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_83, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_84, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_85, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive = $data.sanctionActive) === null || _$data$sanctionActive === void 0 ? void 0 : _$data$sanctionActive.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn-close",
     "data-bs-dismiss": "modal",
@@ -23018,19 +23147,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[6] || (_cache[6] = function () {
       return $options.sanctionHide && $options.sanctionHide.apply($options, arguments);
     })
-  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_84, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_85, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_86, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_87, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_88, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection37 = $data.collection) === null || _$data$collection37 === void 0 ? void 0 : (_$data$collection37$m = _$data$collection37.messages) === null || _$data$collection37$m === void 0 ? void 0 : _$data$collection37$m.key), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection38 = $data.collection) === null || _$data$collection38 === void 0 ? void 0 : (_$data$collection38$m = _$data$collection38.messages) === null || _$data$collection38$m === void 0 ? void 0 : _$data$collection38$m.value), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection39 = $data.collection) === null || _$data$collection39 === void 0 ? void 0 : (_$data$collection39$m = _$data$collection39.messages) === null || _$data$collection39$m === void 0 ? void 0 : _$data$collection39$m.id), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive2 = $data.sanctionActive) === null || _$data$sanctionActive2 === void 0 ? void 0 : _$data$sanctionActive2.id), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection40 = $data.collection) === null || _$data$collection40 === void 0 ? void 0 : (_$data$collection40$m = _$data$collection40.messages) === null || _$data$collection40$m === void 0 ? void 0 : _$data$collection40$m.createdAt), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive3 = $data.sanctionActive) === null || _$data$sanctionActive3 === void 0 ? void 0 : _$data$sanctionActive3.created_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection41 = $data.collection) === null || _$data$collection41 === void 0 ? void 0 : (_$data$collection41$m = _$data$collection41.messages) === null || _$data$collection41$m === void 0 ? void 0 : _$data$collection41$m.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive4 = $data.sanctionActive) === null || _$data$sanctionActive4 === void 0 ? void 0 : _$data$sanctionActive4.title), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection42 = $data.collection) === null || _$data$collection42 === void 0 ? void 0 : (_$data$collection42$m = _$data$collection42.messages) === null || _$data$collection42$m === void 0 ? void 0 : _$data$collection42$m.dpa), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_89, [((_$data$sanctionActive5 = $data.sanctionActive) === null || _$data$sanctionActive5 === void 0 ? void 0 : (_$data$sanctionActive6 = _$data$sanctionActive5.dpa) === null || _$data$sanctionActive6 === void 0 ? void 0 : _$data$sanctionActive6.country) != undefined ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_90, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_86, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_87, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_88, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_89, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_90, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection37 = $data.collection) === null || _$data$collection37 === void 0 ? void 0 : (_$data$collection37$m = _$data$collection37.messages) === null || _$data$collection37$m === void 0 ? void 0 : _$data$collection37$m.key), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection38 = $data.collection) === null || _$data$collection38 === void 0 ? void 0 : (_$data$collection38$m = _$data$collection38.messages) === null || _$data$collection38$m === void 0 ? void 0 : _$data$collection38$m.value), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection39 = $data.collection) === null || _$data$collection39 === void 0 ? void 0 : (_$data$collection39$m = _$data$collection39.messages) === null || _$data$collection39$m === void 0 ? void 0 : _$data$collection39$m.id), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive2 = $data.sanctionActive) === null || _$data$sanctionActive2 === void 0 ? void 0 : _$data$sanctionActive2.id), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection40 = $data.collection) === null || _$data$collection40 === void 0 ? void 0 : (_$data$collection40$m = _$data$collection40.messages) === null || _$data$collection40$m === void 0 ? void 0 : _$data$collection40$m.createdAt), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive3 = $data.sanctionActive) === null || _$data$sanctionActive3 === void 0 ? void 0 : _$data$sanctionActive3.created_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection41 = $data.collection) === null || _$data$collection41 === void 0 ? void 0 : (_$data$collection41$m = _$data$collection41.messages) === null || _$data$collection41$m === void 0 ? void 0 : _$data$collection41$m.title), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive4 = $data.sanctionActive) === null || _$data$sanctionActive4 === void 0 ? void 0 : _$data$sanctionActive4.title), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection42 = $data.collection) === null || _$data$collection42 === void 0 ? void 0 : (_$data$collection42$m = _$data$collection42.messages) === null || _$data$collection42$m === void 0 ? void 0 : _$data$collection42$m.dpa), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_91, [((_$data$sanctionActive5 = $data.sanctionActive) === null || _$data$sanctionActive5 === void 0 ? void 0 : (_$data$sanctionActive6 = _$data$sanctionActive5.dpa) === null || _$data$sanctionActive6 === void 0 ? void 0 : _$data$sanctionActive6.country) != undefined ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_92, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
     src: "/images/flags/svg/".concat((_$data$sanctionActive7 = $data.sanctionActive) === null || _$data$sanctionActive7 === void 0 ? void 0 : (_$data$sanctionActive8 = _$data$sanctionActive7.dpa) === null || _$data$sanctionActive8 === void 0 ? void 0 : (_$data$sanctionActive9 = _$data$sanctionActive8.country) === null || _$data$sanctionActive9 === void 0 ? void 0 : _$data$sanctionActive9.code, ".svg"),
     style: {
       "width": "30px"
     }
-  }, null, 8 /* PROPS */, _hoisted_91)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_92, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_93, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive10 = $data.sanctionActive) === null || _$data$sanctionActive10 === void 0 ? void 0 : (_$data$sanctionActive11 = _$data$sanctionActive10.dpa) === null || _$data$sanctionActive11 === void 0 ? void 0 : _$data$sanctionActive11.name), 1 /* TEXT */)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection43 = $data.collection) === null || _$data$collection43 === void 0 ? void 0 : (_$data$collection43$m = _$data$collection43.messages) === null || _$data$collection43$m === void 0 ? void 0 : _$data$collection43$m.fine), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive12 = $data.sanctionActive) !== null && _$data$sanctionActive12 !== void 0 && _$data$sanctionActive12.fine ? parseInt((_$data$sanctionActive13 = $data.sanctionActive) === null || _$data$sanctionActive13 === void 0 ? void 0 : _$data$sanctionActive13.fine) + " " + ((_$data$sanctionActive14 = $data.sanctionActive) !== null && _$data$sanctionActive14 !== void 0 && (_$data$sanctionActive15 = _$data$sanctionActive14.currency) !== null && _$data$sanctionActive15 !== void 0 && _$data$sanctionActive15.symbol ? (_$data$sanctionActive16 = $data.sanctionActive) === null || _$data$sanctionActive16 === void 0 ? void 0 : _$data$sanctionActive16.currency.symbol : "") : ""), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection44 = $data.collection) === null || _$data$collection44 === void 0 ? void 0 : (_$data$collection44$m = _$data$collection44.messages) === null || _$data$collection44$m === void 0 ? void 0 : _$data$collection44$m.startedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive17 = $data.sanctionActive) === null || _$data$sanctionActive17 === void 0 ? void 0 : _$data$sanctionActive17.started_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection45 = $data.collection) === null || _$data$collection45 === void 0 ? void 0 : (_$data$collection45$m = _$data$collection45.messages) === null || _$data$collection45$m === void 0 ? void 0 : _$data$collection45$m.decidedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive18 = $data.sanctionActive) === null || _$data$sanctionActive18 === void 0 ? void 0 : _$data$sanctionActive18.decided_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection46 = $data.collection) === null || _$data$collection46 === void 0 ? void 0 : (_$data$collection46$m = _$data$collection46.messages) === null || _$data$collection46$m === void 0 ? void 0 : _$data$collection46$m.publishedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive19 = $data.sanctionActive) === null || _$data$sanctionActive19 === void 0 ? void 0 : _$data$sanctionActive19.published_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection47 = $data.collection) === null || _$data$collection47 === void 0 ? void 0 : (_$data$collection47$m = _$data$collection47.messages) === null || _$data$collection47$m === void 0 ? void 0 : _$data$collection47$m.articles), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$sanctionActive20 = $data.sanctionActive) === null || _$data$sanctionActive20 === void 0 ? void 0 : _$data$sanctionActive20.articlesSorted, function (article) {
+  }, null, 8 /* PROPS */, _hoisted_93)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_94, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_95, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive10 = $data.sanctionActive) === null || _$data$sanctionActive10 === void 0 ? void 0 : (_$data$sanctionActive11 = _$data$sanctionActive10.dpa) === null || _$data$sanctionActive11 === void 0 ? void 0 : _$data$sanctionActive11.name), 1 /* TEXT */)])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection43 = $data.collection) === null || _$data$collection43 === void 0 ? void 0 : (_$data$collection43$m = _$data$collection43.messages) === null || _$data$collection43$m === void 0 ? void 0 : _$data$collection43$m.fine), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive12 = $data.sanctionActive) !== null && _$data$sanctionActive12 !== void 0 && _$data$sanctionActive12.fine ? parseInt((_$data$sanctionActive13 = $data.sanctionActive) === null || _$data$sanctionActive13 === void 0 ? void 0 : _$data$sanctionActive13.fine) + " " + ((_$data$sanctionActive14 = $data.sanctionActive) !== null && _$data$sanctionActive14 !== void 0 && (_$data$sanctionActive15 = _$data$sanctionActive14.currency) !== null && _$data$sanctionActive15 !== void 0 && _$data$sanctionActive15.symbol ? (_$data$sanctionActive16 = $data.sanctionActive) === null || _$data$sanctionActive16 === void 0 ? void 0 : _$data$sanctionActive16.currency.symbol : "") : ""), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection44 = $data.collection) === null || _$data$collection44 === void 0 ? void 0 : (_$data$collection44$m = _$data$collection44.messages) === null || _$data$collection44$m === void 0 ? void 0 : _$data$collection44$m.startedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive17 = $data.sanctionActive) === null || _$data$sanctionActive17 === void 0 ? void 0 : _$data$sanctionActive17.started_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection45 = $data.collection) === null || _$data$collection45 === void 0 ? void 0 : (_$data$collection45$m = _$data$collection45.messages) === null || _$data$collection45$m === void 0 ? void 0 : _$data$collection45$m.decidedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive18 = $data.sanctionActive) === null || _$data$sanctionActive18 === void 0 ? void 0 : _$data$sanctionActive18.decided_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection46 = $data.collection) === null || _$data$collection46 === void 0 ? void 0 : (_$data$collection46$m = _$data$collection46.messages) === null || _$data$collection46$m === void 0 ? void 0 : _$data$collection46$m.publishedOn), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$sanctionActive19 = $data.sanctionActive) === null || _$data$sanctionActive19 === void 0 ? void 0 : _$data$sanctionActive19.published_at_for_humans), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection47 = $data.collection) === null || _$data$collection47 === void 0 ? void 0 : (_$data$collection47$m = _$data$collection47.messages) === null || _$data$collection47$m === void 0 ? void 0 : _$data$collection47$m.articles), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$sanctionActive20 = $data.sanctionActive) === null || _$data$sanctionActive20 === void 0 ? void 0 : _$data$sanctionActive20.articlesSorted, function (article) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       key: article.title
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
       href: article === null || article === void 0 ? void 0 : article.url,
       target: "_blank"
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(article === null || article === void 0 ? void 0 : article.title), 9 /* TEXT, PROPS */, _hoisted_94)]);
-  }), 128 /* KEYED_FRAGMENT */))])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_95, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(article === null || article === void 0 ? void 0 : article.title), 9 /* TEXT, PROPS */, _hoisted_96)]);
+  }), 128 /* KEYED_FRAGMENT */))])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_97, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-primary",
     onClick: _cache[7] || (_cache[7] = function () {

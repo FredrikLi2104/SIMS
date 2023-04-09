@@ -172,6 +172,8 @@
                                        class="btn btn-outline-primary waves-effect"
                                        target="_blank">{{ collection?.messages?.sanctions }}</a>
                                 </div>
+                                <hr>
+                                <div id="statements-chart"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -377,7 +379,8 @@ export default {
             sanctionsTable: null,
             scatterChart: null,
             activeOrg: {},
-            activeStatement: null
+            activeStatement: null,
+            statementsChart: null
         };
     },
     methods: {
@@ -1173,6 +1176,108 @@ export default {
             };
             thisComponent.riskChart = new Chart(riskChart, riskChartConfig);
         },
+        drawStatementsChart() {
+            let self = this;
+            let statements = this.componentActive.statements;
+            let filtered = [];
+            statements.forEach(statement => {
+                if (statement.deed !== null) {
+                    filtered.push({
+                        name: `${this.componentActive.code}.${statement.code}`,
+                        date: moment(statement.deed.updated_at).format('YYYY-MM-DD'),
+                        value: statement.deed.value,
+                        comment: statement.deed.comment
+                    });
+                }
+            });
+
+            let sorted = filtered.sort((a, b) => {
+                if (moment(a.date).isBefore(b.date)) {
+                    return -1;
+                } else if (moment(a.date).isAfter(b.date)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
+            let categories = [];
+            sorted.forEach(statement => {
+                if (categories.indexOf(statement.date) === -1) {
+                    categories.push(statement.date);
+                }
+            });
+
+            let series = [];
+            categories.forEach((category, index) => {
+                sorted.forEach(statement => {
+                    let name = statement.name;
+                    let itemIndex = series.findIndex(item => item.name == name);
+                    let data = 0;
+                    let comment = null;
+                    if (statement.date === category) {
+                        data = statement.value;
+                        comment = statement.comment;
+                    }
+                    if (itemIndex === -1) {
+                        series.push({name: name, data: [data], comment: [comment]});
+                    } else {
+                        series[itemIndex].data[index] = data;
+                        series[itemIndex].comment[index] = comment;
+                    }
+                })
+            });
+
+            let options = {
+                series: series,
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '30%',
+                        borderRadius: 0
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: categories,
+                },
+                yaxis: {
+                    title: {
+                        text: self.collection?.messages?.value
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (value, {series, seriesIndex, dataPointIndex, w}) {
+                            return w.config.series[seriesIndex].comment[dataPointIndex];
+                        }
+                    }
+                }
+            };
+
+            if (self.statementsChart !== null) {
+                self.statementsChart.destroy();
+            }
+            self.statementsChart = new ApexCharts(document.getElementById('statements-chart'), options);
+            self.statementsChart.render();
+        },
         componentHide() {
             this.componentActive = null;
             $("#componentShowModal").modal("hide");
@@ -1184,6 +1289,7 @@ export default {
             this.componentActive = y[0];
             this.activeStatement = y[0]?.statements?.[0];
             $("#componentShowModal").modal("show");
+            this.drawStatementsChart();
             this.$nextTick(() => {
                 feather.replace();
             });
@@ -1246,7 +1352,18 @@ export default {
             });
         },
         updateActiveStatement(index) {
+            let self = this;
             this.activeStatement = this.componentActive?.statements?.[index];
+            this.componentActive?.statements.forEach(statement => {
+                if (statement?.deed?.value > 0) {
+                    let subCode = `${self.componentActive?.code}.${statement.code}`;
+                    if (statement.id === self.activeStatement.id) {
+                        self.statementsChart.showSeries(subCode);
+                    } else {
+                        self.statementsChart.hideSeries(subCode);
+                    }
+                }
+            });
         }
     },
     mounted() {

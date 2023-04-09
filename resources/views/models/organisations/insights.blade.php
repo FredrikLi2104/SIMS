@@ -34,6 +34,7 @@
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.responsive.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/charts/apexcharts.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
 @endsection
 @section('page-script')
     <script src="{{ asset(mix('js/models/organisations/insights/app.js')) }}"></script>
