@@ -54,7 +54,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="colorInput" class="form-label">{{
-                                            collection?.messages?.accentColor
+                                        collection?.messages?.accentColor
                                         }}</label>
                                     <input id="colorInput" type="color" class="form-control form-control-color"
                                            title="Choose your color" v-model="color" @change="orgUpdate"/>
@@ -123,31 +123,31 @@
                                     <input id="phoneInput" type="text"
                                            :class="errors?.phone ? 'form-control is-invalid' : 'form-control'"
                                            placeholder="+4681234567" @blur="orgUpdate"
-                                           :value="collection.organisation.phone"/>
+                                           :value="collection?.organisation?.phone"/>
                                     <div v-if="errors?.phone" class="invalid-feedback">{{ errors?.phone }}</div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="address1Input" class="form-label">{{
-                                            collection?.messages?.address1
+                                        collection?.messages?.address1
                                         }}</label>
                                     <input id="address1Input" type="text"
                                            :class="errors?.address1 ? 'form-control is-invalid' : 'form-control'"
                                            placeholder="Birger Jarlsgatan 4" @blur="orgUpdate"
-                                           :value="collection.organisation.address1"/>
+                                           :value="collection?.organisation?.address1"/>
                                     <div v-if="errors?.address1" class="invalid-feedback">{{ errors?.address1 }}</div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="address2Input" class="form-label">{{
-                                            collection?.messages?.address2
+                                        collection?.messages?.address2
                                         }}</label>
                                     <input id="address2Input" type="text"
                                            :class="errors?.address2 ? 'form-control is-invalid' : 'form-control'"
                                            placeholder="114 34 Stockholm, Sweden" @blur="orgUpdate"
-                                           :value="collection.organisation.address2"/>
+                                           :value="collection?.organisation?.address2"/>
                                     <div v-if="errors?.address2" class="invalid-feedback">{{ errors?.address2 }}</div>
                                 </div>
                             </div>
@@ -157,19 +157,19 @@
                                     <input id="emailInput" type="text"
                                            :class="errors?.email ? 'form-control is-invalid' : 'form-control'"
                                            placeholder="hello@organisation.se" @blur="orgUpdate"
-                                           :value="collection.organisation.email"/>
+                                           :value="collection?.organisation?.email"/>
                                     <div v-if="errors?.email" class="invalid-feedback">{{ errors?.email }}</div>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="websiteInput" class="form-label">{{
-                                            collection?.messages?.website
+                                        collection?.messages?.website
                                         }}</label>
                                     <input id="websiteInput" type="text"
                                            :class="errors?.website ? 'form-control is-invalid' : 'form-control'"
                                            placeholder="https://organisation.se" @blur="orgUpdate"
-                                           :value="collection.organisation.website"/>
+                                           :value="collection?.organisation?.website"/>
                                     <div v-if="errors?.website" class="invalid-feedback">{{ errors?.website }}</div>
                                 </div>
                             </div>
@@ -342,7 +342,8 @@
                                         <tr>
                                             <td>{{ collection?.messages?.period }}</td>
                                             <td>{{
-                                                    statementActive?.component?.organisation_period ? statementActive.component.organisation_period[`name_${locale}`] : null
+                                                statementActive?.component?.organisation_period ?
+                                                statementActive.component.organisation_period[`name_${locale}`] : null
                                                 }}
                                             </td>
                                         </tr>
@@ -388,11 +389,11 @@
                                         </tr>
                                         <tr>
                                             <td>{{
-                                                    collection?.messages?.implementation + " "
+                                                collection?.messages?.implementation + " "
                                                 }}{{ collection?.messages?.example }}
                                             </td>
                                             <td>{{
-                                                    statementActive ? statementActive[`implementation_${locale}`] : null
+                                                statementActive ? statementActive[`implementation_${locale}`] : null
                                                 }}
                                             </td>
                                         </tr>
@@ -499,8 +500,7 @@ export default {
                 HSL["l"] = l;
                 return hsl(h * 360, s * 80, l * 120);
             };
-            let accentColor = primaryToAccent(thisComponent.color);
-            return accentColor;
+            return thisComponent.color ? primaryToAccent(thisComponent.color) : '';
         },
         buildTable() {
             var thisComponent = this;

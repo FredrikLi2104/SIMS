@@ -9,7 +9,7 @@ class ActionTypeUpdateRequest extends FormRequest
 {
     public function withValidator($validator)
     {
-        $validator->sometimes('url', ['required', Rule::in(['plan/statements', 'review'])], function ($input) {
+        $validator->sometimes('url', ['required', Rule::in(['plan/statements', 'report', 'review'])], function ($input) {
             return $input->role === 'auditor';
         });
 

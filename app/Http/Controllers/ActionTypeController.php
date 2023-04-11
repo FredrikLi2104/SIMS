@@ -36,7 +36,7 @@ class ActionTypeController extends Controller
         $data['messages'] = __('messages');
         $data['roles'] = ['auditor', 'user'];
         $data['urls'] = [
-            'auditor' => ['plan/statements', 'review'],
+            'auditor' => ['plan/statements', 'report', 'review'],
             'user' => ['do/components', 'do/statements', 'plan/components', 'plan/statements', 'report'],
         ];
         $data['models'] = ['component', 'statement'];
@@ -86,7 +86,7 @@ class ActionTypeController extends Controller
         $data['messages'] = __('messages');
         $data['roles'] = ['auditor', 'user'];
         $data['urls'] = [
-            'auditor' => ['plan/statements', 'review'],
+            'auditor' => ['plan/statements', 'report', 'review'],
             'user' => ['do/components', 'do/statements', 'plan/components', 'plan/statements', 'report'],
         ];
         $data['models'] = ['component', 'statement'];
