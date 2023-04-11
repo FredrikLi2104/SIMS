@@ -118,12 +118,18 @@
                                     <table class="table table-sm">
                                         <thead>
                                         <tr>
-                                            <th colspan="4">{{ collection?.messages?.statements }}</th>
+                                            <th colspan="5">{{ collection?.messages?.statements }}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr v-for="(statement, index) in componentActive?.statements"
                                             :key="statement.id">
+                                            <td>
+                                                <span class="bullet bullet-sm"
+                                                      :class="statusBulletColor(statement?.review?.review_status?.name_en)"
+                                                      data-bs-toggle="tooltip"
+                                                      :data-bs-original-title="statement?.review?.review"></span>
+                                            </td>
                                             <td>{{ `${componentActive?.code}.${statement.code}` }}</td>
                                             <td>{{ statement[`content_${locale}`] }}</td>
                                             <td>{{ statement.deed === null ? 0 : statement.deed.value }}</td>
@@ -1283,6 +1289,7 @@ export default {
             $("#componentShowModal").modal("hide");
         },
         componentShow(id) {
+            let self = this;
             const activeYear = document.getElementById("yearSelect").value;
             const dataSource = this.activeOrg[activeYear].table;
             let y = dataSource.filter((x) => x.id == id);
@@ -1292,6 +1299,7 @@ export default {
             this.drawStatementsChart();
             this.$nextTick(() => {
                 feather.replace();
+                self.initTooltips();
             });
         },
         kpiHide() {
@@ -1364,6 +1372,22 @@ export default {
                     }
                 }
             });
+        },
+        statusBulletColor(status) {
+            switch (status) {
+                case 'Pending':
+                    return 'bullet-warning';
+                case 'Accepted':
+                    return 'bullet-success';
+                case 'Rejected':
+                    return 'bullet-danger';
+                default:
+                    return 'bullet-warning';
+            }
+        },
+        initTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
         }
     },
     mounted() {

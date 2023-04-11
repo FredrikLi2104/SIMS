@@ -21996,9 +21996,9 @@ __webpack_require__.r(__webpack_exports__);
             var r = "\n                                <div class=\"btn-group\">\n                                    <button id=\"status-dropdown-btn-".concat(full.id, "\" class=\"btn ").concat(dropDownClass, " dropdown-toggle\" type=\"button\" data-bs-toggle=\"dropdown\">").concat(dropDownText, "</button>\n                                    <div id=\"status-dropdown-menu-").concat(full.id, "\" class=\"dropdown-menu\">\n                            ");
             thisComponent.reviewStatuses.forEach(function (reviewStatus) {
               var itemColor = '';
-              if (reviewStatus["name_".concat(thisComponent.locale)] == 'Accepted') {
+              if (reviewStatus.name_en == 'Accepted') {
                 itemColor = 'text-success';
-              } else if (reviewStatus["name_".concat(thisComponent.locale)] == 'Rejected') {
+              } else if (reviewStatus.name_en == 'Rejected') {
                 itemColor = 'text-danger';
               }
               r += "<a class=\"dropdown-item\" href=\"#\" onclick=\"window.thisComponent.statementReviewButtonEnable(".concat(full.id, ", ").concat(reviewStatus.id, ")\"><span class=\"").concat(itemColor, " fw-bold\">").concat(reviewStatus["name_".concat(thisComponent.locale)], "</span></a>");
@@ -22013,7 +22013,7 @@ __webpack_require__.r(__webpack_exports__);
           orderable: false,
           width: "10%",
           render: function render(data, type, full, meta) {
-            var r = "\n                                <div class=\"form-group\">\n                                    <textarea class=\"form-control\" type=\"text\" placeholder=\"\" id=\"statementReviewInput".concat(full.id, "\" onchange=\"window.thisComponent.statementReviewButtonEnable(").concat(full.id, ")\">").concat(full.review ? full.review.review : "", "</textarea>\n                                </div>\n                                ");
+            var r = "\n                                <div class=\"form-group\">\n                                    <textarea class=\"form-control\" type=\"text\" placeholder=\"\" id=\"statementReviewInput".concat(full.id, "\" onchange=\"window.thisComponent.statementReviewButtonEnable(").concat(full.id, ", null)\">").concat(full.review ? full.review.review : "", "</textarea>\n                                </div>\n                                ");
             return r;
           }
         }, {
@@ -22063,39 +22063,42 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     statementReviewButtonEnable: function statementReviewButtonEnable(id, reviewStatusId) {
-      this.toUpdate = this.toUpdate.filter(function (statement) {
-        return statement.id != id;
-      });
-      this.toUpdate.push({
-        id: id,
-        status: reviewStatusId
-      });
-      var selectedStatus = this.reviewStatuses.find(function (status) {
-        return status.id == reviewStatusId;
-      });
-      var dropDownText = selectedStatus["name_".concat(this.locale)];
-      var dropDownClass = '';
-      if (selectedStatus["name_".concat(this.locale)] == 'Accepted') {
-        dropDownClass = 'btn-flat-success';
-      } else if (selectedStatus["name_".concat(this.locale)] == 'Rejected') {
-        dropDownClass = 'btn-flat-danger';
+      if (reviewStatusId !== null) {
+        this.toUpdate = this.toUpdate.filter(function (statement) {
+          return statement.id != id;
+        });
+        this.toUpdate.push({
+          id: id,
+          status: reviewStatusId
+        });
+        var selectedStatus = this.reviewStatuses.find(function (status) {
+          return status.id == reviewStatusId;
+        });
+        var dropDownText = selectedStatus["name_".concat(this.locale)];
+        var dropDownClass = '';
+        if (selectedStatus.name_en == 'Accepted') {
+          dropDownClass = 'btn-flat-success';
+        } else if (selectedStatus.name_en == 'Rejected') {
+          dropDownClass = 'btn-flat-danger';
+        }
+        var dropDownBtn = document.getElementById('status-dropdown-btn-' + id);
+        var classList = dropDownBtn.classList.value.split(' ');
+        var className = classList.find(function (className) {
+          return className.includes('btn-flat');
+        });
+        dropDownBtn.classList.remove(className);
+        dropDownBtn.classList.add(dropDownClass);
+        dropDownBtn.innerHTML = dropDownText;
       }
-      var dropDownBtn = document.getElementById('status-dropdown-btn-' + id);
-      var classList = dropDownBtn.classList.value.split(' ');
-      var className = classList.find(function (className) {
-        return className.includes('btn-flat');
-      });
-      dropDownBtn.classList.remove(className);
-      dropDownBtn.classList.add(dropDownClass);
-      dropDownBtn.innerHTML = dropDownText;
       $("#statementReviewButton" + id).prop("disabled", false);
     },
     statementReviewUpdate: function statementReviewUpdate(id) {
+      var _this$toUpdate$find;
       var self = this;
       $("#statementReviewButton" + id).prop("disabled", true);
-      var a = this.toUpdate.find(function (statement) {
+      var a = (_this$toUpdate$find = this.toUpdate.find(function (statement) {
         return statement.id == id;
-      }).status;
+      })) === null || _this$toUpdate$find === void 0 ? void 0 : _this$toUpdate$find.status;
       var r = $("#statementReviewInput".concat(id)).val();
       axios.post("/".concat(thisComponent.locale, "/axios/organisations/statements/reviews/update"), {
         statement_id: id,

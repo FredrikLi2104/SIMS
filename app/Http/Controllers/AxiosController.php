@@ -228,7 +228,8 @@ class AxiosController extends Controller
                         $statement->implementation = $op->implementation ?? '';
                         $od = $statement->organisationDeed($org);
                         $statement->deed = $od;
-                        $statement->makeVisible('implementation', 'deed');
+                        $statement->review = $statement->organisationReview($org);
+                        $statement->makeVisible('implementation', 'deed', 'review');
                     });
 
                     $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'desc' => $comp->{"desc_$locale"}, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_' . App::currentLocale()}, 'statements' => $comp->statements];

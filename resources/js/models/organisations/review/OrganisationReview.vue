@@ -276,9 +276,9 @@ export default {
                             `;
                             thisComponent.reviewStatuses.forEach(reviewStatus => {
                                 let itemColor = '';
-                                if (reviewStatus[`name_${thisComponent.locale}`] == 'Accepted') {
+                                if (reviewStatus.name_en == 'Accepted') {
                                     itemColor = 'text-success';
-                                } else if (reviewStatus[`name_${thisComponent.locale}`] == 'Rejected') {
+                                } else if (reviewStatus.name_en == 'Rejected') {
                                     itemColor = 'text-danger';
                                 }
                                 r += `<a class="dropdown-item" href="#" onclick="window.thisComponent.statementReviewButtonEnable(${full.id}, ${reviewStatus.id})"><span class="${itemColor} fw-bold">${reviewStatus[`name_${thisComponent.locale}`]}</span></a>`;
@@ -298,7 +298,7 @@ export default {
                         render: function (data, type, full, meta) {
                             let r = `
                                 <div class="form-group">
-                                    <textarea class="form-control" type="text" placeholder="" id="statementReviewInput${full.id}" onchange="window.thisComponent.statementReviewButtonEnable(${full.id})">${full.review ? full.review.review : ""}</textarea>
+                                    <textarea class="form-control" type="text" placeholder="" id="statementReviewInput${full.id}" onchange="window.thisComponent.statementReviewButtonEnable(${full.id}, null)">${full.review ? full.review.review : ""}</textarea>
                                 </div>
                                 `;
                             return r;
@@ -380,28 +380,30 @@ export default {
                 });
         },
         statementReviewButtonEnable(id, reviewStatusId) {
-            this.toUpdate = this.toUpdate.filter(statement => statement.id != id);
-            this.toUpdate.push({id: id, status: reviewStatusId});
-            let selectedStatus = this.reviewStatuses.find(status => status.id == reviewStatusId);
-            let dropDownText = selectedStatus[`name_${this.locale}`];
-            let dropDownClass = '';
-            if (selectedStatus[`name_${this.locale}`] == 'Accepted') {
-                dropDownClass = 'btn-flat-success';
-            } else if (selectedStatus[`name_${this.locale}`] == 'Rejected') {
-                dropDownClass = 'btn-flat-danger';
+            if (reviewStatusId !== null) {
+                this.toUpdate = this.toUpdate.filter(statement => statement.id != id);
+                this.toUpdate.push({id: id, status: reviewStatusId});
+                let selectedStatus = this.reviewStatuses.find(status => status.id == reviewStatusId);
+                let dropDownText = selectedStatus[`name_${this.locale}`];
+                let dropDownClass = '';
+                if (selectedStatus.name_en == 'Accepted') {
+                    dropDownClass = 'btn-flat-success';
+                } else if (selectedStatus.name_en == 'Rejected') {
+                    dropDownClass = 'btn-flat-danger';
+                }
+                let dropDownBtn = document.getElementById('status-dropdown-btn-' + id);
+                let classList = dropDownBtn.classList.value.split(' ');
+                let className = classList.find(className => className.includes('btn-flat'));
+                dropDownBtn.classList.remove(className);
+                dropDownBtn.classList.add(dropDownClass);
+                dropDownBtn.innerHTML = dropDownText;
             }
-            let dropDownBtn = document.getElementById('status-dropdown-btn-' + id);
-            let classList = dropDownBtn.classList.value.split(' ');
-            let className = classList.find(className => className.includes('btn-flat'));
-            dropDownBtn.classList.remove(className);
-            dropDownBtn.classList.add(dropDownClass);
-            dropDownBtn.innerHTML = dropDownText;
             $("#statementReviewButton" + id).prop("disabled", false);
         },
         statementReviewUpdate(id) {
             let self = this;
             $("#statementReviewButton" + id).prop("disabled", true);
-            let a = this.toUpdate.find(statement => statement.id == id).status;
+            let a = this.toUpdate.find(statement => statement.id == id)?.status;
             let r = $(`#statementReviewInput${id}`).val();
             axios
                 .post(`/${thisComponent.locale}/axios/organisations/statements/reviews/update`, {
