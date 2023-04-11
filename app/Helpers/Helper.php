@@ -171,4 +171,12 @@ class Helper
             }
         }
     }
+
+    public static function appVersion()
+    {
+        $version = trim(shell_exec('git describe --tags'));
+        $date = trim(shell_exec('git log -n1 --pretty=%cs HEAD'));
+
+        return "$version|$date";
+    }
 }
