@@ -142,6 +142,30 @@ class AxiosController extends Controller
         return Faq::all();
     }
 
+    public function featuresTasks($locale, $year = null)
+    {
+        return Task::with('taskStatus')
+            ->where('created_by', auth()->user()->organisation->id)
+            ->when($year, function ($query) use ($year) {
+                $since = Carbon::createFromDate($year, 1, 1);
+                $until = Carbon::createFromDate($year, 12, 31);
+                $query->whereDate('start', '>=', $since)
+                    ->whereDate('start', '<=', $until);
+            })->get();
+    }
+
+    public function featuresTasksYears()
+    {
+        return DB::table('tasks')
+            ->selectRaw('YEAR(start) AS year')
+            ->distinct()
+            ->where('created_by', auth()->user()->organisation->id)
+            ->orderBy('year')
+            ->get()
+            ->pluck('year')
+            ->all();
+    }
+
     /**
      * Return all kpis along with dictionary
      *

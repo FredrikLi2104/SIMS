@@ -60,6 +60,8 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::post('currencies/rates/update', [AxiosController::class, 'currenciesRatesUpdate'])->middleware('can:moderator')->name('axios.currencies.rates.update');
     Route::get('dpas', [AxiosController::class, 'dpas'])->middleware('can:moderator')->name('axios.dpas.index');
     Route::get('faqs', [AxiosController::class, 'faqs'])->middleware('can:moderator')->name('axios.faqs.index');
+    Route::get('features/tasks/{year?}', [AxiosController::class, 'featuresTasks'])->middleware('can:super-auditor')->name('axios.features.tasks');
+    Route::get('features/tasks-years', [AxiosController::class, 'featuresTasksYears'])->middleware('can:super-auditor')->name('axios.features.tasks-years');
     Route::get('kpis', [AxiosController::class, 'kpis'])->middleware('can:moderator')->name('axios.kpis.index');
     Route::get('links', [AxiosController::class, 'links'])->middleware('can:moderator')->name('axios.links.index');
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
@@ -110,8 +112,10 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('do/statements/{action?}', [OrganisationController::class, 'do'])->middleware('auth')->middleware('can:user')->name('organisations.do.statements');
     Route::resource('dpas', DpaController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/faqs', FaqController::class)->middleware('auth')->middleware('can:moderator');
-    Route::get('/features', [FeatureController::class, 'index'])->middleware('auth')->middleware('can:super-auditor');
-    Route::post('/features/implementations/update', [FeatureController::class, 'updateImplementations'])->middleware('auth')->middleware('can:super-auditor');
+    Route::get('/features', [FeatureController::class, 'index'])->middleware('auth')->middleware('can:super-auditor')->name('features.index');
+    Route::post('/features/components/update', [FeatureController::class, 'updateComponents'])->middleware('auth')->middleware('can:super-auditor')->name('features.components.update');
+    Route::post('/features/implementations/update', [FeatureController::class, 'updateImplementations'])->middleware('auth')->middleware('can:super-auditor')->name('features.implementations.update');
+    Route::post('/features/tasks/update', [FeatureController::class, 'updateTasks'])->middleware('auth')->middleware('can:super-auditor')->name('features.tasks.update');
     Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
     Route::resource('/issue_categories', IssueCategoryController::class)->middleware('auth')->middleware('can:moderator');

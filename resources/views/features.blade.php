@@ -1,8 +1,9 @@
 @extends('layouts/contentLayoutMaster')
 @section('title', __('messages.features'))
 @section('content')
-    <features locale="{{ App::currentLocale() }}" :statements="{{ Js::from($statements) }}"
-              :organisations="{{ Js::from($organisations) }}" :messages="{{ Js::from($messages) }}"></features>
+    <features locale="{{ App::currentLocale() }}" :components="{{ Js::from($components) }}"
+              :statements="{{ Js::from($statements) }}" :organisations="{{ Js::from($organisations) }}"
+              :messages="{{ Js::from($messages) }}"></features>
 @endsection
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">

@@ -26,4 +26,9 @@ class Review extends Model
     {
         return $this->belongsTo(ReviewStatus::class);
     }
+
+    public function statement()
+    {
+        return $this->belongsTo(Statement::class);
+    }
 }

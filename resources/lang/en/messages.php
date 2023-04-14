@@ -265,8 +265,15 @@ return [
     'configs' => 'Configs',
     'model' => 'Model',
     'features' => 'Features',
-    'implementations_overwrite_title' => 'Overwrite Organisation Statement Implementations',
+    'tasks_overwrite_warning' => 'Are you sure you want to seed these tasks to selected sub-organizations? This will overwrite any of their own tasks and this action can not be undone.',
+    'components_overwrite_warning' => 'Are you sure you want to seed these components to selected sub-organizations? This will overwrite any of their own components and this action can not be undone.',
     'implementations_overwrite_warning' => 'Are you sure you want to seed all these implementation values to selected sub-organizations? This will overwrite any of their own implementations and this action can not be undone.',
     'pending' => 'Pending',
+    'overwrite' => 'Overwrite',
+    'select_all' => 'Select All',
+    'deselect_all' => 'Deselect All',
+    'populate_all' => 'Populate All',
+    'depopulate_all' => 'Depopulate All',
+    'items_required' => 'Please select at least one item.',
 ];
 ?>
