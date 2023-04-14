@@ -21875,7 +21875,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       scatterChart: null,
       activeOrg: {},
       activeStatement: null,
-      statementsChart: null
+      statementsChart: null,
+      statementHistoryChart: null
     };
   },
   methods: {
@@ -22547,11 +22548,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       var filtered = [];
       statements.forEach(function (statement) {
         if (statement.deed !== null) {
+          var _statement$review;
           filtered.push({
             name: "".concat(_this.componentActive.code, ".").concat(statement.code),
             date: moment(statement.deed.updated_at).format('YYYY-MM-DD'),
             value: statement.deed.value,
-            comment: statement.deed.comment
+            comment: statement.deed.comment,
+            status: statement === null || statement === void 0 ? void 0 : (_statement$review = statement.review) === null || _statement$review === void 0 ? void 0 : _statement$review.review_status.name_en
           });
         }
       });
@@ -22571,6 +22574,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
         }
       });
       var series = [];
+      var colors = [];
       categories.forEach(function (category, index) {
         sorted.forEach(function (statement) {
           var name = statement.name;
@@ -22593,6 +22597,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
             series[itemIndex].data[index] = data;
             series[itemIndex].comment[index] = comment;
           }
+          colors.push(self.getColorByStatementStatus(statement.status));
         });
       });
       var options = {
@@ -22640,13 +22645,108 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
               return w.config.series[seriesIndex].comment[dataPointIndex];
             }
           }
-        }
+        },
+        colors: colors
       };
       if (self.statementsChart !== null) {
         self.statementsChart.destroy();
       }
       self.statementsChart = new ApexCharts(document.getElementById('statements-chart'), options);
       self.statementsChart.render();
+    },
+    drawStatementHistoryChart: function drawStatementHistoryChart() {
+      var _self$activeStatement, _self$activeStatement2, _self$activeStatement3, _self$activeStatement4, _self$activeStatement5;
+      var self = this;
+      var history = ((_self$activeStatement = self.activeStatement) === null || _self$activeStatement === void 0 ? void 0 : _self$activeStatement.deed.deed_history) === undefined ? [] : self.activeStatement.deed.deed_history;
+      var data = [];
+      history.forEach(function (item) {
+        data.push({
+          date: moment(item.created_at).format('YYYY-MM-DD'),
+          value: item.value
+        });
+      });
+      var sorted = data.sort(function (a, b) {
+        if (moment(a.date).isBefore(b.date)) {
+          return -1;
+        } else if (moment(a.date).isAfter(b.date)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      var categories = [];
+      sorted.forEach(function (item) {
+        if (categories.indexOf(item.date) === -1) {
+          categories.push(item.date);
+        }
+      });
+      var series = [{
+        data: []
+      }];
+      categories.forEach(function (category) {
+        sorted.forEach(function (item) {
+          if (item.date === category) {
+            series[0].data.push({
+              x: category,
+              y: item.value
+            });
+          }
+        });
+      });
+      var options = {
+        chart: {
+          height: 400,
+          type: 'line',
+          zoom: {
+            enabled: false
+          },
+          parentHeightOffset: 0,
+          toolbar: {
+            show: false
+          }
+        },
+        series: series,
+        markers: {
+          strokeWidth: 7,
+          strokeOpacity: 1,
+          strokeColors: [window.colors.solid.white],
+          colors: [self.getColorByStatementStatus((_self$activeStatement2 = self.activeStatement) === null || _self$activeStatement2 === void 0 ? void 0 : (_self$activeStatement3 = _self$activeStatement2.review) === null || _self$activeStatement3 === void 0 ? void 0 : _self$activeStatement3.review_status.name_en)]
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'smooth'
+        },
+        colors: [self.getColorByStatementStatus((_self$activeStatement4 = self.activeStatement) === null || _self$activeStatement4 === void 0 ? void 0 : (_self$activeStatement5 = _self$activeStatement4.review) === null || _self$activeStatement5 === void 0 ? void 0 : _self$activeStatement5.review_status.name_en)],
+        grid: {
+          xaxis: {
+            lines: {
+              show: true
+            }
+          },
+          padding: {
+            top: -20
+          }
+        },
+        xaxis: {
+          categories: categories
+        },
+        yaxis: {
+          min: 0,
+          max: 5,
+          forceNiceScale: true,
+          decimalsInFloat: 0
+        }
+      };
+      if (self.statementsChart !== null) {
+        self.statementsChart.destroy();
+      }
+      if (self.statementHistoryChart !== null) {
+        self.statementHistoryChart.destroy();
+      }
+      self.statementHistoryChart = new ApexCharts(document.getElementById('statements-chart'), options);
+      self.statementHistoryChart.render();
     },
     componentHide: function componentHide() {
       this.componentActive = null;
@@ -22724,21 +22824,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       });
     },
     updateActiveStatement: function updateActiveStatement(index) {
-      var _this$componentActive, _this$componentActive2, _this$componentActive3;
+      var _self$componentActive, _self$componentActive2;
       var self = this;
-      this.activeStatement = (_this$componentActive = this.componentActive) === null || _this$componentActive === void 0 ? void 0 : (_this$componentActive2 = _this$componentActive.statements) === null || _this$componentActive2 === void 0 ? void 0 : _this$componentActive2[index];
-      (_this$componentActive3 = this.componentActive) === null || _this$componentActive3 === void 0 ? void 0 : _this$componentActive3.statements.forEach(function (statement) {
-        var _statement$deed;
-        if ((statement === null || statement === void 0 ? void 0 : (_statement$deed = statement.deed) === null || _statement$deed === void 0 ? void 0 : _statement$deed.value) > 0) {
-          var _self$componentActive;
-          var subCode = "".concat((_self$componentActive = self.componentActive) === null || _self$componentActive === void 0 ? void 0 : _self$componentActive.code, ".").concat(statement.code);
-          if (statement.id === self.activeStatement.id) {
-            self.statementsChart.showSeries(subCode);
-          } else {
-            self.statementsChart.hideSeries(subCode);
-          }
-        }
-      });
+      self.activeStatement = (_self$componentActive = self.componentActive) === null || _self$componentActive === void 0 ? void 0 : (_self$componentActive2 = _self$componentActive.statements) === null || _self$componentActive2 === void 0 ? void 0 : _self$componentActive2[index];
+      self.drawStatementHistoryChart();
     },
     statusBulletColor: function statusBulletColor(status) {
       switch (status) {
@@ -22757,6 +22846,18 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       var tooltipList = _toConsumableArray(tooltipTriggerList).map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
       });
+    },
+    getColorByStatementStatus: function getColorByStatementStatus(status) {
+      switch (status) {
+        case 'Pending':
+          return '#ff9f43';
+        case 'Accepted':
+          return '#28c76f';
+        case 'Rejected':
+          return '#ea5455';
+        default:
+          return '#ff9f43';
+      }
     }
   },
   mounted: function mounted() {
@@ -23130,11 +23231,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "btn btn-outline-primary waves-effect",
     target: "_blank"
   }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection14 = $data.collection) === null || _$data$collection14 === void 0 ? void 0 : (_$data$collection14$m = _$data$collection14.messages) === null || _$data$collection14$m === void 0 ? void 0 : _$data$collection14$m.sanctions), 9 /* TEXT, PROPS */, _hoisted_39)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_43, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection15 = $data.collection) === null || _$data$collection15 === void 0 ? void 0 : (_$data$collection15$m = _$data$collection15.messages) === null || _$data$collection15$m === void 0 ? void 0 : _$data$collection15$m.statements), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$componentActiv7 = $data.componentActive) === null || _$data$componentActiv7 === void 0 ? void 0 : _$data$componentActiv7.statements, function (statement, index) {
-    var _statement$review, _statement$review$rev, _statement$review2, _$data$componentActiv8;
+    var _statement$review, _statement$review2, _$data$componentActiv8;
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
       key: statement.id
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
-      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["bullet bullet-sm", $options.statusBulletColor(statement === null || statement === void 0 ? void 0 : (_statement$review = statement.review) === null || _statement$review === void 0 ? void 0 : (_statement$review$rev = _statement$review.review_status) === null || _statement$review$rev === void 0 ? void 0 : _statement$review$rev.name_en)]),
+      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["bullet bullet-sm", $options.statusBulletColor(statement === null || statement === void 0 ? void 0 : (_statement$review = statement.review) === null || _statement$review === void 0 ? void 0 : _statement$review.review_status.name_en)]),
       "data-bs-toggle": "tooltip",
       "data-bs-original-title": statement === null || statement === void 0 ? void 0 : (_statement$review2 = statement.review) === null || _statement$review2 === void 0 ? void 0 : _statement$review2.review
     }, null, 10 /* CLASS, PROPS */, _hoisted_44)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$componentActiv8 = $data.componentActive) === null || _$data$componentActiv8 === void 0 ? void 0 : _$data$componentActiv8.code, ".").concat(statement.code)), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(statement["content_".concat($props.locale)]), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(statement.deed === null ? 0 : statement.deed.value), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {

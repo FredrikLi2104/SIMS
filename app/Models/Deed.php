@@ -18,11 +18,17 @@ class Deed extends Model
     public function updatedAtForHumans(): Attribute
     {
         return new Attribute(
-            get: fn ($value) => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
+            get: fn($value) => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s')
         );
     }
 
-    public function statement() {
+    public function statement()
+    {
         return $this->belongsTo(Statement::class);
+    }
+
+    public function deedHistory()
+    {
+        return $this->hasMany(DeedHistory::class);
     }
 }

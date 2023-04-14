@@ -126,7 +126,7 @@
                                             :key="statement.id">
                                             <td>
                                                 <span class="bullet bullet-sm"
-                                                      :class="statusBulletColor(statement?.review?.review_status?.name_en)"
+                                                      :class="statusBulletColor(statement?.review?.review_status.name_en)"
                                                       data-bs-toggle="tooltip"
                                                       :data-bs-original-title="statement?.review?.review"></span>
                                             </td>
@@ -386,7 +386,8 @@ export default {
             scatterChart: null,
             activeOrg: {},
             activeStatement: null,
-            statementsChart: null
+            statementsChart: null,
+            statementHistoryChart: null,
         };
     },
     methods: {
@@ -1192,7 +1193,8 @@ export default {
                         name: `${this.componentActive.code}.${statement.code}`,
                         date: moment(statement.deed.updated_at).format('YYYY-MM-DD'),
                         value: statement.deed.value,
-                        comment: statement.deed.comment
+                        comment: statement.deed.comment,
+                        status: statement?.review?.review_status.name_en,
                     });
                 }
             });
@@ -1215,6 +1217,7 @@ export default {
             });
 
             let series = [];
+            let colors = [];
             categories.forEach((category, index) => {
                 sorted.forEach(statement => {
                     let name = statement.name;
@@ -1231,6 +1234,7 @@ export default {
                         series[itemIndex].data[index] = data;
                         series[itemIndex].comment[index] = comment;
                     }
+                    colors.push(self.getColorByStatementStatus(statement.status));
                 })
             });
 
@@ -1275,7 +1279,8 @@ export default {
                             return w.config.series[seriesIndex].comment[dataPointIndex];
                         }
                     }
-                }
+                },
+                colors: colors
             };
 
             if (self.statementsChart !== null) {
@@ -1283,6 +1288,101 @@ export default {
             }
             self.statementsChart = new ApexCharts(document.getElementById('statements-chart'), options);
             self.statementsChart.render();
+        },
+        drawStatementHistoryChart() {
+            let self = this;
+            let history = self.activeStatement?.deed.deed_history === undefined ? [] : self.activeStatement.deed.deed_history;
+            let data = [];
+            history.forEach(item => {
+                data.push({
+                    date: moment(item.created_at).format('YYYY-MM-DD'),
+                    value: item.value,
+                });
+            });
+
+            let sorted = data.sort((a, b) => {
+                if (moment(a.date).isBefore(b.date)) {
+                    return -1;
+                } else if (moment(a.date).isAfter(b.date)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
+            let categories = [];
+            sorted.forEach(item => {
+                if (categories.indexOf(item.date) === -1) {
+                    categories.push(item.date);
+                }
+            });
+
+            let series = [{data: []}];
+            categories.forEach(category => {
+                sorted.forEach(item => {
+                    if (item.date === category) {
+                        series[0].data.push({x: category, y: item.value});
+                    }
+                });
+            });
+
+            let options = {
+                chart: {
+                    height: 400,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                    parentHeightOffset: 0,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                series: series,
+                markers: {
+                    strokeWidth: 7,
+                    strokeOpacity: 1,
+                    strokeColors: [window.colors.solid.white],
+                    colors: [self.getColorByStatementStatus(self.activeStatement?.review?.review_status.name_en)]
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                colors: [self.getColorByStatementStatus(self.activeStatement?.review?.review_status.name_en)],
+                grid: {
+                    xaxis: {
+                        lines: {
+                            show: true
+                        }
+                    },
+                    padding: {
+                        top: -20
+                    }
+                },
+                xaxis: {
+                    categories: categories,
+                },
+                yaxis: {
+                    min: 0,
+                    max: 5,
+                    forceNiceScale: true,
+                    decimalsInFloat: 0
+                }
+            };
+
+            if (self.statementsChart !== null) {
+                self.statementsChart.destroy();
+            }
+
+            if (self.statementHistoryChart !== null) {
+                self.statementHistoryChart.destroy();
+            }
+
+            self.statementHistoryChart = new ApexCharts(document.getElementById('statements-chart'), options);
+            self.statementHistoryChart.render();
         },
         componentHide() {
             this.componentActive = null;
@@ -1361,17 +1461,8 @@ export default {
         },
         updateActiveStatement(index) {
             let self = this;
-            this.activeStatement = this.componentActive?.statements?.[index];
-            this.componentActive?.statements.forEach(statement => {
-                if (statement?.deed?.value > 0) {
-                    let subCode = `${self.componentActive?.code}.${statement.code}`;
-                    if (statement.id === self.activeStatement.id) {
-                        self.statementsChart.showSeries(subCode);
-                    } else {
-                        self.statementsChart.hideSeries(subCode);
-                    }
-                }
-            });
+            self.activeStatement = self.componentActive?.statements?.[index];
+            self.drawStatementHistoryChart();
         },
         statusBulletColor(status) {
             switch (status) {
@@ -1388,6 +1479,18 @@ export default {
         initTooltips() {
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        },
+        getColorByStatementStatus(status) {
+            switch (status) {
+                case 'Pending':
+                    return '#ff9f43';
+                case 'Accepted':
+                    return '#28c76f';
+                case 'Rejected':
+                    return '#ea5455';
+                default:
+                    return '#ff9f43';
+            }
         }
     },
     mounted() {

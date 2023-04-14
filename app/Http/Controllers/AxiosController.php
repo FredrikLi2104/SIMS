@@ -21,6 +21,7 @@ use App\Models\Config;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Deed;
+use App\Models\DeedHistory;
 use App\Models\Dpa;
 use App\Models\Faq;
 use App\Models\Kpi;
@@ -251,7 +252,7 @@ class AxiosController extends Controller
                         $op = $statement->organisationPlan($org);
                         $statement->implementation = $op->implementation ?? '';
                         $od = $statement->organisationDeed($org);
-                        $statement->deed = $od;
+                        $statement->deed = $od?->load('deedHistory')->makeVisible('deedHistory');
                         $statement->review = $statement->organisationReview($org);
                         $statement->makeVisible('implementation', 'deed', 'review');
                     });
@@ -851,9 +852,21 @@ class AxiosController extends Controller
             // find if this statement already has an organisation deed
             $d = Deed::where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
             if ($d) {
+                if ($d['value'] !== $data['value']) {
+                    DeedHistory::create([
+                        'deed_id' => $d['id'],
+                        'value' => $data['value'],
+                        'user_id' => auth()->user()->id,
+                    ]);
+                }
                 $d->update(['user_id' => Auth::user()->id, 'value' => $data['value'], 'comment' => $data['comment']]);
             } else {
-                Deed::create(['organisation_id' => $o->id, 'statement_id' => $data['statement_id'], 'user_id' => Auth::user()->id, 'value' => $data['value'], 'comment' => $data['comment']]);
+                $d = Deed::create(['organisation_id' => $o->id, 'statement_id' => $data['statement_id'], 'user_id' => Auth::user()->id, 'value' => $data['value'], 'comment' => $data['comment']]);
+                DeedHistory::create([
+                    'deed_id' => $d['id'],
+                    'value' => $data['value'],
+                    'user_id' => auth()->user()->id,
+                ]);
             }
 
             $review = Review::where('organisation_id', $o->id)
