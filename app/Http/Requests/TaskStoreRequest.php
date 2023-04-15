@@ -43,10 +43,10 @@ class TaskStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title_en' => 'required',
-            'title_se' => 'required',
-            'desc_en' => 'required',
-            'desc_se' => 'required',
+            'title_en' => 'required_without:title_se',
+            'title_se' => 'required_without:title_en',
+            'desc_en' => 'required_without:desc_se',
+            'desc_se' => 'required_without:desc_en',
             'start' => 'required|date',
             'end' => 'required|date|after_or_equal:start',
             'hours' => 'required|numeric|min:0',

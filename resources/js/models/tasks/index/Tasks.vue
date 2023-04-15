@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-lg-7 d-flex justify-content-center align-items-start mb-1">
             <tasks-wheel :months="months" :selected-year="selectedYear" :tasks="tasksForWheel"
-                         @edit-task="editTask"></tasks-wheel>
+                         @view-task="viewTask"></tasks-wheel>
         </div>
         <div class="col-lg-5">
             <div class="card">
@@ -83,26 +83,26 @@
         </div>
         <div class="offcanvas-body mx-0 flex-grow-0">
             <form id="task-form">
-                <div class="mb-50">
+                <div v-show="isUpdate || locale == 'en'" class="mb-50">
                     <label for="title-en" class="form-label">{{ `${messages.title} ${messages.inEnglish}` }}</label>
                     <input id="title-en" type="text" :class="`form-control ${errors?.title_en ? 'is-invalid' : ''}`"
                            name="title_en" v-model="titleEn">
                     <div v-if="errors?.title_en" class="invalid-feedback">{{ errors.title_en[0] }}</div>
                 </div>
-                <div class="mb-50">
+                <div v-show="isUpdate || locale == 'se'" class="mb-50">
                     <label for="title-se" class="form-label">{{ `${messages.title} ${messages.inSwedish}` }}</label>
                     <input id="title-se" type="text" :class="`form-control ${errors?.title_se ? 'is-invalid' : ''}`"
                            name="title_se" v-model="titleSe">
                     <div v-if="errors?.title_se" class="invalid-feedback">{{ errors.title_se[0] }}</div>
                 </div>
-                <div class="mb-50">
+                <div v-show="isUpdate || locale == 'en'" class="mb-50">
                     <label class="form-label" for="desc-en">{{ messages.descInEnglish }}</label>
                     <div id="desc-en-editor"></div>
                     <input id="desc-en" name="desc_en" type="hidden" :value="descEn"
                            :class="`${errors?.desc_en ? 'is-invalid' : ''}`"/>
                     <div v-if="errors?.desc_en" class="invalid-feedback">{{ errors.desc_en[0] }}</div>
                 </div>
-                <div class="mb-50">
+                <div v-show="isUpdate || locale == 'se'" class="mb-50">
                     <label class="form-label" for="desc-se">{{ messages.descInSwedish }}</label>
                     <div id="desc-se-editor"></div>
                     <input id="desc-se" name="desc_se" type="hidden" :value="descSe"
@@ -133,7 +133,7 @@
                             name="task_status_id" :data-placeholder="messages.pleaseSelect">
                         <option value=""></option>
                         <option v-for="status in statuses" :value="status.id"
-                                :selected="taskData?.task_status_id === status.id">
+                                :selected="taskData?.task_status_id === status.id || (!isUpdate && status.name_en == 'Pending')">
                             {{ status[`name_${locale}`] }}
                         </option>
                     </select>
@@ -239,6 +239,18 @@
                    v-for="(action, index) in taskData?.actions" target="_blank">
                     {{ action.action_type[`name_${locale}`] }}
                 </a>
+            </div>
+            <div v-for="selectedAction in selectedActions" :key="selectedAction.id" class="mb-1">
+                <h6 class="text-sm font-weight-semibold me-1">{{ selectedAction.label }}:</h6>
+                <select class="select2" multiple disabled>
+                    <option v-for="item in selectedAction.data" :key="item.id"
+                            :selected="selectedAction.selected?.includes(item.id)">
+                        {{
+                            selectedAction.type == 'component' ? `${item.code} | ${item[`name_${locale}`]}` :
+                                item.subcode
+                        }}
+                    </option>
+                </select>
             </div>
         </div>
     </div>
@@ -629,6 +641,9 @@ export default {
                 self.errors = null;
                 self.resetForm();
             });
+            document.getElementById('task-view-offcanvas').addEventListener('hidden.bs.offcanvas', function () {
+                self.resetForm();
+            });
         },
         deltaToHtml(delta) {
             let deltaOps = [];
@@ -666,7 +681,8 @@ export default {
             this.components = null;
             this.statements = null;
             this.selectedActions = {};
-            $('#status').val(null).trigger('change');
+            let status = this.statuses.find(status => status.name_en == 'Pending');
+            $('#status').val(status.id).trigger('change');
             $('#assigned-to').val(null).trigger('change');
             $('#action').val(null).trigger('change');
         },

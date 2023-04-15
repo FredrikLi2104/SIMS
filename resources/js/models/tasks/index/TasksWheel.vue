@@ -17,7 +17,7 @@
 export default {
     name: "TasksWheel",
     props: ['months', 'selectedYear', 'tasks'],
-    emits: ['editTask'],
+    emits: ['viewTask'],
     data() {
         return {
             outerRingWidth: 40,
@@ -168,7 +168,7 @@ export default {
                 let segment = self.taskSegments.find(segment => context.isPointInStroke(segment.path, evt.offsetX, evt.offsetY));
 
                 if (segment !== undefined) {
-                    self.$emit('editTask', segment.task.id);
+                    self.$emit('viewTask', segment.task.id);
                     document.getElementById('tooltip').classList.add('d-none');
                 }
             });

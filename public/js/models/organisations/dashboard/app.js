@@ -22283,7 +22283,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "TasksWheel",
   props: ['months', 'selectedYear', 'tasks'],
-  emits: ['editTask'],
+  emits: ['viewTask'],
   data: function data() {
     return {
       outerRingWidth: 40,
@@ -22430,7 +22430,7 @@ __webpack_require__.r(__webpack_exports__);
           return context.isPointInStroke(segment.path, evt.offsetX, evt.offsetY);
         });
         if (segment !== undefined) {
-          self.$emit('editTask', segment.task.id);
+          self.$emit('viewTask', segment.task.id);
           document.getElementById('tooltip').classList.add('d-none');
         }
       });

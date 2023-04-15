@@ -89,10 +89,10 @@ class TaskController extends Controller
 
         DB::transaction(function () use ($data) {
             $task = Task::create([
-                'title_en' => $data['title_en'],
-                'title_se' => $data['title_se'],
-                'desc_en' => $data['desc_en'],
-                'desc_se' => $data['desc_se'],
+                'title_en' => $data['title_en'] ?? $data['title_se'],
+                'title_se' => $data['title_se'] ?? $data['title_en'],
+                'desc_en' => $data['desc_en'] ?? $data['desc_se'],
+                'desc_se' => $data['desc_se'] ?? $data['desc_en'],
                 'start' => $data['start'],
                 'end' => $data['end'],
                 'hours' => $data['hours'],

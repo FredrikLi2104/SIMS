@@ -58,7 +58,7 @@ class TaskPolicy
             return $task->created_by == $user->id;
         } elseif (Gate::allows('auditor')) {
             return $user->organisation->users->contains(function ($user) use ($task) {
-                return $task->created_by = $user->id;
+                return $task->created_by == $user->id;
             });
         }
     }
@@ -76,7 +76,7 @@ class TaskPolicy
             return $task->created_by == $user->id;
         } elseif (Gate::allows('auditor')) {
             return $user->organisation->users->contains(function ($user) use ($task) {
-                return $task->created_by = $user->id;
+                return $task->created_by == $user->id;
             });
         }
     }

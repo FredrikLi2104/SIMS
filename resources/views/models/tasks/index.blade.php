@@ -30,4 +30,10 @@
 @endsection
 @section('page-script')
     <script src="{{ asset(mix('js/models/tasks/index/app.js')) }}"></script>
+    <script>
+        let span = document.createElement('span');
+        span.classList.add('badge', 'badge-light-secondary', 'ms-50');
+        span.innerHTML = '{{ auth()->user()->organisation->name }}';
+        document.getElementsByClassName('content-header-title')[0].append(span);
+    </script>
 @endsection
