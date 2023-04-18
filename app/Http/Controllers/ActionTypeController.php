@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\App;
 
 class ActionTypeController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(ActionType::class, 'action_type');
+    }
+
     /**
      * Display a listing of the resource.
      *
