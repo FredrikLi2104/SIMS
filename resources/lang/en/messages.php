@@ -275,5 +275,7 @@ return [
     'populate_all' => 'Populate All',
     'depopulate_all' => 'Depopulate All',
     'items_required' => 'Please select at least one item.',
+    'source' => 'Source',
+    'size' => 'Size',
 ];
 ?>

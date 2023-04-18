@@ -274,4 +274,6 @@ return [
     'populate_all' => 'Befolka alla',
     'depopulate_all' => 'Avfolka alla',
     'items_required' => 'Välj minst ett objekt.',
+    'source' => 'Källa',
+    'size' => 'Storlek',
 ];

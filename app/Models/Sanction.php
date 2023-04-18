@@ -180,4 +180,9 @@ class Sanction extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function sanctionFiles()
+    {
+        return $this->hasMany(SanctionFile::class);
+    }
 }

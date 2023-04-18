@@ -14,6 +14,7 @@ use App\Http\Requests\OrganisationsStatementsPlansUpdate;
 use App\Http\Requests\OrganisationsStatementsPlansUpdateRequest;
 use App\Http\Requests\OrganisationsStatementsReviewsUpdateRequest;
 use App\Http\Requests\RiskCommentStoreRequest;
+use App\Http\Requests\SanctionFileUploadRequest;
 use App\Models\Action;
 use App\Models\ActionType;
 use App\Models\Component;
@@ -27,7 +28,6 @@ use App\Models\Faq;
 use App\Models\Kpi;
 use App\Models\Kpicomment;
 use App\Models\Link;
-use App\Models\Organisation;
 use App\Models\Period;
 use App\Models\Plan;
 use App\Models\Review;
@@ -35,6 +35,7 @@ use App\Models\ReviewStatus;
 use App\Models\Risk;
 use App\Models\RiskComment;
 use App\Models\Sanction;
+use App\Models\SanctionFile;
 use App\Models\Statement;
 use App\Models\Tag;
 use App\Models\Task;
@@ -42,8 +43,6 @@ use App\Models\TaskStatus;
 use App\Models\TaskStatuses;
 use App\Models\Template;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
-use Illuminate\Http\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -323,9 +322,7 @@ class AxiosController extends Controller
     public function organisationsDo($locale, Action $action = null)
     {
         if ($action) {
-            if (auth()->user()->cannot('view', $action)) {
-                return response()->json([], 403);
-            }
+            //TODO: check access
 
             if ($action->actionType->model == 'component') {
                 $components = $action->components;
@@ -473,9 +470,7 @@ class AxiosController extends Controller
         }
 
         if ($action) {
-            if (auth()->user()->cannot('view', $action)) {
-                return response()->json([], 403);
-            }
+            //TODO: check access
 
             if ($action->actionType->model == 'component') {
                 $components = $action->components;
@@ -558,12 +553,15 @@ class AxiosController extends Controller
     public function organisationsPlanAuditor($locale, Action $action = null)
     {
         if ($action) {
-            if (auth()->user()->cannot('view', $action)) {
-                return response()->json([], 403);
-            }
+            //TODO: check access
 
             if ($action->actionType->model == 'statement') {
                 $statements = $action->statements->makeVisible(['concat', 'guide', 'plans']);
+            } else if ($action->actionType->model == 'component') {
+                $components = $action->components;
+                $statements = $components->flatMap(function ($component) {
+                    return $component->statements->makeVisible(['concat', 'guide', 'plans']);
+                });
             }
         } else {
             $statements = Statement::all()->makeVisible(['concat', 'guide', 'plans']);
@@ -637,9 +635,7 @@ class AxiosController extends Controller
     public function organisationsReview($locale, Action $action = null)
     {
         if ($action) {
-            if (auth()->user()->cannot('view', $action)) {
-                return response()->json([], 403);
-            }
+            //TODO: check access
 
             if ($action->actionType->model == 'component') {
                 $components = $action->components;
@@ -1092,6 +1088,39 @@ class AxiosController extends Controller
         return $r;
     }
 
+    public function sanctionFileDelete($locale, Sanction $sanction, SanctionFile $sanctionFile)
+    {
+        Storage::delete($sanctionFile['path']);
+        $sanctionFile->delete();
+
+        return ['success' => true];
+    }
+
+    public function sanctionFileUpload(SanctionFileUploadRequest $request, $locale, Sanction $sanction)
+    {
+        $uuid = Str::uuid();
+        $ext = $request->file('file')->extension();
+        $path = $request->file('file')->storeAs('public/sanctions/uploads', "$uuid.$ext");
+
+        SanctionFile::create([
+            'title' => $request->post('title'),
+            'path' => $path,
+            'sanction_id' => $sanction->id
+        ]);
+
+        return ['success' => true];
+    }
+
+    public function sanctionFiles($locale, Sanction $sanction)
+    {
+        $files = SanctionFile::where('sanction_id', $sanction->id)->get();
+
+        return $files->map(function ($file) {
+            $file->size = number_format(Storage::size($file->path) / 1024);
+            return $file;
+        });
+    }
+
     /**
      * Return all sanctions along with dictionary
      *
@@ -1202,7 +1231,7 @@ class AxiosController extends Controller
             $query->where('user_id', $filterByUser);
         })->count();
 
-        $sanctions->load(['articles', 'dpa', 'user'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party']);
+        $sanctions->load(['articles', 'dpa', 'user', 'sni', 'type', 'statements', 'tags', 'sanctionFiles'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party', 'sni', 'type', 'source', 'statements', 'tags', 'sanctionFiles']);
 
         foreach ($sanctions as $sanction) {
             $articles = $sanction->articles;
@@ -1220,6 +1249,13 @@ class AxiosController extends Controller
                     }
                 }
             }
+
+            $sanction->statements->each(function ($statement) use (&$components) {
+                $statement->makeVisible('subcode');
+            });
+
+            $sanction->components = $sanction->statements->pluck('component.code')->unique()->values();
+            $sanction->makeVisible('components');
         }
 
         App::setlocale($locale);

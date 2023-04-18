@@ -340,6 +340,19 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="mb-1">
+                                        <label class="form-label" for="source">@lang('messages.source')
+                                            [@lang('messages.optional')]</label>
+                                        <input type="text" id="source"
+                                               class="form-control @error('source') is-invalid @enderror"
+                                               placeholder="https://www.dvi.gov.lv/lv/lemumi" name="source"
+                                               value="{{ $sanction->source }}"/>
+                                        @error('source')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
                                 <quill locale="{{ App::currentLocale() }}"
                                        label-en="{{ __('messages.desc') . ' ' . __('messages.inEnglish') . ' [' . __('messages.optional') . ']' }}"
                                        label-se="{{ __('messages.desc') . ' ' . __('messages.inSwedish') . ' [' . __('messages.optional') . ']' }}"

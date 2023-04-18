@@ -88,6 +88,9 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('risks/{risk}', [AxiosController::class, 'risksShow'])->middleware('can:auditor-user')->name('axios.risks.show');
     Route::get('sanctions', [AxiosController::class, 'sanctions'])->middleware('can:moderator')->name('axios.sanctions.index');
     Route::get('sanctions/{sanction}', [AxiosController::class, 'sanctionsShow'])->middleware('can:auditor-user')->name('axios.sanctions.show');
+    Route::delete('sanctions/{sanction}/files/{sanction_file}', [AxiosController::class, 'sanctionFileDelete'])->middleware('can:admin')->name('axios.sanction.files.delete');
+    Route::post('sanctions/{sanction}/files', [AxiosController::class, 'sanctionFileUpload'])->middleware('can:admin')->name('axios.sanction.files.store');
+    Route::get('sanctions/{sanction}/files', [AxiosController::class, 'sanctionFiles'])->middleware('can:admin')->name('axios.sanction.files.index');
     Route::get('sanctions/admin/{sanction}', [AxiosController::class, 'sanction'])->middleware('can:admin')->name('axios.sanctions.view');
     Route::get('/statistics/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:auditor-user')->name('axios.statistics.sanctions');
     Route::get('/statistics/sanctions/{by}', [AxiosController::class, 'sanctionsStats'])->middleware('can:auditor-user')->name('axios.statistics.sanctions.by');
