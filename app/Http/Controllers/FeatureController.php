@@ -196,7 +196,7 @@ class FeatureController extends Controller
                             ->update([
                                 'user_id' => auth()->user()->id,
                                 'review_status_id' => $review['review_status_id'],
-                                'review' => $review['review'],
+                                'review' => '',
                             ]);
                     } else {
                         Review::insert(
@@ -205,7 +205,7 @@ class FeatureController extends Controller
                                 'statement_id' => $review['statement_id'],
                                 'user_id' => auth()->user()->id,
                                 'review_status_id' => $review['review_status_id'],
-                                'review' => $review['review'],
+                                'review' => '',
                             ]
                         );
                     }
