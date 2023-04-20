@@ -1380,13 +1380,17 @@ class AxiosController extends Controller
         $until = Carbon::createFromDate($year, 12, 31);
         $tasks = Task::with('taskStatus')
             ->where(function ($query) {
-                $query->where('created_by', auth()->user()->id)
-                    ->orWhere('assigned_to', auth()->user()->id);
+                $query->whereIn('created_by', auth()->user()->organisation->users->pluck('id'))
+                    ->orWherein('assigned_to', auth()->user()->organisation->users->pluck('id'));
             })
             ->whereDate('start', '>=', $since)
             ->whereDate('start', '<=', $until)
             ->orderBy('start')
             ->get();
+
+        $tasks = $tasks->filter(function ($task) {
+            return $task->creator->role == auth()->user()->role || $task->assignee->role == auth()->user()->role;
+        });
 
         $actionColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
         $result = [];
@@ -1416,8 +1420,8 @@ class AxiosController extends Controller
 
         $tasks = Task::with('taskStatus')
             ->where(function ($query) {
-                $query->where('created_by', auth()->user()->id)
-                    ->orWhere('assigned_to', auth()->user()->id);
+                $query->whereIn('created_by', auth()->user()->organisation->users->pluck('id'))
+                    ->orWherein('assigned_to', auth()->user()->organisation->users->pluck('id'));
             })
             ->where(function ($query) use ($yearStart, $yearEnd) {
                 $query->where(function ($query) use ($yearStart, $yearEnd) {
@@ -1429,6 +1433,10 @@ class AxiosController extends Controller
                 });
             })
             ->get();
+
+        $tasks = $tasks->filter(function ($task) {
+            return $task->creator->role == auth()->user()->role || $task->assignee->role == auth()->user()->role;
+        });
 
         $tasksGrouped = collect();
         foreach ($tasks as $task) {
