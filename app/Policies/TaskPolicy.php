@@ -54,13 +54,7 @@ class TaskPolicy
      */
     public function update(User $user, Task $task)
     {
-        if (Gate::allows('user')) {
-            return $task->created_by == $user->id;
-        } elseif (Gate::allows('auditor')) {
-            return $user->organisation->users->contains(function ($user) use ($task) {
-                return $task->created_by == $user->id;
-            });
-        }
+        return $task->creator->role == auth()->user()->role || $task->assignee->role == auth()->user()->role;
     }
 
     /**
@@ -72,13 +66,7 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task)
     {
-        if (Gate::allows('user')) {
-            return $task->created_by == $user->id;
-        } elseif (Gate::allows('auditor')) {
-            return $user->organisation->users->contains(function ($user) use ($task) {
-                return $task->created_by == $user->id;
-            });
-        }
+        return $task->creator->role == auth()->user()->role || $task->assignee->role == auth()->user()->role;
     }
 
     /**
