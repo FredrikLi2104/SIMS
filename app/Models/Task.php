@@ -22,6 +22,11 @@ class Task extends Model
         return $this->hasMany(Action::class);
     }
 
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
     public function assignee()
     {
         return $this->belongsTo(User::class, 'assigned_to');

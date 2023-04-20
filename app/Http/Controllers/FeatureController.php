@@ -11,6 +11,7 @@ use App\Models\Organisation;
 use App\Models\Review;
 use App\Models\Task;
 use App\Models\TaskStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -57,12 +58,21 @@ class FeatureController extends Controller
         DB::transaction(function () use ($organisations, $tasks) {
             foreach ($organisations as $organisationId) {
                 $organisation = Organisation::find($organisationId);
+                $users = $organisation->users;
+                $users->each(function ($user) use ($tasks) {
+                    Task::where(function ($query) use ($user) {
+                        $query->where('created_by', $user->id)
+                            ->orWhere('assigned_to', $user->id);
+                    })->whereNotIn('id', $tasks)
+                        ->delete();
+                });
+
                 $auditor = $organisation->users->where('role', 'auditor')->first();
-                if ($auditor) {
-                    foreach ($tasks as $taskId) {
-                        $task = Task::find($taskId);
-                        $taskStatus = TaskStatus::where('name_en', 'Pending')->first();
-                        $actions = $task->actions;
+                foreach ($tasks as $taskId) {
+                    $task = Task::find($taskId);
+                    $taskStatus = TaskStatus::where('name_en', 'Pending')->first();
+                    $actions = $task->actions;
+                    if ($auditor && ($task->creator->role == 'auditor' || $task->assignee->role == 'auditor')) {
                         $createdTask = Task::create([
                             'title_en' => $task['title_en'],
                             'title_se' => $task['title_se'],
@@ -72,7 +82,7 @@ class FeatureController extends Controller
                             'end' => $task['end'],
                             'hours' => $task['hours'],
                             'task_status_id' => $taskStatus->id,
-                            'created_by' => auth()->user()->id,
+                            'created_by' => $auditor->id,
                             'assigned_to' => $auditor->id,
                         ]);
 
@@ -83,14 +93,46 @@ class FeatureController extends Controller
                                 'action_status_id' => $action->action_status_id,
                             ]);
 
-                            if ($action->actionType->model == 'component') {
+                            if ($action->actionType?->model == 'component') {
                                 $components = $action->components->pluck('id')->all();
                                 $createdAction->components()->attach($components);
-                            } elseif ($action->actionType->model == 'statement') {
+                            } elseif ($action->actionType?->model == 'statement') {
                                 $statements = $action->statements->pluck('id')->all();
                                 $createdAction->statements()->attach($statements);
                             }
                         }
+                    } else {
+                        $users = $organisation->users()->where('role', 'user')->get();
+                        $users->each(function ($user) use ($task, $taskStatus, $actions) {
+                            $createdTask = Task::create([
+                                'title_en' => $task['title_en'],
+                                'title_se' => $task['title_se'],
+                                'desc_en' => $task['desc_en'],
+                                'desc_se' => $task['desc_se'],
+                                'start' => $task['start'],
+                                'end' => $task['end'],
+                                'hours' => $task['hours'],
+                                'task_status_id' => $taskStatus->id,
+                                'created_by' => $user->id,
+                                'assigned_to' => $user->id,
+                            ]);
+
+                            foreach ($actions as $action) {
+                                $createdAction = Action::create([
+                                    'task_id' => $createdTask->id,
+                                    'action_type_id' => $action->action_type_id,
+                                    'action_status_id' => $action->action_status_id,
+                                ]);
+
+                                if ($action->actionType?->model == 'component') {
+                                    $components = $action->components->pluck('id')->all();
+                                    $createdAction->components()->attach($components);
+                                } elseif ($action->actionType?->model == 'statement') {
+                                    $statements = $action->statements->pluck('id')->all();
+                                    $createdAction->statements()->attach($statements);
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -136,6 +178,44 @@ class FeatureController extends Controller
                         );
                     }
                 });
+
+                $auditor = $organisation->users->where('role', 'auditor')->first();
+                if ($auditor) {
+                    $auditorStatement = DB::table('auditor_statement')
+                        ->join('statements', 'statements.id', '=', 'auditor_statement.statement_id')
+                        ->join('components', 'components.id', '=', 'statements.component_id')
+                        ->where('components.id', $componentId)
+                        ->whereIn('auditor_statement.user_id', auth()->user()->organisation->users->pluck('id'))
+                        ->first();
+
+                    if ($auditorStatement) {
+                        $auditorStatementExists = DB::table('auditor_statement')
+                            ->join('statements', 'statements.id', '=', 'auditor_statement.statement_id')
+                            ->join('components', 'components.id', '=', 'statements.component_id')
+                            ->where('components.id', $componentId)
+                            ->whereIn('auditor_statement.user_id', $organisation->users->pluck('id'))
+                            ->exists();
+
+                        if ($auditorStatementExists) {
+                            DB::table('auditor_statement')
+                                ->join('statements', 'statements.id', '=', 'auditor_statement.statement_id')
+                                ->join('components', 'components.id', '=', 'statements.component_id')
+                                ->where('components.id', $componentId)
+                                ->whereIn('auditor_statement.user_id', $organisation->users->pluck('id'))
+                                ->update(['auditor_statement.guide' => $auditorStatement->guide, 'auditor_statement.updated_at' => Carbon::now()]);
+                        } else {
+                            DB::table('auditor_statement')
+                                ->insert([
+                                    'statement_id' => $auditorStatement->statement_id,
+                                    'plan_id' => $auditorStatement->plan_id,
+                                    'user_id' => $auditor->id,
+                                    'guide' => $auditorStatement->guide,
+                                    'created_at' => Carbon::now(),
+                                    'updated_at' => Carbon::now(),
+                                ]);
+                        }
+                    }
+                }
             }
         }
 

@@ -30,7 +30,7 @@ class OrganisationTasksUpdateRequest extends FormRequest
                 'required',
                 function ($attribute, $value, $fail) {
                     $tasks = Task::with('taskStatus')
-                        ->where('created_by', auth()->user()->organisation->id)
+                        ->whereIn('created_by', auth()->user()->organisation->users->pluck('id'))
                         ->get();
 
                     foreach ($value as $taskId) {

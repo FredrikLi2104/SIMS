@@ -145,7 +145,8 @@ class AxiosController extends Controller
     public function featuresTasks($locale, $year = null)
     {
         return Task::with('taskStatus')
-            ->where('created_by', auth()->user()->organisation->id)
+            ->distinct()
+            ->whereIn('created_by', auth()->user()->organisation->users->pluck('id'))
             ->when($year, function ($query) use ($year) {
                 $since = Carbon::createFromDate($year, 1, 1);
                 $until = Carbon::createFromDate($year, 12, 31);
@@ -159,7 +160,7 @@ class AxiosController extends Controller
         return DB::table('tasks')
             ->selectRaw('YEAR(start) AS year')
             ->distinct()
-            ->where('created_by', auth()->user()->organisation->id)
+            ->whereIn('created_by', auth()->user()->organisation->users->pluck('id'))
             ->orderBy('year')
             ->get()
             ->pluck('year')
@@ -1393,11 +1394,13 @@ class AxiosController extends Controller
             $task->can_update = Gate::allows('update', $task);
             $task->can_delete = Gate::allows('delete', $task);
             $task->actions->each(function ($action) use ($locale, $task, $actionColors, &$result) {
-                $actionName = $action->actionType->{"name_$locale"};
-                if (!isset($result[$actionName]['color'])) {
-                    $result[$actionName]['color'] = $actionColors[$action->actionType->id - 1] ?? null;
+                if ($action->deleted_at === null) {
+                    $actionName = $action->actionType->{"name_$locale"};
+                    if (!isset($result[$actionName]['color'])) {
+                        $result[$actionName]['color'] = $actionColors[$action->actionType->id - 1] ?? null;
+                    }
+                    $result[$actionName]['tasks'][] = $task;
                 }
-                $result[$actionName]['tasks'][] = $task;
             });
         });
 
