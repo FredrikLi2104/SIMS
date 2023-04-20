@@ -44,6 +44,38 @@ class FeatureController extends Controller
             foreach ($statements as $statementId) {
                 $statement = auth()->user()->organisation->statements()->where('statements.id', $statementId)->first();
                 $organisation->statements()->syncWithoutDetaching([$statementId => ['implementation' => $statement->pivot->implementation]]);
+
+                $auditor = $organisation->users->where('role', 'auditor')->first();
+                if ($auditor) {
+                    $auditorStatement = DB::table('auditor_statement')
+                        ->where('statement_id', $statementId)
+                        ->whereIn('auditor_statement.user_id', auth()->user()->organisation->users->pluck('id'))
+                        ->first();
+
+                    if ($auditorStatement) {
+                        $auditorStatementExists = DB::table('auditor_statement')
+                            ->where('statement_id', $statementId)
+                            ->whereIn('auditor_statement.user_id', $organisation->users->pluck('id'))
+                            ->exists();
+
+                        if ($auditorStatementExists) {
+                            DB::table('auditor_statement')
+                                ->where('statement_id', $statementId)
+                                ->whereIn('auditor_statement.user_id', $organisation->users->pluck('id'))
+                                ->update(['auditor_statement.guide' => $auditorStatement->guide, 'auditor_statement.updated_at' => Carbon::now()]);
+                        } else {
+                            DB::table('auditor_statement')
+                                ->insert([
+                                    'statement_id' => $auditorStatement->statement_id,
+                                    'plan_id' => $auditorStatement->plan_id,
+                                    'user_id' => $auditor->id,
+                                    'guide' => $auditorStatement->guide,
+                                    'created_at' => Carbon::now(),
+                                    'updated_at' => Carbon::now(),
+                                ]);
+                        }
+                    }
+                }
             }
         }
 
@@ -101,7 +133,7 @@ class FeatureController extends Controller
                                 $createdAction->statements()->attach($statements);
                             }
                         }
-                    } else {
+                    } else if ($task->creator->role == 'user' || $task->assignee->role == 'user') {
                         $users = $organisation->users()->where('role', 'user')->get();
                         $users->each(function ($user) use ($task, $taskStatus, $actions) {
                             $createdTask = Task::create([
