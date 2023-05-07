@@ -32,7 +32,8 @@ class UserStoreRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,name'],
             'password' => ['required', 'confirmed', Password::min(8)->symbols()],
             'role' => ['required', new UserRole],
-            'organisation_id' => ['required', 'exists:organisations,id']
+            'organisation_id' => ['required', 'exists:organisations,id'],
+            'disabled' => 'nullable|sometimes|boolean'
         ];
     }
 }

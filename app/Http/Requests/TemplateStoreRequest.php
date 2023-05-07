@@ -10,15 +10,13 @@ class TemplateStoreRequest extends FormRequest
 {
     public function withValidator($validator)
     {
-        $actionTypeIds = $this->action_type_id ?? [];
-        foreach ($actionTypeIds as $actionTypeId) {
-            $actionType = ActionType::find($actionTypeId);
-
-            $validator->sometimes("action_type_items.$actionTypeId", 'required|exists:components,id', function ($input) use ($actionType) {
+        $actionType = ActionType::find($this->action_type_id);
+        if ($actionType) {
+            $validator->sometimes("action_type_items.{$this->action_type_id}", 'required|exists:components,id', function ($input) use ($actionType) {
                 return $actionType->model == 'component';
             });
 
-            $validator->sometimes("action_type_items.$actionTypeId", 'required|exists:statements,id', function ($input) use ($actionType) {
+            $validator->sometimes("action_type_items.{$this->action_type_id}", 'required|exists:statements,id', function ($input) use ($actionType) {
                 return $actionType->model == 'statement';
             });
         }

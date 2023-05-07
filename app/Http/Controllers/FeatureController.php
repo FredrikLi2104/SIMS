@@ -93,8 +93,7 @@ class FeatureController extends Controller
                 $users = $organisation->users;
                 $users->each(function ($user) use ($tasks) {
                     Task::where(function ($query) use ($user) {
-                        $query->where('created_by', $user->id)
-                            ->orWhere('assigned_to', $user->id);
+                        $query->where('created_by', $user->id);
                     })->whereNotIn('id', $tasks)
                         ->delete();
                 });
@@ -103,8 +102,7 @@ class FeatureController extends Controller
                 foreach ($tasks as $taskId) {
                     $task = Task::find($taskId);
                     $taskStatus = TaskStatus::where('name_en', 'Pending')->first();
-                    $actions = $task->actions;
-                    if ($auditor && ($task->creator->role == 'auditor' || $task->assignee->role == 'auditor')) {
+                    if ($auditor && $task->creator->role == 'auditor') {
                         $createdTask = Task::create([
                             'title_en' => $task['title_en'],
                             'title_se' => $task['title_se'],
@@ -115,27 +113,24 @@ class FeatureController extends Controller
                             'hours' => $task['hours'],
                             'task_status_id' => $taskStatus->id,
                             'created_by' => $auditor->id,
-                            'assigned_to' => $auditor->id,
                         ]);
 
-                        foreach ($actions as $action) {
-                            $createdAction = Action::create([
-                                'task_id' => $createdTask->id,
-                                'action_type_id' => $action->action_type_id,
-                                'action_status_id' => $action->action_status_id,
-                            ]);
+                        $createdAction = Action::create([
+                            'task_id' => $createdTask->id,
+                            'action_type_id' => $task->action->action_type_id,
+                            'action_status_id' => $task->action->action_status_id,
+                        ]);
 
-                            if ($action->actionType?->model == 'component') {
-                                $components = $action->components->pluck('id')->all();
-                                $createdAction->components()->attach($components);
-                            } elseif ($action->actionType?->model == 'statement') {
-                                $statements = $action->statements->pluck('id')->all();
-                                $createdAction->statements()->attach($statements);
-                            }
+                        if ($task->action->actionType?->model == 'component') {
+                            $components = $task->action->components->pluck('id')->all();
+                            $createdAction->components()->attach($components);
+                        } elseif ($task->action->actionType?->model == 'statement') {
+                            $statements = $task->action->statements->pluck('id')->all();
+                            $createdAction->statements()->attach($statements);
                         }
-                    } else if ($task->creator->role == 'user' || $task->assignee->role == 'user') {
+                    } else if ($task->creator->role == 'user') {
                         $users = $organisation->users()->where('role', 'user')->get();
-                        $users->each(function ($user) use ($task, $taskStatus, $actions) {
+                        $users->each(function ($user) use ($task, $taskStatus) {
                             $createdTask = Task::create([
                                 'title_en' => $task['title_en'],
                                 'title_se' => $task['title_se'],
@@ -146,23 +141,20 @@ class FeatureController extends Controller
                                 'hours' => $task['hours'],
                                 'task_status_id' => $taskStatus->id,
                                 'created_by' => $user->id,
-                                'assigned_to' => $user->id,
                             ]);
 
-                            foreach ($actions as $action) {
-                                $createdAction = Action::create([
-                                    'task_id' => $createdTask->id,
-                                    'action_type_id' => $action->action_type_id,
-                                    'action_status_id' => $action->action_status_id,
-                                ]);
+                            $createdAction = Action::create([
+                                'task_id' => $createdTask->id,
+                                'action_type_id' => $task->action->action_type_id,
+                                'action_status_id' => $task->action->action_status_id,
+                            ]);
 
-                                if ($action->actionType?->model == 'component') {
-                                    $components = $action->components->pluck('id')->all();
-                                    $createdAction->components()->attach($components);
-                                } elseif ($action->actionType?->model == 'statement') {
-                                    $statements = $action->statements->pluck('id')->all();
-                                    $createdAction->statements()->attach($statements);
-                                }
+                            if ($task->action->actionType?->model == 'component') {
+                                $components = $task->action->components->pluck('id')->all();
+                                $createdAction->components()->attach($components);
+                            } elseif ($task->action->actionType?->model == 'statement') {
+                                $statements = $task->action->statements->pluck('id')->all();
+                                $createdAction->statements()->attach($statements);
                             }
                         });
                     }

@@ -12,7 +12,7 @@
         },
         {
             "name": "tasks",
-            "auth": "all",
+            "auth": "auditor-user",
             "icon": "layers",
             "url": "tasks",
             "slug": [

@@ -30,22 +30,6 @@ class TaskController extends Controller
     {
         $messages = __('messages');
         $statuses = TaskStatus::orderBy('sort_order')->get();
-        $assignees = User::where('organisation_id', auth()->user()->organisation->id)
-            ->orderBy('name')
-            ->get();
-
-        $subOrganisations = auth()->user()->organisation->organisations->all();
-
-        while (count($subOrganisations)) {
-            $next = [];
-            foreach ($subOrganisations as $organisation) {
-                $assignees = $assignees->merge($organisation->users);
-                $next = array_merge($next, $organisation->organisations->all());
-            }
-
-            $subOrganisations = $next;
-        }
-
         $actionTypes = ActionType::where('role', auth()->user()->role)
             ->orderBy("name_$locale")
             ->get();
@@ -64,7 +48,7 @@ class TaskController extends Controller
             $date->copy()->addYear()->format('Y')
         ];
 
-        return view('models/tasks/index', compact('messages', 'statuses', 'assignees', 'actionTypes', 'months', 'years'));
+        return view('models/tasks/index', compact('messages', 'statuses', 'actionTypes', 'months', 'years'));
     }
 
     /**
@@ -98,21 +82,18 @@ class TaskController extends Controller
                 'hours' => $data['hours'],
                 'task_status_id' => $data['task_status_id'],
                 'created_by' => auth()->user()->id,
-                'assigned_to' => $data['assigned_to'],
             ]);
 
-            foreach ($data['action_type_id'] as $actionTypeId) {
-                $action = Action::create([
-                    'task_id' => $task->id,
-                    'action_type_id' => $actionTypeId,
-                    'action_status_id' => 1,
-                ]);
+            $action = Action::create([
+                'task_id' => $task->id,
+                'action_type_id' => $data['action_type_id'],
+                'action_status_id' => 1,
+            ]);
 
-                if ($action->actionType->model == 'component') {
-                    $action->components()->attach($data['action_type_items'][$actionTypeId]);
-                } elseif ($action->actionType->model == 'statement') {
-                    $action->statements()->attach($data['action_type_items'][$actionTypeId]);
-                }
+            if ($action->actionType->model == 'component') {
+                $action->components()->attach($data['action_type_items'][$data['action_type_id']]);
+            } elseif ($action->actionType->model == 'statement') {
+                $action->statements()->attach($data['action_type_items'][$data['action_type_id']]);
             }
         });
 
@@ -127,7 +108,7 @@ class TaskController extends Controller
      */
     public function show($locale, Task $task)
     {
-        return $task->load('assignee', 'taskStatus', 'actions', 'actions.actionType', 'actions.components', 'actions.statements');
+        return $task->load('taskStatus', 'action', 'action.actionType', 'action.components', 'action.statements');
     }
 
     /**
@@ -162,44 +143,37 @@ class TaskController extends Controller
                 'end' => $data['end'],
                 'hours' => $data['hours'],
                 'task_status_id' => $data['task_status_id'],
-                'assigned_to' => $data['assigned_to'],
             ]);
 
-            $toUpdate = $task->actions()->whereIn('action_type_id', $data['action_type_id'])->get();
-            $toDelete = $task->actions()->whereNotIn('action_type_id', $data['action_type_id'])->get();
-            $toInsert = array_diff($data['action_type_id'], $toUpdate->pluck('action_type_id')->all(), $toDelete->pluck('action_type_id')->all());
+            if ($task->action->action_type_id == $data['action_type_id']) { // Update
+                if ($task->action->actionType->model == 'component') {
+                    $task->action->components()->sync($data['action_type_items'][$task->action->action_type_id]);
+                } elseif ($task->action->actionType->model == 'statement') {
+                    $task->action->statements()->sync($data['action_type_items'][$task->action->action_type_id]);
+                }
+            } else {
+                // Delete existing
+                if ($task->action->actionType->model == 'component') {
+                    $task->action->components()->detach();
+                } elseif ($task->action->actionType->model == 'statement') {
+                    $task->action->statements()->detach();
+                }
 
-            foreach ($toInsert as $actionTypeId) {
+                $task->action->delete();
+
+                // Add new
                 $action = Action::create([
                     'task_id' => $task->id,
-                    'action_type_id' => $actionTypeId,
+                    'action_type_id' => $data['action_type_id'],
                     'action_status_id' => 1,
                 ]);
 
                 if ($action->actionType->model == 'component') {
-                    $action->components()->attach($data['action_type_items'][$actionTypeId]);
+                    $action->components()->attach($data['action_type_items'][$data['action_type_id']]);
                 } elseif ($action->actionType->model == 'statement') {
-                    $action->statements()->attach($data['action_type_items'][$actionTypeId]);
+                    $action->statements()->attach($data['action_type_items'][$data['action_type_id']]);
                 }
             }
-
-            $toUpdate->each(function ($action) use ($data) {
-                if ($action->actionType->model == 'component') {
-                    $action->components()->sync($data['action_type_items'][$action->action_type_id]);
-                } elseif ($action->actionType->model == 'statement') {
-                    $action->statements()->sync($data['action_type_items'][$action->action_type_id]);
-                }
-            });
-
-            $toDelete->each(function ($action) use ($data) {
-                if ($action->actionType->model == 'component') {
-                    $action->components()->detach();
-                } elseif ($action->actionType->model == 'statement') {
-                    $action->statements()->detach();
-                }
-
-                $action->delete();
-            });
         });
 
         return ['success' => true];

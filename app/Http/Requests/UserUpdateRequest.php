@@ -32,7 +32,8 @@ class UserUpdateRequest extends FormRequest
             'email' => ['required', 'email', Rule::unique('users')->ignore($this->route()->user->id)],
             'password' => ['sometimes', 'nullable', 'confirmed', Password::min(8)->symbols()],
             'role' => ['required', new UserRole],
-            'organisation_id' => ['required', 'exists:organisations,id']
+            'organisation_id' => ['required', 'exists:organisations,id'],
+            'disabled' => 'nullable|sometimes|boolean'
         ];
     }
 }

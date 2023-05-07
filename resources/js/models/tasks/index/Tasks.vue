@@ -140,29 +140,18 @@
                     <div v-if="errors?.task_status_id" class="invalid-feedback">{{ errors.task_status_id[0] }}</div>
                 </div>
                 <div class="mb-50">
-                    <label class="form-label" for="assigned-to">{{ messages.assigned_to }}</label>
-                    <select id="assigned-to" :class="`select2 ${errors?.assigned_to ? 'is-invalid' : ''}`"
-                            name="assigned_to" :data-placeholder="messages.pleaseSelect">
-                        <option value=""></option>
-                        <option v-for="assignee in assignees" :value="assignee.id"
-                                :selected="taskData?.assigned_to === assignee.id">
-                            {{ assignee.name }}
-                        </option>
-                    </select>
-                    <div v-if="errors?.assigned_to" class="invalid-feedback">{{ errors.assigned_to[0] }}</div>
-                </div>
-                <div class="mb-50">
-                    <label class="form-label" for="assigned-to">{{ messages.action }}</label>
+                    <label class="form-label" for="action">{{ messages.action }}</label>
                     <select id="action" :class="`select2 ${errors?.action_type_id ? 'is-invalid' : ''}`"
-                            name="action_type_id[]" multiple :data-placeholder="messages.pleaseSelect">
+                            name="action_type_id" :data-placeholder="messages.pleaseSelect">
+                        <option value=""></option>
                         <option v-for="actionType in actionTypes" :value="actionType.id"
-                                :selected="taskData?.actions?.some(action => action.action_type_id === actionType.id)">
+                                :selected="taskData?.action?.action_type_id === actionType.id">
                             {{ actionType[`name_${locale}`] }}
                         </option>
                     </select>
                     <div v-if="errors?.action_type_id" class="invalid-feedback">{{ errors.action_type_id[0] }}</div>
                 </div>
-                <div v-for="selectedAction in selectedActions" :key="selectedAction.id" class="mb-50">
+                <div v-if="Object.keys(selectedAction).length" class="mb-50">
                     <label class="form-label" :for="`action-${selectedAction.id}`">{{ selectedAction.label }}</label>
                     <select :id="`action-${selectedAction.id}`"
                             :class="`select2 ${errors?.[`action_type_items.${selectedAction.id}`] ? 'is-invalid' : ''}`"
@@ -227,20 +216,14 @@
                         taskData?.task_status?.[`name_${locale}`]
                     }}</span>
             </div>
-            <div class="d-flex align-items-center mb-1">
-                <h6 class="text-sm font-weight-semibold me-1 mb-0">{{ messages.assigned_to }}:</h6>
-                <span>{{ taskData?.assignee?.name }}</span>
-            </div>
             <div class="mb-1">
                 <h6 class="text-sm font-weight-semibold me-1">{{ messages.action }}:</h6>
-                <a :href="`/${locale}/${action.action_type.url}/${action.id}`"
-                   class="btn btn-outline-primary waves-effect mb-25"
-                   :class="index < taskData.actions.length - 1 ? 'me-25' : ''"
-                   v-for="(action, index) in taskData?.actions" target="_blank">
-                    {{ action.action_type[`name_${locale}`] }}
+                <a :href="`/${locale}/${taskData?.action?.action_type.url}/${taskData?.action?.id}`"
+                   class="btn btn-outline-primary waves-effect mb-25" target="_blank">
+                    {{ taskData?.action?.action_type[`name_${locale}`] }}
                 </a>
             </div>
-            <div v-for="selectedAction in selectedActions" :key="selectedAction.id" class="mb-1">
+            <div v-if="Object.keys(selectedAction).length" class="mb-1">
                 <h6 class="text-sm font-weight-semibold me-1">{{ selectedAction.label }}:</h6>
                 <select class="select2" multiple disabled>
                     <option v-for="item in selectedAction.data" :key="item.id"
@@ -262,7 +245,7 @@ import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html';
 import Swal from "sweetalert2";
 
 export default {
-    props: ['locale', 'messages', 'statuses', 'assignees', 'actionTypes', 'months', 'years'],
+    props: ['locale', 'messages', 'statuses', 'actionTypes', 'months', 'years'],
     name: "Tasks",
     components: {TasksWheel},
     data() {
@@ -278,7 +261,7 @@ export default {
             hours: null,
             components: null,
             statements: null,
-            selectedActions: {},
+            selectedAction: {},
             tasks: [],
             isUpdate: false,
             taskData: {},
@@ -381,12 +364,13 @@ export default {
         handleActionTypeChange() {
             let self = this;
             $('#action').on('select2:select', function (e) {
+                self.selectedAction = {};
                 let actionType = self.actionTypes.find(actionType => actionType.id == e.params.data.id);
                 if (actionType.model == 'component') {
                     axios.get(`/${self.locale}/axios/components`)
                         .then(function (response) {
                             self.components = response.data;
-                            self.selectedActions[e.params.data.id] = {
+                            self.selectedAction = {
                                 id: e.params.data.id,
                                 label: e.params.data.text,
                                 type: 'component',
@@ -403,7 +387,7 @@ export default {
                     axios.get(`/${self.locale}/axios/statements`)
                         .then(function (response) {
                             self.statements = response.data;
-                            self.selectedActions[e.params.data.id] = {
+                            self.selectedAction = {
                                 id: e.params.data.id,
                                 label: e.params.data.text,
                                 type: 'statement',
@@ -417,10 +401,6 @@ export default {
 
                         });
                 }
-            });
-
-            $('#action').on('select2:unselect', function (e) {
-                delete self.selectedActions[e.params.data.id];
             });
         },
         submitTask() {
@@ -571,21 +551,17 @@ export default {
 
                     }
 
-                    if (self.taskData.actions.some(action => action.action_type.model == 'component')) {
+                    if (self.taskData.action.action_type.model == 'component') {
                         axios.get(`/${self.locale}/axios/components`)
                             .then(function (response) {
                                 self.components = response.data;
-                                self.taskData.actions.forEach(action => {
-                                    if (action.action_type.model == 'component') {
-                                        self.selectedActions[action.action_type.id] = {
-                                            id: action.action_type.id,
-                                            label: action.action_type[`name_${self.locale}`],
-                                            type: 'component',
-                                            data: self.components,
-                                            selected: action.components.map(component => component.id)
-                                        };
-                                    }
-                                });
+                                self.selectedAction = {
+                                    id: self.taskData.action.action_type.id,
+                                    label: self.taskData.action.action_type[`name_${self.locale}`],
+                                    type: 'component',
+                                    data: self.components,
+                                    selected: self.taskData.action.components.map(component => component.id)
+                                };
 
                                 self.$nextTick(() => {
                                     self.initSelect2();
@@ -596,21 +572,17 @@ export default {
                             });
                     }
 
-                    if (self.taskData.actions.some(action => action.action_type.model == 'statement')) {
+                    if (self.taskData.action.action_type.model == 'statement') {
                         axios.get(`/${self.locale}/axios/statements`)
                             .then(function (response) {
                                 self.statements = response.data;
-                                self.taskData.actions.forEach(action => {
-                                    if (action.action_type.model == 'statement') {
-                                        self.selectedActions[action.action_type.id] = {
-                                            id: action.action_type.id,
-                                            label: action.action_type[`name_${self.locale}`],
-                                            type: 'statement',
-                                            data: self.statements,
-                                            selected: action.statements.map(statement => statement.id)
-                                        };
-                                    }
-                                });
+                                self.selectedAction = {
+                                    id: self.taskData.action.action_type.id,
+                                    label: self.taskData.action.action_type[`name_${self.locale}`],
+                                    type: 'statement',
+                                    data: self.statements,
+                                    selected: self.taskData.action.statements.map(statement => statement.id)
+                                };
 
                                 self.$nextTick(() => {
                                     self.initSelect2();
@@ -680,10 +652,9 @@ export default {
             this.hours = null;
             this.components = null;
             this.statements = null;
-            this.selectedActions = {};
+            this.selectedAction = {};
             let status = this.statuses.find(status => status.name_en == 'Pending');
             $('#status').val(status.id).trigger('change');
-            $('#assigned-to').val(null).trigger('change');
             $('#action').val(null).trigger('change');
         },
         updateYear(year) {

@@ -163,10 +163,11 @@
                             </div>
                         </div>
                         <div class="mb-50">
-                            <label class="form-label" for="assigned-to">{{ messages.action }}</label>
+                            <label class="form-label" for="action">{{ messages.action }}</label>
                             <select id="action"
                                     :class="`select2 ${template.errors?.action_type_id ? 'is-invalid' : ''}`"
-                                    name="action_type_id[]" multiple :data-placeholder="messages.pleaseSelect">
+                                    name="action_type_id" :data-placeholder="messages.pleaseSelect">
+                                <option value=""></option>
                                 <option v-for="actionType in actionTypes" :value="actionType.id">
                                     {{ actionType[`name_${locale}`] }}
                                 </option>
@@ -176,25 +177,25 @@
                                 }}
                             </div>
                         </div>
-                        <div v-for="selectedAction in template.selectedActions" :key="selectedAction.id" class="mb-50">
-                            <label class="form-label" :for="`action-${selectedAction.id}`">{{
-                                    selectedAction.label
+                        <div v-if="Object.keys(template.selectedAction).length" class="mb-50">
+                            <label class="form-label" :for="`action-${template.selectedAction.id}`">{{
+                                    template.selectedAction.label
                                 }}</label>
-                            <select :id="`action-${selectedAction.id}`"
-                                    :class="`select2 ${template.errors?.[`action_type_items.${selectedAction.id}`] ? 'is-invalid' : ''}`"
-                                    :name="`action_type_items[${selectedAction.id}][]`" multiple
+                            <select :id="`action-${template.selectedAction.id}`"
+                                    :class="`select2 ${template.errors?.[`action_type_items.${template.selectedAction.id}`] ? 'is-invalid' : ''}`"
+                                    :name="`action_type_items[${template.selectedAction.id}][]`" multiple
                                     :data-placeholder="messages.pleaseSelect">
-                                <option v-for="item in selectedAction.data" :key="item.id" :value="item.id"
-                                        :selected="selectedAction.selected?.includes(item.id)">
+                                <option v-for="item in template.selectedAction.data" :key="item.id" :value="item.id"
+                                        :selected="template.selectedAction.selected?.includes(item.id)">
                                     {{
-                                        selectedAction.type == 'component' ? `${item.code} | ${item[`name_${locale}`]}` :
+                                        template.selectedAction.type == 'component' ? `${item.code} | ${item[`name_${locale}`]}` :
                                             item.subcode
                                     }}
                                 </option>
                             </select>
-                            <div v-if="template.errors?.[`action_type_items.${selectedAction.id}`]"
+                            <div v-if="template.errors?.[`action_type_items.${template.selectedAction.id}`]"
                                  class="invalid-feedback">
-                                {{ template.errors[`action_type_items.${selectedAction.id}`][0] }}
+                                {{ template.errors[`action_type_items.${template.selectedAction.id}`][0] }}
                             </div>
                         </div>
                     </form>
@@ -244,7 +245,7 @@ export default {
                 hours: null,
                 components: null,
                 statements: null,
-                selectedActions: {},
+                selectedAction: {},
                 isSubmitting: false,
             },
         }
@@ -397,12 +398,13 @@ export default {
         handleActionTypeChange() {
             let self = this;
             $('#action').on('select2:select', function (e) {
+                self.template.selectedAction = {};
                 let actionType = self.actionTypes.find(actionType => actionType.id == e.params.data.id);
                 if (actionType.model == 'component') {
                     axios.get(`/${self.locale}/axios/components`)
                         .then(function (response) {
                             self.template.components = response.data;
-                            self.template.selectedActions[e.params.data.id] = {
+                            self.template.selectedAction = {
                                 id: e.params.data.id,
                                 label: e.params.data.text,
                                 type: 'component',
@@ -419,7 +421,7 @@ export default {
                     axios.get(`/${self.locale}/axios/statements`)
                         .then(function (response) {
                             self.template.statements = response.data;
-                            self.template.selectedActions[e.params.data.id] = {
+                            self.template.selectedAction = {
                                 id: e.params.data.id,
                                 label: e.params.data.text,
                                 type: 'statement',
@@ -433,10 +435,6 @@ export default {
 
                         });
                 }
-            });
-
-            $('#action').on('select2:unselect', function (e) {
-                delete self.template.selectedActions[e.params.data.id];
             });
         },
         resetTemplateForm() {
@@ -452,7 +450,7 @@ export default {
             this.template.hours = null;
             this.template.components = null;
             this.template.statements = null;
-            this.template.selectedActions = {};
+            this.template.selectedAction = {};
             this.template.isSubmitting = false;
             $('#status').val(null).trigger('change');
             $('#action').val(null).trigger('change');

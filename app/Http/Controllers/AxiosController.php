@@ -28,6 +28,7 @@ use App\Models\Faq;
 use App\Models\Kpi;
 use App\Models\Kpicomment;
 use App\Models\Link;
+use App\Models\Organisation;
 use App\Models\Period;
 use App\Models\Plan;
 use App\Models\Review;
@@ -207,6 +208,19 @@ class AxiosController extends Controller
         return $r;
     }
 
+    public function organisationsChange($locale, Organisation $organisation)
+    {
+        if ($organisation->id == auth()->user()->organisation->id || auth()->user()->organisation->organisations->contains(function ($subOrg) use ($organisation) {
+                return $subOrg->id == $organisation->id;
+            })) {
+            session(['selected_org' => ['id' => $organisation->id, 'name' => $organisation->name]]);
+        } else {
+            session(['selected_org' => ['id' => auth()->user()->organisation->id, 'name' => auth()->user()->organisation->name]]);
+        }
+
+        return ['success' => true];
+    }
+
     /**
      * Return the data about the organisation (and its suborganisations) relevant to the act page
      *
@@ -220,92 +234,88 @@ class AxiosController extends Controller
         App::setlocale($locale);
         $messages = Lang::get('messages');
         $orgData = [];
-        $organisation = Auth::user()->organisation->load('organisations')->makeVisible(['organisations', 'risks']);
-        $organisations = [$organisation];
-        foreach ($organisation->organisations->makeVisible(['risks']) as $v) {
-            $organisations[] = $v;
+        $selectedOrg = session('selected_org');
+        $org = Organisation::find($selectedOrg['id']);
+        $currentYear = Carbon::now()->format('Y');
+
+        $years = $org->deedsYears();
+        if ($years == []) {
+            $years = [$currentYear];
         }
+        if (!in_array($currentYear, $years)) {
+            $years[] = $currentYear;
+        }
+        rsort($years);
 
-        $currentyear = Carbon::now()->format('Y');
-        foreach ($organisations as $org) {
-            $data = [];
-            $years = $org->deedsYears();
-            if ($years == []) {
-                $years = [$currentyear];
-            }
-            if (!in_array($currentyear, $years)) {
-                $years[] = $currentyear;
-            }
-            rsort($years);
-            foreach ($years as $year) {
-                $data[$year] = [];
-                $components = Component::all();
-                foreach ($components as $comp) {
-                    $data[$year]['components'][] = $comp->code;
-                    $data[$year]['commitment'][] = $org->commitment;
-                    $data[$year]['mean'][] = $comp->statementMeanValue($org, $year);
-                    $data[$year]['codenames'][] = $comp->codeName;
-                    $name = mb_strlen($comp->{'name_' . App::currentLocale()}) > 16 ? mb_substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
+        $data = [];
+        foreach ($years as $year) {
+            $data[$year] = [];
+            $components = Component::all();
+            foreach ($components as $comp) {
+                $data[$year]['components'][] = $comp->code;
+                $data[$year]['commitment'][] = $org->commitment;
+                $data[$year]['mean'][] = $comp->statementMeanValue($org, $year);
+                $data[$year]['codenames'][] = $comp->codeName;
+                $name = mb_strlen($comp->{'name_' . App::currentLocale()}) > 16 ? mb_substr($comp->{'name_' . App::currentLocale()}, 0, 13) . '...' : $comp->{'name_' . App::currentLocale()};
 
-                    $comp->load('statements');
-                    $comp->statements->each(function ($statement) use ($org) {
-                        $op = $statement->organisationPlan($org);
-                        $statement->implementation = $op->implementation ?? '';
-                        $od = $statement->organisationDeed($org);
-                        $statement->deed = $od?->load('deedHistory')->makeVisible('deedHistory');
-                        $statement->review = $statement->organisationReview($org);
-                        $statement->makeVisible('implementation', 'deed', 'review');
+                $comp->load('statements');
+                $comp->statements->each(function ($statement) use ($org) {
+                    $op = $statement->organisationPlan($org);
+                    $statement->implementation = $op->implementation ?? '';
+                    $od = $statement->organisationDeed($org);
+                    $statement->deed = $od?->load('deedHistory')->makeVisible('deedHistory');
+                    $statement->review = $statement->organisationReview($org);
+                    $statement->makeVisible('implementation', 'deed', 'review');
+                });
+
+                $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'desc' => $comp->{"desc_$locale"}, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_' . App::currentLocale()}, 'statements' => $comp->statements];
+            }
+            // Kpis
+            $kpis = Kpi::all();
+            foreach ($kpis as $kpi) {
+                $orgKpiComments = $kpi->org_kpicomments($org);
+                $orgKpiLast = $orgKpiComments->last();
+                $target = '';
+                $value = '';
+                $comment = '';
+                if ($orgKpiLast) {
+                    $target = $orgKpiLast->target;
+                    $value = $orgKpiLast->value;
+                    $comment = $orgKpiLast->comment;
+                }
+                $data[$year]['kpis'][] = ['id' => $kpi->id, 'name' => $kpi->{'name_' . App::currentLocale()}, 'desc' => $kpi->{'desc_' . App::currentLocale()}, 'target' => $target, 'value' => $value, 'comment' => $comment];
+            }
+            // Risks
+            $scatterRisks = $org->risks->sortBy('created_at');
+            $data[$year]['risks']['datasets'] = [];
+            foreach ($scatterRisks as $risk) {
+                if (Carbon::parse($risk->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear())) {
+                    $r = $scatterRisks->filter(function ($item) use ($risk, $year) {
+                        return ($item->consequence == $risk->consequence && $item->probability == $risk->probability && Carbon::parse($item->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear()));
                     });
-
-                    $data[$year]['table'][] = ['id' => $comp->id, 'code' => $comp->code, 'name' => $name, 'desc' => $comp->{"desc_$locale"}, 'commitment' => $org->commitment, 'mean' => $comp->statementMeanValue($org, $year), 'fullname' => $comp->{'name_' . App::currentLocale()}, 'statements' => $comp->statements];
+                    $r = 10 * count($r);
+                    $data[$year]['risks']['datasets'][] = [
+                        'label' => $risk->title,
+                        'backgroundColor' => $risk->risk()['colour'],
+                        'borderColor' => $risk->risk()['colour'],
+                        'data' => [
+                            ['x' => $risk->consequence, 'y' => $risk->probability, 'r' => $r],
+                        ],
+                        'count' => $r / 10,
+                        'fs' => 11 + ($r / 10),
+                    ];
                 }
-                // Kpis
-                $kpis = Kpi::all();
-                foreach ($kpis as $kpi) {
-                    $orgKpiComments = $kpi->org_kpicomments($org);
-                    $orgKpiLast = $orgKpiComments->last();
-                    $target = '';
-                    $value = '';
-                    $comment = '';
-                    if ($orgKpiLast) {
-                        $target = $orgKpiLast->target;
-                        $value = $orgKpiLast->value;
-                        $comment = $orgKpiLast->comment;
-                    }
-                    $data[$year]['kpis'][] = ['id' => $kpi->id, 'name' => $kpi->{'name_' . App::currentLocale()}, 'desc' => $kpi->{'desc_' . App::currentLocale()}, 'target' => $target, 'value' => $value, 'comment' => $comment];
-                }
-                // Risks
-                $scatterRisks = $org->risks->sortBy('created_at');
-                $data[$year]['risks']['datasets'] = [];
-                foreach ($scatterRisks as $risk) {
-                    if (Carbon::parse($risk->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear())) {
-                        $r = $scatterRisks->filter(function ($item) use ($risk, $year) {
-                            return ($item->consequence == $risk->consequence && $item->probability == $risk->probability && Carbon::parse($item->created_at)->lessThanOrEqualTo(Carbon::create($year)->lastOfYear()));
-                        });
-                        $r = 10 * count($r);
-                        $data[$year]['risks']['datasets'][] = [
-                            'label' => $risk->title,
-                            'backgroundColor' => $risk->risk()['colour'],
-                            'borderColor' => $risk->risk()['colour'],
-                            'data' => [
-                                ['x' => $risk->consequence, 'y' => $risk->probability, 'r' => $r],
-                            ],
-                            'count' => $r / 10,
-                            'fs' => 11 + ($r / 10),
-                        ];
-                    }
-                }
-                $data[$year]['risks']['legend'] = [
-                    ['text' => $messages['low'], 'colour' => '#28c76f'],
-                    ['text' => $messages['lowMed'], 'colour' => '#cab707'],
-                    ['text' => $messages['medium'], 'colour' => '#FF9F43'],
-                    ['text' => $messages['mediumHigh'], 'colour' => '#ff5f43'],
-                    ['text' => $messages['high'], 'colour' => '#EA5455'],
-
-                ];
             }
-            $orgData[] = ['name' => $org->name, 'data' => $data];
+            $data[$year]['risks']['legend'] = [
+                ['text' => $messages['low'], 'colour' => '#28c76f'],
+                ['text' => $messages['lowMed'], 'colour' => '#cab707'],
+                ['text' => $messages['medium'], 'colour' => '#FF9F43'],
+                ['text' => $messages['mediumHigh'], 'colour' => '#ff5f43'],
+                ['text' => $messages['high'], 'colour' => '#EA5455'],
+
+            ];
         }
+        $orgData[] = ['name' => $org->name, 'data' => $data];
         // Localization
         $r = ['data' => $orgData, 'messages' => $messages];
         $r = collect($r);
@@ -416,7 +426,8 @@ class AxiosController extends Controller
      **/
     public function organisationsKpis($locale)
     {
-        $org = Auth::user()->organisation->makeVisible(['kpis']);
+        $selectedOrg = session('selected_org');
+        $org = Organisation::find($selectedOrg['id']);
         $kpis = $org->kpis();
         App::setlocale($locale);
         $messages = Lang::get('messages');
@@ -436,7 +447,9 @@ class AxiosController extends Controller
      **/
     public function organisationsKpisShow($locale, Kpi $kpi)
     {
-        $kpiComments = $kpi->org_kpicomments(Auth::user()->organisation);
+        $selectedOrg = session('selected_org');
+        $org = Organisation::find($selectedOrg['id']);
+        $kpiComments = $kpi->org_kpicomments($org);
         $kpi->makeVisible(['kpicomment', 'kpicomments', 'targets', 'values', 'xaxis']);
         $kpi->kpicomments = $kpiComments;
         $kpi->kpicomment = $kpiComments->last();
@@ -699,7 +712,8 @@ class AxiosController extends Controller
      **/
     public function organisationsRisksIndex($locale)
     {
-        $org = Auth::user()->organisation->makevisible(['risks']);
+        $selectedOrg = session('selected_org');
+        $org = Organisation::find($selectedOrg['id']);
         $risks = $org->risks->load(['organisation', 'risk_comments', 'component', 'user'])->makeVisible(['created_at_for_humans', 'factor', 'organisation', 'risk', 'risk_comments', 'component', 'user']);
         foreach ($risks as $risk) {
             $risk->risk = $risk->risk();
@@ -1378,10 +1392,11 @@ class AxiosController extends Controller
 
         $since = Carbon::createFromDate($year, 1, 1);
         $until = Carbon::createFromDate($year, 12, 31);
+        $selectedOrg = session('selected_org');
+        $org = Organisation::find($selectedOrg['id']);
         $tasks = Task::with('taskStatus')
-            ->where(function ($query) {
-                $query->whereIn('created_by', auth()->user()->organisation->users->pluck('id'))
-                    ->orWherein('assigned_to', auth()->user()->organisation->users->pluck('id'));
+            ->where(function ($query) use ($org) {
+                $query->whereIn('created_by', $org->users->pluck('id'));
             })
             ->whereDate('start', '>=', $since)
             ->whereDate('start', '<=', $until)
@@ -1389,7 +1404,7 @@ class AxiosController extends Controller
             ->get();
 
         $tasks = $tasks->filter(function ($task) {
-            return $task->creator->role == auth()->user()->role || $task->assignee->role == auth()->user()->role;
+            return $task->creator->role == auth()->user()->role;
         });
 
         $actionColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
@@ -1397,15 +1412,13 @@ class AxiosController extends Controller
         $tasks->each(function ($task) use ($locale, $actionColors, &$result) {
             $task->can_update = Gate::allows('update', $task);
             $task->can_delete = Gate::allows('delete', $task);
-            $task->actions->each(function ($action) use ($locale, $task, $actionColors, &$result) {
-                if ($action->deleted_at === null) {
-                    $actionName = $action->actionType->{"name_$locale"};
-                    if (!isset($result[$actionName]['color'])) {
-                        $result[$actionName]['color'] = $actionColors[$action->actionType->id - 1] ?? null;
-                    }
-                    $result[$actionName]['tasks'][] = $task;
+            if ($task->action->deleted_at === null) {
+                $actionName = $task->action->actionType->{"name_$locale"};
+                if (!isset($result[$actionName]['color'])) {
+                    $result[$actionName]['color'] = $actionColors[$task->action->actionType->id - 1] ?? null;
                 }
-            });
+                $result[$actionName]['tasks'][] = $task;
+            }
         });
 
         return $result;
@@ -1417,11 +1430,12 @@ class AxiosController extends Controller
         $yearEnd = Carbon::createFromDate($year)->endOfYear();
         $localeForCarbon = $locale == 'se' ? 'sv-SE' : $locale;
         Carbon::setLocale($localeForCarbon);
+        $selectedOrg = session('selected_org');
+        $org = Organisation::find($selectedOrg['id']);
 
         $tasks = Task::with('taskStatus')
-            ->where(function ($query) {
-                $query->whereIn('created_by', auth()->user()->organisation->users->pluck('id'))
-                    ->orWherein('assigned_to', auth()->user()->organisation->users->pluck('id'));
+            ->where(function ($query) use ($org) {
+                $query->whereIn('created_by', $org->users->pluck('id'));
             })
             ->where(function ($query) use ($yearStart, $yearEnd) {
                 $query->where(function ($query) use ($yearStart, $yearEnd) {
@@ -1435,7 +1449,7 @@ class AxiosController extends Controller
             ->get();
 
         $tasks = $tasks->filter(function ($task) {
-            return $task->creator->role == auth()->user()->role || $task->assignee->role == auth()->user()->role;
+            return $task->creator->role == auth()->user()->role;
         });
 
         $tasksGrouped = collect();

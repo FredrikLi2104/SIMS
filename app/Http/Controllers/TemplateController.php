@@ -52,18 +52,16 @@ class TemplateController extends Controller
                 'task_status_id' => $data['task_status_id'],
             ]);
 
-            foreach ($data['action_type_id'] as $actionTypeId) {
-                $action = TemplateAction::create([
-                    'template_id' => $template->id,
-                    'action_type_id' => $actionTypeId,
-                    'action_status_id' => 1,
-                ]);
+            $action = TemplateAction::create([
+                'template_id' => $template->id,
+                'action_type_id' => $data['action_type_id'],
+                'action_status_id' => 1,
+            ]);
 
-                if ($action->actionType->model == 'component') {
-                    $action->components()->attach($data['action_type_items'][$actionTypeId]);
-                } elseif ($action->actionType->model == 'statement') {
-                    $action->statements()->attach($data['action_type_items'][$actionTypeId]);
-                }
+            if ($action->actionType->model == 'component') {
+                $action->components()->attach($data['action_type_items'][$data['action_type_id']]);
+            } elseif ($action->actionType->model == 'statement') {
+                $action->statements()->attach($data['action_type_items'][$data['action_type_id']]);
             }
         });
 

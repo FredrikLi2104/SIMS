@@ -1,14 +1,4 @@
 <template>
-    <div class="mb-1">
-        <div class="d-flex">
-            <div class="flex-column me-50 width-200">
-                <label class="form-label" for="basicSelect">{{ collection?.messages?.selectOrganisation }}</label>
-                <select class="form-select" id="basicSelect" @change="updateOrg">
-                    <option v-for="org in collection?.data" :key="org">{{ org.name }}</option>
-                </select>
-            </div>
-        </div>
-    </div>
     <div class="row match-height">
         <div class="col-12 col-md-6">
             <div class="card">
@@ -580,17 +570,6 @@ export default {
             let y = dataSource.filter((x) => x.id == id);
             this.componentActive = y[0];
             $("#componentShowModal").modal("show");
-        },
-        updateOrg() {
-            const org = document.getElementById("basicSelect").value;
-            let selectedOrg = this.collection?.data?.filter((e) => {
-                return e.name == org;
-            });
-            this.activeOrg = selectedOrg[0].data;
-            this.$nextTick(() => {
-                this.drawRadar(this.selectedYearForInsights);
-                this.drawRiskChart(this.selectedYearForRisks);
-            });
         },
         populateYearsForWheel() {
             this.yearsForWheel.push(moment().subtract(1, 'year').year());

@@ -17,19 +17,14 @@ class Task extends Model
     protected $guarded = ['id'];
     protected $appends = ['start_for_humans', 'end_for_humans', 'title_truncated'];
 
-    public function actions()
+    public function action()
     {
-        return $this->hasMany(Action::class);
+        return $this->hasOne(Action::class);
     }
 
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function assignee()
-    {
-        return $this->belongsTo(User::class, 'assigned_to');
     }
 
     public function taskStatus()

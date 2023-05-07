@@ -14,9 +14,8 @@
 @endsection
 @section('content')
     <tasks locale="{{ App::currentLocale() }}" :messages="{{ Js::from($messages) }}"
-           :statuses="{{ js::from($statuses) }}" :assignees="{{ Js::from($assignees) }}"
-           :action-types="{{ Js::from($actionTypes) }}" :months="{{ Js::from($months) }}"
-           :years="{{ Js::from($years) }}"></tasks>
+           :statuses="{{ js::from($statuses) }}" :action-types="{{ Js::from($actionTypes) }}"
+           :months="{{ Js::from($months) }}" :years="{{ Js::from($years) }}"></tasks>
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}
@@ -30,10 +29,4 @@
 @endsection
 @section('page-script')
     <script src="{{ asset(mix('js/models/tasks/index/app.js')) }}"></script>
-    <script>
-        let span = document.createElement('span');
-        span.classList.add('badge', 'badge-light-secondary', 'ms-50');
-        span.innerHTML = '{{ auth()->user()->organisation->name }}';
-        document.getElementsByClassName('content-header-title')[0].append(span);
-    </script>
 @endsection

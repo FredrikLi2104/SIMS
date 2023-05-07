@@ -276,4 +276,8 @@ return [
     'items_required' => 'Välj minst ett objekt.',
     'source' => 'Källa',
     'size' => 'Storlek',
+    'disabled' => 'Avaktiverad',
+    'disabled_msg' => 'Ditt konto har inaktiverats.',
+    'show_disabled' => 'Visa avaktiverad',
+    'hide_disabled' => 'Dölj inaktiverat',
 ];

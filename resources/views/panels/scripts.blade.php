@@ -9,7 +9,7 @@
 <script src="{{ asset(mix('js/core/app-menu.js')) }}"></script>
 <script src="{{ asset(mix('js/core/app.js')) }}"></script>
 
-<!-- custome scripts file for user -->
+<!-- custom scripts file for user -->
 <script src="{{ asset(mix('js/core/scripts.js')) }}"></script>
 
 @if($configData['blankPage'] === false)
@@ -17,5 +17,6 @@
 @endif
 <!-- END: Theme JS-->
 <!-- BEGIN: Page JS-->
+<script src="{{ asset(mix('js/models/organisations/picker/app.js')) }}"></script>
 @yield('page-script')
 <!-- END: Page JS-->

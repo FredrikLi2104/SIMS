@@ -4,22 +4,13 @@
             <div class="col-12">
                 <!-- Radar Chart-->
                 <div class="card">
-                    <div
-                        class="card-header d-flex flex-sm-row flex-column justify-content-md-between align-items-start justify-content-start">
-                        <div class="mb-1 width-200">
-                            <label class="form-label" for="basicSelect">{{
-                                    collection?.messages?.selectOrganisation
-                                }}</label>
-                            <select class="form-select" id="basicSelect" @change="updateOrg">
-                                <option v-for="org in collection?.data" :key="org">{{ org.name }}</option>
-                            </select>
-                        </div>
-                        <div class="mb-1">
-                            <label class="form-label" for="yearSelect">{{ collection?.messages?.selectYear }}</label>
-                            <select class="form-select" id="yearSelect" @change="updateOrg" style="width: 100px">
-                                <option v-for="year in Object.keys(activeOrg)" :key="year">{{ year }}</option>
-                            </select>
-                        </div>
+                    <div class="card-header">
+                        <select class="form-select" id="yearSelect" @change="updateInsights" style="width: 100px">
+                            <option v-for="year in years" :key="year">{{
+                                    year
+                                }}
+                            </option>
+                        </select>
                     </div>
                     <div class="row">
                         <div class="col-6">
@@ -1447,17 +1438,9 @@ export default {
             this.sanctionActive = null;
             $("#sanctionShowModal").modal("hide");
         },
-        updateOrg() {
-            const org = document.getElementById("basicSelect").value;
-            let selectedOrg = this.collection?.data?.filter((e) => {
-                return e.name == org;
-            });
-            this.activeOrg = selectedOrg[0].data;
-            //console.log(this.activeOrg);
-            this.$nextTick(() => {
-                this.drawRadar();
-                this.buildTable();
-            });
+        updateInsights() {
+            this.drawRadar();
+            this.buildTable();
         },
         updateActiveStatement(index) {
             let self = this;
@@ -1513,5 +1496,10 @@ export default {
                 console.log(error.response);
             });
     },
+    computed: {
+        years() {
+            return Object.keys(this.activeOrg).sort((a, b) => b - a);
+        }
+    }
 };
 </script>

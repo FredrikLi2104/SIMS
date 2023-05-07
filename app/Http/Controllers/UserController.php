@@ -18,7 +18,7 @@ class UserController extends Controller
 {
     /**
      * Custom Authorize the user for this action
-     * 
+     *
      * @return bool
      */
     public function auth(User $user)
@@ -47,17 +47,22 @@ class UserController extends Controller
         }
         return $authed;
     }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $locale, $showDisabled = false)
     {
-        //
-        $users = User::all();
-        $roles = ['super' => 'Webmaster', 'admin' => 'ITSB Administrator', 'moderator' => 'ITSB Staff', 'auditor' => 'DPO Data Protection Officer', 'user'=> 'DPC Data Privacy Coordinator'];
-        return view('models.users.index', compact('roles', 'users'));
+        if ($showDisabled) {
+            $users = User::all();
+        } else {
+            $users = User::where('disabled', false)->get();
+        }
+
+        $roles = ['super' => 'Webmaster', 'admin' => 'ITSB Administrator', 'moderator' => 'ITSB Staff', 'auditor' => 'DPO Data Protection Officer', 'user' => 'DPC Data Privacy Coordinator'];
+        return view('models.users.index', compact('roles', 'users', 'showDisabled'));
     }
 
     /**
@@ -92,7 +97,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store($locale, UserStoreRequest $request)
@@ -102,6 +107,7 @@ class UserController extends Controller
         try {
             $password = $data['password'];
             $data['password'] = Hash::make($data['password']);
+            $data['disabled'] = $data['disabled'] ?? false;
             $user = User::create($data);
             Mail::to($user->email)->send(new UserStored($user, $password));
         } catch (\Throwable $th) {
@@ -114,7 +120,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -125,7 +131,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($locale, User $user)
@@ -157,8 +163,8 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update($locale, UserUpdateRequest $request, User $user)
@@ -176,6 +182,7 @@ class UserController extends Controller
         if ($data['email'] != $user->email) {
             $email = $data['email'];
         }
+        $data['disabled'] = $data['disabled'] ?? false;
         try {
             $user->update($data);
             if ($password) {
@@ -196,7 +203,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

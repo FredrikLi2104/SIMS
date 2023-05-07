@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\App;
 class RoutingController extends Controller
 {
     //
-    public function countriesSeed() 
+    public function countriesSeed()
     {
         return view('services.countries.seed');
     }

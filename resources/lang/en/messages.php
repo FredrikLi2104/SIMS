@@ -277,5 +277,9 @@ return [
     'items_required' => 'Please select at least one item.',
     'source' => 'Source',
     'size' => 'Size',
+    'disabled' => 'Disabled',
+    'disabled_msg' => 'Your account has been disabled.',
+    'show_disabled' => 'Show Disabled',
+    'hide_disabled' => 'Hide Disabled',
 ];
 ?>

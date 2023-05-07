@@ -65,6 +65,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('kpis', [AxiosController::class, 'kpis'])->middleware('can:moderator')->name('axios.kpis.index');
     Route::get('links', [AxiosController::class, 'links'])->middleware('can:moderator')->name('axios.links.index');
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
+    Route::get('organisations/change/{organisation}', [AxiosController::class, 'organisationsChange'])->middleware('can:all')->name('axios.organisations.change');
     Route::get('organisations/insights', [AxiosController::class, 'organisationsInsights'])->middleware('can:auditor-user')->name('axios.organisations.insights');
     Route::post('organisations/insights/sanctions', [AxiosController::class, 'sanctionsTable'])->middleware('can:auditor-user')->name('axios.organisations.insights.sanctions');
     Route::get('organisations/insights/component/sanctions', [AxiosController::class, 'componentSanctionsTable'])->middleware('can:auditor-user')->name('axios.organisations.insights.component.sanctions');
@@ -97,8 +98,8 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('statements', [AxiosController::class, 'statements'])->middleware('can:all')->name('axios.statements.index');
     Route::get('tags', [AxiosController::class, 'tags'])->middleware('can:moderator')->name('axios.tags.index');
     Route::get('task_statuses', [AxiosController::class, 'taskStatuses'])->middleware('can:moderator')->name('axios.task_statuses.index');
-    Route::get('tasks/{year}', [AxiosController::class, 'tasks'])->middleware('can:all')->name('axios.tasks.index');
-    Route::get('tasks_for_wheel/{year}', [AxiosController::class, 'tasksForWheel'])->middleware('can:all')->name('axios.tasks_for_wheel.index');
+    Route::get('tasks/{year}', [AxiosController::class, 'tasks'])->middleware('can:auditor-user')->name('axios.tasks.index');
+    Route::get('tasks_for_wheel/{year}', [AxiosController::class, 'tasksForWheel'])->middleware('can:auditor-user')->name('axios.tasks_for_wheel.index');
     Route::get('templates', [AxiosController::class, 'templates'])->middleware('can:moderator')->name('axios.templates.index');
 });
 
@@ -143,11 +144,12 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('/statistics/sanctions', [StatisticsController::class, 'sanctionsStats'])->middleware('can:auditor-user')->name('statistics.sanctions');
     Route::resource('snis', SniController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('task_statuses', TaskStatusController::class)->middleware('auth')->middleware('can:moderator');
-    Route::resource('tasks', TaskController::class)->middleware('auth')->middleware('can:all');
+    Route::resource('tasks', TaskController::class)->middleware('auth')->middleware('can:auditor-user');
     Route::resource('tags', TagController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('templates', TemplateController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('types', TypeController::class)->middleware('auth')->middleware('can:moderator');
-    Route::resource('users', UserController::class)->middleware('auth')->middleware('can:moderator');
+    Route::get('users/{show_disabled?}', [UserController::class, 'index'])->middleware('auth')->middleware('can:moderator')->name('users.index');
+    Route::resource('users', UserController::class)->except(['index'])->middleware('auth')->middleware('can:moderator');
 });
 
 /* Services - Do not Modify */
