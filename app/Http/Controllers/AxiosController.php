@@ -1290,10 +1290,29 @@ class AxiosController extends Controller
      **/
     public function sanctionsShow($locale, Sanction $sanction)
     {
-        $sanction->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'dpa', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url']);
-        $articles = $sanction->articles;
-        $sanction->articlesSorted = $articles->sortBy('title')->values();
+        $sanction->load(['articles', 'dpa', 'user', 'sni', 'type', 'statements', 'tags', 'sanctionFiles'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party', 'sni', 'type', 'source', 'statements', 'tags', 'sanctionFiles']);
+        $sanction->articlesSorted = $sanction->articles->sortBy('title')->values();
         $sanction->dpa->load('country')->makeVisible(['country', 'name']);
+
+        if ($sanction->currency?->symbol && $sanction->currency->symbol != 'EUR') {
+            $currency = Currency::where('symbol', $sanction->currency->symbol)->first();
+
+            if ($currency) {
+                try {
+                    $sanction->fine = $sanction->fine / $currency->value;
+                } catch (\Throwable $th) {
+
+                }
+            }
+        }
+
+        $sanction->statements->each(function ($statement) use (&$components) {
+            $statement->makeVisible('subcode');
+        });
+
+        $sanction->components = $sanction->statements->pluck('component.code')->unique()->values();
+        $sanction->makeVisible('components');
+
         return $sanction;
     }
 

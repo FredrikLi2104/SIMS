@@ -332,7 +332,7 @@
         </div>
     </div>
     <div class="modal fade text-start modal-primary" id="sanction-show-modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-extra-wide">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ activeSanction?.title }}</h5>
@@ -342,62 +342,155 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="table-responsive">
-                            <table class="table">
-                                <thead class="table-light">
-                                <tr>
-                                    <th>{{ messages.key }}</th>
-                                    <th>{{ messages.value }}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>{{ messages.id }}</td>
-                                    <td>{{ activeSanction?.id }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ messages.createdAt }}</td>
-                                    <td>{{ activeSanction?.created_at_for_humans }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ messages.title }}</td>
-                                    <td>{{ activeSanction?.title }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ messages.dpa }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center justify-content-start">
-                                            <div v-if="activeSanction?.dpa?.country != undefined" class="col-2">
-                                                <img :src="`/images/flags/svg/${activeSanction.dpa.country.code}.svg`"
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="border rounded mb-1 p-25">
+                                                <div id="desc-quill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <dl class="row">
+                                        <dt class="col-4">{{ messages.createdAt }}</dt>
+                                        <dd class="col-8">{{ activeSanction?.created_at_for_humans }}</dd>
+                                    </dl>
+                                    <dl class="row">
+                                        <dt class="col-4">{{ messages.decidedOn }}</dt>
+                                        <dd class="col-8">{{ activeSanction?.decided_at_for_humans }}</dd>
+                                    </dl>
+                                    <dl class="row">
+                                        <dt class="col-4">{{ messages.party }}</dt>
+                                        <dd class="col-8">{{ activeSanction?.party }}</dd>
+                                    </dl>
+                                    <dl class="row">
+                                        <dt class="col-4">{{ messages.dpa }}</dt>
+                                        <dd class="col-8">
+                                            <div class="d-flex align-items-center justify-content-start">
+                                                <img v-if="activeSanction?.dpa?.country != undefined"
+                                                     :src="`/images/flags/svg/${activeSanction?.dpa?.country?.code}.svg`"
                                                      style="width: 30px"/>
+                                                <span class="ms-1">{{ activeSanction?.dpa?.name }}</span>
                                             </div>
-                                            <div class="col-10 align-items-center">
-                                                <p class="mx-0 my-0">{{ activeSanction?.dpa?.name }}</p>
-                                            </div>
+                                        </dd>
+                                    </dl>
+                                    <dl class="row">
+                                        <dt class="col-4">{{ messages.sni }}</dt>
+                                        <dd class="col-8">
+                                            {{
+                                                activeSanction?.sni === null ? '' : `${activeSanction?.sni?.code} |
+                                        ${activeSanction?.sni?.[`desc_${locale}`]}`
+                                            }}
+                                        </dd>
+                                    </dl>
+                                    <dl class="row">
+                                        <dt class="col-4">{{ messages.fine }}</dt>
+                                        <dd class="col-8">{{
+                                                activeSanction?.fine ? parseInt(activeSanction?.fine) + ' ' +
+                                                    (activeSanction?.currency?.symbol ? activeSanction?.currency.symbol : 'EUR') :
+                                                    ''
+                                            }}
+                                        </dd>
+                                    </dl>
+                                    <dl class="row">
+                                        <dt class="col-4">{{ messages.type }}</dt>
+                                        <dd class="col-8">{{ activeSanction?.type?.[`text_${locale}`] }}</dd>
+                                    </dl>
+                                    <dl class="row">
+                                        <dt class="col-4">{{ messages.outcome }}</dt>
+                                        <dd class="col-8">{{ activeSanction?.outcome }}</dd>
+                                    </dl>
+                                    <div class="d-flex mb-1">
+                                        <a v-if="activeSanction?.source" :href="activeSanction?.source"
+                                           class="btn btn-outline-primary waves-effect mb-25 me-50 d-flex"
+                                           target="_blank">
+                                            <i data-feather="external-link" class="me-25"></i>
+                                            <span class="text-nowrap">{{ messages.source }}</span>
+                                        </a>
+                                        <a v-if="activeSanction?.url" :href="activeSanction?.url"
+                                           class="btn btn-outline-primary waves-effect mb-25 me-50 d-flex"
+                                           target="_blank">
+                                            <i data-feather="external-link" class="me-25"></i>
+                                            <span class="text-nowrap">GDPRhub</span>
+                                        </a>
+                                        <a v-if="activeSanction?.etid"
+                                           :href="`https://www.enforcementtracker.com/Etid-${activeSanction?.etid}`"
+                                           class="btn btn-outline-primary waves-effect mb-25 d-flex" target="_blank">
+                                            <i data-feather="external-link" class="me-25"></i>
+                                            <span class="text-nowrap">{{ messages.et_visit }}</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div v-show="activeSanction?.components.length" class="col-6">
+                                            <dl>
+                                                <dt>{{ messages.components }}</dt>
+                                                <dd>
+                                                <span v-for="component in activeSanction?.components" :key="component"
+                                                      class="badge badge-light-primary me-25 mb-25">{{
+                                                        component
+                                                    }}</span>
+                                                </dd>
+                                            </dl>
                                         </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>{{ messages.startedOn }}</td>
-                                    <td>{{ activeSanction?.started_at_for_humans }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ messages.decidedOn }}</td>
-                                    <td>{{ activeSanction?.decided_at_for_humans }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ messages.publishedOn }}</td>
-                                    <td>{{ activeSanction?.decided_at_for_humans }}</td>
-                                </tr>
-                                <tr>
-                                    <td>{{ messages.articles }}</td>
-                                    <td>
-                                        <div v-for="article in activeSanction?.articlesSorted" :key="article.title">
-                                            <a :href="article.url" target="_blank">{{ article.title }}</a>
+                                        <div v-show="activeSanction?.statements.length" class="col-6">
+                                            <dt>{{ messages.statements }}</dt>
+                                            <dd>
+                                            <span v-for="statement in activeSanction?.statements" :key="statement.id"
+                                                  class="badge badge-light-primary me-25 mb-25">{{
+                                                    statement.subcode
+                                                }}</span>
+                                            </dd>
                                         </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                    </div>
+                                    <div v-show="activeSanction?.articles.length" class="row">
+                                        <div class="col-12">
+                                            <dl>
+                                                <dt>{{ messages.articles }}</dt>
+                                                <dd class="d-flex flex-wrap">
+                                                    <a v-for="article in activeSanction?.articlesSorted"
+                                                       :key="article.title" :href="article?.url"
+                                                       class="btn btn-outline-primary waves-effect mb-25 me-50 d-flex"
+                                                       target="_blank">
+                                                        <i data-feather="external-link" class="me-25"></i>
+                                                        <span class="text-nowrap">{{ article?.title }}</span>
+                                                    </a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div v-show="activeSanction?.tags.length" class="row">
+                                        <div class="col-12">
+                                            <dl>
+                                                <dt>{{ messages.tags }}</dt>
+                                                <dd>
+                                                <span v-for="tag in activeSanction?.tags" :key="tag.id"
+                                                      class="badge badge-light-primary me-25 mb-25">{{
+                                                        tag[`tag_${locale}`]
+                                                    }}</span>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div v-show="activeSanction?.sanction_files.length" class="row">
+                                        <div class="col-12">
+                                            <dl>
+                                                <dt>{{ messages.documents }}</dt>
+                                                <dd class="d-flex flex-wrap">
+                                                    <a v-for="file in activeSanction?.sanction_files" :key="file.id"
+                                                       :href="file.url"
+                                                       class="btn btn-outline-primary waves-effect mb-25 me-50 d-flex"
+                                                       target="_blank">
+                                                        <i data-feather="download" class="me-25"></i>
+                                                        <span class="text-nowrap">{{ file.title }}</span>
+                                                    </a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -423,6 +516,7 @@ export default {
             individual: [],
             activeSanction: null,
             sanctionModal: null,
+            descQuill: null,
         }
     },
     methods: {
@@ -928,7 +1022,9 @@ export default {
                 .get(`/${self.locale}/axios/sanctions/${id}`)
                 .then(function (response) {
                     self.activeSanction = response.data;
+                    self.initDescQuill();
                     self.sanctionModal.show();
+                    self.$nextTick(() => feather.replace());
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -938,6 +1034,20 @@ export default {
             if (this.sanctionModal) {
                 this.activeSanction = null;
                 this.sanctionModal.hide();
+            }
+        },
+        initDescQuill() {
+            let options = {
+                readOnly: true,
+                theme: 'bubble',
+            };
+            if (this.descQuill === null) {
+                this.descQuill = new Quill('#desc-quill', options);
+            }
+            try {
+                this.descQuill.setContents(JSON.parse(this.activeSanction[`desc_${this.locale}`]));
+            } catch (e) {
+
             }
         }
     },
