@@ -280,4 +280,5 @@ return [
     'disabled_msg' => 'Ditt konto har inaktiverats.',
     'show_disabled' => 'Visa avaktiverad',
     'hide_disabled' => 'Dölj inaktiverat',
+    'initial_value' => 'Ursprungligt värde',
 ];

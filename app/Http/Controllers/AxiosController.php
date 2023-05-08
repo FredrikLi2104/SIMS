@@ -234,8 +234,7 @@ class AxiosController extends Controller
         App::setlocale($locale);
         $messages = Lang::get('messages');
         $orgData = [];
-        $selectedOrg = session('selected_org');
-        $org = Organisation::find($selectedOrg['id']);
+        $org = Organisation::find(session('selected_org')['id']);
         $currentYear = Carbon::now()->format('Y');
 
         $years = $org->deedsYears();
@@ -338,28 +337,31 @@ class AxiosController extends Controller
             if ($action->actionType->model == 'component') {
                 $components = $action->components;
                 $statements = $components->flatMap(function ($component) {
-                    return $component->statements->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
+                    return $component->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
                 });
             } elseif ($action->actionType->model == 'statement') {
-                $statements = $action->statements->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
+                $statements = $action->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
             }
         } else {
-            $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
+            $statements = Statement::all()->sortBy('subcode', SORT_NATURAL)->load('component')->makeVisible(['component', 'deed', 'implementation', 'plan', 'review', 'subcode']);
         }
 
+        $org = Organisation::find(session('selected_org')['id']);
+
         foreach ($statements as $statement) {
-            $op = $statement->component->organisationPeriod(Auth::user()->organisation);
+            $op = $statement->component->organisationPeriod($org);
             $statement->component->makeVisible(['organisation_period']);
             $statement->component->organisation_period = $op;
             //$statement->plan = null;
             $statement->implementation = null;
-            $op = $statement->organisationPlan(Auth::user()->organisation);
+            $op = $statement->organisationPlan($org);
             if ($op) {
                 //$statement->plan = $op->plan;
                 $statement->implementation = $op->implementation;
             }
-            $statement->deed = $statement->organisationDeed(Auth::user()->organisation);
-            $statement->review = $statement->organisationReview(Auth::user()->organisation);
+            $statement->deed = $statement->organisationDeed($org);
+            $statement->deed = $statement->deed?->load('deedHistory')->makeVisible('deedHistory');
+            $statement->review = $statement->organisationReview($org);
             // new badge
             if ($statement->deed && $statement->review) {
                 $statement->review->makeVisible(['updated_at_for_humans', 'new']);
@@ -426,8 +428,7 @@ class AxiosController extends Controller
      **/
     public function organisationsKpis($locale)
     {
-        $selectedOrg = session('selected_org');
-        $org = Organisation::find($selectedOrg['id']);
+        $org = Organisation::find(session('selected_org')['id']);
         $kpis = $org->kpis();
         App::setlocale($locale);
         $messages = Lang::get('messages');
@@ -447,8 +448,7 @@ class AxiosController extends Controller
      **/
     public function organisationsKpisShow($locale, Kpi $kpi)
     {
-        $selectedOrg = session('selected_org');
-        $org = Organisation::find($selectedOrg['id']);
+        $org = Organisation::find(session('selected_org')['id']);
         $kpiComments = $kpi->org_kpicomments($org);
         $kpi->makeVisible(['kpicomment', 'kpicomments', 'targets', 'values', 'xaxis']);
         $kpi->kpicomments = $kpiComments;
@@ -712,8 +712,7 @@ class AxiosController extends Controller
      **/
     public function organisationsRisksIndex($locale)
     {
-        $selectedOrg = session('selected_org');
-        $org = Organisation::find($selectedOrg['id']);
+        $org = Organisation::find(session('selected_org')['id']);
         $risks = $org->risks->load(['organisation', 'risk_comments', 'component', 'user'])->makeVisible(['created_at_for_humans', 'factor', 'organisation', 'risk', 'risk_comments', 'component', 'user']);
         foreach ($risks as $risk) {
             $risk->risk = $risk->risk();
@@ -859,7 +858,7 @@ class AxiosController extends Controller
     {
         $data = $request->validated();
         DB::transaction(function () use ($data) {
-            $o = Auth::user()->organisation;
+            $o = Organisation::find(session('selected_org')['id']);
             // find if this statement already has an organisation deed
             $d = Deed::where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
             if ($d) {
@@ -1411,8 +1410,7 @@ class AxiosController extends Controller
 
         $since = Carbon::createFromDate($year, 1, 1);
         $until = Carbon::createFromDate($year, 12, 31);
-        $selectedOrg = session('selected_org');
-        $org = Organisation::find($selectedOrg['id']);
+        $org = Organisation::find(session('selected_org')['id']);
         $tasks = Task::with('taskStatus')
             ->where(function ($query) use ($org) {
                 $query->whereIn('created_by', $org->users->pluck('id'));
@@ -1449,8 +1447,7 @@ class AxiosController extends Controller
         $yearEnd = Carbon::createFromDate($year)->endOfYear();
         $localeForCarbon = $locale == 'se' ? 'sv-SE' : $locale;
         Carbon::setLocale($localeForCarbon);
-        $selectedOrg = session('selected_org');
-        $org = Organisation::find($selectedOrg['id']);
+        $org = Organisation::find(session('selected_org')['id']);
 
         $tasks = Task::with('taskStatus')
             ->where(function ($query) use ($org) {

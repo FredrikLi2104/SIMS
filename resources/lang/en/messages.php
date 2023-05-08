@@ -281,5 +281,6 @@ return [
     'disabled_msg' => 'Your account has been disabled.',
     'show_disabled' => 'Show Disabled',
     'hide_disabled' => 'Hide Disabled',
+    'initial_value' => 'Initial Value',
 ];
 ?>

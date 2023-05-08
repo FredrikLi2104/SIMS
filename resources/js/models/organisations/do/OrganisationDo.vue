@@ -1,450 +1,166 @@
 <template>
-    <div class="row">
-        <div class="col-12">
-            <div class="card invoice-list-wrapper">
-                <div class="card-datatable table-responsive">
-                    <table class="invoice-list-table table" id="dataTable"></table>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                                <th colspan="5">{{ collection?.messages?.statements }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(statement, index) in collection?.statements" :key="statement.id"
+                                :class="statement.id === statementActive.id ? 'active' : ''">
+                                <td>
+                                    <span class="bullet bullet-sm"
+                                          :class="statusBulletColor(statement?.review?.review_status.name_en)"
+                                          data-bs-toggle="tooltip"
+                                          :data-bs-original-title="statement?.review?.review">
+                                    </span>
+                                </td>
+                                <td>{{ statement.subcode }}</td>
+                                <td>{{ statement[`content_${locale}`] }}</td>
+                                <td>{{ statement.deed === null ? 0 : statement.deed.value }}</td>
+                                <td>
+                                    <div class="d-flex">
+                                        <button type="button"
+                                                class="btn btn-icon btn-outline-primary waves-effect me-50"
+                                                @click="showUpdateModal(index)">
+                                            <i data-feather="edit"></i>
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-icon btn-outline-primary waves-effect"
+                                                @click="updateActiveStatement(index)">
+                                            <i data-feather="chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="divider divider-start mt-0">
+                        <div class="divider-text text-uppercase fs-6 fw-bold">
+                            {{ collection?.messages?.details }}
+                        </div>
+                    </div>
+                    <div class="mb-1">
+                        <h6 class="text-sm font-weight-semibold me-1">{{ collection?.messages?.statement }}</h6>
+                        <span>{{ statementActive?.subcode }}</span>
+                    </div>
+                    <div class="mb-1">
+                        <h6 class="text-sm font-weight-semibold me-1">{{ collection?.messages?.desc }}</h6>
+                        <span>{{ statementActive?.[`desc_${locale}`] }}</span>
+                    </div>
+                    <div class="mb-1">
+                        <h6 class="text-sm font-weight-semibold me-1">
+                            {{ collection?.messages?.implementation }}</h6>
+                        <span>{{ statementActive?.[`implementation_${locale}`] }}</span>
+                    </div>
+                    <div class="mb-1">
+                        <h6 class="text-sm font-weight-semibold me-1">
+                            {{
+                                `${collection?.messages?.organisation} ${collection?.messages?.implementation}`
+                            }}</h6>
+                        <span>{{ statementActive?.implementation }}</span>
+                    </div>
+                    <hr>
+                    <div id="statements-chart"></div>
                 </div>
             </div>
         </div>
-        <div class="modal fade text-start modal-primary" id="statementViewModal" tabindex="-1"
-             aria-labelledby="statementViewLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-extra-wide">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="statementViewLabel">{{ collection?.messages?.statement }}
-                            {{ collection?.messages?.view }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                                @click="statementViewHide"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead class="table-light">
-                                    <tr>
-                                        <th>{{ collection?.messages?.key }}</th>
-                                        <th>{{ collection?.messages?.value }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>{{ collection?.messages?.code }}</td>
-                                        <td>{{ statementActive?.component?.code }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.subcode }}</td>
-                                        <td>{{ statementActive?.subcode }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.component }}</td>
-                                        <td>{{ statementActive?.component[`name_${locale}`] }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.period }}</td>
-                                        <td>{{
-                                                statementActive?.component?.organisation_period ? statementActive.component.organisation_period[`name_${locale}`] : null
-                                            }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.statement }}</td>
-                                        <td>{{ statementActive ? statementActive[`content_${locale}`] : null }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.desc }}</td>
-                                        <td>{{ statementActive ? statementActive[`desc_${locale}`] : null }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>K1</td>
-                                        <td>{{ statementActive ? statementActive[`k1_${locale}`] : null }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>K2</td>
-                                        <td>{{ statementActive ? statementActive[`k2_${locale}`] : null }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>K3</td>
-                                        <td>{{ statementActive ? statementActive[`k3_${locale}`] : null }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>K4</td>
-                                        <td>{{ statementActive ? statementActive[`k4_${locale}`] : null }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>K5</td>
-                                        <td>{{ statementActive ? statementActive[`k5_${locale}`] : null }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.implementation }}</td>
-                                        <td>{{ statementActive ? statementActive.implementation : null }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.value }}</td>
-                                        <td>{{
-                                                statementActive ? (statementActive.deed ? statementActive.deed.value : null) : null
-                                            }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.comment }}</td>
-                                        <td>{{
-                                                statementActive ? (statementActive.deed ? statementActive.deed.comment : null) : null
-                                            }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.lastUpdated }}</td>
-                                        <td>{{
-                                                statementActive ? (statementActive.deed ? statementActive.deed.updated_at_for_humans : null) : null
-                                            }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.status }}</td>
-                                        <td>
-                                            <div class="d-flex justify-content-start align-items-start">
-                                                <span class="badge rounded-pill" :class="badgeColorClass">{{
-                                                        statementActive?.review?.review_status[`name_${locale}`]
-                                                    }}</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{ collection?.messages?.review }}</td>
-                                        <td>{{ statementActive?.review?.review }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{{
-                                                collection?.messages?.review + " " + collection?.messages?.lastUpdated
-                                            }}
-                                        </td>
-                                        <td>{{ statementActive?.review?.updated_at_for_humans }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+    </div>
+    <div id="update-modal" class="modal fade text-start modal-primary">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{
+                            `${collection?.messages?.statement} ${collection?.messages?.edit} | ${statementActive?.subcode}`
+                        }}</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="update-form">
+                        <div class="mb-50">
+                            <label for="slider" class="form-label">{{ collection?.messages?.value }}</label>
+                            <div id="slider" class="mb-4"></div>
+                            <p><small id="slider-hint" class="text-muted fw-bolder"></small></p>
+                            <input type="hidden" id="value" name="value">
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="statementViewHide">Ok</button>
+                        <div class="mb-50">
+                            <label for="comment" class="form-label">{{ collection?.messages?.comment }}</label>
+                            <textarea id="comment" class="form-control" name="comment" rows="3"
+                                      :value="statementActive?.deed?.comment ?? collection?.messages?.initial_value"></textarea>
                         </div>
-                    </div>
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-success waves-effect waves-float waves-light"
+                                    :disabled="isSubmitting" @click="statementActionUpdate(statementActive?.id)">
+                                <span v-show="!isSubmitting"><i data-feather="check" class="me-25"></i>{{
+                                        collection?.messages?.update
+                                    }}</span>
+                                <span v-show="isSubmitting" class="spinner-border spinner-border-sm" role="status"
+                                      aria-hidden="true"></span>
+                                <span v-show="isSubmitting"
+                                      class="ms-25 align-middle">{{ collection?.messages?.submitting }}...</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
-import Swal from "sweetalert2";
-
 export default {
     props: ["locale", 'actionId'],
     data() {
         return {
-            dataTable: null,
             collection: null,
             statementActive: null,
             value: null,
             comment: null,
+            modal: null,
+            isSubmitting: false,
+            statementHistoryChart: null,
         };
     },
     methods: {
-        buildTable() {
-            var thisComponent = this;
-            let header = `
-             <thead>
-                <tr>
-                    <th>${thisComponent.collection?.messages?.statement}</th>
-                    <th class="text-center">${thisComponent.collection?.messages?.value}</th>
-                    <th>${thisComponent.collection?.messages?.comment}</th>
-                    <th class="text-center">${thisComponent.collection?.messages?.status}</th>
-                    <th class="text-center">${thisComponent.collection?.messages?.actions}</th>
-                </tr>
-            </thead>
-            `;
-            document.getElementById("dataTable").innerHTML = header;
-            var dataSource = thisComponent.collection.statements;
-            thisComponent.dataTable = $(".invoice-list-table").DataTable({
-                data: dataSource,
-                createdRow: function (row, data, dataIndex) {
-                    //$(row).addClass("row-auth-bg");
-                },
-                lengthMenu: [],
-                paging: false,
-                autoWidth: true,
-                searching: true,
-                columns: [{data: "id"}, {data: "deed"}, {data: "deed"}, {data: "deed"}],
-                columnDefs: [
-                    {
-                        // statement
-                        targets: 0,
-                        responsivePriority: 0,
-                        width: "30%",
-                        render: function (data, type, full, meta) {
-                            let x = `${full.subcode + " - "}`;
-                            x += eval(`full.component?.name_` + thisComponent.locale);
-                            x += " - ";
-                            x += eval(`full.content_` + thisComponent.locale);
-                            x += " - ";
-                            x += eval(`full.desc_` + thisComponent.locale);
-                            if (type === "sort") {
-                                return x;
-                            } else {
-                                let r = `<p>${x}</p>`;
-                                return r;
-                            }
-                        },
-                    },
-                    {
-                        // Value
-                        targets: 1,
-                        responsivePriority: 1,
-                        orderable: false,
-                        width: "10%",
-                        render: function (data, type, full, meta) {
-                            // value tooltip
-                            let k = `
-                            1: ${eval("full.k1_" + thisComponent.locale)}</br> \n
-                            2: ${eval("full.k2_" + thisComponent.locale)}</br> \n
-                            3: ${eval("full.k3_" + thisComponent.locale)}</br> \n
-                            4: ${eval("full.k4_" + thisComponent.locale)}</br> \n
-                            5: ${eval("full.k5_" + thisComponent.locale)}</br> \n
-                            `;
-                            let r = `
-                                <div class="d-flex">
-                                    <select id="valueSelect${full.id}" class="select2 form-select form-control" onchange="window.thisComponent.statementActionButtonEnable(${full.id})">
-                                `;
-                            let o = `<option value="">${thisComponent.collection?.messages?.pleaseSelect}</option>`;
-                            for (let index = 0; index < 5; index++) {
-                                o += `
-                                        <option ${full.deed?.value == index + 1 ? `selected` : ``} value="${index + 1}">${index + 1}</option>
-                                    `;
-                            }
-                            r += o;
-                            r += `
-                                    </select>
-                                    <button type="button" class="btn btn-icon btn-flat-warning px-1" data-html="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${k}">
-                                        <i data-feather="help-circle"></i>
-                                    </button>
-                                </div>
-                                `;
-                            return r;
-                        },
-                    },
-                    {
-                        // Comment
-                        targets: 2,
-                        responsivePriority: 2,
-                        orderable: false,
-                        width: "20%",
-                        render: function (data, type, full, meta) {
-                            let r = `
-                            <div class="form-group">
-                                <textarea class="form-control" type="text" placeholder="" id="commentInput${full.id}" onchange="window.thisComponent.statementActionButtonEnable(${full.id})">${full.deed ? full.deed.comment : ""}</textarea>
-                            </div>
-                            `;
-                            return r;
-                        },
-                    },
-                    {
-                        // Status
-                        targets: 3,
-                        responsivePriority: 3,
-                        width: "10%",
-                        orderable: false,
-                        render: function (data, type, full, meta) {
-                            let c = full.deed === null ? '' : 'warning';
-                            let t = full.review === null ? (full.deed === null ? '' : thisComponent.collection?.messages?.pending) : `${full.review?.review_status[`name_${thisComponent.locale}`]}`;
-                            let b = "";
-                            switch (full.review?.review_status.name_en) {
-                                case null:
-                                    break;
-                                case 'Pending':
-                                    c = "warning";
-                                    break;
-                                case 'Accepted':
-                                    c = "success";
-                                    break;
-                                case 'Rejected':
-                                    c = "danger";
-                                    break;
-                                default:
-                                    break;
-                            }
-                            b = `
-                                <div class="row mr-1">
-                                    <button type="button" class="btn btn-gradient-${c}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${full.review ? full.review.updated_at_for_humans + `: ` + full.review.review : ""}">${t}</button>
-                                </div>
-                                `;
-                            let badge = ``;
-                            if (full.review?.new == true) {
-                                badge = `
-                                <span class="badge badge-glow bg-primary rounded-pill float-end new-badge" id="${"statementbadgeid_" + full.id}">${thisComponent.collection?.messages.new}</span>
-                                `;
-                            }
-
-                            let r =
-                                `
-                                <div class="justify-content-center align-items-center px-2">
-                                    <div class="d-flex flex-column">
-                                    ` +
-                                badge +
-                                b +
-                                `
-                                    </div>
-                                </div>
-                                `;
-                            return r;
-                        },
-                    },
-                    {
-                        // Actions
-                        targets: 4,
-                        responsivePriority: 4,
-                        width: "10%",
-                        orderable: false,
-                        render: function (data, type, full, meta) {
-                            let r = `
-                                <div class="d-flex justify-content-center align-items-center px-2">
-                                    <div class="d-flex flex-column">
-                                        <div class="mb-1 row mr-1">
-                                            <button type="button" class="btn btn-primary waves-effect" id="statementButton${full.id}" onclick="window.thisComponent.statementActionUpdate(${full.id})" disabled>${thisComponent.collection?.messages?.update}</button>
-                                        </div>
-                                        <div class="row mr-1">
-                                            <button type="button" class="btn btn-outline-primary waves-effect" onclick="window.thisComponent.statementViewShow(${full.id})">${thisComponent.collection?.messages?.view}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                `;
-                            return r;
-                        },
-                    },
-                ],
-                order: [[0, "asc"]],
-                dom: `
-                <"row d-flex justify-content-start align-items-center m-1"
-                    <"col-lg-7 d-flex justify-content-start align-items-center"
-                        <"#cardHeader">
-                    >
-                    <"col-lg-3 d-flex justify-content-end align-items-center"f>
-                    <"col-lg-2 d-flex justify-content-end align-items-center px-2"<"#updateAll">>
-
-
-                >t
-                <"d-flex justify-content-between mx-2 row"
-                    <"col-sm-12 col-md-6"i>
-                    <"col-sm-12 col-md-6"p>
-                ">`,
-                initComplete: function () {
-                    let domHtml = `
-                    <div class="card-body">
-                        <h4 class="card-title">${thisComponent.collection?.messages?.statements}</h4>
-                        <h6 class="card-subtitle text-muted">${thisComponent.collection?.messages?.statements} ${thisComponent.collection?.messages?.actions}</h6>
-                    </div>
-                    `;
-                    $("#cardHeader").html(domHtml);
-                    let updateAllHtml = `
-                    <button type="button" class="btn btn-primary waves-effect" onClick="window.thisComponent.statementActionUpdateAll()">${thisComponent.collection?.messages?.updateAll}</button>
-                    `;
-                    $("#updateAll").html(updateAllHtml);
-                },
-                drawCallback: function () {
-                    thisComponent.$nextTick(function () {
-                        if (feather) {
-                            feather.replace({
-                                width: 14,
-                                height: 14,
-                            });
-                        }
-                        $(document).find('[data-bs-toggle="tooltip"]').tooltip({html: true});
-                    });
-                    $(".select2").select2();
-                    /*
-                    try {
-                        //$(document).find('[data-bs-toggle="tooltip"]').tooltip({ html: true });
-                        function sleep(ms) {
-                            return new Promise((resolve) => setTimeout(resolve, ms));
-                        }
-                        async function create() {
-                            await sleep(3200);
-                            $(document).find('[data-bs-toggle="tooltip"]').tooltip({ html: true });
-                        }
-                        create();
-                    } catch (error) {
-                        function sleep(ms) {
-                            return new Promise((resolve) => setTimeout(resolve, ms));
-                        }
-                        async function create() {
-                            await sleep(4000);
-                            $(document).find('[data-bs-toggle="tooltip"]').tooltip({ html: true });
-                        }
-                        create();
-                    }*/
-                    /*
-                    if (window.thisComponent.scrollPos != null) {
-                        window.thisComponent.$nextTick(() => {
-                            window.scrollTo(0, window.thisComponent.scrollPos);
-                        });
-                    } else {
-                        window.thisComponent.scrollPos = 500;
-                    }
-
-                    */
-                },
-            });
-        },
-        draw() {
-            var thisComponent = this;
+        loadStatements() {
+            let self = this;
             axios
-                .get("/" + thisComponent.locale + "/axios/organisations/do/" + thisComponent.actionId, {})
+                .get(`/${self.locale}/axios/organisations/do/${self.actionId}`, {})
                 .then(function (response) {
-                    //console.log(response.data);
-                    thisComponent.collection = response.data;
-                    thisComponent.$nextTick(() => {
-                        thisComponent.buildTable();
+                    self.collection = response.data;
+                    if (self.statementActive === null) {
+                        self.updateActiveStatement(0);
+                    } else {
+                        let index = self.collection.statements.findIndex(statement => statement.id === self.statementActive.id);
+                        self.updateActiveStatement(index);
+                    }
+                    self.$nextTick(() => {
+                        self.initTooltips();
+                        feather.replace();
                     });
                 })
                 .catch(function (error) {
-                    console.log(error);
-                    console.log(error.response);
+
                 });
         },
-        statementActionButtonEnable(id) {
-            $("#statementButton" + id).prop("disabled", false);
-        },
         statementActionUpdate(id) {
-            var sid = id;
-            $("#statementButton" + id).prop("disabled", true);
-            let v = $(`#valueSelect${id}`).select2("data")[0].id;
-            let c = $(`#commentInput${id}`).val();
+            let self = this;
+            let formData = new FormData(document.getElementById('update-form'));
+            formData.append('statement_id', id);
+            self.isSubmitting = true;
             axios
-                .post(`/${thisComponent.locale}/axios/organisations/statements/deeds/update`, {
-                    statement_id: id,
-                    value: v,
-                    comment: c,
-                })
+                .post(`/${self.locale}/axios/organisations/statements/deeds/update`, formData)
                 .then(function (response) {
-                    thisComponent.dataTable.destroy();
-                    thisComponent.draw();
-                    //console.log(response.data);
-                    // remove new tag
-                    // find this statement in collection
-                    thisComponent.collection?.statements?.forEach((element, index, array) => {
-                        if ((element.id = sid && element.review)) {
-                            array[index].review.new = false;
-                            //datatables are not reactive also kill span
-                            $("#statementbadgeid_" + sid).remove();
-                        }
-                    });
-                    /*let s = thisComponent.collection?.statements?.filter((element) => {
-                        return element.id == sid;
-                    });
-                    // has review?
-                    if(s.review) {
-                        s.review.new = false;
-                    }*/
-                    // end remove new tag
-                    toastr["success"](`${thisComponent.collection?.messages?.itemUpdatedSuccessfully}.`, `${thisComponent.collection?.messages?.success}!`, {
+                    self.isSubmitting = false;
+                    self.modal.hide();
+                    self.loadStatements();
+                    toastr["success"](`${self.collection?.messages?.itemUpdatedSuccessfully}.`, `${self.collection?.messages?.success}!`, {
                         showMethod: "slideDown",
                         hideMethod: "slideUp",
                         timeOut: 3000,
@@ -453,9 +169,8 @@ export default {
                     });
                 })
                 .catch(function (error) {
-                    //console.log(error);
-                    //console.log(error.response);
-                    toastr["error"](error.response?.data?.message, `${thisComponent.collection?.messages?.error}!`, {
+                    self.isSubmitting = false;
+                    toastr["error"](error.response?.data?.message, `${self.collection?.messages?.error}!`, {
                         showMethod: "slideDown",
                         hideMethod: "slideUp",
                         timeOut: 5000,
@@ -464,87 +179,162 @@ export default {
                     });
                 });
         },
-        statementActionUpdateAll() {
-            let member = {};
-            let load = [];
-            thisComponent.collection?.statements.forEach((statement) => {
-                member = {
-                    id: statement.id,
-                    value: $(`#valueSelect${statement.id}`).select2("data")[0].id,
-                    comment: $(`#commentInput${statement.id}`).val()
-                };
-                load.push(member);
-            });
-            Swal.fire({
-                title: `🤖 \n ${thisComponent.collection?.messages?.working}`,
-                text: `🤖 \n ${thisComponent.collection?.messages?.working}`,
-                icon: "info",
-                html: `
-                        <button class="btn btn-outline-info" type="button" disabled>
-                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                            <span class="ms-25 align-middle">${thisComponent.collection?.messages?.updating}...</span>
-                        </button>`,
-                showCloseButton: false,
-                showConfirmButton: false,
-                customClass: {
-                    confirmButton: "btn btn-primary",
+        statusBulletColor(status) {
+            switch (status) {
+                case 'Pending':
+                    return 'bullet-warning';
+                case 'Accepted':
+                    return 'bullet-success';
+                case 'Rejected':
+                    return 'bullet-danger';
+                default:
+                    return 'bullet-warning';
+            }
+        },
+        updateActiveStatement(index) {
+            let self = this;
+            self.statementActive = self.collection?.statements?.[index];
+            self.drawStatementHistoryChart();
+        },
+        showUpdateModal(index) {
+            this.updateActiveStatement(index);
+            let slider = document.getElementById('slider');
+            let value = this.statementActive.deed === null ? 0 : this.statementActive.deed.value;
+            slider.noUiSlider.set(value);
+            this.modal = new bootstrap.Modal(document.getElementById('update-modal'));
+            this.modal.show();
+        },
+        initSlider() {
+            let self = this;
+            let slider = document.getElementById('slider');
+            noUiSlider.create(slider, {
+                start: [1],
+                behaviour: 'tap-drag',
+                step: 1,
+                range: {
+                    min: 1,
+                    max: 5
                 },
-                buttonsStyling: false,
+                pips: {
+                    mode: 'steps',
+                    stepped: true,
+                    density: 5
+                }
             });
-            axios
-                .post(`/${thisComponent.locale}/axios/organisations/statements/deeds/update-all`, {
-                    statements: load,
-                    locale: thisComponent.locale,
-                })
-                .then(function (response) {
-                    thisComponent.dataTable.destroy();
-                    thisComponent.draw();
-                    Swal.fire({
-                        title: `${thisComponent.collection?.messages?.success}!`,
-                        text: `${thisComponent.collection?.messages?.itemsUpdatedSuccessfully}!`,
-                        icon: "success",
-                        timer: 2000,
-                        timerProgressBar: true,
-                        customClass: {
-                            confirmButton: "btn btn-success",
-                        },
-                        buttonsStyling: false,
-                    });
-                })
-                .catch(function (error) {
-                    console.log(error.response);
-                    Swal.fire({
-                        icon: "error",
-                        title: "Uh oh!",
-                        text: "{message: " + error.response?.data?.message + ", status: " + error.response.status + ", statusText: " + error.response.statusText + "}",
-                        customClass: {
-                            confirmButton: "btn btn-primary",
-                        },
-                    });
+
+            slider.noUiSlider.on('update', function (values, handle, unencoded, tap, positions, noUiSlider) {
+                let value = unencoded[0];
+                document.getElementById('slider-hint').innerHTML = `${self.statementActive?.[`k${value}_${self.locale}`]}`;
+                document.getElementById('value').value = value;
+            });
+        },
+        initTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        },
+        drawStatementHistoryChart() {
+            let self = this;
+            let history = self.statementActive?.deed?.deed_history === undefined ? [] : self.statementActive.deed.deed_history;
+            let data = [];
+            history.forEach(item => {
+                data.push({
+                    date: moment(item.created_at).format('YYYY-MM-DD'),
+                    value: item.value,
                 });
-        },
-        statementViewHide() {
-            this.statementActive = null;
-            $("#statementViewModal").modal("hide");
-        },
-        statementViewShow(id) {
-            var thisComponent = this;
-            axios
-                .get("/" + thisComponent.locale + "/axios/organisations/do", {})
-                .then(function (response) {
-                    //console.log(response.data);
-                    let c = response.data;
-                    let f = c.statements.filter((x) => x.id == id);
-                    thisComponent.statementActive = f[0];
-                    thisComponent.$nextTick(() => {
-                        $("#statementViewModal").modal("show");
-                    });
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    console.log(error.response);
+            });
+
+            let sorted = data.sort((a, b) => {
+                if (moment(a.date).isBefore(b.date)) {
+                    return -1;
+                } else if (moment(a.date).isAfter(b.date)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
+            let categories = [];
+            sorted.forEach(item => {
+                if (categories.indexOf(item.date) === -1) {
+                    categories.push(item.date);
+                }
+            });
+
+            let series = [{data: []}];
+            categories.forEach(category => {
+                sorted.forEach(item => {
+                    if (item.date === category) {
+                        series[0].data.push({x: category, y: item.value});
+                    }
                 });
+            });
+
+            let options = {
+                chart: {
+                    height: 400,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                    parentHeightOffset: 0,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                series: series,
+                markers: {
+                    strokeWidth: 7,
+                    strokeOpacity: 1,
+                    strokeColors: [window.colors.solid.white],
+                    colors: [self.getColorByStatementStatus(self.statementActive?.review?.review_status.name_en)]
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                colors: [self.getColorByStatementStatus(self.statementActive?.review?.review_status.name_en)],
+                grid: {
+                    xaxis: {
+                        lines: {
+                            show: true
+                        }
+                    },
+                    padding: {
+                        top: -20
+                    }
+                },
+                xaxis: {
+                    categories: categories,
+                },
+                yaxis: {
+                    min: 0,
+                    max: 5,
+                    forceNiceScale: true,
+                    decimalsInFloat: 0
+                }
+            };
+
+            if (self.statementHistoryChart !== null) {
+                self.statementHistoryChart.destroy();
+            }
+
+            self.statementHistoryChart = new ApexCharts(document.getElementById('statements-chart'), options);
+            self.statementHistoryChart.render();
         },
+        getColorByStatementStatus(status) {
+            switch (status) {
+                case 'Pending':
+                    return '#ff9f43';
+                case 'Accepted':
+                    return '#28c76f';
+                case 'Rejected':
+                    return '#ea5455';
+                default:
+                    return '#ff9f43';
+            }
+        }
     },
     computed: {
         badgeColorClass() {
@@ -567,7 +357,17 @@ export default {
     },
     mounted() {
         window.thisComponent = this;
-        this.draw();
+        this.loadStatements();
+        this.initSlider();
     },
 };
 </script>
+<style scoped>
+.dark-layout table tr.active {
+    background-color: #161d31;
+}
+
+table tr.active {
+    background-color: #f8f8f8;
+}
+</style>
