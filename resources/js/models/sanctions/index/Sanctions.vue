@@ -162,20 +162,25 @@
                                             <dt>{{ messages.components }}</dt>
                                             <dd>
                                                 <span v-for="component in sanctionActive?.components" :key="component"
-                                                      class="badge badge-light-primary me-25 mb-25">{{
-                                                        component
+                                                      class="badge badge-light-primary me-25 mb-25"
+                                                      data-bs-toggle="tooltip"
+                                                      :data-bs-original-title="`${component[`name_${locale}`]} &mdash; ${component[`desc_${locale}`]}`">{{
+                                                        component.code
                                                     }}</span>
                                             </dd>
                                         </dl>
                                     </div>
                                     <div v-show="sanctionActive?.statements.length" class="col-6">
-                                        <dt>{{ messages.statements }}</dt>
-                                        <dd>
+                                        <dl>
+                                            <dt>{{ messages.statements }}</dt>
+                                            <dd>
                                             <span v-for="statement in sanctionActive?.statements" :key="statement.id"
-                                                  class="badge badge-light-primary me-25 mb-25">{{
+                                                  class="badge badge-light-primary me-25 mb-25" data-bs-toggle="tooltip"
+                                                  :data-bs-original-title="`${statement[`content_${locale}`]} &mdash; ${statement[`desc_${locale}`]}`">{{
                                                     statement.subcode
                                                 }}</span>
-                                        </dd>
+                                            </dd>
+                                        </dl>
                                     </div>
                                 </div>
                                 <div v-show="sanctionActive?.articles.length" class="row">
@@ -473,17 +478,20 @@ export default {
                             });
                         }
                     });
-                    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+                    thisComponent.initTooltips();
                 },
             });
         },
         sanctionShow(id) {
-            let y = this.collection?.sanctions?.filter((x) => x.id == id);
-            this.sanctionActive = y[0];
-            this.initDescQuill();
+            let self = this;
+            let y = self.collection?.sanctions?.filter((x) => x.id == id);
+            self.sanctionActive = y[0];
+            self.initDescQuill();
             $("#sanctionShowModal").modal("show");
-            this.$nextTick(() => feather.replace());
+            self.$nextTick(() => {
+                feather.replace();
+                self.initTooltips();
+            });
         },
         sanctionShowClose() {
             $("#sanctionShowModal").modal("hide");
@@ -524,6 +532,10 @@ export default {
             } catch (e) {
 
             }
+        },
+        initTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
         }
     },
     mounted() {

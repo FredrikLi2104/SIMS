@@ -428,20 +428,25 @@
                                                 <dt>{{ messages.components }}</dt>
                                                 <dd>
                                                 <span v-for="component in activeSanction?.components" :key="component"
-                                                      class="badge badge-light-primary me-25 mb-25">{{
-                                                        component
+                                                      class="badge badge-light-primary me-25 mb-25"
+                                                      data-bs-toggle="tooltip"
+                                                      :data-bs-original-title="`${component[`name_${locale}`]} &mdash; ${component[`desc_${locale}`]}`">{{
+                                                        component.code
                                                     }}</span>
                                                 </dd>
                                             </dl>
                                         </div>
                                         <div v-show="activeSanction?.statements.length" class="col-6">
-                                            <dt>{{ messages.statements }}</dt>
-                                            <dd>
+                                            <dl>
+                                                <dt>{{ messages.statements }}</dt>
+                                                <dd>
                                             <span v-for="statement in activeSanction?.statements" :key="statement.id"
-                                                  class="badge badge-light-primary me-25 mb-25">{{
+                                                  class="badge badge-light-primary me-25 mb-25" data-bs-toggle="tooltip"
+                                                  :data-bs-original-title="`${statement[`content_${locale}`]} &mdash; ${statement[`desc_${locale}`]}`">{{
                                                     statement.subcode
                                                 }}</span>
-                                            </dd>
+                                                </dd>
+                                            </dl>
                                         </div>
                                     </div>
                                     <div v-show="activeSanction?.articles.length" class="row">
@@ -1024,7 +1029,10 @@ export default {
                     self.activeSanction = response.data;
                     self.initDescQuill();
                     self.sanctionModal.show();
-                    self.$nextTick(() => feather.replace());
+                    self.$nextTick(() => {
+                        feather.replace();
+                        self.initTooltips();
+                    });
                 })
                 .catch(function (error) {
                     console.log(error.response);
@@ -1049,6 +1057,10 @@ export default {
             } catch (e) {
 
             }
+        },
+        initTooltips() {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
         }
     },
     mounted() {

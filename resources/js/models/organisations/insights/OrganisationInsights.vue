@@ -362,20 +362,25 @@
                                             <dt>{{ collection?.messages.components }}</dt>
                                             <dd>
                                                 <span v-for="component in sanctionActive?.components" :key="component"
-                                                      class="badge badge-light-primary me-25 mb-25">{{
-                                                        component
+                                                      class="badge badge-light-primary me-25 mb-25"
+                                                      data-bs-toggle="tooltip"
+                                                      :data-bs-original-title="`${component[`name_${locale}`]} &mdash; ${component[`desc_${locale}`]}`">{{
+                                                        component.code
                                                     }}</span>
                                             </dd>
                                         </dl>
                                     </div>
                                     <div v-show="sanctionActive?.statements.length" class="col-6">
-                                        <dt>{{ collection?.messages.statements }}</dt>
-                                        <dd>
+                                        <dl>
+                                            <dt>{{ collection?.messages.statements }}</dt>
+                                            <dd>
                                             <span v-for="statement in sanctionActive?.statements" :key="statement.id"
-                                                  class="badge badge-light-primary me-25 mb-25">{{
+                                                  class="badge badge-light-primary me-25 mb-25" data-bs-toggle="tooltip"
+                                                  :data-bs-original-title="`${statement[`content_${locale}`]} &mdash; ${statement[`desc_${locale}`]}`">{{
                                                     statement.subcode
                                                 }}</span>
-                                        </dd>
+                                            </dd>
+                                        </dl>
                                     </div>
                                 </div>
                                 <div v-show="sanctionActive?.articles.length" class="row">
@@ -1569,9 +1574,11 @@ export default {
             }
         },
         handleSanctionModalShown() {
+            let self = this;
             let modalEl = document.getElementById('sanctionShowModal');
             modalEl.addEventListener('shown.bs.modal', function (event) {
                 feather.replace();
+                self.initTooltips();
             });
         }
     },

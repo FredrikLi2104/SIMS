@@ -1264,11 +1264,22 @@ class AxiosController extends Controller
                 }
             }
 
+            $components = collect();
             $sanction->statements->each(function ($statement) use (&$components) {
+                if (!$components->contains('id', $statement->component->id)) {
+                    $components->push([
+                        'id' => $statement->component->id,
+                        'code' => $statement->component->code,
+                        'name_en' => $statement->component->name_en,
+                        'name_se' => $statement->component->name_se,
+                        'desc_en' => $statement->component->desc_en,
+                        'desc_se' => $statement->component->desc_se,
+                    ]);
+                }
                 $statement->makeVisible('subcode');
             });
 
-            $sanction->components = $sanction->statements->pluck('component.code')->unique()->values();
+            $sanction->components = $components;
             $sanction->makeVisible('components');
         }
 
@@ -1305,11 +1316,22 @@ class AxiosController extends Controller
             }
         }
 
-        $sanction->statements->each(function ($statement) use (&$components) {
+        $components = collect();
+        $sanction->statements->each(function ($statement) use ($locale, &$components) {
+            if (!$components->contains('id', $statement->component->id)) {
+                $components->push([
+                    'id' => $statement->component->id,
+                    'code' => $statement->component->code,
+                    'name_en' => $statement->component->name_en,
+                    'name_se' => $statement->component->name_se,
+                    'desc_en' => $statement->component->desc_en,
+                    'desc_se' => $statement->component->desc_se,
+                ]);
+            }
             $statement->makeVisible('subcode');
         });
 
-        $sanction->components = $sanction->statements->pluck('component.code')->unique()->values();
+        $sanction->components = $components;
         $sanction->makeVisible('components');
 
         return $sanction;
