@@ -13,16 +13,15 @@
                             <tbody>
                             <tr v-for="(statement, index) in collection?.statements" :key="statement.id"
                                 :class="statement.id === statementActive.id ? 'active' : ''">
-                                <td>
-                                    <span class="bullet bullet-sm"
-                                          :class="statusBulletColor(statement?.review?.review_status.name_en)"
-                                          data-bs-toggle="tooltip"
-                                          :data-bs-original-title="statement?.review?.review">
-                                    </span>
-                                </td>
                                 <td>{{ statement.subcode }}</td>
                                 <td>{{ statement[`content_${locale}`] }}</td>
                                 <td>{{ statement.deed === null ? 0 : statement.deed.value }}</td>
+                                <td>
+                                    <span class="badge"
+                                          :class="badgeColorClass(statement?.review?.review_status.name_en)">{{
+                                            statement?.review?.review_status.name_en ?? collection?.messages?.pending
+                                        }}</span>
+                                </td>
                                 <td>
                                     <div class="d-flex">
                                         <button type="button"
@@ -68,6 +67,10 @@
                             }}</h6>
                         <span>{{ statementActive?.implementation }}</span>
                     </div>
+                    <div class="mb-1">
+                        <h6 class="text-sm font-weight-semibold me-1">{{ collection?.messages?.comment }}</h6>
+                        <span>{{ statementActive?.deed?.comment }}</span>
+                    </div>
                     <hr>
                     <div id="statements-chart"></div>
                 </div>
@@ -85,7 +88,7 @@
                 <div class="modal-body">
                     <form id="update-form">
                         <div class="mb-50">
-                            <label for="slider" class="form-label">{{ collection?.messages?.value }}</label>
+                            <label class="form-label">{{ collection?.messages?.value }}</label>
                             <div id="slider" class="mb-4"></div>
                             <p><small id="slider-hint" class="text-muted fw-bolder"></small></p>
                             <input type="hidden" id="value" name="value">
@@ -178,18 +181,6 @@ export default {
                         rtl: false,
                     });
                 });
-        },
-        statusBulletColor(status) {
-            switch (status) {
-                case 'Pending':
-                    return 'bullet-warning';
-                case 'Accepted':
-                    return 'bullet-success';
-                case 'Rejected':
-                    return 'bullet-danger';
-                default:
-                    return 'bullet-warning';
-            }
         },
         updateActiveStatement(index) {
             let self = this;
@@ -334,11 +325,8 @@ export default {
                 default:
                     return '#ff9f43';
             }
-        }
-    },
-    computed: {
-        badgeColorClass() {
-            let reviewStatus = this.statementActive?.review?.review_status.name_en;
+        },
+        badgeColorClass(reviewStatus) {
             let colorClass = '';
             switch (reviewStatus) {
                 case 'Pending':
@@ -350,6 +338,8 @@ export default {
                 case 'Rejected':
                     colorClass = 'badge-light-danger';
                     break;
+                default:
+                    colorClass = 'badge-light-warning';
             }
 
             return colorClass;
