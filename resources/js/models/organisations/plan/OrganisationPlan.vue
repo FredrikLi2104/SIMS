@@ -1,12 +1,12 @@
 <template>
     <div class="row">
-        <div class="row d-flex justify-content-between align-items-center m-1">
+        <!--<div class="row d-flex justify-content-between align-items-center m-1">
             <div class="col-xl-2"></div>
             <div class="col-xl-8 d-flex justify-content-center">
                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                    <!--<input type="radio" class="btn-check" name="btnradio" id="btnradioa" autocomplete="off"
+                    &lt;!&ndash;<input type="radio" class="btn-check" name="btnradio" id="btnradioa" autocomplete="off"
                            @click="draw('components')" :checked="active == 'components'"/>
-                    <label class="btn btn-primary btn-lg" for="btnradioa">{{ collection?.messages?.components }}</label>-->
+                    <label class="btn btn-primary btn-lg" for="btnradioa">{{ collection?.messages?.components }}</label>&ndash;&gt;
                     <input type="radio" class="btn-check" name="btnradio" id="btnradiob" autocomplete="off"
                            @click="draw('statements')" :checked="active == 'statements'"/>
                     <label class="btn btn-primary btn-lg" for="btnradiob">{{ collection?.messages?.statements }}</label>
@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="col-xl-2"></div>
-        </div>
+        </div>-->
         <div class="row">
             <!-- Report-->
             <div class="row match-height" v-if="active == 'report'">
@@ -54,7 +54,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="colorInput" class="form-label">{{
-                                        collection?.messages?.accentColor
+                                            collection?.messages?.accentColor
                                         }}</label>
                                     <input id="colorInput" type="color" class="form-control form-control-color"
                                            title="Choose your color" v-model="color" @change="orgUpdate"/>
@@ -130,7 +130,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="address1Input" class="form-label">{{
-                                        collection?.messages?.address1
+                                            collection?.messages?.address1
                                         }}</label>
                                     <input id="address1Input" type="text"
                                            :class="errors?.address1 ? 'form-control is-invalid' : 'form-control'"
@@ -142,7 +142,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="address2Input" class="form-label">{{
-                                        collection?.messages?.address2
+                                            collection?.messages?.address2
                                         }}</label>
                                     <input id="address2Input" type="text"
                                            :class="errors?.address2 ? 'form-control is-invalid' : 'form-control'"
@@ -164,7 +164,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="col-8 mb-1">
                                     <label for="websiteInput" class="form-label">{{
-                                        collection?.messages?.website
+                                            collection?.messages?.website
                                         }}</label>
                                     <input id="websiteInput" type="text"
                                            :class="errors?.website ? 'form-control is-invalid' : 'form-control'"
@@ -312,9 +312,91 @@
             </div>
             <!-- End Report-->
             <div class="col-12" v-if="active != 'report'">
-                <div class="card invoice-list-wrapper">
-                    <div class="card-datatable table-responsive">
-                        <table class="invoice-list-table table" id="dataTable"></table>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <template v-for="(group, componentCode) in collection?.statements">
+                                    <div class="table-responsive"
+                                         :class="Object.keys(collection.statements).indexOf(componentCode) < Object.keys(collection.statements).length - 1 ? 'mb-1' : ''">
+                                        <table class="table table-sm">
+                                            <thead>
+                                            <tr>
+                                                <th colspan="3">{{
+                                                        `${collection?.messages?.component} ${componentCode}`
+                                                    }}
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="(statement, index) in group" :key="statement.id"
+                                                :class="statement.id === statementActive.id ? 'active' : ''">
+                                                <td>{{ statement.subcode }}</td>
+                                                <td>{{ statement[`content_${locale}`] }}</td>
+                                                <td>
+                                                    <div class="d-flex">
+                                                        <button type="button"
+                                                                class="btn btn-icon btn-outline-primary waves-effect"
+                                                                @click="updateActiveStatement(componentCode, index)">
+                                                            <i data-feather="chevron-right"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="col-6">
+                                <form id="plan-form">
+                                    <div class="mb-1">
+                                        <h6 class="text-sm font-weight-semibold me-1">{{
+                                                collection?.messages?.statement
+                                            }}</h6>
+                                        <span>{{ statementActive?.subcode }}</span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <h6 class="text-sm font-weight-semibold me-1">{{
+                                                collection?.messages?.desc
+                                            }}</h6>
+                                        <span>{{ statementActive?.[`desc_${locale}`] }}</span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <h6 class="text-sm font-weight-semibold me-1">{{
+                                                `${collection?.messages?.implementation} ${collection?.messages?.example}`
+                                            }}</h6>
+                                        <span>{{ statementActive?.[`implementation_${locale}`] }}</span>
+                                    </div>
+                                    <div class="mb-1">
+                                        <h6 class="text-sm font-weight-semibold me-1">
+                                            {{ collection?.messages?.implementation }}</h6>
+                                        <textarea class="form-control" name="implementation" rows="4">{{ statementActive?.implementation }}</textarea>
+                                    </div>
+                                    <div class="mb-1">
+                                        <h6 class="text-sm font-weight-semibold me-1">
+                                            {{ collection?.messages?.responsibility }}</h6>
+                                        <textarea class="form-control" name="responsibility" rows="4"
+                                                  :placeholder="collection?.messages?.responsibilityPlaceholder">{{ statementActive?.responsibility }}</textarea>
+                                    </div>
+                                    <div class="mt-2">
+                                        <button type="button"
+                                                class="btn btn-success waves-effect waves-float waves-light"
+                                                :disabled="isSubmitting"
+                                                @click="updateStatementPlan(statementActive?.id)">
+                                            <span v-show="!isSubmitting"><i data-feather="check" class="me-25"></i>{{
+                                                    collection?.messages?.update
+                                                }}</span>
+                                            <span v-show="isSubmitting" class="spinner-border spinner-border-sm"
+                                                  role="status" aria-hidden="true"></span>
+                                            <span v-show="isSubmitting" class="ms-25 align-middle">{{
+                                                    collection?.messages?.submitting
+                                                }}...</span>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -342,8 +424,8 @@
                                         <tr>
                                             <td>{{ collection?.messages?.period }}</td>
                                             <td>{{
-                                                statementActive?.component?.organisation_period ?
-                                                statementActive.component.organisation_period[`name_${locale}`] : null
+                                                    statementActive?.component?.organisation_period ?
+                                                        statementActive.component.organisation_period[`name_${locale}`] : null
                                                 }}
                                             </td>
                                         </tr>
@@ -389,11 +471,11 @@
                                         </tr>
                                         <tr>
                                             <td>{{
-                                                collection?.messages?.implementation + " "
+                                                    collection?.messages?.implementation + " "
                                                 }}{{ collection?.messages?.example }}
                                             </td>
                                             <td>{{
-                                                statementActive ? statementActive[`implementation_${locale}`] : null
+                                                    statementActive ? statementActive[`implementation_${locale}`] : null
                                                 }}
                                             </td>
                                         </tr>
@@ -460,6 +542,7 @@ export default {
             statementActive: null,
             errors: null,
             color: null,
+            isSubmitting: false,
         };
     },
     methods: {
@@ -2402,22 +2485,16 @@ export default {
                     });
                 });
         },
-        updateStatementPlan(statementID) {
-            // set the button who called this to disabled
-            $("#statementButton" + statementID).prop("disabled", true);
-            //let v = $(`#statementPlanSelect${statementID}`).select2("data")[0].id;
-            let i = $(`#implementationInput${statementID}`).val();
-            let r = $(`#responsibilityInput${statementID}`).val();
+        updateStatementPlan(id) {
+            let self = this;
+            let formData = new FormData(document.getElementById('plan-form'));
+            formData.append('statement_id', id);
+            self.isSubmitting = true;
             axios
-                .post(`/${thisComponent.locale}/axios/organisations/statements/plans/update`, {
-                    statement_id: statementID,
-                    //plan_id: v,
-                    implementation: i,
-                    responsibility: r,
-                })
+                .post(`/${self.locale}/axios/organisations/statements/plans/update`, formData)
                 .then(function (response) {
-                    console.log(response.data);
-                    toastr["success"](`${thisComponent.collection?.messages?.itemUpdatedSuccessfully}.`, `${thisComponent.collection?.messages?.success}!`, {
+                    self.isSubmitting = false;
+                    toastr["success"](`${self.collection?.messages?.itemUpdatedSuccessfully}.`, `${self.collection?.messages?.success}!`, {
                         showMethod: "slideDown",
                         hideMethod: "slideUp",
                         timeOut: 3000,
@@ -2426,9 +2503,8 @@ export default {
                     });
                 })
                 .catch(function (error) {
-                    console.log(error);
-                    console.log(error.response.data);
-                    toastr["error"](error.response?.data?.message, `${thisComponent.collection?.messages?.error}!`, {
+                    self.isSubmitting = false;
+                    toastr["error"](error.response?.data?.message, `${self.collection?.messages?.error}!`, {
                         showMethod: "slideDown",
                         hideMethod: "slideUp",
                         timeOut: 3000,
@@ -2437,12 +2513,46 @@ export default {
                     });
                 });
         },
+        loadPlans() {
+            let self = this;
+            axios
+                .get(`/${self.locale}/axios/organisations/plan/user/${self.actionId}`)
+                .then(function (response) {
+                    self.collection = response.data;
+                    self.color = "#" + response.data.organisation.orgcolor;
+                    if (self.statementActive === null) {
+                        let componentCode = Object.keys(self.collection.statements)[0];
+                        self.updateActiveStatement(componentCode, 0);
+                    } else {
+                        let index = self.collection.statements.findIndex(statement => statement.id === self.statementActive.id);
+                        self.updateActiveStatement(index);
+                    }
+                    self.$nextTick(() => {
+                        feather.replace();
+                    });
+                })
+                .catch(function (error) {
+
+                });
+        },
+        updateActiveStatement(componentCode, index) {
+            let self = this;
+            self.statementActive = self.collection?.statements?.[componentCode][index];
+        }
     },
     mounted() {
         window.thisComponent = this;
-        //axios;
         this.active = this.type;
-        this.draw(this.active);
+        this.loadPlans();
     },
 };
 </script>
+<style scoped>
+.dark-layout table tr.active {
+    background-color: #161d31;
+}
+
+table tr.active {
+    background-color: #f8f8f8;
+}
+</style>

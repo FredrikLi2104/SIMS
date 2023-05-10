@@ -386,7 +386,7 @@ class AxiosController extends Controller
     public function organisationsComponentsPeriodsUpdate(OrganisationsComponentsPeriodsUpdateRequest $request)
     {
         $data = $request->validated();
-        $o = Auth::user()->organisation;
+        $o = Organisation::find(session('selected_org')['id']);
         $role = Auth::user()->role;
         if (!(in_array($role, ['user', 'auditor']))) {
             $role = 'user';
@@ -469,9 +469,10 @@ class AxiosController extends Controller
 
     public function organisationsPlan($locale, Action $action = null)
     {
+        $org = Organisation::find(session('selected_org')['id']);
         $components = Component::all()->load('period')->makeVisible(['code_name', 'period', 'periods']);
         foreach ($components as $component) {
-            $op = $component->organisationUserPeriod(Auth::user()->organisation);
+            $op = $component->organisationUserPeriod($org);
             $component->periods = Period::orderBy('sort_order')->get();
             foreach ($component->periods as $period) {
                 if ($period->id == $op->id) {
@@ -488,38 +489,32 @@ class AxiosController extends Controller
             if ($action->actionType->model == 'component') {
                 $components = $action->components;
                 $statements = $components->flatMap(function ($component) {
-                    return $component->statements->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
+                    return $component->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
                 });
             } elseif ($action->actionType->model == 'statement') {
-                $statements = $action->statements->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
+                $statements = $action->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
             }
         } else {
             // statements periods for this organisation would be the same for their component organisationPeriod
-            $statements = Statement::all()->load('component')->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
+            $statements = Statement::all()->sortBy('subcode', SORT_NATURAL)->load('component')->makeVisible(['component', 'implementation', 'responsibility', 'period', 'subcode']);
         }
 
         foreach ($statements as $statement) {
             // calculate component periods for this organisation
-            $oup = $statement->component->organisationUserPeriod(Auth::user()->organisation);
+            $oup = $statement->component->organisationUserPeriod($org);
             $statement->component->makeVisible(['organisation_period']);
             $statement->component->organisation_period = $oup;
-            $sp = $statement->organisationPlan(Auth::user()->organisation);
+            $sp = $statement->organisationPlan($org);
             $statement->implementation = $sp->implementation;
             $statement->responsibility = $sp->responsibility;
-            // calculate statement plan for this organisation [cancelled]
-            /*
-            $statement->plans = Plan::all();
-            foreach ($statement->plans as $plan) {
-                $plan->selected = false;
-                if ($sp) {
-                    if ($sp->plan?->id == $plan->id) {
-                        $plan->selected = true;
-                    }
-                }
-            }*/
         }
+
+        $statements = $statements->groupBy(function ($statement) {
+            return $statement->component->code;
+        });
+
         // Organisation data for report
-        $organisation = Auth::user()->organisation->makeVisible(['orgcolor', 'logo']);
+        $organisation = $org->makeVisible(['orgcolor', 'logo']);
         // Report Chart
         $quarterchart = [];
         $quarters = Period::whereIn('id', [1, 2, 3, 4])->get();
@@ -536,11 +531,6 @@ class AxiosController extends Controller
             }
             $quarterchart['data'][] = $count;
             $quarterchart['components'][] = $quarterchartcomponents;
-            /*
-            $comps = Component::where('period_id', $quarter->id)->all();
-            // if any of those components period id has been planned differently in component org by user, remove them from this quarter
-            $quarterchart['data'][] = DB::table('component_organisation')->where('period_id', $quarter->id)->get()->count();
-            */
         }
         $cs = Component::all()->sortBy('sort_order')->makeVisible(['code_name']);
         $quarterchart['componentsfinal'] = [];
@@ -585,7 +575,7 @@ class AxiosController extends Controller
         foreach ($statements as $statement) {
             $statementReviewPlan = $statement->reviewPlan();
             if ($statementReviewPlan) {
-                $org = Auth::user()->organisation;
+                $org = Organisation::find(session('selected_org')['id']);
                 $usersIds = $org->users->pluck('id');
                 $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $statement->id)->get()->first();
                 $statement->guide = $r->guide;
@@ -647,6 +637,7 @@ class AxiosController extends Controller
      **/
     public function organisationsReview($locale, Action $action = null)
     {
+        $org = Organisation::find(session('selected_org')['id']);
         if ($action) {
             //TODO: check access
 
@@ -664,21 +655,20 @@ class AxiosController extends Controller
 
         $plans = Plan::all()->sortBy('sort_order');
         foreach ($statements as $statement) {
-            $op = $statement->component->organisationPeriod(Auth::user()->organisation);
+            $op = $statement->component->organisationPeriod($org);
             $statement->component->makeVisible(['organisation_period']);
             $statement->component->organisation_period = $op;
             //$statement->plan = null;
             $statement->implementation = null;
-            $op = $statement->organisationPlan(Auth::user()->organisation);
+            $op = $statement->organisationPlan($org);
             if ($op) {
                 //$statement->plan = $op->plan;
                 $statement->implementation = $op->implementation;
             }
-            $statement->deed = $statement->organisationDeed(Auth::user()->organisation);
-            $statement->review = $statement->organisationReview(Auth::user()->organisation);
+            $statement->deed = $statement->organisationDeed($org);
+            $statement->review = $statement->organisationReview($org);
             $statementReviewPlan = $statement->reviewPlan();
             if ($statementReviewPlan) {
-                $org = Auth::user()->organisation;
                 $usersIds = $org->users->pluck('id');
                 $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $statement->id)->get()->first();
                 $statement->guide = $r->guide;
@@ -907,7 +897,7 @@ class AxiosController extends Controller
     public function organisationsStatementsDeedsUpdateAll(OrganisationsStatementsDeedsUpdateAllRequest $request)
     {
         $data = $request->validated();
-        $organisation = Auth::user()->organisation;
+        $organisation = Organisation::find(session('selected_org')['id']);
         try {
             DB::transaction(function () use ($data, $organisation) {
                 foreach ($data['statements'] as $statement) {
@@ -951,7 +941,7 @@ class AxiosController extends Controller
     {
         //
         $data = $request->validated();
-        $o = Auth::user()->organisation;
+        $o = Organisation::find(session('selected_org')['id']);;
         // find if this statement already has an entry
         $x = DB::table('organisation_statement')->where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
         $responsibility = null;
@@ -977,7 +967,7 @@ class AxiosController extends Controller
     public function organisationsStatementsReviewsUpdate(OrganisationsStatementsReviewsUpdateRequest $request)
     {
         $data = $request->validated();
-        $o = Auth::user()->organisation;
+        $o = Organisation::find(session('selected_org')['id']);
         // find if this statement has a a review
         $r = Review::where('organisation_id', $o->id)->where('statement_id', $data['statement_id'])->first();
         if ($r) {
@@ -1001,7 +991,7 @@ class AxiosController extends Controller
     public function organisationsUpdate(AxiosOrganisationUpdateRequest $request)
     {
         $data = $request->validated();
-        $organisation = Auth::user()->organisation;
+        $organisation = Organisation::find(session('selected_org')['id']);
         $update = [];
         // logo uploaded?
         if (isset($data['logo'])) {
