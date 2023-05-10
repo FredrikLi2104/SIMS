@@ -511,7 +511,7 @@ class AxiosController extends Controller
 
         $statements = $statements->groupBy(function ($statement) {
             return $statement->component->code;
-        })->sort();
+        })->sortKeys();
 
         // Organisation data for report
         $organisation = $org->makeVisible(['orgcolor', 'logo']);
