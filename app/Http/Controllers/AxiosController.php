@@ -559,15 +559,15 @@ class AxiosController extends Controller
             //TODO: check access
 
             if ($action->actionType->model == 'statement') {
-                $statements = $action->statements->makeVisible(['concat', 'guide', 'plans']);
+                $statements = $action->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode']);
             } else if ($action->actionType->model == 'component') {
                 $components = $action->components;
                 $statements = $components->flatMap(function ($component) {
-                    return $component->statements->makeVisible(['concat', 'guide', 'plans']);
+                    return $component->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode']);
                 });
             }
         } else {
-            $statements = Statement::all()->makeVisible(['concat', 'guide', 'plans']);
+            $statements = Statement::all()->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode']);
         }
 
         $plans = Plan::all()->sortBy('sort_order');

@@ -114,7 +114,8 @@
                                         </thead>
                                         <tbody>
                                         <tr v-for="(statement, index) in componentActive?.statements"
-                                            :key="statement.id">
+                                            :key="statement.id"
+                                            :class="statement.id === activeStatement.id ? 'active' : ''">
                                             <td>
                                                 <span class="bullet bullet-sm"
                                                       :class="statusBulletColor(statement?.review?.review_status.name_en)"
@@ -1611,3 +1612,12 @@ export default {
     }
 };
 </script>
+<style scoped>
+.dark-layout table tr.active {
+    background-color: #161d31;
+}
+
+table tr.active {
+    background-color: #f8f8f8;
+}
+</style>

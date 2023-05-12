@@ -281,4 +281,6 @@ return [
     'show_disabled' => 'Visa avaktiverad',
     'hide_disabled' => 'Dölj inaktiverat',
     'initial_value' => 'Ursprungligt värde',
+    'how_to_review' => 'Hur man granskar',
+    'how_we_review' => 'Hur vi granskar',
 ];

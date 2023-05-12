@@ -282,5 +282,7 @@ return [
     'show_disabled' => 'Show Disabled',
     'hide_disabled' => 'Hide Disabled',
     'initial_value' => 'Initial Value',
+    'how_to_review' => 'How to Review',
+    'how_we_review' => 'How We Review',
 ];
 ?>

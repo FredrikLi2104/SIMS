@@ -2526,12 +2526,12 @@ export default {
                 .then(function (response) {
                     self.collection = response.data;
                     self.color = "#" + response.data.organisation.orgcolor;
+                    let componentCode = Object.keys(self.collection.statements)[0];
                     if (Object.keys(self.statementActive).length === 0) {
-                        let componentCode = Object.keys(self.collection.statements)[0];
                         self.updateActiveStatement(componentCode, 0);
                     } else {
                         let index = self.collection.statements.findIndex(statement => statement.id === self.statementActive.id);
-                        self.updateActiveStatement(index);
+                        self.updateActiveStatement(componentCode, index);
                     }
                     self.$nextTick(() => {
                         feather.replace();

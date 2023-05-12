@@ -1,5 +1,5 @@
 @extends('layouts/contentLayoutMaster')
-@section('title', trans('messages.plan'))
+@section('title', trans('messages.plan') . ' ' . trans('messages.review'))
 @section('vendor-style')
     {{-- vendor css files --}}
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
