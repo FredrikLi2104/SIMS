@@ -323,7 +323,7 @@
                                             <thead>
                                             <tr>
                                                 <th colspan="3">{{
-                                                        `${collection?.messages?.component} ${componentCode}`
+                                                        `${componentCode} &mdash; ${group[0].component[`name_${locale}`]}`
                                                     }}
                                                 </th>
                                             </tr>
@@ -354,7 +354,9 @@
                                         <h6 class="text-sm font-weight-semibold me-1">{{
                                                 collection?.messages?.statement
                                             }}</h6>
-                                        <span>{{ statementActive?.subcode }}</span>
+                                        <span>{{
+                                                `${statementActive?.subcode} &mdash; ${statementActive?.[`content_${locale}`]}`
+                                            }}</span>
                                     </div>
                                     <div class="mb-1">
                                         <h6 class="text-sm font-weight-semibold me-1">{{
@@ -371,13 +373,16 @@
                                     <div class="mb-1">
                                         <h6 class="text-sm font-weight-semibold me-1">
                                             {{ collection?.messages?.implementation }}</h6>
-                                        <textarea class="form-control" name="implementation" rows="4">{{ statementActive?.implementation }}</textarea>
+                                        <textarea class="form-control" name="implementation"
+                                                  rows="4" v-model="statementActive.implementation">{{ statementActive?.implementation }}</textarea>
                                     </div>
                                     <div class="mb-1">
                                         <h6 class="text-sm font-weight-semibold me-1">
                                             {{ collection?.messages?.responsibility }}</h6>
-                                        <textarea class="form-control" name="responsibility" rows="4"
-                                                  :placeholder="collection?.messages?.responsibilityPlaceholder">{{ statementActive?.responsibility }}</textarea>
+                                        <textarea class="form-control" name="responsibility"
+                                                  rows="4"
+                                                  :placeholder="collection?.messages?.responsibilityPlaceholder"
+                                                  v-model="statementActive.responsibility">{{ statementActive?.responsibility }}</textarea>
                                     </div>
                                     <div class="mt-2">
                                         <button type="button"
@@ -439,7 +444,7 @@
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.component }}</td>
-                                            <td>{{ statementActive?.component[`name_${locale}`] }}</td>
+                                            <td>{{ statementActive?.component?.[`name_${locale}`] }}</td>
                                         </tr>
                                         <tr>
                                             <td>{{ collection?.messages?.statement }}</td>
@@ -539,7 +544,7 @@ export default {
             active: null,
             dataTable: null,
             collection: null,
-            statementActive: null,
+            statementActive: {},
             errors: null,
             color: null,
             isSubmitting: false,
@@ -2433,7 +2438,7 @@ export default {
             return r;
         },
         statementViewHide() {
-            this.statementActive = null;
+            this.statementActive = {};
             $("#statementViewModal").modal("hide");
         },
         statementViewShow(id) {
@@ -2494,6 +2499,7 @@ export default {
                 .post(`/${self.locale}/axios/organisations/statements/plans/update`, formData)
                 .then(function (response) {
                     self.isSubmitting = false;
+                    self.loadPlans();
                     toastr["success"](`${self.collection?.messages?.itemUpdatedSuccessfully}.`, `${self.collection?.messages?.success}!`, {
                         showMethod: "slideDown",
                         hideMethod: "slideUp",
@@ -2520,7 +2526,7 @@ export default {
                 .then(function (response) {
                     self.collection = response.data;
                     self.color = "#" + response.data.organisation.orgcolor;
-                    if (self.statementActive === null) {
+                    if (Object.keys(self.statementActive).length === 0) {
                         let componentCode = Object.keys(self.collection.statements)[0];
                         self.updateActiveStatement(componentCode, 0);
                     } else {
