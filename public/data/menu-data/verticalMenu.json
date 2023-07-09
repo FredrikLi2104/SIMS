@@ -12,7 +12,7 @@
         },
         {
             "name": "tasks",
-            "auth": "all",
+            "auth": "auditor-user",
             "icon": "layers",
             "url": "tasks",
             "slug": [
@@ -20,48 +20,32 @@
             ]
         },
         {
-            "name": "plan",
-            "auth": "auditor",
-            "icon": "check-square",
-            "url": "auditor/plan",
+            "name": "features",
+            "auth": "super-auditor",
+            "icon": "star",
+            "url": "features",
             "slug": [
-                "organisations.auditor.plan"
+                "features.index"
             ]
         },
         {
-            "name": "plan",
-            "auth": "user",
-            "icon": "check-square",
-            "url": "plan",
-            "slug": [
-                "organisations.plan"
-            ]
-        },
-        {
-            "name": "do",
-            "auth": "user",
-            "icon": "pen-tool",
-            "url": "do",
-            "slug": [
-                "organisations.do"
-            ]
-        },
-        {
-            "name": "check",
-            "auth": "user",
-            "icon": "check",
-            "url": "check",
-            "slug": [
-                "organisations.check"
-            ]
-        },
-        {
-            "name": "act",
-            "auth": "user",
+            "name": "insights",
+            "auth": "auditor-user",
             "icon": "pie-chart",
-            "url": "act",
+            "url": "insights",
             "slug": [
-                "organisations.act"
+                "organisations.insights",
+                "organisations.insights.component.sanctions",
+                "organisations.insights.statement.sanctions"
+            ]
+        },
+        {
+            "name": "knowledge",
+            "auth": "auditor-user",
+            "icon": "help-circle",
+            "url": "knowledge",
+            "slug": [
+                "organisations.knowledge"
             ]
         },
         {
@@ -82,15 +66,6 @@
                 "risks.index",
                 "risks.create",
                 "risks.edit"
-            ]
-        },
-        {
-            "name": "review",
-            "auth": "auditor",
-            "icon": "repeat",
-            "url": "review",
-            "slug": [
-                "organisations.review"
             ]
         },
         {
@@ -115,6 +90,32 @@
                         "actions.index",
                         "actions.edit",
                         "actions.show"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "actionTypes",
+            "auth": "moderator",
+            "icon": "check-square",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "actionTypeCreate",
+                    "url": "action_types/create",
+                    "icon": "circle",
+                    "slug": [
+                        "action_types.create"
+                    ]
+                },
+                {
+                    "name": "actionTypes",
+                    "url": "action_types",
+                    "icon": "circle",
+                    "slug": [
+                        "action_types.index",
+                        "action_types.edit",
+                        "action_types.show"
                     ]
                 }
             ]
@@ -492,6 +493,32 @@
             ]
         },
         {
+            "name": "configs",
+            "auth": "moderator",
+            "icon": "settings",
+            "slug": [],
+            "submenu": [
+                {
+                    "name": "configs_create",
+                    "url": "configs/create",
+                    "icon": "circle",
+                    "slug": [
+                        "configs.create"
+                    ]
+                },
+                {
+                    "name": "configs",
+                    "url": "configs",
+                    "icon": "circle",
+                    "slug": [
+                        "configs.index",
+                        "configs.edit",
+                        "configs.show"
+                    ]
+                }
+            ]
+        },
+        {
             "name": "users",
             "auth": "moderator",
             "icon": "users",
@@ -516,6 +543,16 @@
                     ]
                 }
             ]
+        },
+        {
+            "navheader": "Chat"
+        },
+        {
+            "name": "Coming Soon",
+            "auth": "auditor-user",
+            "slug": [],
+            "icon": "message-square",
+            "classlist": "disabled"
         }
     ]
 }

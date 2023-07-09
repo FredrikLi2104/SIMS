@@ -100,7 +100,7 @@ return [
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
     'required_with' => 'The :attribute field is required when :values is present.',
     'required_with_all' => 'The :attribute field is required when :values are present.',
-    'required_without' => 'The :attribute field is required when :values is not present.',
+    'required_without' => 'Fältet :attribute är obligatoriskt när :values inte finns.',
     'required_without_all' => 'The :attribute field is required when none of :values are present.',
     'same' => 'The :attribute and :other must match.',
     'size' => [
@@ -114,7 +114,7 @@ return [
     'timezone' => 'The :attribute must be a valid zone.',
     'unique' => 'Fälte :attribute har redan tagits.',
     'uploaded' => 'The :attribute failed to upload.',
-    'url' => 'The :attribute format is invalid.',
+    'url' => 'Formatet :attribute är ogiltigt.',
     'uuid' => 'The :attribute must be a valid UUID.',
 
     /*

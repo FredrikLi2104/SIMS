@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "act" => "Agera",
+    'insights' => 'Insikter',
     "actions" => "Åtgärder",
     "actionCreate" => "Åtgärd Skapa",
     'actionType' => 'Åtgärdstyp',
@@ -238,10 +238,13 @@ return [
     'faqs_create' => 'Vanliga Frågor Skapa',
     'links' => 'Länkar',
     'links_create' => 'Länkar Skapa',
-    'check' => 'Kontrollera',
+    'knowledge' => 'Kunskap',
     'statistics' => 'Statistik',
     'tasks' => 'Uppgifter',
     'tasks_create' => 'Uppgifter Skapa',
     'task_statuses' => 'Uppgiftsstatus',
     'task_statuses_create' => 'Uppgiftsstatus Skapa',
+    'configs' => 'Konfigurationer',
+    'configs_create' => 'Konfigurationer Skapa',
+    'features' => 'Funktioner',
 ];

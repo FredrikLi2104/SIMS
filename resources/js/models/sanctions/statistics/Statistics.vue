@@ -398,7 +398,7 @@
                                     </dl>
                                     <dl class="row">
                                         <dt class="col-4">{{ messages.outcome }}</dt>
-                                        <dd class="col-8">{{ activeSanction?.outcome }}</dd>
+                                        <dd class="col-8">{{ activeSanction?.outcome[`desc_${locale}`] }}</dd>
                                     </dl>
                                     <div class="d-flex mb-1">
                                         <a v-if="activeSanction?.source" :href="activeSanction?.source"

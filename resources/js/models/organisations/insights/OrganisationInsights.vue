@@ -37,10 +37,17 @@
             </div>
         </div>
         <div class="row match-height">
-            <div class="col-12">
+            <div class="col-6">
                 <div class="card invoice-list-wrapper">
                     <div class="card-datatable table-responsive">
-                        <table class="invoice-list-table table" id="dataTable"></table>
+                        <table class="invoice-list-table table table-sm" id="dataTable"></table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card invoice-list-wrapper">
+                    <div class="card-datatable table-responsive">
+                        <table class="invoice-list-table table table-sm" id="kpiTable"></table>
                     </div>
                 </div>
             </div>
@@ -48,15 +55,106 @@
         <div class="row match-height">
             <div class="col-12">
                 <div class="card invoice-list-wrapper">
-                    <div class="card-datatable table-responsive">
-                        <table class="invoice-list-table table" id="kpiTable"></table>
+                    <div class="card-body">
+                        <div class="row g-1 mb-md-1">
+                            <div class="col-md-3">
+                                <label for="value-filter" class="form-label">{{ collection?.messages?.value }}:</label>
+                                <select id="value-filter" class="form-select"
+                                        v-model="sanctionFilters.value"
+                                        @change="filterSanctions">
+                                    <option value="">{{ collection?.messages?.pleaseSelect }}</option>
+                                    <option v-for="value in sanctionValues" :value="value">{{ value }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="dpa-filter" class="form-label">{{ collection?.messages?.dpa }}:</label>
+                                <select id="dpa-filter" class="form-select"
+                                        :data-placeholder="collection?.messages?.pleaseSelect">
+                                    <option value=""></option>
+                                    <option v-for="dpa in dpas" :value="dpa.id" :data-country-code="dpa.country?.code">
+                                        {{
+                                            `${dpa.title} &mdash; ${dpa.count}`
+                                        }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="country-filter" class="form-label">{{
+                                        collection?.messages?.country
+                                    }}:</label>
+                                <select id="country-filter" class="form-select"
+                                        :data-placeholder="collection?.messages?.pleaseSelect">
+                                    <option value=""></option>
+                                    <option v-for="country in countries" :value="country.id"
+                                            :data-country-code="country.code">{{ country.name }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="sni-filter" class="form-label">{{
+                                        collection?.messages?.sni
+                                    }}:</label>
+                                <select id="sni-filter" class="form-select" v-model="sanctionFilters.sniId"
+                                        @change="filterSanctions">
+                                    <option value="">{{ collection?.messages?.pleaseSelect }}</option>
+                                    <option v-for="sni in snis" :value="sni.id">
+                                        {{ `${sni.code} | ${sni[`desc_${locale}`]}` }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="outcome-filter" class="form-label">{{
+                                        collection?.messages?.outcome
+                                    }}:</label>
+                                <select id="outcome-filter" class="form-select" v-model="sanctionFilters.outcomeId"
+                                        @change="filterSanctions">
+                                    <option value="">{{ collection?.messages?.pleaseSelect }}</option>
+                                    <option v-for="outcome in outcomes" :value="outcome.id">
+                                        {{ outcome[`desc_${locale}`] }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="tag-filter" class="form-label">{{
+                                        collection?.messages?.tags
+                                    }}:</label>
+                                <select id="tag-filter" class="form-select select2"
+                                        :data-placeholder="collection?.messages?.pleaseSelect"
+                                        v-model="sanctionFilters.tagIds" multiple>
+                                    <option v-for="tag in tags" :value="tag.id">
+                                        {{ tag[`tag_${locale}`] }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="type-filter" class="form-label">{{
+                                        collection?.messages?.components
+                                    }}:</label>
+                                <select id="type-filter" class="form-select form-control"
+                                        v-model="sanctionFilters.componentId"
+                                        @change="filterSanctions">
+                                    <option value="">{{ collection?.messages?.pleaseSelect }}</option>
+                                    <option v-for="component in components" :value="component.id">
+                                        {{ component.code }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="type-filter" class="form-label">{{
+                                        collection?.messages?.statements
+                                    }}:</label>
+                                <select id="type-filter" class="form-select form-control"
+                                        v-model="sanctionFilters.statementId"
+                                        @change="filterSanctions">
+                                    <option value="">{{ collection?.messages?.pleaseSelect }}</option>
+                                    <option v-for="statement in statements" :value="statement.id">
+                                        {{ statement.subcode }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="row match-height">
-            <div class="col-12">
-                <div class="card invoice-list-wrapper">
+                    <hr class="my-0">
                     <div class="card-datatable table-responsive">
                         <table class="invoice-list-table table" id="sanctionsTable"></table>
                     </div>
@@ -335,7 +433,7 @@
                                 </dl>
                                 <dl class="row">
                                     <dt class="col-4">{{ collection?.messages.outcome }}</dt>
-                                    <dd class="col-8">{{ sanctionActive?.outcome }}</dd>
+                                    <dd class="col-8">{{ sanctionActive?.outcome?.[`desc_${locale}`] }}</dd>
                                 </dl>
                                 <div class="d-flex mb-1">
                                     <a v-if="sanctionActive?.source" :href="sanctionActive?.source"
@@ -445,7 +543,7 @@ import Chart from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
 export default {
-    props: ["locale"],
+    props: ['locale', 'dpas', 'countries', 'snis', 'outcomes', 'tags', 'components', 'statements'],
     data() {
         return {
             collection: null,
@@ -463,6 +561,17 @@ export default {
             statementsChart: null,
             statementHistoryChart: null,
             descQuill: null,
+            sanctionValues: [1, 2, 3, 4, 5],
+            sanctionFilters: {
+                value: '',
+                dpaId: '',
+                countryId: '',
+                sniId: '',
+                outcomeId: '',
+                tagIds: '',
+                componentId: '',
+                statementId: '',
+            }
         };
     },
     methods: {
@@ -551,7 +660,7 @@ export default {
                             let r = `
                                 <div class="d-flex justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
-                                        <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.componentShow(${full.id})">
+                                        <button type="button" class="btn btn-outline-primary waves-effect mb-1 d-flex" onClick="window.component.componentShow(${full.id})">
                                             ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.view}</span>
                                         </button>
@@ -701,7 +810,7 @@ export default {
                             let r = `
                                 <div class="d-flex justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
-                                        <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.kpiShow(${full.id})">
+                                        <button type="button" class="btn btn-outline-primary waves-effect mb-1 d-flex" onClick="window.component.kpiShow(${full.id})">
                                             ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.view}</span>
                                         </button>
@@ -757,11 +866,11 @@ export default {
             <thead>
                 <tr>
                     <th class="">${thisComponent.collection?.messages?.id}</th>
-                    <th class="">${thisComponent.collection?.messages?.createdAt}</th>
                     <th class="">${thisComponent.collection?.messages?.dpa}</th>
-                    <th>${thisComponent.collection?.messages?.decidedOn}</th>
-                    <th>${thisComponent.collection?.messages?.fine}</th>
+                    <th class="">${thisComponent.collection?.messages?.date_added}</th>
                     <th>${thisComponent.collection?.messages?.title}</th>
+                    <th>${thisComponent.collection?.messages?.party}</th>
+                    <th>${thisComponent.collection?.messages?.statement}/${thisComponent.collection?.messages?.value}</th>
                     <th class="text-center">${thisComponent.collection?.messages?.actions}</th>
                 </tr>
             </thead>
@@ -780,12 +889,18 @@ export default {
                     },
                     url: ajaxUrl,
                     type: "POST",
-                    /*
-                    complete: function (xhr, responseText) {
-                        console.log(xhr);
-                    },
-                    */
-
+                    data: function (d) {
+                        d.filters = {
+                            value: thisComponent.sanctionFilters.value,
+                            dpa_id: thisComponent.sanctionFilters.dpaId,
+                            country_id: thisComponent.sanctionFilters.countryId,
+                            sni_id: thisComponent.sanctionFilters.sniId,
+                            outcome_id: thisComponent.sanctionFilters.outcomeId,
+                            tag_ids: thisComponent.sanctionFilters.tagIds,
+                            component_id: thisComponent.sanctionFilters.componentId,
+                            statement_id: thisComponent.sanctionFilters.statementId,
+                        }
+                    }
                 },
                 columnDefs: [
                     {
@@ -800,20 +915,9 @@ export default {
                         },
                     },
                     {
-                        //created_at
+                        // DPA
                         targets: 1,
                         responsivePriority: 1,
-                        width: "10%",
-                        render: function (data, type, full, meta) {
-                            //console.log(full);
-                            let r = `<p>${full.created_at_for_humans}</p>`;
-                            return r;
-                        },
-                    },
-                    {
-                        // DPA
-                        targets: 2,
-                        responsivePriority: 2,
                         width: "20%",
                         render: function (data, type, full, meta) {
                             // has image?
@@ -836,45 +940,56 @@ export default {
                         },
                     },
                     {
-                        // decided_at
-                        targets: 3,
-                        responsivePriority: 3,
+                        //created_at
+                        targets: 2,
+                        responsivePriority: 2,
                         width: "10%",
                         render: function (data, type, full, meta) {
-                            if (type === "sort") {
-                                return Date.parse(full.decided_at_for_humans);
-                            } else {
-                                let r = `<p>${full.decided_at_for_humans}</p>`;
-                                return r;
-                            }
-                        },
-                    },
-                    {
-                        // fine
-                        targets: 4,
-                        responsivePriority: 4,
-                        width: "10%",
-                        type: "numeric",
-                        render: function (data, type, full, meta) {
-                            if (type === "sort") {
-                                return full.fine;
-                            } else {
-                                let r = ``;
-                                if (full.fine) {
-                                    r = `<p>${parseInt(full.fine)} ${full.currency?.symbol ? full.currency?.symbol : ""}</p>`;
-                                }
-                                return r;
-                            }
+                            //console.log(full);
+                            let r = `<p>${full.created_at_for_humans}</p>`;
+                            return r;
                         },
                     },
                     {
                         // title
-                        targets: 5,
-                        responsivePriority: 5,
-                        width: "20%",
+                        targets: 3,
+                        responsivePriority: 3,
                         render: function (data, type, full, meta) {
                             let r = `<p>${full.title}</p>`;
                             return r;
+                        },
+                    },
+                    {
+                        // party
+                        targets: 4,
+                        responsivePriority: 4,
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.party ?? ''}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // statement/value
+                        targets: 5,
+                        responsivePriority: 5,
+                        render: function (data, type, full, meta) {
+                            let r = document.createElement('div');
+                            r.classList.add('d-flex');
+                            full.statements.forEach((statement, index) => {
+                                if (statement.deed) {
+                                    let a = document.createElement('a');
+                                    a.href = '#';
+                                    a.classList.add('me-25', 'fw-bold', 'show-statement-details');
+                                    a.dataset.componentId = statement.component.id;
+                                    a.dataset.statementId = statement.id;
+                                    a.style.color = statement.deed?.color;
+                                    a.style['text-decoration'] = 'underline';
+                                    a.innerHTML = `${statement.subcode}/${statement.deed?.value}`;
+                                    r.append(a);
+                                }
+                            });
+
+                            return r.outerHTML;
                         },
                     },
                     {
@@ -926,6 +1041,13 @@ export default {
                     `;
                     $("#sanctionCardHeader").html(domHtml);
                 },
+                drawCallback: function (settings) {
+                    Array.prototype.forEach.call(document.getElementsByClassName('show-statement-details'), (trigger) => {
+                        trigger.addEventListener('click', function () {
+                            thisComponent.componentShow(trigger.dataset['componentId'], trigger.dataset['statementId']);
+                        });
+                    });
+                }
             });
         },
         drawKpiChart() {
@@ -1463,7 +1585,7 @@ export default {
             this.componentActive = null;
             $("#componentShowModal").modal("hide");
         },
-        componentShow(id) {
+        componentShow(id, statementId) {
             let self = this;
             const activeYear = document.getElementById("yearSelect").value;
             const dataSource = this.activeOrg[activeYear].table;
@@ -1476,6 +1598,10 @@ export default {
                 feather.replace();
                 self.initTooltips();
             });
+            if (statementId !== undefined) {
+                self.activeStatement = self.componentActive?.statements?.find(statement => statement.id == statementId);
+                self.drawStatementHistoryChart();
+            }
         },
         kpiHide() {
             $("#kpiViewModal").modal("hide");
@@ -1581,6 +1707,69 @@ export default {
                 feather.replace();
                 self.initTooltips();
             });
+        },
+        filterSanctions() {
+            this.sanctionsTable.draw();
+        },
+        initSelect2() {
+            let self = this;
+            $('.select2').select2({
+                allowClear: true
+            });
+            $('#tag-filter').on('change.select2', function (e) {
+                self.sanctionFilters.tagIds = $('#tag-filter').val();
+                self.filterSanctions();
+            });
+        },
+        initDpaSelect2() {
+            let self = this;
+            $('#dpa-filter').select2({
+                templateResult: self.formatDpaAndCountry,
+                templateSelection: self.formatDpaAndCountry,
+                allowClear: true
+            });
+            $('#dpa-filter').on('select2:select', function (e) {
+                self.sanctionFilters.dpaId = e.params.data.id;
+                self.filterSanctions();
+            });
+            $('#dpa-filter').on('select2:unselect', function (e) {
+                self.sanctionFilters.dpaId = '';
+                self.filterSanctions();
+            });
+        },
+        initCountrySelect2() {
+            let self = this;
+            $('#country-filter').select2({
+                templateResult: self.formatDpaAndCountry,
+                templateSelection: self.formatDpaAndCountry,
+                allowClear: true
+            });
+            $('#country-filter').on('select2:select', function (e) {
+                self.sanctionFilters.countryId = e.params.data.id;
+                self.filterSanctions();
+            });
+            $('#country-filter').on('select2:unselect', function (e) {
+                self.sanctionFilters.countryId = '';
+                self.filterSanctions();
+            });
+        },
+        formatDpaAndCountry(option) {
+            let $wrapper = $('<span>');
+            $wrapper.addClass('d-flex');
+            let $text = $('<span>');
+            $text.html(option.text);
+            $wrapper.append($text);
+
+            let countryCode = option.element?.dataset.countryCode;
+            if (countryCode !== undefined) {
+                let $img = $('<img>');
+                $img.attr('src', `/images/flags/svg/${countryCode}.svg`);
+                $img.attr('width', 30);
+                $img.addClass('me-50');
+                $wrapper.prepend($img);
+            }
+
+            return $wrapper;
         }
     },
     mounted() {
@@ -1596,6 +1785,9 @@ export default {
                     thisComponent.buildTable();
                     thisComponent.buildKpiTable();
                     thisComponent.buildSanctionsTable();
+                    thisComponent.initSelect2();
+                    thisComponent.initDpaSelect2();
+                    thisComponent.initCountrySelect2();
                 });
             })
             .catch(function (error) {

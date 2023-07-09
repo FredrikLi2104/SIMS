@@ -6,12 +6,15 @@ use App\Http\Requests\OrganisationStoreRequest;
 use App\Http\Requests\OrganisationUpdateRequest;
 use App\Models\Action;
 use App\Models\Component;
+use App\Models\Dpa;
 use App\Models\Faq;
 use App\Models\Link;
 use App\Models\Organisation;
+use App\Models\Outcome;
 use App\Models\ReviewStatus;
 use App\Models\Sni;
 use App\Models\Statement;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -20,9 +23,30 @@ use Illuminate\Support\Facades\Storage;
 
 class OrganisationController extends Controller
 {
-    public function insights()
+    public function insights($locale)
     {
-        return view('models.organisations.insights');
+        $dpas = Dpa::with(['country'])->select(['dpas.id', 'dpas.title', 'country_id'])
+            ->selectRaw('count(*) AS count')
+            ->join('sanctions', 'dpas.id', '=', 'sanctions.dpa_id')
+            ->groupBy(['dpas.id', 'dpas.title'])
+            ->orderBy('dpas.title')
+            ->get()
+            ->makeVisible(['count', 'country'])
+            ->makeHidden(['country_id']);
+
+        $dpas = $dpas->map(function ($dpa) {
+            $dpa->title = str_replace('Category:', '', $dpa->title);
+            return $dpa;
+        });
+
+        $countries = $dpas->pluck('country')->filter()->unique()->sortBy('name')->values();
+        $snis = Sni::select(['id', 'code', 'desc_en', 'desc_se'])->orderBy('code')->get();
+        $outcomes = Outcome::orderBy("desc_$locale")->get();
+        $tags = Tag::orderBy("tag_$locale")->get();
+        $components = Component::all()->sortBy('code', SORT_NATURAL);
+        $statements = Statement::all()->makeVisible(['subcode'])->sortBy('subcode', SORT_NATURAL);
+
+        return view('models.organisations.insights', compact('dpas', 'countries', 'snis', 'outcomes', 'tags', 'components', 'statements'));
     }
 
     /**

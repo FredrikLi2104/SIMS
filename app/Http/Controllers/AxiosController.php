@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AxiosOrganisationUpdateRequest;
 use App\Http\Requests\OrganisationsComponentsPeriodsUpdateRequest;
 use App\Http\Requests\OrganisationsKpicommentsStoreRequest;
-use App\Http\Requests\OrganisationsKpicommentStoreRequest;
 use App\Http\Requests\OrganisationsPlanAuditorUpdateRequest;
-use App\Http\Requests\OrganisationsStatementsActionsUpdateRequest;
 use App\Http\Requests\OrganisationsStatementsDeedsUpdateAllRequest;
 use App\Http\Requests\OrganisationsStatementsDeedsUpdateRequest;
-use App\Http\Requests\OrganisationsStatementsPlansUpdate;
 use App\Http\Requests\OrganisationsStatementsPlansUpdateRequest;
 use App\Http\Requests\OrganisationsStatementsReviewsUpdateRequest;
 use App\Http\Requests\RiskCommentStoreRequest;
@@ -43,6 +40,7 @@ use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\Template;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -671,7 +669,7 @@ class AxiosController extends Controller
             if ($statementReviewPlan) {
                 $usersIds = $org->users->pluck('id');
                 $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $statement->id)->get()->first();
-                $statement->guide = $r->guide;
+                $statement->guide = $r?->guide;
             } else {
                 $statement->guide = '';
             }
@@ -1289,7 +1287,7 @@ class AxiosController extends Controller
      **/
     public function sanctionsShow($locale, Sanction $sanction)
     {
-        $sanction->load(['articles', 'dpa', 'user', 'sni', 'type', 'statements', 'tags', 'sanctionFiles'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party', 'sni', 'type', 'source', 'statements', 'tags', 'sanctionFiles']);
+        $sanction->load(['articles', 'dpa', 'user', 'sni', 'type', 'statements', 'tags', 'sanctionFiles', 'outcome'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party', 'sni', 'type', 'source', 'statements', 'tags', 'sanctionFiles', 'outcome']);
         $sanction->articlesSorted = $sanction->articles->sortBy('title')->values();
         $sanction->dpa->load('country')->makeVisible(['country', 'name']);
 
@@ -1349,33 +1347,64 @@ class AxiosController extends Controller
      **/
     public function sanctionsTable($locale, Request $request)
     {
-        if ($request->search['value'] == '' || $request->search['value'] == null) {
-            $sanctions = Sanction::all()->sortByDesc('id');
-        } else {
-            $needle = $request->search['value'];
-            // spider search
-            $sanctions = Sanction::select('sanctions.*')
-                ->join('sanction_statement', 'sanctions.id', '=', 'sanction_statement.sanction_id')
-                ->join('statements', 'sanction_statement.statement_id', '=', 'statements.id')
-                ->join('components', 'statements.component_id', '=', 'components.id')
-                ->join('snis', 'sanctions.sni_id', '=', 'snis.id')
-                ->where(function ($query) use ($needle) {
-                    $query->where('title', 'like', '%' . $needle . '%')
-                        ->orWhereDate('started_at', 'like', '%' . $needle . '%')
-                        ->orWhereDate('decided_at', 'like', '%' . $needle . '%')
-                        ->orWhere('published_at', 'like', '%' . $needle . '%')
-                        ->orWhere('fine', 'like', '%' . $needle . '%')
-                        ->orWhere('sanctions.title', 'like', "%$needle%")
-                        ->orWhereRelation('dpa', 'title', 'like', "Category:%$needle%")
-                        ->orWhereRaw('LOWER(sanctions.desc_en) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%")
-                        ->orWhereRaw('LOWER(sanctions.desc_se) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%")
-                        ->orwhere('components.code', $needle)
-                        ->orwhereRaw("CONCAT(components.code, '.', statements.code) = ?", $needle)
-                        ->orwhere('snis.desc_en', $needle)
-                        ->orwhere('snis.desc_se', $needle);
-                })->get();
-            $sanctions = $sanctions->sortByDesc('id');
-        }
+        $org = Organisation::find(session('selected_org')['id']);
+        $filterByValue = $request->post('filters')['value'] ?? null;
+        $filterByDpa = $request->post('filters')['dpa_id'] ?? null;
+        $filterByCountry = $request->post('filters')['country_id'] ?? null;
+        $filterBySni = $request->post('filters')['sni_id'] ?? null;
+        $filterByOutcome = $request->post('filters')['outcome_id'] ?? null;
+        $filterByTag = $request->post('filters')['tag_ids'] ?? null;
+        $filterByComponent = $request->post('filters')['component_id'] ?? null;
+        $filterByStatement = $request->post('filters')['statement_id'] ?? null;
+
+        $needle = $request->search['value'];
+        // spider search
+        $sanctions = Sanction::select('sanctions.*')
+            ->when($needle, function ($query) use ($needle) {
+                $query->leftJoin('snis', 'sanctions.sni_id', '=', 'snis.id')
+                    ->where('title', 'like', '%' . $needle . '%')
+                    ->orWhereDate('started_at', 'like', '%' . $needle . '%')
+                    ->orWhereDate('decided_at', 'like', '%' . $needle . '%')
+                    ->orWhere('published_at', 'like', '%' . $needle . '%')
+                    ->orWhere('fine', 'like', '%' . $needle . '%')
+                    ->orWhere('sanctions.title', 'like', "%$needle%")
+                    ->orWhereRelation('dpa', 'title', 'like', "Category:%$needle%")
+                    ->orWhereRaw('LOWER(sanctions.desc_en) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%")
+                    ->orWhereRaw('LOWER(sanctions.desc_se) LIKE ?', "{\"ops\":[{\"insert\":\"%" . strtolower($needle) . "%")
+                    ->orwhere('snis.desc_en', $needle)
+                    ->orwhere('snis.desc_se', $needle);
+            })
+            ->when($filterByValue, function ($query) use ($filterByValue, $org) {
+                $query->whereHas('statements.deeds', function ($query) use ($filterByValue, $org) {
+                    $query->where('value', $filterByValue)
+                        ->where('organisation_id', $org->id);
+                });
+            })
+            ->when($filterByDpa, function ($query, $filterByDpa) {
+                $query->where('dpa_id', $filterByDpa);
+            })
+            ->when($filterByCountry, function ($query, $filterByCountry) {
+                $query->whereRelation('dpa', 'country_id', $filterByCountry);
+            })
+            ->when($filterBySni, function ($query, $filterBySni) {
+                $query->where('sni_id', $filterBySni);
+            })
+            ->when($filterByOutcome, function ($query, $filterByOutcome) {
+                $query->where('outcome_id', $filterByOutcome);
+            })
+            ->when($filterByTag, function ($query, $filterByTag) {
+                $query->join('sanction_tag', 'sanction_tag.sanction_id', '=', 'sanctions.id')
+                    ->whereIn('sanction_tag.tag_id', $filterByTag);
+            })
+            ->when($filterByComponent, function ($query, $filterByComponent) {
+                $query->whereRelation('statements', 'statements.component_id', $filterByComponent);
+            })
+            ->when($filterByStatement, function ($query, $filterByStatement) {
+                $query->whereRelation('statements', 'statements.id', $filterByStatement);
+            })
+            ->get();
+        $sanctions = $sanctions->sortByDesc('id');
+
         $draw = $request->draw;
         $recordsTotal = $sanctions->count();
         $recordsFiltered = $sanctions->count();
@@ -1385,12 +1414,22 @@ class AxiosController extends Controller
         } else {
             $data = $data[count($data) - 1] ?? $data;
         }
-        $data = $data->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'decided_at_for_humans', 'dpa', 'url'])->take($request->length);
+        $data = $data->load(['articles', 'currency', 'dpa', 'statements'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'decided_at_for_humans', 'dpa', 'url', 'party', 'statements'])->take($request->length);
+        $colors = ['#ea5455', '#ff5f43', '#ff9f43', '#cab707', '#28c76f'];
         foreach ($data as $sanction) {
             $articles = $sanction->articles;
             $sanction->articlesSorted = $articles->sortBy('title')->values();
             $sanction->dpa->load('country')->makeVisible(['country', 'name']);
+            $sanction->statements = $sanction->statements->map(function ($statement) use ($org, $colors) {
+                $statement->deed = $statement->organisationDeed($org);
+                if ($statement->deed) {
+                    $statement->deed->color = $colors[$statement->deed->value - 1];
+                    $statement->deed->makeVisible('color');
+                }
+                return $statement->makeVisible(['subcode', 'deed', 'component']);
+            })->sortBy('subcode', SORT_NATURAL);
         }
+
         $data = $data->values();
         return [
             'draw' => $draw,
