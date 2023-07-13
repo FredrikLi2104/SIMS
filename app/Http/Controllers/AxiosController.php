@@ -1461,7 +1461,7 @@ class AxiosController extends Controller
         $since = Carbon::createFromDate($year, 1, 1);
         $until = Carbon::createFromDate($year, 12, 31);
         $org = Organisation::find(session('selected_org')['id']);
-        $tasks = Task::with('taskStatus')
+        $tasks = Task::with(['taskStatus', 'action.actionType'])
             ->where(function ($query) use ($org) {
                 $query->whereIn('created_by', $org->users->pluck('id'));
             })
@@ -1471,7 +1471,7 @@ class AxiosController extends Controller
             ->get();
 
         $tasks = $tasks->filter(function ($task) {
-            return $task->creator->role == auth()->user()->role;
+            return $task->action?->actionType->role == auth()->user()->role;
         });
 
         $actionColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
@@ -1479,7 +1479,7 @@ class AxiosController extends Controller
         $tasks->each(function ($task) use ($locale, $actionColors, &$result) {
             $task->can_update = Gate::allows('update', $task);
             $task->can_delete = Gate::allows('delete', $task);
-            if ($task->action->deleted_at === null) {
+            if ($task->action && $task->action->deleted_at === null) {
                 $actionName = $task->action->actionType->{"name_$locale"};
                 if (!isset($result[$actionName]['color'])) {
                     $result[$actionName]['color'] = $actionColors[$task->action->actionType->id - 1] ?? null;
@@ -1499,7 +1499,7 @@ class AxiosController extends Controller
         Carbon::setLocale($localeForCarbon);
         $org = Organisation::find(session('selected_org')['id']);
 
-        $tasks = Task::with('taskStatus')
+        $tasks = Task::with(['taskStatus', 'action.actionType'])
             ->where(function ($query) use ($org) {
                 $query->whereIn('created_by', $org->users->pluck('id'));
             })
@@ -1515,7 +1515,7 @@ class AxiosController extends Controller
             ->get();
 
         $tasks = $tasks->filter(function ($task) {
-            return $task->creator->role == auth()->user()->role;
+            return $task->action?->actionType->role == auth()->user()->role;
         });
 
         $tasksGrouped = collect();

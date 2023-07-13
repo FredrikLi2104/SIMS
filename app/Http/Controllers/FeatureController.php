@@ -102,7 +102,7 @@ class FeatureController extends Controller
                 foreach ($tasks as $taskId) {
                     $task = Task::find($taskId);
                     $taskStatus = TaskStatus::where('name_en', 'Pending')->first();
-                    if ($auditor && $task->creator->role == 'auditor') {
+                    if ($auditor) {
                         $createdTask = Task::create([
                             'title_en' => $task['title_en'],
                             'title_se' => $task['title_se'],
@@ -128,35 +128,6 @@ class FeatureController extends Controller
                             $statements = $task->action->statements->pluck('id')->all();
                             $createdAction->statements()->attach($statements);
                         }
-                    } else if ($task->creator->role == 'user') {
-                        $users = $organisation->users()->where('role', 'user')->get();
-                        $users->each(function ($user) use ($task, $taskStatus) {
-                            $createdTask = Task::create([
-                                'title_en' => $task['title_en'],
-                                'title_se' => $task['title_se'],
-                                'desc_en' => $task['desc_en'],
-                                'desc_se' => $task['desc_se'],
-                                'start' => $task['start'],
-                                'end' => $task['end'],
-                                'hours' => $task['hours'],
-                                'task_status_id' => $taskStatus->id,
-                                'created_by' => $user->id,
-                            ]);
-
-                            $createdAction = Action::create([
-                                'task_id' => $createdTask->id,
-                                'action_type_id' => $task->action->action_type_id,
-                                'action_status_id' => $task->action->action_status_id,
-                            ]);
-
-                            if ($task->action->actionType?->model == 'component') {
-                                $components = $task->action->components->pluck('id')->all();
-                                $createdAction->components()->attach($components);
-                            } elseif ($task->action->actionType?->model == 'statement') {
-                                $statements = $task->action->statements->pluck('id')->all();
-                                $createdAction->statements()->attach($statements);
-                            }
-                        });
                     }
                 }
             }

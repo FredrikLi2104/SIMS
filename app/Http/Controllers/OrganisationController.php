@@ -25,10 +25,10 @@ class OrganisationController extends Controller
 {
     public function insights($locale)
     {
-        $dpas = Dpa::with(['country'])->select(['dpas.id', 'dpas.title', 'country_id'])
+        $dpas = Dpa::with(['country'])->select(['dpas.id', 'dpas.title', 'dpas.country_id'])
             ->selectRaw('count(*) AS count')
             ->join('sanctions', 'dpas.id', '=', 'sanctions.dpa_id')
-            ->groupBy(['dpas.id', 'dpas.title'])
+            ->groupBy(['dpas.id', 'dpas.title', 'dpas.country_id'])
             ->orderBy('dpas.title')
             ->get()
             ->makeVisible(['count', 'country'])
