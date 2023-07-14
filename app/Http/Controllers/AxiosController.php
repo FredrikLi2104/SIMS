@@ -1287,22 +1287,9 @@ class AxiosController extends Controller
      **/
     public function sanctionsShow($locale, Sanction $sanction)
     {
-        $sanction->load(['articles', 'dpa', 'user', 'sni', 'type', 'statements', 'tags', 'sanctionFiles', 'outcome'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party', 'sni', 'type', 'source', 'statements', 'tags', 'sanctionFiles', 'outcome']);
+        $sanction->load(['articles', 'dpa', 'user', 'sni', 'type', 'statements', 'tags', 'sanctionFiles', 'outcome'])->makeVisible(['articles', 'articlesSorted', 'created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'dpa', 'url', 'etid', 'updated_at_for_humans', 'user', 'party', 'sni', 'type', 'source', 'statements', 'tags', 'sanctionFiles', 'outcome', 'fine_eur']);
         $sanction->articlesSorted = $sanction->articles->sortBy('title')->values();
         $sanction->dpa->load('country')->makeVisible(['country', 'name']);
-
-        if ($sanction->currency?->symbol && $sanction->currency->symbol != 'EUR') {
-            $currency = Currency::where('symbol', $sanction->currency->symbol)->first();
-
-            if ($currency) {
-                try {
-                    $sanction->fine = $sanction->fine / $currency->value;
-                } catch (\Throwable $th) {
-
-                }
-            }
-        }
-
         $components = collect();
         $sanction->statements->each(function ($statement) use ($locale, &$components) {
             if (!$components->contains('id', $statement->component->id)) {
@@ -1317,7 +1304,6 @@ class AxiosController extends Controller
             }
             $statement->makeVisible('subcode');
         });
-
         $sanction->components = $components;
         $sanction->makeVisible('components');
 
@@ -1356,6 +1342,8 @@ class AxiosController extends Controller
         $filterByTag = $request->post('filters')['tag_ids'] ?? null;
         $filterByComponent = $request->post('filters')['component_id'] ?? null;
         $filterByStatement = $request->post('filters')['statement_id'] ?? null;
+        $orderBy = $request->post('order')[0]['column'] ?? null;
+        $orderDir = $request->post('order')[0]['dir'] ?? null;
 
         $needle = $request->search['value'];
         // spider search
@@ -1405,6 +1393,45 @@ class AxiosController extends Controller
             ->get();
         $sanctions = $sanctions->sortByDesc('id');
 
+        $colors = ['#ea5455', '#ff5f43', '#ff9f43', '#cab707', '#28c76f'];
+        $sanctions = $sanctions->map(function ($sanction) use ($org, $colors) {
+            $sanction->statements = $sanction->statements->map(function ($statement) use ($org, $colors) {
+                $statement->deed = $statement->organisationDeed($org);
+                if ($statement->deed) {
+                    $statement->deed->color = $colors[$statement->deed->value - 1];
+                    $statement->deed->makeVisible('color');
+                }
+                return $statement->makeVisible(['subcode', 'deed', 'component']);
+            })->sortBy('subcode', SORT_NATURAL);
+            return $sanction;
+        });
+
+        if ($orderBy == 6) {
+            $sanctions = $sanctions->sortBy([
+                function ($a, $b) use ($orderDir) {
+                    if ($a->statements->pluck('deed.value')->filter()->isNotEmpty() && $b->statements->pluck('deed.value')->filter()->isNotEmpty()) {
+                        if ($a->statements->pluck('deed.value')->min() === $b->statements->pluck('deed.value')->min()) {
+                            if ($orderDir == 'asc') {
+                                return $a->statements->pluck('deed.value')->avg() <=> $b->statements->pluck('deed.value')->avg();
+                            } else {
+                                return $b->statements->pluck('deed.value')->avg() <=> $a->statements->pluck('deed.value')->avg();
+                            }
+                        } elseif ($a->statements->pluck('deed.value')->min() < $b->statements->pluck('deed.value')->min()) {
+                            return $orderDir == 'asc' ? -1 : 1;
+                        } else {
+                            return $orderDir == 'asc' ? 1 : -1;
+                        }
+                    } elseif ($a->statements->pluck('deed.value')->isEmpty() && $b->statements->pluck('deed.value')->isEmpty()) {
+                        return 1;
+                    } elseif ($a->statements->pluck('deed.value')->isEmpty()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            ]);
+        }
+
         $draw = $request->draw;
         $recordsTotal = $sanctions->count();
         $recordsFiltered = $sanctions->count();
@@ -1414,20 +1441,11 @@ class AxiosController extends Controller
         } else {
             $data = $data[count($data) - 1] ?? $data;
         }
-        $data = $data->load(['articles', 'currency', 'dpa', 'statements'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'decided_at_for_humans', 'dpa', 'url', 'party', 'statements'])->take($request->length);
-        $colors = ['#ea5455', '#ff5f43', '#ff9f43', '#cab707', '#28c76f'];
+        $data = $data->load(['articles', 'currency', 'dpa'])->makeVisible(['articles', 'articlesSorted', 'currency', 'created_at_for_humans', 'decided_at_for_humans', 'dpa', 'url', 'party', 'statements', 'fine_eur'])->take($request->length);
         foreach ($data as $sanction) {
             $articles = $sanction->articles;
             $sanction->articlesSorted = $articles->sortBy('title')->values();
             $sanction->dpa->load('country')->makeVisible(['country', 'name']);
-            $sanction->statements = $sanction->statements->map(function ($statement) use ($org, $colors) {
-                $statement->deed = $statement->organisationDeed($org);
-                if ($statement->deed) {
-                    $statement->deed->color = $colors[$statement->deed->value - 1];
-                    $statement->deed->makeVisible('color');
-                }
-                return $statement->makeVisible(['subcode', 'deed', 'component']);
-            })->sortBy('subcode', SORT_NATURAL);
         }
 
         $data = $data->values();

@@ -421,9 +421,11 @@
                                 <dl class="row">
                                     <dt class="col-4">{{ collection?.messages.fine }}</dt>
                                     <dd class="col-8">{{
-                                            sanctionActive?.fine ? parseInt(sanctionActive?.fine) + ' ' +
-                                                (sanctionActive?.currency?.symbol ? sanctionActive?.currency.symbol : 'EUR') :
-                                                ''
+                                            sanctionActive?.fine_eur ? parseInt(sanctionActive.fine_eur).toLocaleString(undefined, {
+                                                style: "currency",
+                                                currency: "EUR",
+                                                maximumFractionDigits: 0,
+                                            }) : ''
                                         }}
                                     </dd>
                                 </dl>
@@ -717,10 +719,8 @@ export default {
                 <tr>
                     <th class="cell-fit">${thisComponent.collection?.messages?.id}</th>
                     <th>${thisComponent.collection?.messages?.name}</th>
-                    <th>${thisComponent.collection?.messages?.desc}</th>
                     <th>${thisComponent.collection?.messages?.target}</th>
                     <th>${thisComponent.collection?.messages?.value}</th>
-                    <th>${thisComponent.collection?.messages?.comment}</th>
                     <th class="text-center">${thisComponent.collection?.messages?.actions}</th>
                 </tr>
             </thead>
@@ -738,7 +738,7 @@ export default {
                 paging: true,
                 autoWidth: true,
                 searching: true,
-                columns: [{data: "id"}, {data: "name"}, {data: "desc"}, {data: "target"}, {data: "value"}, {data: "comment"}],
+                columns: [{data: "id"}, {data: "name"}, {data: "target"}, {data: "value"}],
                 columnDefs: [
                     {
                         // id
@@ -761,19 +761,9 @@ export default {
                         },
                     },
                     {
-                        // desc
+                        // target
                         targets: 2,
                         responsivePriority: 2,
-                        width: "15%",
-                        render: function (data, type, full, meta) {
-                            let r = `<p>${full.desc}</p>`;
-                            return r;
-                        },
-                    },
-                    {
-                        // target
-                        targets: 3,
-                        responsivePriority: 3,
                         width: "7.5%",
                         render: function (data, type, full, meta) {
                             let r = `<p>${full.target}</p>`;
@@ -782,8 +772,8 @@ export default {
                     },
                     {
                         // value
-                        targets: 4,
-                        responsivePriority: 4,
+                        targets: 3,
+                        responsivePriority: 3,
                         width: "7.5%",
                         render: function (data, type, full, meta) {
                             let r = `<p>${full.value}</p>`;
@@ -791,19 +781,9 @@ export default {
                         },
                     },
                     {
-                        // comment
-                        targets: 5,
-                        responsivePriority: 5,
-                        width: "15%",
-                        render: function (data, type, full, meta) {
-                            let r = `<p>${full.comment}</p>`;
-                            return r;
-                        },
-                    },
-                    {
                         // actions
-                        targets: 6,
-                        responsivePriority: 6,
+                        targets: 4,
+                        responsivePriority: 4,
                         width: "10%",
                         orderable: false,
                         render: function (data, type, full, meta) {
@@ -868,6 +848,7 @@ export default {
                     <th class="">${thisComponent.collection?.messages?.id}</th>
                     <th class="">${thisComponent.collection?.messages?.dpa}</th>
                     <th class="">${thisComponent.collection?.messages?.date_added}</th>
+                    <th>${thisComponent.collection?.messages?.fine}</th>
                     <th>${thisComponent.collection?.messages?.title}</th>
                     <th>${thisComponent.collection?.messages?.party}</th>
                     <th>${thisComponent.collection?.messages?.statement}/${thisComponent.collection?.messages?.value}</th>
@@ -951,9 +932,22 @@ export default {
                         },
                     },
                     {
-                        // title
+                        // fine
                         targets: 3,
                         responsivePriority: 3,
+                        render: function (data, type, full, meta) {
+                            let r = `<p>${full.fine_eur ? parseInt(full.fine_eur).toLocaleString(undefined, {
+                                style: "currency",
+                                currency: "EUR",
+                                maximumFractionDigits: 0,
+                            }) : ''}</p>`;
+                            return r;
+                        },
+                    },
+                    {
+                        // title
+                        targets: 4,
+                        responsivePriority: 4,
                         render: function (data, type, full, meta) {
                             let r = `<p>${full.title}</p>`;
                             return r;
@@ -961,8 +955,8 @@ export default {
                     },
                     {
                         // party
-                        targets: 4,
-                        responsivePriority: 4,
+                        targets: 5,
+                        responsivePriority: 5,
                         render: function (data, type, full, meta) {
                             let r = `<p>${full.party ?? ''}</p>`;
                             return r;
@@ -970,8 +964,8 @@ export default {
                     },
                     {
                         // statement/value
-                        targets: 5,
-                        responsivePriority: 5,
+                        targets: 6,
+                        responsivePriority: 6,
                         render: function (data, type, full, meta) {
                             let r = document.createElement('div');
                             r.classList.add('d-flex');
@@ -994,21 +988,21 @@ export default {
                     },
                     {
                         // actions
-                        targets: 6,
-                        responsivePriority: 6,
+                        targets: -1,
+                        responsivePriority: -1,
                         width: "15%",
                         orderable: false,
                         render: function (data, type, full, meta) {
                             let r = `
                                 <div class="d-flex justify-content-center align-items-center px-2">
                                     <div class="d-flex flex-column">
-                                        <button type="button" class="btn btn-gradient-info waves-effect mb-1" onClick="window.open('${full.url}','_blank')">
-                                            ${feather.icons["external-link"].toSvg({class: "me-25"})}
-                                            <span>${thisComponent.collection?.messages?.visit}</span>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-primary waves-effect mb-1" onClick="window.component.sanctionShow(${full.id})">
+                                        <button type="button" class="btn btn-outline-primary waves-effect mb-50" onclick="window.component.sanctionShow(${full.id})">
                                             ${feather.icons["eye"].toSvg({class: "me-25"})}
                                             <span>${thisComponent.collection?.messages?.view}</span>
+                                        </button>
+                                        <button type="button" class="btn btn-gradient-info waves-effect" onclick="window.open('${full.url}','_blank')">
+                                            ${feather.icons["external-link"].toSvg({class: "me-25"})}
+                                            <span>${thisComponent.collection?.messages?.visit}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -1017,7 +1011,7 @@ export default {
                         },
                     },
                 ],
-                order: [[0, "desc"]],
+                order: [[6, 'asc']],
                 dom: `
                 <"row d-flex justify-content-start align-items-center m-1"
                     <"col-lg-8 d-flex justify-content-start align-items-center"

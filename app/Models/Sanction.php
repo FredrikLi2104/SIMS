@@ -13,7 +13,7 @@ class Sanction extends Model
 
     protected $guarded = ['id'];
     protected $visible = ['id', 'pageid', 'title', 'desc_en', 'desc_se', 'dpa_id', 'started_at', 'decided_at', 'published_at', 'fine', 'currency_id', 'created_at', 'updated_at'];
-    protected $appends = ['created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url', 'updated_at_for_humans'];
+    protected $appends = ['created_at_for_humans', 'started_at_for_humans', 'decided_at_for_humans', 'published_at_for_humans', 'url', 'updated_at_for_humans', 'fine_eur'];
 
     public function articles()
     {
@@ -42,6 +42,21 @@ class Sanction extends Model
     public function dpa()
     {
         return $this->belongsTo(Dpa::class);
+    }
+
+    public function fineEur(): Attribute
+    {
+        return new Attribute(get: function ($value, $attributes) {
+            if ($this->currency) {
+                try {
+                    return $this->currency->symbol == 'EUR' ? $attributes['fine'] : $attributes['fine'] / $this->currency->value;
+                } catch (\Throwable $th) {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        });
     }
 
     public function htmlClean()

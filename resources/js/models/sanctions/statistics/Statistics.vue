@@ -386,9 +386,11 @@
                                     <dl class="row">
                                         <dt class="col-4">{{ messages.fine }}</dt>
                                         <dd class="col-8">{{
-                                                activeSanction?.fine ? parseInt(activeSanction?.fine) + ' ' +
-                                                    (activeSanction?.currency?.symbol ? activeSanction?.currency.symbol : 'EUR') :
-                                                    ''
+                                                activeSanction?.fine_eur ? parseInt(activeSanction.fine_eur).toLocaleString(undefined, {
+                                                    style: "currency",
+                                                    currency: "EUR",
+                                                    maximumFractionDigits: 0,
+                                                }) : ''
                                             }}
                                         </dd>
                                     </dl>
