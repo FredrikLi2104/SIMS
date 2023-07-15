@@ -72,6 +72,8 @@ class TaskController extends Controller
         $data = $request->validated();
 
         DB::transaction(function () use ($data) {
+            $org = Organisation::find(session('selected_org')['id']);
+            $auditor = $org->users->where('role', 'auditor')->first();
             $task = Task::create([
                 'title_en' => $data['title_en'] ?? $data['title_se'],
                 'title_se' => $data['title_se'] ?? $data['title_en'],
@@ -81,7 +83,7 @@ class TaskController extends Controller
                 'end' => $data['end'],
                 'hours' => $data['hours'],
                 'task_status_id' => $data['task_status_id'],
-                'created_by' => auth()->user()->id,
+                'created_by' => $auditor->id ?? auth()->user()->id,
             ]);
 
             $action = Action::create([

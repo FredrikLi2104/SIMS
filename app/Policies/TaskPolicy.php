@@ -54,7 +54,7 @@ class TaskPolicy
      */
     public function update(User $user, Task $task)
     {
-        return $task->creator->role == auth()->user()->role;
+        return $task->action?->actionType->role == auth()->user()->role;
     }
 
     /**
@@ -66,7 +66,7 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task)
     {
-        return $task->creator->role == auth()->user()->role;
+        return $task->action?->actionType->role == auth()->user()->role;
     }
 
     /**

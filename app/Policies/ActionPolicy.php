@@ -30,7 +30,7 @@ class ActionPolicy
      */
     public function view(User $user, Action $action)
     {
-        return $action->task->creator->role == auth()->user()->role;
+        return $action->actionType->role == auth()->user()->role;
     }
 
     /**
