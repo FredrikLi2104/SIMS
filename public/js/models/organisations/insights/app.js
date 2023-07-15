@@ -21888,7 +21888,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
         tagIds: '',
         componentId: '',
         statementId: ''
-      }
+      },
+      categoryFilters: []
     };
   },
   methods: {
@@ -22128,7 +22129,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
               outcome_id: thisComponent.sanctionFilters.outcomeId,
               tag_ids: thisComponent.sanctionFilters.tagIds,
               component_id: thisComponent.sanctionFilters.componentId,
-              statement_id: thisComponent.sanctionFilters.statementId
+              statement_id: thisComponent.sanctionFilters.statementId,
+              categories: thisComponent.categoryFilters
             };
           }
         },
@@ -22203,7 +22205,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
           responsivePriority: 6,
           render: function render(data, type, full, meta) {
             var r = document.createElement('div');
-            r.classList.add('d-flex');
+            r.classList.add('d-flex', 'flex-wrap');
+            console.log(full.statements);
             full.statements.forEach(function (statement, index) {
               if (statement.deed) {
                 var _statement$deed, _statement$deed2;
@@ -22237,11 +22240,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
           }
         }],
         order: [[6, 'asc']],
-        dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-8 d-flex justify-content-start align-items-center\"\n                        <\"#sanctionCardHeader\">\n                    >\n                    <\"col-lg-4 d-flex justify-content-end align-items-center\"f>\n                >\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-4\"l>\n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
+        dom: "\n                <\"row d-flex justify-content-start align-items-center m-1\"\n                    <\"col-lg-8 d-flex justify-content-start align-items-center\"\n                        <\"#sanctionCardHeader\">\n                    >\n                    <\"col-lg-4 d-flex justify-content-end align-items-center\"f>\n                >\n                <\"row d-flex justify-content-between align-items-center m-1\"\n                    <\"col-lg-4\"l>\n                    <\"col-lg-8\"<\"#category-filters\">>\n                >t\n                <\"d-flex justify-content-between mx-2 row\"\n                    <\"col-sm-12 col-md-6\"i>\n                    <\"col-sm-12 col-md-6\"p>\n                \">",
         initComplete: function initComplete() {
-          var _thisComponent$collec59, _thisComponent$collec60, _thisComponent$collec61, _thisComponent$collec62, _thisComponent$collec63, _thisComponent$collec64;
+          var _thisComponent$collec59, _thisComponent$collec60, _thisComponent$collec61, _thisComponent$collec62, _thisComponent$collec63, _thisComponent$collec64, _thisComponent$collec65, _thisComponent$collec66, _thisComponent$collec67, _thisComponent$collec68, _thisComponent$collec69, _thisComponent$collec70, _thisComponent$collec71, _thisComponent$collec72;
           var domHtml = "\n                    <div class=\"card-body\">\n                        <h4 class=\"card-title\">".concat((_thisComponent$collec59 = thisComponent.collection) === null || _thisComponent$collec59 === void 0 ? void 0 : (_thisComponent$collec60 = _thisComponent$collec59.messages) === null || _thisComponent$collec60 === void 0 ? void 0 : _thisComponent$collec60.sanctions, "</h4>\n                        <h6 class=\"card-subtitle text-muted\">").concat((_thisComponent$collec61 = thisComponent.collection) === null || _thisComponent$collec61 === void 0 ? void 0 : (_thisComponent$collec62 = _thisComponent$collec61.messages) === null || _thisComponent$collec62 === void 0 ? void 0 : _thisComponent$collec62.sanctions, " ").concat((_thisComponent$collec63 = thisComponent.collection) === null || _thisComponent$collec63 === void 0 ? void 0 : (_thisComponent$collec64 = _thisComponent$collec63.messages) === null || _thisComponent$collec64 === void 0 ? void 0 : _thisComponent$collec64.table, "</h6>\n                    </div>\n                    ");
           $("#sanctionCardHeader").html(domHtml);
+          var categoryFilters = "\n                    <div class=\"btn-group\" role=\"group\">\n                        <input type=\"checkbox\" id=\"maturity-filter\" class=\"btn-check\" autocomplete=\"off\" name=\"category-filters[]\" value=\"M\" checked onchange=\"window.filterByCategory()\">\n                        <label for=\"maturity-filter\" class=\"btn btn-primary waves-effect waves-float waves-light\">".concat((_thisComponent$collec65 = thisComponent.collection) === null || _thisComponent$collec65 === void 0 ? void 0 : (_thisComponent$collec66 = _thisComponent$collec65.messages) === null || _thisComponent$collec66 === void 0 ? void 0 : _thisComponent$collec66.maturity, "</label>\n                        <input type=\"checkbox\" id=\"principles-filter\" class=\"btn-check\" autocomplete=\"off\" name=\"category-filters[]\" value=\"P\" checked onchange=\"window.filterByCategory()\">\n                        <label for=\"principles-filter\" class=\"btn btn-primary waves-effect waves-float waves-light\">").concat((_thisComponent$collec67 = thisComponent.collection) === null || _thisComponent$collec67 === void 0 ? void 0 : (_thisComponent$collec68 = _thisComponent$collec67.messages) === null || _thisComponent$collec68 === void 0 ? void 0 : _thisComponent$collec68.principles, "</label>\n                        <input type=\"checkbox\" id=\"rights-filter\" class=\"btn-check\" autocomplete=\"off\" name=\"category-filters[]\" value=\"R\" checked onchange=\"window.filterByCategory()\">\n                        <label for=\"rights-filter\" class=\"btn btn-primary waves-effect waves-float waves-light\">").concat((_thisComponent$collec69 = thisComponent.collection) === null || _thisComponent$collec69 === void 0 ? void 0 : (_thisComponent$collec70 = _thisComponent$collec69.messages) === null || _thisComponent$collec70 === void 0 ? void 0 : _thisComponent$collec70.rights, "</label>\n                        <input type=\"checkbox\" id=\"obligations-filter\" class=\"btn-check\" autocomplete=\"off\" name=\"category-filters[]\" value=\"S\" checked onchange=\"window.filterByCategory()\">\n                        <label for=\"obligations-filter\" class=\"btn btn-primary waves-effect waves-float waves-light\">").concat((_thisComponent$collec71 = thisComponent.collection) === null || _thisComponent$collec71 === void 0 ? void 0 : (_thisComponent$collec72 = _thisComponent$collec71.messages) === null || _thisComponent$collec72 === void 0 ? void 0 : _thisComponent$collec72.obligations, "</label>\n                    </div>\n                    ");
+          document.getElementById('category-filters').classList.add('d-flex', 'justify-content-end');
+          document.getElementById('category-filters').innerHTML = categoryFilters;
         },
         drawCallback: function drawCallback(settings) {
           Array.prototype.forEach.call(document.getElementsByClassName('show-statement-details'), function (trigger) {
@@ -22253,7 +22259,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       });
     },
     drawKpiChart: function drawKpiChart() {
-      var _thisComponent$collec65, _thisComponent$collec66, _thisComponent$kpiAct, _thisComponent$collec67, _thisComponent$collec68, _thisComponent$kpiAct2, _thisComponent$kpiAct8;
+      var _thisComponent$collec73, _thisComponent$collec74, _thisComponent$kpiAct, _thisComponent$collec75, _thisComponent$collec76, _thisComponent$kpiAct2, _thisComponent$kpiAct8;
       var thisComponent = this;
       var chartColors = {
         column: {
@@ -22317,10 +22323,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
             size: [5, 5]
           },
           series: [{
-            name: (_thisComponent$collec65 = thisComponent.collection) === null || _thisComponent$collec65 === void 0 ? void 0 : (_thisComponent$collec66 = _thisComponent$collec65.messages) === null || _thisComponent$collec66 === void 0 ? void 0 : _thisComponent$collec66.target,
+            name: (_thisComponent$collec73 = thisComponent.collection) === null || _thisComponent$collec73 === void 0 ? void 0 : (_thisComponent$collec74 = _thisComponent$collec73.messages) === null || _thisComponent$collec74 === void 0 ? void 0 : _thisComponent$collec74.target,
             data: (_thisComponent$kpiAct = thisComponent.kpiActive) === null || _thisComponent$kpiAct === void 0 ? void 0 : _thisComponent$kpiAct.targets
           }, {
-            name: (_thisComponent$collec67 = thisComponent.collection) === null || _thisComponent$collec67 === void 0 ? void 0 : (_thisComponent$collec68 = _thisComponent$collec67.messages) === null || _thisComponent$collec68 === void 0 ? void 0 : _thisComponent$collec68.value,
+            name: (_thisComponent$collec75 = thisComponent.collection) === null || _thisComponent$collec75 === void 0 ? void 0 : (_thisComponent$collec76 = _thisComponent$collec75.messages) === null || _thisComponent$collec76 === void 0 ? void 0 : _thisComponent$collec76.value,
             data: (_thisComponent$kpiAct2 = thisComponent.kpiActive) === null || _thisComponent$kpiAct2 === void 0 ? void 0 : _thisComponent$kpiAct2.values
           }],
           stroke: {
@@ -22331,13 +22337,13 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
             enabled: true,
             shared: true,
             custom: function custom(_ref) {
-              var _thisComponent$kpiAct3, _thisComponent$collec69, _thisComponent$collec70, _thisComponent$kpiAct4, _thisComponent$collec71, _thisComponent$collec72, _thisComponent$kpiAct5, _thisComponent$collec73, _thisComponent$collec74, _thisComponent$kpiAct6, _thisComponent$collec75, _thisComponent$collec76, _thisComponent$kpiAct7;
+              var _thisComponent$kpiAct3, _thisComponent$collec77, _thisComponent$collec78, _thisComponent$kpiAct4, _thisComponent$collec79, _thisComponent$collec80, _thisComponent$kpiAct5, _thisComponent$collec81, _thisComponent$collec82, _thisComponent$kpiAct6, _thisComponent$collec83, _thisComponent$collec84, _thisComponent$kpiAct7;
               var series = _ref.series,
                 seriesIndex = _ref.seriesIndex,
                 dataPointIndex = _ref.dataPointIndex,
                 w = _ref.w,
                 context = _ref.context;
-              var r = "\n                            <div class=\"arrow_box\" style=\"left: 445.159px; top: 124.792px;\">\n                                <div class=\"apexcharts-tooltip-title\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">".concat((_thisComponent$kpiAct3 = thisComponent.kpiActive) === null || _thisComponent$kpiAct3 === void 0 ? void 0 : _thisComponent$kpiAct3.targets[dataPointIndex].x, "</div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <span class=\"apexcharts-tooltip-marker\" style=\"background-color: ").concat(chartColors.donut.series1, ";\"></span>\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec69 = thisComponent.collection) === null || _thisComponent$collec69 === void 0 ? void 0 : (_thisComponent$collec70 = _thisComponent$collec69.messages) === null || _thisComponent$collec70 === void 0 ? void 0 : _thisComponent$collec70.target, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct4 = thisComponent.kpiActive) === null || _thisComponent$kpiAct4 === void 0 ? void 0 : _thisComponent$kpiAct4.targets[dataPointIndex].y, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <span class=\"apexcharts-tooltip-marker\" style=\"background-color: ").concat(chartColors.donut.series3, ";\"></span>\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec71 = thisComponent.collection) === null || _thisComponent$collec71 === void 0 ? void 0 : (_thisComponent$collec72 = _thisComponent$collec71.messages) === null || _thisComponent$collec72 === void 0 ? void 0 : _thisComponent$collec72.value, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct5 = thisComponent.kpiActive) === null || _thisComponent$kpiAct5 === void 0 ? void 0 : _thisComponent$kpiAct5.values[dataPointIndex].y, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec73 = thisComponent.collection) === null || _thisComponent$collec73 === void 0 ? void 0 : (_thisComponent$collec74 = _thisComponent$collec73.messages) === null || _thisComponent$collec74 === void 0 ? void 0 : _thisComponent$collec74.user, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct6 = thisComponent.kpiActive) === null || _thisComponent$kpiAct6 === void 0 ? void 0 : _thisComponent$kpiAct6.targets[dataPointIndex].user, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec75 = thisComponent.collection) === null || _thisComponent$collec75 === void 0 ? void 0 : (_thisComponent$collec76 = _thisComponent$collec75.messages) === null || _thisComponent$collec76 === void 0 ? void 0 : _thisComponent$collec76.comment, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct7 = thisComponent.kpiActive) === null || _thisComponent$kpiAct7 === void 0 ? void 0 : _thisComponent$kpiAct7.targets[dataPointIndex].comment, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            ");
+              var r = "\n                            <div class=\"arrow_box\" style=\"left: 445.159px; top: 124.792px;\">\n                                <div class=\"apexcharts-tooltip-title\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">".concat((_thisComponent$kpiAct3 = thisComponent.kpiActive) === null || _thisComponent$kpiAct3 === void 0 ? void 0 : _thisComponent$kpiAct3.targets[dataPointIndex].x, "</div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <span class=\"apexcharts-tooltip-marker\" style=\"background-color: ").concat(chartColors.donut.series1, ";\"></span>\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec77 = thisComponent.collection) === null || _thisComponent$collec77 === void 0 ? void 0 : (_thisComponent$collec78 = _thisComponent$collec77.messages) === null || _thisComponent$collec78 === void 0 ? void 0 : _thisComponent$collec78.target, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct4 = thisComponent.kpiActive) === null || _thisComponent$kpiAct4 === void 0 ? void 0 : _thisComponent$kpiAct4.targets[dataPointIndex].y, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <span class=\"apexcharts-tooltip-marker\" style=\"background-color: ").concat(chartColors.donut.series3, ";\"></span>\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec79 = thisComponent.collection) === null || _thisComponent$collec79 === void 0 ? void 0 : (_thisComponent$collec80 = _thisComponent$collec79.messages) === null || _thisComponent$collec80 === void 0 ? void 0 : _thisComponent$collec80.value, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct5 = thisComponent.kpiActive) === null || _thisComponent$kpiAct5 === void 0 ? void 0 : _thisComponent$kpiAct5.values[dataPointIndex].y, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec81 = thisComponent.collection) === null || _thisComponent$collec81 === void 0 ? void 0 : (_thisComponent$collec82 = _thisComponent$collec81.messages) === null || _thisComponent$collec82 === void 0 ? void 0 : _thisComponent$collec82.user, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct6 = thisComponent.kpiActive) === null || _thisComponent$kpiAct6 === void 0 ? void 0 : _thisComponent$kpiAct6.targets[dataPointIndex].user, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                                <div class=\"apexcharts-tooltip-series-group apexcharts-active\" style=\"order: 1; display: flex;\">\n                                    <div class=\"apexcharts-tooltip-text\" style=\"font-family: Helvetica, Arial, sans-serif; font-size: 12px;\">\n                                        <div class=\"apexcharts-tooltip-y-group\">\n                                            <span class=\"apexcharts-tooltip-text-label\">").concat((_thisComponent$collec83 = thisComponent.collection) === null || _thisComponent$collec83 === void 0 ? void 0 : (_thisComponent$collec84 = _thisComponent$collec83.messages) === null || _thisComponent$collec84 === void 0 ? void 0 : _thisComponent$collec84.comment, ": </span>\n                                            <span class=\"apexcharts-tooltip-text-value\">").concat((_thisComponent$kpiAct7 = thisComponent.kpiActive) === null || _thisComponent$kpiAct7 === void 0 ? void 0 : _thisComponent$kpiAct7.targets[dataPointIndex].comment, "</span>\n                                        </div>\n                                    </div>\n                                </div>\n                            </div>\n                            ");
               return r;
             }
           },
@@ -22355,7 +22361,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       }
     },
     drawRadar: function drawRadar() {
-      var _thisComponent$collec77, _thisComponent$collec78, _thisComponent$collec79, _thisComponent$collec80, _ref2, _thisComponent$collec87, _thisComponent$collec88, _thisComponent$collec89, _thisComponent$collec90;
+      var _thisComponent$collec85, _thisComponent$collec86, _thisComponent$collec87, _thisComponent$collec88, _ref2, _thisComponent$collec95, _thisComponent$collec96, _thisComponent$collec97, _thisComponent$collec98;
       var thisComponent = this;
       var selectedYear = document.getElementById("yearSelect").value;
       var orgData = thisComponent.activeOrg[selectedYear];
@@ -22370,7 +22376,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
         labels: orgData.components,
         datasets: [{
           data: orgData.mean,
-          label: (_thisComponent$collec77 = thisComponent.collection) === null || _thisComponent$collec77 === void 0 ? void 0 : (_thisComponent$collec78 = _thisComponent$collec77.messages) === null || _thisComponent$collec78 === void 0 ? void 0 : _thisComponent$collec78.implementation,
+          label: (_thisComponent$collec85 = thisComponent.collection) === null || _thisComponent$collec85 === void 0 ? void 0 : (_thisComponent$collec86 = _thisComponent$collec85.messages) === null || _thisComponent$collec86 === void 0 ? void 0 : _thisComponent$collec86.implementation,
           fill: true,
           backgroundColor: "rgba(230,62,98,0.5)",
           borderColor: "rgba(230,62,98,1.00)",
@@ -22382,7 +22388,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
           pointHoverRadius: 12
         }, (_ref2 = {
           data: orgData.commitment,
-          label: (_thisComponent$collec79 = thisComponent.collection) === null || _thisComponent$collec79 === void 0 ? void 0 : (_thisComponent$collec80 = _thisComponent$collec79.messages) === null || _thisComponent$collec80 === void 0 ? void 0 : _thisComponent$collec80.commitment,
+          label: (_thisComponent$collec87 = thisComponent.collection) === null || _thisComponent$collec87 === void 0 ? void 0 : (_thisComponent$collec88 = _thisComponent$collec87.messages) === null || _thisComponent$collec88 === void 0 ? void 0 : _thisComponent$collec88.commitment,
           fill: true,
           backgroundColor: "rgba(102, 103, 171, 0.2)",
           borderColor: "rgb(102, 103, 171)",
@@ -22506,10 +22512,10 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
               enabled: true,
               callbacks: {
                 label: function label(context) {
-                  var _thisComponent$collec81, _thisComponent$collec82, _thisComponent$collec83, _thisComponent$collec84, _thisComponent$collec85, _thisComponent$collec86;
+                  var _thisComponent$collec89, _thisComponent$collec90, _thisComponent$collec91, _thisComponent$collec92, _thisComponent$collec93, _thisComponent$collec94;
                   console.log(context);
                   var v = riskData.datasets[context.datasetIndex];
-                  return "".concat(v.label, ":").concat((_thisComponent$collec81 = thisComponent.collection) === null || _thisComponent$collec81 === void 0 ? void 0 : (_thisComponent$collec82 = _thisComponent$collec81.messages) === null || _thisComponent$collec82 === void 0 ? void 0 : _thisComponent$collec82.consequence, ":").concat(v.data[0].x, ",").concat((_thisComponent$collec83 = thisComponent.collection) === null || _thisComponent$collec83 === void 0 ? void 0 : (_thisComponent$collec84 = _thisComponent$collec83.messages) === null || _thisComponent$collec84 === void 0 ? void 0 : _thisComponent$collec84.probability, ":").concat(v.data[0].y, ",").concat((_thisComponent$collec85 = thisComponent.collection) === null || _thisComponent$collec85 === void 0 ? void 0 : (_thisComponent$collec86 = _thisComponent$collec85.messages) === null || _thisComponent$collec86 === void 0 ? void 0 : _thisComponent$collec86.risk, ":").concat(parseInt(v.data[0].x) * parseInt(v.data[0].y));
+                  return "".concat(v.label, ":").concat((_thisComponent$collec89 = thisComponent.collection) === null || _thisComponent$collec89 === void 0 ? void 0 : (_thisComponent$collec90 = _thisComponent$collec89.messages) === null || _thisComponent$collec90 === void 0 ? void 0 : _thisComponent$collec90.consequence, ":").concat(v.data[0].x, ",").concat((_thisComponent$collec91 = thisComponent.collection) === null || _thisComponent$collec91 === void 0 ? void 0 : (_thisComponent$collec92 = _thisComponent$collec91.messages) === null || _thisComponent$collec92 === void 0 ? void 0 : _thisComponent$collec92.probability, ":").concat(v.data[0].y, ",").concat((_thisComponent$collec93 = thisComponent.collection) === null || _thisComponent$collec93 === void 0 ? void 0 : (_thisComponent$collec94 = _thisComponent$collec93.messages) === null || _thisComponent$collec94 === void 0 ? void 0 : _thisComponent$collec94.risk, ":").concat(parseInt(v.data[0].x) * parseInt(v.data[0].y));
                 }
               }
             }
@@ -22524,7 +22530,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
               max: 6,
               title: {
                 display: true,
-                text: (_thisComponent$collec87 = thisComponent.collection) === null || _thisComponent$collec87 === void 0 ? void 0 : (_thisComponent$collec88 = _thisComponent$collec87.messages) === null || _thisComponent$collec88 === void 0 ? void 0 : _thisComponent$collec88.consequence,
+                text: (_thisComponent$collec95 = thisComponent.collection) === null || _thisComponent$collec95 === void 0 ? void 0 : (_thisComponent$collec96 = _thisComponent$collec95.messages) === null || _thisComponent$collec96 === void 0 ? void 0 : _thisComponent$collec96.consequence,
                 font: {
                   size: 14,
                   weight: "bold"
@@ -22540,7 +22546,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
               max: 6,
               title: {
                 display: true,
-                text: (_thisComponent$collec89 = thisComponent.collection) === null || _thisComponent$collec89 === void 0 ? void 0 : (_thisComponent$collec90 = _thisComponent$collec89.messages) === null || _thisComponent$collec90 === void 0 ? void 0 : _thisComponent$collec90.probability,
+                text: (_thisComponent$collec97 = thisComponent.collection) === null || _thisComponent$collec97 === void 0 ? void 0 : (_thisComponent$collec98 = _thisComponent$collec97.messages) === null || _thisComponent$collec98 === void 0 ? void 0 : _thisComponent$collec98.probability,
                 font: {
                   size: 14,
                   weight: "bold"
@@ -22952,6 +22958,16 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
         $wrapper.prepend($img);
       }
       return $wrapper;
+    },
+    filterByCategory: function filterByCategory() {
+      var self = this;
+      self.categoryFilters = [];
+      document.getElementsByName('category-filters[]').forEach(function (filter) {
+        if (filter.checked) {
+          self.categoryFilters.push(filter.value);
+        }
+      });
+      self.filterSanctions();
     }
   },
   mounted: function mounted() {
@@ -22974,6 +22990,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
       console.log(error.response);
     });
     this.handleSanctionModalShown();
+    window.filterByCategory = function () {
+      thisComponent.filterByCategory();
+    };
   },
   computed: {
     years: function years() {

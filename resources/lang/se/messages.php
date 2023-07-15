@@ -284,4 +284,8 @@ return [
     'how_to_review' => 'Hur man granskar',
     'how_we_review' => 'Hur vi granskar',
     'date_added' => 'Datum tillagt',
+    'maturity' => 'Mognad',
+    'principles' => 'Principer',
+    'rights' => 'Rättigheter',
+    'obligations' => 'Skyldigheter',
 ];

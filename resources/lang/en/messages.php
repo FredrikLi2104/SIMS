@@ -285,5 +285,9 @@ return [
     'how_to_review' => 'How to Review',
     'how_we_review' => 'How We Review',
     'date_added' => 'Date Added',
+    'maturity' => 'Maturity',
+    'principles' => 'Principles',
+    'rights' => 'Rights',
+    'obligations' => 'Obligations',
 ];
 ?>
