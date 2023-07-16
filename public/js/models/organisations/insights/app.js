@@ -21885,11 +21885,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
         countryId: '',
         sniId: '',
         outcomeId: '',
-        tagIds: '',
+        tagIds: [],
         componentId: '',
         statementId: ''
       },
-      categoryFilters: ['M', 'P', 'R', 'S'],
+      categoryFilters: [],
       componentsData: []
     };
   },
@@ -22825,14 +22825,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
     sanctionShow: function sanctionShow(id) {
       var thisComponent = this;
       axios.get("/".concat(thisComponent.locale, "/axios/sanctions/").concat(id)).then(function (response) {
-        //console.log(response.data);
         thisComponent.sanctionActive = response.data;
+        thisComponent.initDescQuill();
       })["catch"](function (error) {
         console.log(error.response);
       });
-      //let y = this.collection?.sanctions?.filter((x) => x.id == id);
-      //this.sanctionActive = y[0];
-      this.initDescQuill();
       $("#sanctionShowModal").modal("show");
     },
     sanctionHide: function sanctionHide() {

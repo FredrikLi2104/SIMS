@@ -570,11 +570,11 @@ export default {
                 countryId: '',
                 sniId: '',
                 outcomeId: '',
-                tagIds: '',
+                tagIds: [],
                 componentId: '',
                 statementId: '',
             },
-            categoryFilters: ['M', 'P', 'R', 'S'],
+            categoryFilters: [],
             componentsData: []
         };
     },
@@ -1651,15 +1651,12 @@ export default {
             axios
                 .get(`/${thisComponent.locale}/axios/sanctions/${id}`)
                 .then(function (response) {
-                    //console.log(response.data);
                     thisComponent.sanctionActive = response.data;
+                    thisComponent.initDescQuill();
                 })
                 .catch(function (error) {
                     console.log(error.response);
                 });
-            //let y = this.collection?.sanctions?.filter((x) => x.id == id);
-            //this.sanctionActive = y[0];
-            this.initDescQuill();
             $("#sanctionShowModal").modal("show");
         },
         sanctionHide() {
