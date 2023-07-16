@@ -289,5 +289,6 @@ return [
     'principles' => 'Principles',
     'rights' => 'Rights',
     'obligations' => 'Obligations',
+    'processing' => 'Processing',
 ];
 ?>

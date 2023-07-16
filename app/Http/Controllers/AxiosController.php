@@ -1342,7 +1342,6 @@ class AxiosController extends Controller
         $filterByTag = $request->post('filters')['tag_ids'] ?? null;
         $filterByComponent = $request->post('filters')['component_id'] ?? null;
         $filterByStatement = $request->post('filters')['statement_id'] ?? null;
-        $filterByCategory = $request->post('filters')['categories'] ?? null;
         $orderBy = $request->post('order')[0]['column'] ?? null;
         $orderDir = $request->post('order')[0]['dir'] ?? null;
 
@@ -1390,12 +1389,6 @@ class AxiosController extends Controller
             })
             ->when($filterByStatement, function ($query, $filterByStatement) {
                 $query->whereRelation('statements', 'statements.id', $filterByStatement);
-            })
-            ->when($filterByCategory, function ($query, $filterByCategory) {
-                $query->whereHas('statements.component', function ($query) use ($filterByCategory) {
-                    $categories = implode("','", $filterByCategory);
-                    $query->whereRaw("SUBSTR(code, 1, 1) IN ('$categories')");
-                });
             })
             ->get();
 

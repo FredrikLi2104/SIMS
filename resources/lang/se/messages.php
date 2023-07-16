@@ -288,4 +288,5 @@ return [
     'principles' => 'Principer',
     'rights' => 'Rättigheter',
     'obligations' => 'Skyldigheter',
+    'processing' => 'Bearbetar',
 ];

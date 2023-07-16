@@ -574,7 +574,8 @@ export default {
                 componentId: '',
                 statementId: '',
             },
-            categoryFilters: []
+            categoryFilters: ['M', 'P', 'R', 'S'],
+            componentsData: []
         };
     },
     methods: {
@@ -599,8 +600,7 @@ export default {
                 </tr>
             </thead>
             `;
-            const activeYear = document.getElementById("yearSelect").value;
-            var dataSource = thisComponent.activeOrg[activeYear].table;
+            var dataSource = thisComponent.componentsData;
             document.getElementById("dataTable").innerHTML = header;
             thisComponent.dataTable = $("#dataTable").DataTable({
                 data: dataSource,
@@ -676,11 +676,14 @@ export default {
                 ],
                 order: [[0, "asc"]],
                 dom: `
-                <"row d-flex justify-content-start align-items-center m-1"
+                <"row d-flex justify-content-start align-items-center m-50"
                     <"col-lg-8 d-flex justify-content-start align-items-center"
                         <"#cardHeader">
                     >
                     <"col-lg-4 d-flex justify-content-end align-items-center"f>
+                >
+                <"row"
+                    <"col-12"<"#category-filters">>
                 >t
                 <"d-flex justify-content-between mx-2 row"
                     <"col-sm-12 col-md-6"i>
@@ -694,6 +697,21 @@ export default {
                             </div>
                             `;
                     $("#cardHeader").html(domHtml);
+
+                    let categoryFilters = `
+                    <div class="btn-group" role="group">
+                        <input type="checkbox" id="maturity-filter" class="btn-check" autocomplete="off" name="category-filters[]" value="M" ${thisComponent.categoryFilters.includes('M') ? 'checked' : ''} onchange="window.filterByCategory()">
+                        <label for="maturity-filter" class="btn btn-primary waves-effect waves-float waves-light">M &mdash; ${thisComponent.collection?.messages?.maturity}</label>
+                        <input type="checkbox" id="principles-filter" class="btn-check" autocomplete="off" name="category-filters[]" value="P" ${thisComponent.categoryFilters.includes('P') ? 'checked' : ''} onchange="window.filterByCategory()">
+                        <label for="principles-filter" class="btn btn-primary waves-effect waves-float waves-light">P &mdash; ${thisComponent.collection?.messages?.principles}</label>
+                        <input type="checkbox" id="rights-filter" class="btn-check" autocomplete="off" name="category-filters[]" value="R" ${thisComponent.categoryFilters.includes('R') ? 'checked' : ''} onchange="window.filterByCategory()">
+                        <label for="rights-filter" class="btn btn-primary waves-effect waves-float waves-light">R &mdash; ${thisComponent.collection?.messages?.rights}</label>
+                        <input type="checkbox" id="obligations-filter" class="btn-check" autocomplete="off" name="category-filters[]" value="S" ${thisComponent.categoryFilters.includes('S') ? 'checked' : ''} onchange="window.filterByCategory()">
+                        <label for="obligations-filter" class="btn btn-primary waves-effect waves-float waves-light">S &mdash; ${thisComponent.collection?.messages?.obligations}</label>
+                    </div>
+                    `;
+                    document.getElementById('category-filters').classList.add('d-flex', 'justify-content-center');
+                    document.getElementById('category-filters').innerHTML = categoryFilters;
                 },
                 drawCallback: function () {
                     /*
@@ -971,7 +989,6 @@ export default {
                         render: function (data, type, full, meta) {
                             let r = document.createElement('div');
                             r.classList.add('d-flex', 'flex-wrap');
-                            console.log(full.statements);
                             full.statements.forEach((statement, index) => {
                                 if (statement.deed) {
                                     let a = document.createElement('a');
@@ -1024,8 +1041,7 @@ export default {
                 >
                 <"row d-flex justify-content-between align-items-center m-1"
                     <"col-lg-4"l>
-                    <"col-lg-8"<"#category-filters">>
-                >t
+                >tr
                 <"d-flex justify-content-between mx-2 row"
                     <"col-sm-12 col-md-6"i>
                     <"col-sm-12 col-md-6"p>
@@ -1038,21 +1054,6 @@ export default {
                     </div>
                     `;
                     $("#sanctionCardHeader").html(domHtml);
-
-                    let categoryFilters = `
-                    <div class="btn-group" role="group">
-                        <input type="checkbox" id="maturity-filter" class="btn-check" autocomplete="off" name="category-filters[]" value="M" checked onchange="window.filterByCategory()">
-                        <label for="maturity-filter" class="btn btn-primary waves-effect waves-float waves-light">${thisComponent.collection?.messages?.maturity}</label>
-                        <input type="checkbox" id="principles-filter" class="btn-check" autocomplete="off" name="category-filters[]" value="P" checked onchange="window.filterByCategory()">
-                        <label for="principles-filter" class="btn btn-primary waves-effect waves-float waves-light">${thisComponent.collection?.messages?.principles}</label>
-                        <input type="checkbox" id="rights-filter" class="btn-check" autocomplete="off" name="category-filters[]" value="R" checked onchange="window.filterByCategory()">
-                        <label for="rights-filter" class="btn btn-primary waves-effect waves-float waves-light">${thisComponent.collection?.messages?.rights}</label>
-                        <input type="checkbox" id="obligations-filter" class="btn-check" autocomplete="off" name="category-filters[]" value="S" checked onchange="window.filterByCategory()">
-                        <label for="obligations-filter" class="btn btn-primary waves-effect waves-float waves-light">${thisComponent.collection?.messages?.obligations}</label>
-                    </div>
-                    `;
-                    document.getElementById('category-filters').classList.add('d-flex', 'justify-content-end');
-                    document.getElementById('category-filters').innerHTML = categoryFilters;
                 },
                 drawCallback: function (settings) {
                     Array.prototype.forEach.call(document.getElementsByClassName('show-statement-details'), (trigger) => {
@@ -1060,6 +1061,9 @@ export default {
                             thisComponent.componentShow(trigger.dataset['componentId'], trigger.dataset['statementId']);
                         });
                     });
+                },
+                language: {
+                    processing: `<div class="d-flex align-items-center"><div class="spinner-border text-success" role="status"><span class="visually-hidden">${thisComponent.collection?.messages?.processing}...</span></div><span class="text-success ms-50">${thisComponent.collection?.messages?.processing}...</span></div>`
                 }
             });
         },
@@ -1786,13 +1790,17 @@ export default {
         },
         filterByCategory() {
             let self = this;
+            const activeYear = document.getElementById('yearSelect').value;
+            let components = self.activeOrg[activeYear].table;
             self.categoryFilters = [];
+            self.componentsData = [];
             document.getElementsByName('category-filters[]').forEach(filter => {
                 if (filter.checked) {
                     self.categoryFilters.push(filter.value);
+                    self.componentsData.push(...components.filter(component => filter.value === component.code.substring(0, 1)));
                 }
             });
-            self.filterSanctions();
+            self.buildTable();
         }
     },
     mounted() {
@@ -1804,6 +1812,8 @@ export default {
                 thisComponent.collection = response.data;
                 thisComponent.activeOrg = response.data.data[0].data;
                 thisComponent.$nextTick(() => {
+                    const activeYear = document.getElementById('yearSelect').value;
+                    thisComponent.componentsData = thisComponent.activeOrg[activeYear].table;
                     thisComponent.drawRadar();
                     thisComponent.buildTable();
                     thisComponent.buildKpiTable();
