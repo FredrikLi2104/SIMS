@@ -25,8 +25,8 @@ class OrganisationsPlanAuditorUpdateRequest extends FormRequest
     {
         return [
             //
-            'statement_id' => ['required', 'exists:statements,id'],
-            'plan_id' => ['required', 'exists:plans,id']
+            'statement_id.*' => ['required', 'exists:statements,id'],
+            'plan_id.*' => ['required', 'exists:plans,id']
         ];
     }
 }

@@ -282,13 +282,16 @@ return [
     'show_disabled' => 'Show Disabled',
     'hide_disabled' => 'Hide Disabled',
     'initial_value' => 'Initial Value',
-    'how_to_review' => 'How to Review',
-    'how_we_review' => 'How We Review',
+    'how_to_review' => 'How to review (example)',
+    'how_we_review' => 'How we review (from plan)',
     'date_added' => 'Date Added',
     'maturity' => 'Maturity',
     'principles' => 'Principles',
     'rights' => 'Rights',
     'obligations' => 'Obligations',
     'processing' => 'Processing',
+    'statements_update_warning' => 'Changes made to statements will be lost if not updated.',
+    'active_statement_update_tooltip' => 'Update active statement',
+    'changed_statements_update_tooltip' => 'Update all changed statements',
 ];
 ?>

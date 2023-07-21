@@ -576,7 +576,7 @@ class AxiosController extends Controller
                 $org = Organisation::find(session('selected_org')['id']);
                 $usersIds = $org->users->pluck('id');
                 $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $statement->id)->get()->first();
-                $statement->guide = $r->guide;
+                $statement->guide = $r ? $r->guide : '';
             } else {
                 $statement->guide = '';
             }
@@ -611,12 +611,20 @@ class AxiosController extends Controller
     {
         // as exists?
         try {
-            $request->guide = $request->guide ?? '';
-            $as = DB::table('auditor_statement')->where('statement_id', $request->statement_id)->get()->first();
-            if ($as) {
-                DB::table('auditor_statement')->where('id', $as->id)->update(['plan_id' => $request->plan_id, 'user_id' => Auth::user()->id, 'guide' => $request->guide, 'updated_at' => Carbon::now()]);
-            } else {
-                DB::table('auditor_statement')->insert(['statement_id' => $request->statement_id, 'plan_id' => $request->plan_id, 'user_id' => Auth::user()->id, 'guide' => $request->guide, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+            $org = Organisation::find(session('selected_org')['id']);
+            $usersIds = $org->users->pluck('id');
+            $auditor = $org->users->where('role', 'auditor')->first();
+            $usersId = $auditor ? $auditor->id : auth()->user()->id;
+            $data = $request->all();
+
+            foreach ($data as $statement) {
+                $guide = $statement['guide'] ?? '';
+                $as = DB::table('auditor_statement')->where('statement_id', $statement['statement_id'])->whereIn('user_id', $usersIds)->get()->first();
+                if ($as) {
+                    DB::table('auditor_statement')->where('id', $as->id)->update(['plan_id' => $statement['plan_id'], 'user_id' => $usersId, 'guide' => $guide, 'updated_at' => Carbon::now()]);
+                } else {
+                    DB::table('auditor_statement')->insert(['statement_id' => $statement['statement_id'], 'plan_id' => $statement['plan_id'], 'user_id' => $usersId, 'guide' => $guide, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+                }
             }
         } catch (\Throwable $th) {
             //throw $th;

@@ -21850,7 +21850,10 @@ __webpack_require__.r(__webpack_exports__);
     return {
       collection: null,
       statementActive: {},
-      isSubmitting: null
+      isSubmitting: null,
+      changedStatements: [],
+      guide: null,
+      planId: null
     };
   },
   methods: {
@@ -21859,12 +21862,22 @@ __webpack_require__.r(__webpack_exports__);
       axios.get("/".concat(self.locale, "/axios/organisations/plan/auditor/").concat(self.actionId)).then(function (response) {
         self.collection = response.data;
         if (Object.keys(self.statementActive).length === 0) {
-          self.updatestatementActive(0);
+          self.guide = self.collection.statements[0].guide;
+          var selectedPlan = self.collection.statements[0].plans.find(function (plan) {
+            return plan.selected === true;
+          });
+          self.planId = selectedPlan.plan.id;
+          self.updateStatementActive(0);
         } else {
           var index = self.collection.statements.findIndex(function (statement) {
             return statement.id === self.statementActive.id;
           });
-          self.updatestatementActive(index);
+          self.guide = self.statementActive.guide;
+          var _selectedPlan = self.statementActive.plans.find(function (plan) {
+            return plan.selected === true;
+          });
+          self.planId = _selectedPlan.plan.id;
+          self.updateStatementActive(index);
         }
         self.$nextTick(function () {
           feather.replace();
@@ -21876,10 +21889,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     statementUpdate: function statementUpdate(id) {
       var self = this;
-      var formData = new FormData(document.getElementById('plan-form'));
-      formData.append('statement_id', id);
+      var data = self.changedStatements;
+      if (id !== undefined) {
+        data = data.filter(function (statement) {
+          return statement.statement_id === id;
+        });
+      }
       self.isSubmitting = true;
-      axios.post("/".concat(self.locale, "/axios/organisations/plan/auditor/update"), formData).then(function (response) {
+      axios.post("/".concat(self.locale, "/axios/organisations/plan/auditor/update"), data).then(function (response) {
         var _self$collection, _self$collection$mess, _self$collection2, _self$collection2$mes;
         self.isSubmitting = false;
         self.loadStatements();
@@ -21902,10 +21919,41 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    updatestatementActive: function updatestatementActive(index) {
+    updateStatementActive: function updateStatementActive(index) {
       var _self$collection4, _self$collection4$sta;
       var self = this;
       self.statementActive = (_self$collection4 = self.collection) === null || _self$collection4 === void 0 ? void 0 : (_self$collection4$sta = _self$collection4.statements) === null || _self$collection4$sta === void 0 ? void 0 : _self$collection4$sta[index];
+      self.guide = self.statementActive.guide;
+      var selectedPlan = self.statementActive.plans.find(function (plan) {
+        return plan.selected === true;
+      });
+      self.planId = selectedPlan.plan.id;
+    },
+    checkStatementChanged: function checkStatementChanged() {
+      var _this = this;
+      var statement = this.changedStatements.find(function (statement) {
+        return statement.id === _this.statementActive.id;
+      });
+      var selectedPlan = this.statementActive.plans.find(function (plan) {
+        return plan.selected === true;
+      });
+      if (statement === undefined) {
+        this.changedStatements.push({
+          statement_id: this.statementActive.id,
+          guide: this.guide,
+          plan_id: this.planId
+        });
+      } else if (this.statementActive.guide !== this.guide || selectedPlan.plan.id !== this.planId) {
+        var index = this.changedStatements.findIndex(function (statement) {
+          return statement.id === _this.statementActive.id;
+        });
+        this.changedStatements[index].guide = this.guide;
+        this.changedStatements[index].planId = this.planId;
+      } else {
+        this.changedStatements = this.changedStatements.filter(function (statement) {
+          return statement.id !== _this.statementActive.id;
+        });
+      }
     }
   },
   mounted: function mounted() {
@@ -21999,30 +22047,48 @@ var _hoisted_23 = {
   "class": "text-sm font-weight-semibold me-1"
 };
 var _hoisted_24 = {
-  "class": "form-select",
-  name: "plan_id"
-};
-var _hoisted_25 = {
   value: ""
 };
-var _hoisted_26 = ["value", "selected"];
-var _hoisted_27 = {
+var _hoisted_25 = ["value", "selected"];
+var _hoisted_26 = {
   "class": "mt-2"
 };
-var _hoisted_28 = ["disabled"];
-var _hoisted_29 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_27 = {
+  "class": "alert alert-warning",
+  role: "alert"
+};
+var _hoisted_28 = {
+  "class": "alert-body"
+};
+var _hoisted_29 = {
+  "class": "d-flex justify-content-between"
+};
+var _hoisted_30 = ["disabled", "data-bs-original-title"];
+var _hoisted_31 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "data-feather": "check",
     "class": "me-25"
   }, null, -1 /* HOISTED */);
 });
-var _hoisted_30 = {
+var _hoisted_32 = {
+  "class": "spinner-border spinner-border-sm",
+  role: "status",
+  "aria-hidden": "true"
+};
+var _hoisted_33 = ["disabled", "data-bs-original-title"];
+var _hoisted_34 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "data-feather": "zap",
+    "class": "me-25"
+  }, null, -1 /* HOISTED */);
+});
+var _hoisted_35 = {
   "class": "spinner-border spinner-border-sm",
   role: "status",
   "aria-hidden": "true"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$data$collection, _$data$collection$mes, _$data$collection2, _$data$collection3, _$data$collection3$me, _$data$statementActiv, _$data$collection4, _$data$collection4$me, _$data$statementActiv2, _$data$collection5, _$data$collection5$me, _$data$statementActiv3, _$data$collection6, _$data$collection6$me, _$data$statementActiv4, _$data$collection7, _$data$collection7$me, _$data$collection8, _$data$collection8$me, _$data$collection9, _$data$collection9$me, _$data$statementActiv5, _$data$collection10, _$data$collection10$m, _$data$collection11, _$data$collection11$m;
+  var _$data$collection, _$data$collection$mes, _$data$collection2, _$data$collection3, _$data$collection3$me, _$data$statementActiv, _$data$collection4, _$data$collection4$me, _$data$statementActiv2, _$data$collection5, _$data$collection5$me, _$data$statementActiv3, _$data$collection6, _$data$collection6$me, _$data$statementActiv4, _$data$collection7, _$data$collection7$me, _$data$collection8, _$data$collection8$me, _$data$collection9, _$data$collection9$me, _$data$statementActiv5, _$data$collection10, _$data$collection10$m, _$data$collection11, _$data$collection11$m, _$data$collection12, _$data$collection12$m, _$data$collection13, _$data$collection13$m, _$data$collection14, _$data$collection14$m, _$data$collection15, _$data$collection15$m, _$data$collection16, _$data$collection16$m;
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection = $data.collection) === null || _$data$collection === void 0 ? void 0 : (_$data$collection$mes = _$data$collection.messages) === null || _$data$collection$mes === void 0 ? void 0 : _$data$collection$mes.statements), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$collection2 = $data.collection) === null || _$data$collection2 === void 0 ? void 0 : _$data$collection2.statements, function (statement, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
       key: statement.id,
@@ -22031,33 +22097,60 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       type: "button",
       "class": "btn btn-icon btn-outline-primary waves-effect",
       onClick: function onClick($event) {
-        return $options.updatestatementActive(index);
+        return $options.updateStatementActive(index);
       }
     }, _hoisted_11, 8 /* PROPS */, _hoisted_9)])])], 2 /* CLASS */);
   }), 128 /* KEYED_FRAGMENT */))])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection3 = $data.collection) === null || _$data$collection3 === void 0 ? void 0 : (_$data$collection3$me = _$data$collection3.messages) === null || _$data$collection3$me === void 0 ? void 0 : _$data$collection3$me.statement), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$statementActiv = $data.statementActive) === null || _$data$statementActiv === void 0 ? void 0 : _$data$statementActiv.subcode), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection4 = $data.collection) === null || _$data$collection4 === void 0 ? void 0 : (_$data$collection4$me = _$data$collection4.messages) === null || _$data$collection4$me === void 0 ? void 0 : _$data$collection4$me.desc), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$statementActiv2 = $data.statementActive) === null || _$data$statementActiv2 === void 0 ? void 0 : _$data$statementActiv2["desc_".concat($props.locale)]), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_19, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection5 = $data.collection) === null || _$data$collection5 === void 0 ? void 0 : (_$data$collection5$me = _$data$collection5.messages) === null || _$data$collection5$me === void 0 ? void 0 : _$data$collection5$me.how_to_review), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$statementActiv3 = $data.statementActive) === null || _$data$statementActiv3 === void 0 ? void 0 : _$data$statementActiv3["guide_".concat($props.locale)]), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_21, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection6 = $data.collection) === null || _$data$collection6 === void 0 ? void 0 : (_$data$collection6$me = _$data$collection6.messages) === null || _$data$collection6$me === void 0 ? void 0 : _$data$collection6$me.how_we_review), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
     "class": "form-control",
     name: "guide",
     rows: "4",
-    "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
-      return $data.statementActive.guide = $event;
+    onChange: _cache[0] || (_cache[0] = function () {
+      return $options.checkStatementChanged && $options.checkStatementChanged.apply($options, arguments);
+    }),
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+      return $data.guide = $event;
     })
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$statementActiv4 = $data.statementActive) === null || _$data$statementActiv4 === void 0 ? void 0 : _$data$statementActiv4.guide), 513 /* TEXT, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.statementActive.guide]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$collection7 = $data.collection) === null || _$data$collection7 === void 0 ? void 0 : (_$data$collection7$me = _$data$collection7.messages) === null || _$data$collection7$me === void 0 ? void 0 : _$data$collection7$me.review, " ").concat((_$data$collection8 = $data.collection) === null || _$data$collection8 === void 0 ? void 0 : (_$data$collection8$me = _$data$collection8.messages) === null || _$data$collection8$me === void 0 ? void 0 : _$data$collection8$me.type)), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", _hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection9 = $data.collection) === null || _$data$collection9 === void 0 ? void 0 : (_$data$collection9$me = _$data$collection9.messages) === null || _$data$collection9$me === void 0 ? void 0 : _$data$collection9$me.pleaseSelect), 1 /* TEXT */), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$statementActiv5 = $data.statementActive) === null || _$data$statementActiv5 === void 0 ? void 0 : _$data$statementActiv5.plans, function (plan) {
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$statementActiv4 = $data.statementActive) === null || _$data$statementActiv4 === void 0 ? void 0 : _$data$statementActiv4.guide), 545 /* TEXT, HYDRATE_EVENTS, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.guide]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h6", _hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)("".concat((_$data$collection7 = $data.collection) === null || _$data$collection7 === void 0 ? void 0 : (_$data$collection7$me = _$data$collection7.messages) === null || _$data$collection7$me === void 0 ? void 0 : _$data$collection7$me.review, " ").concat((_$data$collection8 = $data.collection) === null || _$data$collection8 === void 0 ? void 0 : (_$data$collection8$me = _$data$collection8.messages) === null || _$data$collection8$me === void 0 ? void 0 : _$data$collection8$me.type)), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    "class": "form-select",
+    name: "plan_id",
+    onChange: _cache[2] || (_cache[2] = function () {
+      return $options.checkStatementChanged && $options.checkStatementChanged.apply($options, arguments);
+    }),
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+      return $data.planId = $event;
+    })
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", _hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection9 = $data.collection) === null || _$data$collection9 === void 0 ? void 0 : (_$data$collection9$me = _$data$collection9.messages) === null || _$data$collection9$me === void 0 ? void 0 : _$data$collection9$me.pleaseSelect), 1 /* TEXT */), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)((_$data$statementActiv5 = $data.statementActive) === null || _$data$statementActiv5 === void 0 ? void 0 : _$data$statementActiv5.plans, function (plan) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: plan.plan.id,
       value: plan.plan.id,
       selected: plan.selected
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(plan.plan["name_".concat($props.locale)]), 9 /* TEXT, PROPS */, _hoisted_26);
-  }), 128 /* KEYED_FRAGMENT */))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(plan.plan["name_".concat($props.locale)]), 9 /* TEXT, PROPS */, _hoisted_25);
+  }), 128 /* KEYED_FRAGMENT */))], 544 /* HYDRATE_EVENTS, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.planId]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection10 = $data.collection) === null || _$data$collection10 === void 0 ? void 0 : (_$data$collection10$m = _$data$collection10.messages) === null || _$data$collection10$m === void 0 ? void 0 : _$data$collection10$m.statements_update_warning), 1 /* TEXT */)], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.changedStatements.length]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-success waves-effect waves-float waves-light",
     disabled: $data.isSubmitting,
-    onClick: _cache[1] || (_cache[1] = function ($event) {
+    onClick: _cache[4] || (_cache[4] = function ($event) {
       var _$data$statementActiv6;
       return $options.statementUpdate((_$data$statementActiv6 = $data.statementActive) === null || _$data$statementActiv6 === void 0 ? void 0 : _$data$statementActiv6.id);
-    })
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, [_hoisted_29, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection10 = $data.collection) === null || _$data$collection10 === void 0 ? void 0 : (_$data$collection10$m = _$data$collection10.messages) === null || _$data$collection10$m === void 0 ? void 0 : _$data$collection10$m.update), 1 /* TEXT */)], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, !$data.isSubmitting]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_30, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.isSubmitting]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    }),
+    "data-bs-toggle": "tooltip",
+    "data-bs-original-title": "".concat((_$data$collection11 = $data.collection) === null || _$data$collection11 === void 0 ? void 0 : (_$data$collection11$m = _$data$collection11.messages) === null || _$data$collection11$m === void 0 ? void 0 : _$data$collection11$m.active_statement_update_tooltip),
+    "data-bs-placement": "right"
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, [_hoisted_31, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection12 = $data.collection) === null || _$data$collection12 === void 0 ? void 0 : (_$data$collection12$m = _$data$collection12.messages) === null || _$data$collection12$m === void 0 ? void 0 : _$data$collection12$m.update), 1 /* TEXT */)], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, !$data.isSubmitting]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_32, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.isSubmitting]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": "ms-25 align-middle"
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection11 = $data.collection) === null || _$data$collection11 === void 0 ? void 0 : (_$data$collection11$m = _$data$collection11.messages) === null || _$data$collection11$m === void 0 ? void 0 : _$data$collection11$m.submitting) + "...", 513 /* TEXT, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.isSubmitting]])], 8 /* PROPS */, _hoisted_28)])])])])])]);
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection13 = $data.collection) === null || _$data$collection13 === void 0 ? void 0 : (_$data$collection13$m = _$data$collection13.messages) === null || _$data$collection13$m === void 0 ? void 0 : _$data$collection13$m.submitting) + "...", 513 /* TEXT, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.isSubmitting]])], 8 /* PROPS */, _hoisted_30), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": "btn btn-success waves-effect waves-float waves-light",
+    disabled: $data.isSubmitting,
+    onClick: _cache[5] || (_cache[5] = function ($event) {
+      return $options.statementUpdate();
+    }),
+    "data-bs-toggle": "tooltip",
+    "data-bs-original-title": "".concat((_$data$collection14 = $data.collection) === null || _$data$collection14 === void 0 ? void 0 : (_$data$collection14$m = _$data$collection14.messages) === null || _$data$collection14$m === void 0 ? void 0 : _$data$collection14$m.changed_statements_update_tooltip),
+    "data-bs-placement": "left"
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, [_hoisted_34, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection15 = $data.collection) === null || _$data$collection15 === void 0 ? void 0 : (_$data$collection15$m = _$data$collection15.messages) === null || _$data$collection15$m === void 0 ? void 0 : _$data$collection15$m.updateAll), 1 /* TEXT */)], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, !$data.isSubmitting]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_35, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.isSubmitting]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    "class": "ms-25 align-middle"
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$collection16 = $data.collection) === null || _$data$collection16 === void 0 ? void 0 : (_$data$collection16$m = _$data$collection16.messages) === null || _$data$collection16$m === void 0 ? void 0 : _$data$collection16$m.submitting) + "...", 513 /* TEXT, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.isSubmitting]])], 8 /* PROPS */, _hoisted_33), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.changedStatements.length]])])])])])])])]);
 }
 
 /***/ }),
