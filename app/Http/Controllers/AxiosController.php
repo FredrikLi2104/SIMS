@@ -557,23 +557,23 @@ class AxiosController extends Controller
             //TODO: check access
 
             if ($action->actionType->model == 'statement') {
-                $statements = $action->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode']);
+                $statements = $action->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode', 'deed']);
             } else if ($action->actionType->model == 'component') {
                 $components = $action->components;
                 $statements = $components->flatMap(function ($component) {
-                    return $component->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode']);
+                    return $component->statements->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode', 'deed']);
                 });
             }
         } else {
-            $statements = Statement::all()->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode']);
+            $statements = Statement::all()->sortBy('subcode', SORT_NATURAL)->makeVisible(['concat', 'guide', 'plans', 'subcode', 'deed']);
         }
 
         $plans = Plan::all()->sortBy('sort_order');
         $statementPlans = [];
+        $org = Organisation::find(session('selected_org')['id']);
         foreach ($statements as $statement) {
             $statementReviewPlan = $statement->reviewPlan();
             if ($statementReviewPlan) {
-                $org = Organisation::find(session('selected_org')['id']);
                 $usersIds = $org->users->pluck('id');
                 $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $statement->id)->get()->first();
                 $statement->guide = $r ? $r->guide : '';
@@ -591,6 +591,8 @@ class AxiosController extends Controller
             }
             $statement->plans = $statementPlans;
             $statementPlans = [];
+            $statement->deed = $statement->organisationDeed($org);
+            $statement->deed = $statement->deed?->load('deedHistory')->makeVisible('deedHistory');
         }
         App::setlocale($locale);
         $messages = Lang::get('messages');

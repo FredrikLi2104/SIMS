@@ -293,5 +293,6 @@ return [
     'statements_update_warning' => 'Changes made to statements will be lost if not updated.',
     'active_statement_update_tooltip' => 'Update active statement',
     'changed_statements_update_tooltip' => 'Update all changed statements',
+    'review_type_alert' => 'This statement has no deeds yet, must at least have one to be able to qualify for a Check review.',
 ];
 ?>

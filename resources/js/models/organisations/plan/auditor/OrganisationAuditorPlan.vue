@@ -52,11 +52,17 @@
                         </div>
                         <div class="mb-1">
                             <h6 class="text-sm font-weight-semibold me-1">
-                                {{ `${collection?.messages?.review} ${collection?.messages?.type}` }}</h6>
+                                {{ `${collection?.messages?.review} ${collection?.messages?.type}` }} <span
+                                data-bs-toggle="tooltip"
+                                :data-bs-original-title="`${collection?.messages?.review_type_alert}`"
+                                v-show="statementActive?.deed === null" v-html="alertCircleSvg()"></span>
+                            </h6>
                             <select class="form-select" name="plan_id" @change="checkStatementChanged" v-model="planId">
                                 <option value="">{{ collection?.messages?.pleaseSelect }}</option>
                                 <option v-for="plan in statementActive?.plans" :key="plan.plan.id" :value="plan.plan.id"
-                                        :selected="plan.selected">{{ plan.plan[`name_${locale}`] }}
+                                        :selected="plan.selected"
+                                        :disabled="statementActive?.deed === null && plan.plan.name_en === 'Check'">
+                                    {{ plan.plan[`name_${locale}`] }}
                                 </option>
                             </select>
                         </div>
@@ -82,7 +88,7 @@
                                             collection?.messages?.submitting
                                         }}...</span>
                                 </button>
-                                <button v-show="changedStatements.length" type="button"
+                                <button type="button"
                                         class="btn btn-success waves-effect waves-float waves-light"
                                         :disabled="isSubmitting"
                                         @click="statementUpdate()" data-bs-toggle="tooltip"
@@ -99,6 +105,14 @@
                                 </button>
                             </div>
                         </div>
+                        <hr>
+                        <div class="mb-1">
+                            <h6 class="text-sm font-weight-semibold me-1">{{
+                                    collection?.messages?.comment
+                                }}</h6>
+                            <span>{{ statementActive?.deed?.comment }}</span>
+                        </div>
+                        <div id="statements-chart"></div>
                     </form>
                 </div>
             </div>
@@ -116,6 +130,7 @@ export default {
             changedStatements: [],
             guide: null,
             planId: null,
+            statementHistoryChart: null,
         }
     },
     methods: {
@@ -165,6 +180,7 @@ export default {
                         progressBar: true,
                         rtl: false,
                     });
+                    self.changedStatements = [];
                 })
                 .catch(function (error) {
                     self.isSubmitting = false;
@@ -183,6 +199,8 @@ export default {
             self.guide = self.statementActive.guide;
             let selectedPlan = self.statementActive.plans.find(plan => plan.selected === true);
             self.planId = selectedPlan.plan.id;
+            self.drawStatementHistoryChart();
+            feather.replace();
         },
         checkStatementChanged() {
             let statement = this.changedStatements.find(statement => statement.id === this.statementActive.id);
@@ -200,6 +218,112 @@ export default {
             } else {
                 this.changedStatements = this.changedStatements.filter(statement => statement.id !== this.statementActive.id);
             }
+        },
+        drawStatementHistoryChart() {
+            let self = this;
+            let history = self.statementActive?.deed?.deed_history === undefined ? [] : self.statementActive.deed.deed_history;
+            let data = [];
+            history.forEach(item => {
+                data.push({
+                    date: moment(item.created_at).format('YYYY-MM-DD'),
+                    value: item.value,
+                });
+            });
+
+            let sorted = data.sort((a, b) => {
+                if (moment(a.date).isBefore(b.date)) {
+                    return -1;
+                } else if (moment(a.date).isAfter(b.date)) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
+            let categories = [];
+            sorted.forEach(item => {
+                if (categories.indexOf(item.date) === -1) {
+                    categories.push(item.date);
+                }
+            });
+
+            let series = [{data: []}];
+            categories.forEach(category => {
+                sorted.forEach(item => {
+                    if (item.date === category) {
+                        series[0].data.push({x: category, y: item.value});
+                    }
+                });
+            });
+
+            let options = {
+                chart: {
+                    height: 400,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                    parentHeightOffset: 0,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                series: series,
+                markers: {
+                    strokeWidth: 7,
+                    strokeOpacity: 1,
+                    strokeColors: [window.colors.solid.white],
+                    colors: [self.getColorByStatementStatus(self.statementActive?.review?.review_status.name_en)]
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                colors: [self.getColorByStatementStatus(self.statementActive?.review?.review_status.name_en)],
+                grid: {
+                    xaxis: {
+                        lines: {
+                            show: true
+                        }
+                    },
+                    padding: {
+                        top: -20
+                    }
+                },
+                xaxis: {
+                    categories: categories,
+                },
+                yaxis: {
+                    min: 0,
+                    max: 5,
+                    forceNiceScale: true,
+                    decimalsInFloat: 0
+                }
+            };
+
+            if (self.statementHistoryChart !== null) {
+                self.statementHistoryChart.destroy();
+            }
+
+            self.statementHistoryChart = new ApexCharts(document.getElementById('statements-chart'), options);
+            self.statementHistoryChart.render();
+        },
+        getColorByStatementStatus(status) {
+            switch (status) {
+                case 'Pending':
+                    return '#ff9f43';
+                case 'Accepted':
+                    return '#28c76f';
+                case 'Rejected':
+                    return '#ea5455';
+                default:
+                    return '#ff9f43';
+            }
+        },
+        alertCircleSvg() {
+            return feather.icons['alert-circle'].toSvg({class: 'text-warning review-type-alert ms-50'});
         }
     },
     mounted() {

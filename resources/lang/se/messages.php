@@ -292,4 +292,5 @@ return [
     'statements_update_warning' => 'Ändringar som gjorts i uttalanden kommer att gå förlorade om de inte uppdateras.',
     'active_statement_update_tooltip' => 'Uppdatera aktiv programsats',
     'changed_statements_update_tooltip' => 'Uppdatera alla ändrade anmärkningar',
+    'review_type_alert' => 'Detta uttalande har inga gärningar ännu, måste åtminstone ha en för att kunna kvalificera sig för en check granskning.',
 ];
