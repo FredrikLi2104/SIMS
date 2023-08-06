@@ -10,6 +10,7 @@ use App\Http\Controllers\DpaController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\IssueCategoryController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LinkController;
@@ -78,6 +79,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('organisations/plan/auditor/{action?}', [AxiosController::class, 'organisationsPlanAuditor'])->middleware('can:auditor')->name('axios.organisations.plan.auditor');
     Route::post('organisations/plan/auditor/update', [AxiosController::class, 'organisationsPlanAuditorUpdate'])->middleware('can:auditor')->name('axios.organisations.plan.auditor.update');
     Route::get('organisations/review/{action?}', [AxiosController::class, 'organisationsReview'])->middleware('can:auditor')->name('axios.organisations.review');
+    Route::get('organisations/{organisation}/review/action/{action}/interview', [AxiosController::class, 'organisationsReviewInterview'])->middleware('can:auditor')->name('axios.organisations.review.interview');
     Route::post('organisations/components/periods/update', [AxiosController::class, 'organisationsComponentsPeriodsUpdate'])->middleware('can:user')->name('axios.organisations.components.periods.update');
     Route::get('organisations/risks', [AxiosController::class, 'organisationsRisksIndex'])->middleware('can:auditor-user')->name('axios.organisations.risks.index');
     Route::post('organisations/statements/deeds/update', [AxiosController::class, 'organisationsStatementsDeedsUpdate'])->middleware('can:user')->name('axios.organisations.statements.deeds.update');
@@ -122,6 +124,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::post('/features/tasks/update', [FeatureController::class, 'updateTasks'])->middleware('auth')->middleware('can:super-auditor')->name('features.tasks.update');
     Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
+    Route::resource('/interviews', InterviewController::class)->middleware('auth')->middleware('can:auditor');
     Route::resource('/issue_categories', IssueCategoryController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('components', ComponentController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/knowledge', [OrganisationController::class, 'knowledge'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.knowledge');

@@ -15,6 +15,7 @@ class ActionTypeSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $actionTypes = [
             [
                 'name_en' => 'Plan Components',
@@ -76,5 +77,6 @@ class ActionTypeSeeder extends Seeder
                 ActionType::insert($actionType);
             }
         }
+        */
     }
 }

@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
             //StatementSeeder::class,
             //UserSeeder::class,
             //OrganisationStatementSeeder::class,
-            TypeSeeder::class,
-            SanctionSeeder::class,
+            //TypeSeeder::class,
+            //SanctionSeeder::class,
         ]);
     }
 }

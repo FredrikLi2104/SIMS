@@ -18,6 +18,7 @@ class SanctionStatementSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $oldSanctions = File::get(base_path('/resources/SANKTION.json'));
         $oldSanctions = collect(json_decode($oldSanctions));
         $oldComponents = File::get(base_path('/resources/SANKTION_KOMPONENT.json'));
@@ -42,5 +43,6 @@ class SanctionStatementSeeder extends Seeder
                 }
             }
         });
+        */
     }
 }

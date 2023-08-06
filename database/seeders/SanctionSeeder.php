@@ -35,6 +35,7 @@ class SanctionSeeder extends Seeder
         }
         */
         // first load the file as object
+        /*
         $oldSanctions = File::get(base_path('/resources/SANKTION.json'));
         $oldSnis = File::get(base_path('/resources/ADM_SEKTOR.json'));
         $oldTypes = File::get(base_path('/resources/ADM_ET.json'));
@@ -95,5 +96,6 @@ class SanctionSeeder extends Seeder
                 var_dump('Sanction ' . $oldSanction->sanktion_id_namn . ' Failed. Reason: ' . $th->getMessage());
             }
         }
+        */
     }
 }

@@ -17,6 +17,7 @@ class GroupSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $oldSanctions = File::get(base_path('/resources/SANKTION.json'));
         $oldSanctions = collect(json_decode($oldSanctions));
 
@@ -48,5 +49,6 @@ class GroupSeeder extends Seeder
                 }
             }
         });
+        */
     }
 }

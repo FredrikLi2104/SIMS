@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/sweetalert2.min.css')) }}">
 @endsection
 @section('page-style')
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
@@ -31,14 +32,15 @@
             </div>
         </div>
     @endif
-    <organisation-review locale="{{ App::currentLocale() }}" :review-statuses="{{ Js::from($reviewStatuses) }}"
-                         action-id="{{ $actionId }}"/>
+    <organisation-review locale="{{ App::currentLocale() }}" :review-statuses="{{ Js::from($reviewStatuses) }}" action-id="{{ $actionId }}" :plans="{{ Js::from($plans) }}" :auditor-statements="{{ Js::from($auditorStatements) }}" :org="{{session()->get('selected_org')['id']}}" />
 @endsection
 @section('vendor-script')
     {{-- vendor files --}}
     <script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
     <script src="{{ asset(mix('vendors/js/extensions/toastr.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/charts/apexcharts.min.js')) }}"></script>
+    <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
 @endsection
 @section('page-script')
     <script src="{{ asset(mix('js/scripts/forms/form-select2.js')) }}"></script>

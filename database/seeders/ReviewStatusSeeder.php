@@ -16,6 +16,7 @@ class ReviewStatusSeeder extends Seeder
      */
     public function run()
     {
+        /*
         ReviewStatus::insertOrIgnore([
             [
                 'name_en' => 'Pending',
@@ -36,5 +37,6 @@ class ReviewStatusSeeder extends Seeder
 
         Review::where('accepted', 1)->update(['review_status_id' => 2]);
         Review::where('accepted', 0)->update(['review_status_id' => 3]);
+        */
     }
 }

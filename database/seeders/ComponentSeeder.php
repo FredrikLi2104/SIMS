@@ -16,8 +16,10 @@ class ComponentSeeder extends Seeder
     public function run()
     {
         //
+        /*
         for ($i = 18; $i < 26; $i++) {
             Component::factory()->create(['sort_order' => $i, 'code' => 'X'.$i]);
         }
+        */
     }
 }

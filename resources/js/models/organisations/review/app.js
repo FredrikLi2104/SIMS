@@ -1,11 +1,10 @@
-window.axios = require('axios');
+window.axios = require("axios");
 
-import {createApp} from 'vue'
-import OrganisationReview from './OrganisationReview.vue'
+import { createApp } from "vue";
+import OrganisationReview from "./OrganisationReview.vue";
 
-const app = createApp({})
+const app = createApp({});
 
-app
-    .component('OrganisationReview', OrganisationReview)
+app.component("OrganisationReview", OrganisationReview);
 
-app.mount('#app');
+app.mount("#app");

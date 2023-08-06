@@ -16,6 +16,7 @@ class EtidSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $oldSanctions = File::get(base_path('/resources/SANKTION.json'));
         $oldSanctions = collect(json_decode($oldSanctions));
 
@@ -33,5 +34,6 @@ class EtidSeeder extends Seeder
                 }
             }
         });
+        */
     }
 }

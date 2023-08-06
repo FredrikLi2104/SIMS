@@ -11,6 +11,7 @@ use App\Models\Faq;
 use App\Models\Link;
 use App\Models\Organisation;
 use App\Models\Outcome;
+use App\Models\Plan;
 use App\Models\ReviewStatus;
 use App\Models\Sni;
 use App\Models\Statement;
@@ -133,13 +134,17 @@ class OrganisationController extends Controller
      **/
     public function review($locale, Action $action = null)
     {
+        //dd(session()->all());
         if ($action !== null && auth()->user()->cannot('view', $action)) {
             abort(403);
         }
 
         $actionId = $action?->id;
         $reviewStatuses = ReviewStatus::where('name_en', '<>', 'Pending')->get();
-        return view('models.organisations.review', compact('reviewStatuses', 'actionId'));
+        $plans = Plan::all()->sortBy('id');
+        $org = Organisation::where('id', session()->get('selected_org')['id'])->first();
+        $auditorStatements = $org->auditorStatements($action);
+        return view('models.organisations.review', compact('auditorStatements', 'reviewStatuses', 'actionId', 'plans'));
     }
 
     /**

@@ -16,6 +16,7 @@ class CountrySeeder extends Seeder
     public function run()
     {
         //
+        /*
         $data = [
             ["code" =>  "AF", "Name" =>  "Afghanistan"],
             ["code" =>  "AX", "Name" =>  "Åland Islands"],
@@ -270,5 +271,6 @@ class CountrySeeder extends Seeder
         foreach ($data as $country) {
             Country::create(['name' => $country['Name'], 'code' => strtolower($country['code'])]);
         }
+        */
     }
 }

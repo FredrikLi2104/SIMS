@@ -16,6 +16,8 @@ class OrganisationStatementSeeder extends Seeder
     public function run()
     {
         //
+        /*
         DB::table('organisation_statement')->delete();
+        */
     }
 }

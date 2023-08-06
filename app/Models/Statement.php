@@ -32,6 +32,11 @@ class Statement extends Model
         return $this->hasMany(Deed::class);
     }
 
+    public function interviews()
+    {
+        return $this->belongsToMany(Interview::class);
+    }
+
     public function period(): Attribute
     {
         return new Attribute(

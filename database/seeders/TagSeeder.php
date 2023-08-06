@@ -18,6 +18,7 @@ class TagSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $oldTags = File::get(base_path('/resources/ADM_INDEX.json'));
         $oldTags = collect(json_decode($oldTags))->sortBy('Ord');
 
@@ -52,5 +53,6 @@ class TagSeeder extends Seeder
                 }
             }
         });
+        */
     }
 }

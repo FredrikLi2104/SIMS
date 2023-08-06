@@ -16,6 +16,7 @@ class PartySeeder extends Seeder
      */
     public function run()
     {
+        /*
         $oldSanctions = File::get(base_path('/resources/SANKTION.json'));
         $oldSanctions = collect(json_decode($oldSanctions));
 
@@ -30,5 +31,6 @@ class PartySeeder extends Seeder
                 $newSanction->update(['party' => $oldSanctionParty]);
             }
         });
+        */
     }
 }

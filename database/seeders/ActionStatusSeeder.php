@@ -15,6 +15,7 @@ class ActionStatusSeeder extends Seeder
      */
     public function run()
     {
+        /*
         ActionStatus::insertOrIgnore([
             [
                 'name_en' => 'Pending',
@@ -35,5 +36,6 @@ class ActionStatusSeeder extends Seeder
                 'sort_order' => 2
             ]
         ]);
+        */
     }
 }

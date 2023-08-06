@@ -16,6 +16,7 @@ class TypeSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $oldTypes = File::get(base_path('/resources/ADM_ET.json'));
         $oldTypes = collect(json_decode($oldTypes));
         $newTypes = [];
@@ -29,5 +30,6 @@ class TypeSeeder extends Seeder
         }
 
         Type::insertOrIgnore($newTypes);
+        */
     }
 }

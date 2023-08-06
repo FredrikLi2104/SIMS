@@ -22,6 +22,7 @@ use App\Models\Deed;
 use App\Models\DeedHistory;
 use App\Models\Dpa;
 use App\Models\Faq;
+use App\Models\Interview;
 use App\Models\Kpi;
 use App\Models\Kpicomment;
 use App\Models\Link;
@@ -39,6 +40,7 @@ use App\Models\Tag;
 use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\Template;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
@@ -208,8 +210,8 @@ class AxiosController extends Controller
     public function organisationsChange($locale, Organisation $organisation)
     {
         if ($organisation->id == auth()->user()->organisation->id || auth()->user()->organisation->organisations->contains(function ($subOrg) use ($organisation) {
-                return $subOrg->id == $organisation->id;
-            })) {
+            return $subOrg->id == $organisation->id;
+        })) {
             session(['selected_org' => ['id' => $organisation->id, 'name' => $organisation->name]]);
         } else {
             session(['selected_org' => ['id' => auth()->user()->organisation->id, 'name' => auth()->user()->organisation->name]]);
@@ -698,7 +700,103 @@ class AxiosController extends Controller
         $r = collect($r);
         return $r;
     }
+    /**
+     * Get all the info required for the organisation review modal
+     *
+     * This includes all the statements under this actionable which have a plan of interview, along with the users of this organization
+     *
+     * @params app locale, the requesting organisation and the action for this review
+     * @return Collection interviewable statements, organisations users
+     **/
+    public function organisationsReviewInterview($locale, Organisation $organisation, Action $action)
+    {
+        // Get all actionables for the provided action_id
+        $actionables = DB::table('actionables')
+            ->where('action_id', $action->id)
+            ->get();
+        // Extract the statement IDs and component IDs from the actionables
+        $statementIds = $actionables->where('actionable_type', 'App\\Models\\Statement')->pluck('actionable_id');
+        $componentIds = $actionables->where('actionable_type', 'App\\Models\\Component')->pluck('actionable_id');
+        // Retrieve the Statement models based on the extracted statement IDs
+        $statements = Statement::whereIn('id', $statementIds)->get();
+        // Retrieve additional statements associated with the components
+        $additionalStatements = Statement::whereIn('component_id', $componentIds)->get();
+        // Merge the directly associated statements with the additional statements
+        $allStatements = $statements->merge($additionalStatements);
+        // Get the statement IDs from the allStatements collection
+        $statementIds = $allStatements->pluck('id');
+        // Retrieve the statements that can be found in the auditor_statement table with plan_id of 1
+        $interviewStatements = Statement::whereIn('id', $statementIds)
+            ->whereIn('id', function ($query) use ($organisation) {
+                $query->select('statement_id')
+                    ->from('auditor_statement')
+                    ->where('plan_id', 1);
+            })
+            ->get();
+        // Retrieve only the users from the organization who have the role "user"
+        $users = $organisation->users()->where('role', 'user')->get();
+        // Get the organisation ID of the authenticated user
+        $authUserOrgId = Auth::user()->organisation_id;
 
+        // Fetch reviews for the interview statements, only for the organization of the authenticated user
+        $reviews = Review::whereIn('statement_id', $interviewStatements->pluck('id'))
+            ->where('organisation_id', $authUserOrgId)
+            ->get();
+        // Map the interview statements to include review status and review status ID
+        $interviewStatements->transform(function ($statement) use ($reviews, $locale) {
+            $review = $reviews->where('statement_id', $statement->id)->first();
+            if ($review) {
+                $reviewStatus = ReviewStatus::find($review->review_status_id);
+                $reviewStatusName = $reviewStatus ? $reviewStatus->{'name_' . $locale} : null;
+                $reviewStatusId = $review->review_status_id;
+            } else {
+                $reviewStatusName = __('messages.notReviewed');
+                $reviewStatusId = 0;
+            }
+            // Set class based on review_status_id
+            switch ($reviewStatusId) {
+                case 1:
+                    $class = 'warning';
+                    break;
+                case 2:
+                    $class = 'success';
+                    break;
+                case 3:
+                    $class = 'danger';
+                    break;
+                case 4:
+                    $class = 'info';
+                    break;
+                case 5:
+                    $class = 'primary';
+                    break;
+                default:
+                    $class = 'secondary';
+                    break;
+            }
+
+            return $statement->setAttribute('reviewStatus', $reviewStatusName)
+                ->setAttribute('reviewStatusId', $reviewStatusId)
+                ->setAttribute('class', $class);
+        });
+        // Dynamically make the additional attributes visible for this specific collection
+        $interviewStatements->makeVisible(['reviewStatus', 'reviewStatusId', 'class']);
+        // Return the collection of statements with plan_id of 1 and the organization users with the role "user"
+        $interviews = Interview::with('statements')->join('users', 'interviews.user_id', '=', 'users.id')
+            ->where('users.organisation_id', $authUserOrgId)
+            ->select('interviews.*')
+            ->orderByDesc('interviews.id')
+            ->get();
+        foreach ($interviews as $interview) {
+            $interview->creator = User::find($interview->creator_id)->name;
+            $interview->interviewee = User::find($interview->user_id)->name;
+        }
+        return [
+            'interviewStatements' => $interviewStatements,
+            'users' => $users,
+            'interviews' => $interviews,
+        ];
+    }
     /**
      * Return a collection of all organisation risks along the messages dictionaries
      *
@@ -774,12 +872,13 @@ class AxiosController extends Controller
                         'x' => $scatterRisk->consequence,
                         'y' => $scatterRisk->probability,
                         'r' => 10 * count($risks->filter(function ($item) use ($scatterRisk) {
-                                return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
-                            })->all())
+                            return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
+                        })->all())
                     ]],
                     'count' => count($risks->filter(function ($item) use ($scatterRisk) {
                         return ($item->consequence == $scatterRisk->consequence && $item->probability == $scatterRisk->probability);
-                    })->all()), 'date' => $date];
+                    })->all()), 'date' => $date
+                ];
             }
         };
 
@@ -1256,7 +1355,6 @@ class AxiosController extends Controller
                     try {
                         $sanction->fine = $sanction->fine / $currency->value;
                     } catch (\Throwable $th) {
-
                     }
                 }
             }
@@ -1640,7 +1738,6 @@ class AxiosController extends Controller
                     try {
                         $sanction->fine = $sanction->fine / $currency->value;
                     } catch (\Throwable $th) {
-
                     }
                 }
             }
@@ -1689,7 +1786,6 @@ class AxiosController extends Controller
                     try {
                         $sanction->fine = $sanction->fine / $currency->value;
                     } catch (\Throwable $th) {
-
                     }
                 }
             }

@@ -17,6 +17,7 @@ class CountryGroupSeeder extends Seeder
      */
     public function run()
     {
+        /*
         $oldSanctions = File::get(base_path('/resources/SANKTION.json'));
         $oldSanctions = collect(json_decode($oldSanctions))->groupBy('Gruppering');
 
@@ -28,5 +29,6 @@ class CountryGroupSeeder extends Seeder
                 $group->countries()->sync($countries);
             }
         });
+        */
     }
 }

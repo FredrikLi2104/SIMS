@@ -16,8 +16,10 @@ class StatementSeeder extends Seeder
     public function run()
     {
         //
+        /*
         for ($i = 0; $i < 30; $i++) {
             Statement::factory()->create(['sort_order' => $i+1]);
         }
+        */
     }
 }

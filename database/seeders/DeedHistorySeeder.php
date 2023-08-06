@@ -16,6 +16,7 @@ class DeedHistorySeeder extends Seeder
      */
     public function run()
     {
+        /*
         $deeds = Deed::all();
         $deeds->each(function ($deed) {
             DeedHistory::create([
@@ -26,5 +27,6 @@ class DeedHistorySeeder extends Seeder
                 'updated_at' => $deed['updated_at'],
             ]);
         });
+        */
     }
 }
