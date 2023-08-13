@@ -1,6 +1,7 @@
 <?php
 return [
     'accentColor' => 'Accentfärg',
+    'accept' => 'Acceptera',
     'accepted' => 'Accepterad',
     'actions' => 'Åtgärder',
     'accumulative_risk_history' => 'Ackumulerande månatlig riskhistorik',
@@ -105,6 +106,7 @@ return [
     'kpis' => 'KPIer',
     'kpiHistorySubtitle' => 'Förändring av mål och värde över tid',
     'lastUpdated' => 'Senast uppdaterad',
+    'latestReview' => 'Senaste granskning',
     'leaveThisBlankForTopOrg' => 'Lämna det här fältet tomt för organisationer med hög nivå',
     'leaveThisBlankToMaintainCurrentPass' => 'Lämna det här fältet tomt för att behålla det aktuella lösenordet',
     'likely' => 'Sannolikt',
@@ -133,6 +135,7 @@ return [
     'nameInSwedish' => 'Namn på svenska',
     'negligible' => 'Försumbar',
     'new' => 'ny',
+    'notFound' => 'Hittades inte',
     'notReviewed' => 'Inte granskad',
     'number' => 'Nummer',
     'ok' => 'OK',
@@ -164,6 +167,7 @@ return [
     'radar' => 'Radar',
     'rangeAllTime' => 'Intervall: Hela tiden',
     'ratio' => 'Förhållande',
+    'reject' => 'Avvisa',
     'rejected' => 'Avvisad',
     'rememberMe' => 'Kom ihåg mig',
     'remove' => 'Ta bort',

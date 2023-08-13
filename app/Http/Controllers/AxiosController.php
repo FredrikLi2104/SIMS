@@ -774,7 +774,6 @@ class AxiosController extends Controller
                     $class = 'secondary';
                     break;
             }
-
             return $statement->setAttribute('reviewStatus', $reviewStatusName)
                 ->setAttribute('reviewStatusId', $reviewStatusId)
                 ->setAttribute('class', $class);
@@ -790,6 +789,84 @@ class AxiosController extends Controller
         foreach ($interviews as $interview) {
             $interview->creator = User::find($interview->creator_id)->name;
             $interview->interviewee = User::find($interview->user_id)->name;
+            // inject deed
+            $interview->statements->transform(function ($statement) use ($interview, $locale) {
+                // Retrieve the latest deed associated with the statement
+                $latestDeed = Deed::where('statement_id', $statement->id)
+                    ->latest('updated_at')
+                    ->first();
+                // Add the latest deed as an attribute to the statement
+                // if deed
+                $statement->makeVisible(['latestDeed']);
+                if ($latestDeed) {
+                    $latestDeedFormatted = [
+                        "value" => $latestDeed->value,
+                        "comment" => $latestDeed->comment,
+                        "user" => User::find($latestDeed->user_id)->name,
+                        "lastUpdated" => $latestDeed->updated_at->format('Y-m-d H:i:s'),
+                        "id" => $latestDeed->id,
+                    ];
+                    $latestDeed = $latestDeedFormatted;
+                } else {
+                    $latestDeed = [
+                        "value" => 5,
+                        "comment" => "No deed found",
+                        "user" => "None",
+                        "lastUpdated" => Carbon::now()->format('Y-m-d H:i:s'),
+                        "id" => null,
+                    ];
+                }
+                $statement->latestDeed = $latestDeed;
+
+                // Retrieve the latest review associated with the statement and the same organization ID as the user
+                $latestReview = Review::where('statement_id', $statement->id)
+                    ->where('organisation_id', User::find($interview->creator_id)->organisation->id)
+                    ->latest('updated_at')
+                    ->first();
+                if ($latestReview) {
+                    $reviewStatusClass = null;
+                    switch ($latestReview->review_status_id) {
+                        case 1:
+                            $reviewStatusClass = 'warning';
+                            break;
+                        case 2:
+                            $reviewStatusClass = 'success';
+                            break;
+                        case 3:
+                            $reviewStatusClass = 'danger';
+                            break;
+                        case 4:
+                            $reviewStatusClass = 'info';
+                            break;
+                        case 5:
+                            $reviewStatusClass = 'primary';
+                            break;
+                        default:
+                            $reviewStatusClass = 'secondary';
+                            break;
+                    }
+                    $latestReviewFormatted = [
+                        "user" => $latestReview->user->name,
+                        "review_status" => ReviewStatus::find($latestReview->review_status_id)->{'name_' . $locale}, // Assuming ReviewStatus model exists
+                        'class' => $reviewStatusClass,
+                        "lastUpdated" => $latestReview->updated_at->format('Y-m-d H:i:s')
+                    ];
+                    $latestReview = $latestReviewFormatted;
+                } else {
+                    $latestReview = [
+                        'user' => __('messages.notFound'),
+                        "review_status" => __('messages.notFound'),
+                        'class' => 'secondary',
+                        "lastUpdated" => Carbon::now()->format('Y-m-d H:i:s')
+                    ];
+                }
+                $statement->latestReview = $latestReview;
+
+                // Make latestDeed and latestReview visible
+                $statement->makeVisible(['latestDeed', 'latestReview']);
+
+                return $statement;
+            });
         }
         return [
             'interviewStatements' => $interviewStatements,
@@ -1126,6 +1203,51 @@ class AxiosController extends Controller
         }
         $organisation->update($update);
         return $organisation->makeVisible(['orgcolor', 'logo']);
+    }
+
+    /**
+     * Update the review from the conduct interview
+     *
+     * Undocumented function long description
+     *
+     * @param $locale App Locale
+     * @param Organisation the organisation
+     * @param Request the update reques
+     * @return Response
+     **/
+    public function reviewConductUpdate($locale, Organisation $organisation, Request $request)
+    {
+        try {
+            $data = $request->all();
+            if ($data['review'] == '' || !(isset($data['review'])) || $data['review'] == null) {
+                return response('Review field is required', 500);
+            }
+            $data['user_id'] = Auth::user()->id;
+            $data['organisation_id'] = $organisation->id;
+            // find the latest review of this statement done by this user
+            $review = Review::where('statement_id', $data['statement_id'])->where('user_id', $data['user_id'])->where('organisation_id', $data['organisation_id'])->first();
+            if ($review) {
+                $review->update([
+                    'review_status_id' => $data['review_status_id'],
+                    'review' => $data['review']
+                ]);
+                $review->save();
+            } else {
+                Review::create($data)->with;
+            }
+            // update deed
+            if ($data['deed_id']) {
+                $deed = Deed::where('id', $data['deed_id'])->first();
+                if ($deed) {
+                    $deed->update([
+                        'value' => $data['value'],
+                    ]);
+                }
+            }
+            return response('success', 200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

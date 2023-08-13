@@ -40,6 +40,7 @@ mix
     .sass('resources/scss/core.scss', 'public/css/core.css', {sassOptions})
     .sass('resources/scss/overrides.scss', 'public/css/overrides.css', {sassOptions})
     .sass('resources/scss/style.scss', 'public/css/style.css', {sassOptions})
+    .sass('resources/scss/base/core/colors/palette-noui.scss', 'public/css/base/core/colors/palette-noui.css', {sassOptions})
     .sass('resources/scss/base/core/menu/menu-types/vertical-menu.scss', 'public/css/base/core/menu/menu-types/vertical-menu.css', {sassOptions})
     .sass('resources/scss/base/plugins/forms/pickers/form-flat-pickr.scss', 'public/css/base/plugins/forms/pickers/form-flat-pickr.css', {sassOptions})
     .sass('resources/scss/base/pages/authentication.scss', 'public/css/base/pages/authentication.css', {sassOptions})
@@ -66,6 +67,7 @@ mix
     .copy('resources/vendors/js/editors/quill/quill.min.js', 'public/vendors/js/editors/quill/quill.min.js')
     .copy('resources/vendors/js/extensions/nouislider.min.js', 'public/vendors/js/extensions/nouislider.min.js')
     .copy('resources/vendors/js/extensions/toastr.min.js', 'public/vendors/js/extensions/toastr.min.js')
+    .copy('resources/vendors/js/extensions/wNumb.min.js', 'public/vendors/js/extensions/wNumb.min.js')
     .copy('resources/vendors/js/extensions/sweetalert2.all.min.js', 'public/vendors/js/extensions/sweetalert2.all.min.js')
     .copy('resources/vendors/js/file-uploaders/dropzone.min.js', 'public/vendors/js/file-uploaders/dropzone.min.js')
     .copy('resources/vendors/js/forms/select/select2.full.min.js', 'public/vendors/js/forms/select/select2.full.min.js')
@@ -81,10 +83,12 @@ mix
     .js('resources/js/core/app-menu.js', 'public/js/core/app-menu.js')
     .js('resources/js/core/scripts.js', 'public/js/core/scripts.js')
     .js('resources/js/scripts/customizer.js', 'public/js/scripts/customizer.js')
+    .js('resources/js/scripts/extensions/ext-component-sliders.js', 'public/js/scripts/extensions/ext-component-sliders.js')
     .js('resources/js/scripts/forms/form-select2.js', 'public/js/scripts/forms/form-select2.js')
     .js('resources/js/scripts/forms/pickers/form-pickers.js', 'public/js/scripts/forms/pickers/form-pickers.js')
     .js('resources/js/scripts/pages/auth-login.js', 'public/js/scripts/pages/auth-login.js')
     .js('resources/vendors/js/ui/jquery.sticky.js', 'public/vendors/js/ui/jquery.sticky.js')
+    
     // models
     .js('resources/js/models/configs/create/app.js', 'public/js/models/configs/create/app.js').vue()
     .js('resources/js/models/configs/index/app.js', 'public/js/models/configs/index/app.js').vue()

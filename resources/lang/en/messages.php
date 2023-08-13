@@ -1,6 +1,7 @@
 <?php
 return [
     'accentColor' => 'Accent Color',
+    'accept' => 'Accept',
     'accepted' => 'Accepted',
     'account' => 'Account',
     'actions' => 'Actions',
@@ -104,6 +105,7 @@ return [
     'kpi' => 'KPI',
     'kpis' => 'KPIs',
     'kpiHistorySubtitle' => 'Change of target and value over time',
+    'latestReview' => 'Latest review',
     'lastUpdated' => 'Last updated',
     'leaveThisBlankForTopOrg' => 'Leave this blank for top organisations',
     'leaveThisBlankToMaintainCurrentPass' => 'Leave this blank to maintain current password',
@@ -133,6 +135,7 @@ return [
     'nameInSwedish' => 'Name in Swedish',
     'negligible' => 'Negligible',
     'new' => 'New',
+    'notFound' => 'Not Found',
     'notReviewed' => 'Not Reviewed',
     'number' => 'Number',
     'ok' => 'OK',
@@ -165,6 +168,7 @@ return [
     'radar' => 'Radar',
     'rangeAllTime' => "Range: All Time",
     'ratio' => 'Ratio',
+    'reject' => 'Reject',
     'rejected' => 'Rejected',
     'rememberMe' => 'Remember Me',
     'remove' => 'Remove',

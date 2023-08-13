@@ -12,8 +12,9 @@ class Review extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $visible = ['id', 'organisation_id', 'statement_id', 'user_id', 'accepted', 'review', 'created_at', 'updated_at'];
+    protected $visible = ['id', 'organisation_id', 'statement_id', 'user', 'user_id', 'accepted', 'review', 'created_at', 'updated_at'];
     protected $appends = ['updated_at_for_humans'];
+    public $timestamps = true;
 
     public function updatedAtForHumans(): Attribute
     {
@@ -30,5 +31,10 @@ class Review extends Model
     public function statement()
     {
         return $this->belongsTo(Statement::class);
+    }
+
+    public function user() 
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -80,6 +80,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::post('organisations/plan/auditor/update', [AxiosController::class, 'organisationsPlanAuditorUpdate'])->middleware('can:auditor')->name('axios.organisations.plan.auditor.update');
     Route::get('organisations/review/{action?}', [AxiosController::class, 'organisationsReview'])->middleware('can:auditor')->name('axios.organisations.review');
     Route::get('organisations/{organisation}/review/action/{action}/interview', [AxiosController::class, 'organisationsReviewInterview'])->middleware('can:auditor')->name('axios.organisations.review.interview');
+    Route::post('organisations/{organisation}/review/conduct-update', [AxiosController::class, 'reviewConductUpdate'])->middleware('can:auditor')->name('axios.review.conduct_update');
     Route::post('organisations/components/periods/update', [AxiosController::class, 'organisationsComponentsPeriodsUpdate'])->middleware('can:user')->name('axios.organisations.components.periods.update');
     Route::get('organisations/risks', [AxiosController::class, 'organisationsRisksIndex'])->middleware('can:auditor-user')->name('axios.organisations.risks.index');
     Route::post('organisations/statements/deeds/update', [AxiosController::class, 'organisationsStatementsDeedsUpdate'])->middleware('can:user')->name('axios.organisations.statements.deeds.update');
@@ -103,6 +104,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('tasks/{year}', [AxiosController::class, 'tasks'])->middleware('can:auditor-user')->name('axios.tasks.index');
     Route::get('tasks_for_wheel/{year}', [AxiosController::class, 'tasksForWheel'])->middleware('can:auditor-user')->name('axios.tasks_for_wheel.index');
     Route::get('templates', [AxiosController::class, 'templates'])->middleware('can:moderator')->name('axios.templates.index');
+    
 });
 
 /* Localized Routes */
@@ -158,4 +160,9 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
 /* Services - Do not Modify */
 Route::prefix('services')->middleware('auth')->group(function () {
     //Route::get('countries/seed', [RoutingController::class, 'countriesSeed'])->middleware('can:super')->name('countries.seed');
+});
+
+/* Vuexy - to preview components */
+Route::prefix('vuexy')->group(function() {
+    Route::get('component', [RoutingController::class, 'component'])->name('vuexy.component');
 });

@@ -129,7 +129,7 @@
                             <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
                                 <input type="checkbox" class="btn-check" id="btncheck1" :checked="interviewActive == 'prepare' ? true : false" autocomplete="off" @click="interviewActive = 'prepare'" />
                                 <label class="btn btn-primary" for="btncheck1">{{ collection?.messages?.interviewPrepare }}</label>
-                                <input type="checkbox" class="btn-check" id="btncheck2" :checked="interviewActive == 'conduct' ? true : false" autocomplete="off" @click="interviewActive = 'conduct'" />
+                                <input type="checkbox" class="btn-check" id="btncheck2" :checked="interviewActive == 'conduct' ? true : false" autocomplete="off" @click="interviewActiveSet('conduct')" />
                                 <label class="btn btn-primary" for="btncheck2">{{ collection?.messages?.interviewConduct }}</label>
                             </div>
                         </div>
@@ -215,7 +215,7 @@
                                                         {{ inter.interviewee }}
                                                     </td>
                                                     <td class="text-center">
-                                                        <button type="button" :class="`btn btn-relief-${inter.id == interviewExpanded.id ? 'warning' : 'dark'}`">
+                                                        <button type="button" :class="`btn btn-relief-${inter.id == interviewExpanded.id ? 'warning' : 'dark'}`" @click="interviewConductedSet(inter.id)">
                                                             {{ inter.id == interviewExpanded.id ? collection?.messages?.expanded : collection?.messages?.expand }}
                                                         </button>
                                                     </td>
@@ -242,12 +242,32 @@
                                     <div v-for="statement in interviewExpanded.statements" :key="statement" class="card accordion-item">
                                         <h2 class="accordion-header" :id="`interviewStatementHeader${statement.id}`">
                                             <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" :data-bs-target="`#interviewStatement${statement.id}`" aria-expanded="false" :aria-controls="`interviewStatement${statement.id}`">
-                                                {{ statement['content_' + locale] }}
+                                                {{ statement["content_" + locale] }}
                                             </button>
                                         </h2>
                                         <div :id="`interviewStatement${statement.id}`" class="collapse accordion-collapse" :aria-labelledby="`interviewStatementHeader${statement.id}`" :data-bs-parent="`#interviewStatementsAccordion${interviewExpanded.id}`">
                                             <div class="accordion-body">
-                                                {{ statement['desc_' + locale] }}
+                                                {{ statement["desc_" + locale] }}
+                                            </div>
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h4 class="text-uppercase">{{ collection?.messages?.value }}</h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div :id="`interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`" class="mt-1 mb-3"></div>
+                                                    <div class="mb-3">
+                                                        <label for="interviewReviewText{{ interviewExpanded.id }}_{{ statement.id }}" class="form-label">{{ collection?.messages?.review }}</label>
+                                                        <textarea class="form-control" :id="`interviewReviewText${interviewExpanded.id}_${statement.id}`" :name="`interviewReviewText${interviewExpanded.id}_${statement.id}`" rows="4"></textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <button type="button" class="btn btn-success w-25 me-2" @click="reviewUpdate('accept', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id )">{{ collection?.messages?.accept }}</button>
+                                                        <button type="button" class="btn btn-danger w-25" @click="reviewUpdate('reject', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">{{ collection?.messages?.reject }}</button>
+                                                    </div>
+                                                    <p>{{ collection?.messages?.lastUpdated }}: {{ statement.latestDeed?.lastUpdated }}, {{ collection?.messages?.by }}: {{ statement.latestDeed?.user }}</p>
+                                                    <p>{{ collection?.messages?.comment }}: {{ statement.latestDeed?.comment }}</p>
+                                                    <p>{{ collection?.messages?.latestReview }}, {{ statement.latestReview?.user }}, {{ statement.latestReview?.lastUpdated }}: {{ statement.latestReview?.review }}</p>
+                                                    <p :class="`text-${statement.latestReview?.class}`">{{ statement.latestReview?.review_status }}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -629,7 +649,7 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    console.log(response.data);
+                    //console.log(response.data);
                     thisComponent.collection = response.data;
                     thisComponent.$nextTick(() => {
                         thisComponent.taskCompletionChart();
@@ -638,6 +658,56 @@ export default {
                 })
                 .catch(function (error) {
                     console.log(error);
+                    console.log(error.response);
+                });
+        },
+        interviewActiveSet(t) {
+            var thisComponent = this;
+            this.interviewActive = t;
+            this.$nextTick(() => {
+                thisComponent.$nextTick(() => {
+                    // create sliders for mounted interview statements
+                    let slider = null;
+                    thisComponent.interviewExpanded.statements.forEach((s) => {
+                        slider = document.getElementById(`interviewStatementValueSlider${thisComponent.interviewExpanded.id}_${s.id}`);
+                        console.log(slider);
+                        noUiSlider.create(slider, {
+                            start: s.latestDeed.value,
+                            step: 1,
+                            range: {
+                                min: 1,
+                                max: 5,
+                            },
+                            tooltips: true,
+                            direction: "ltr",
+                            pips: {
+                                mode: "steps",
+                                stepped: false,
+                                density: 1,
+                            },
+                        });
+                    });
+                });
+            });
+        },
+        interviewConductedSet(interviewId) {
+            var thisComponent = this;
+            // axios call to refresh
+            axios
+                .get(`/${this.locale}/axios/organisations/${this.org}/review/action/${this.actionId}/interview`)
+                .then(function (response) {
+                    console.log(response.data);
+                    thisComponent.interviewStatements = response.data;
+                    thisComponent.$nextTick(() => {
+                        let theInter = thisComponent.interviewStatements.interviews.filter((i) => {
+                            return i.id == interviewId;
+                        });
+                        thisComponent.interviewExpanded = theInter[0];
+                        // build sliders again
+                        thisComponent.slidersRebuild();
+                    });
+                })
+                .catch(function (error) {
                     console.log(error.response);
                 });
         },
@@ -774,6 +844,42 @@ export default {
                 return true;
             }
         },
+        reviewUpdate(kind, statementId, inputName, sli, deedId) {
+            let reviewStatusId = 2;
+            if (kind == "accept") {
+                reviewStatusId = 2;
+            } else {
+                reviewStatusId = 3;
+            }
+            let rev = document.getElementById(inputName).value;
+            let sliderValue = document.getElementById(sli).noUiSlider.get();
+            axios
+                .post(`/${this.locale}/axios/organisations/${this.org}/review/conduct-update`, {
+                    review_status_id: reviewStatusId,
+                    review: rev,
+                    statement_id: statementId,
+                    value: sliderValue,
+                    deed_id: deedId,
+                })
+                .then(function (response) {
+                    console.log(response.data);
+                        toastr["success"]("👋 Updated!.", "Success", {
+                            closeButton: true,
+                            tapToDismiss: false,
+                            progressBar: true,
+                            rtl: false,
+                        });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                    toastr["error"](`👋 ${error.response?.data}`, "Error!", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                    });
+                });
+        },
         showInterview() {
             var thisComponent = this;
             // load interview related data
@@ -790,6 +896,32 @@ export default {
                     console.log(error.response);
                 });
             $("#interviewModal").modal("show");
+        },
+        slidersRebuild() {
+            var thisComponent = this;
+            thisComponent.$nextTick(() => {
+                // create sliders for mounted interview statements
+                let slider = null;
+                thisComponent.interviewExpanded.statements.forEach((s) => {
+                    slider = document.getElementById(`interviewStatementValueSlider${thisComponent.interviewExpanded.id}_${s.id}`);
+                    //console.log(slider);
+                    noUiSlider.create(slider, {
+                        start: s.latestDeed.value,
+                        step: 1,
+                        range: {
+                            min: 1,
+                            max: 5,
+                        },
+                        tooltips: true,
+                        direction: "ltr",
+                        pips: {
+                            mode: "steps",
+                            stepped: false,
+                            density: 1,
+                        },
+                    });
+                });
+            });
         },
         statementReviewButtonEnable(id, reviewStatusId) {
             if (reviewStatusId !== null) {
@@ -924,7 +1056,7 @@ export default {
     },
     mounted() {
         window.thisComponent = this;
-        console.log(this.org);
+        //console.log(this.org);
         //console.log(this.auditorStatements);
         //console.log(this.plans);
         this.draw();
