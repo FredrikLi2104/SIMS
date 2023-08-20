@@ -70,6 +70,7 @@ return [
     'example' => 'Example',
     'expand' => 'Expand',
     'expanded' => 'Expanded',
+    'export' => 'Export',
     'fine' => 'Fine',
     'flag' => 'flag-icon-gb',
     'flagOther' => 'flag-icon-se',

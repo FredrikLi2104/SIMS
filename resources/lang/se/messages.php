@@ -70,6 +70,7 @@ return [
     'example' => 'Exempel',
     'expand' => 'Expandera',
     'expanded' => 'Utökad',
+    'export' => 'Exportera',
     'fine' => 'Böter',
     'flag' => 'flag-icon-se',
     'flagOther' => 'flag-icon-gb',

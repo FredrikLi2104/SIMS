@@ -648,9 +648,11 @@ class AxiosController extends Controller
     public function organisationsReview($locale, Action $action = null)
     {
         $org = Organisation::find(session('selected_org')['id']);
+
+        // unify the fetched statements of all types
+
         if ($action) {
             //TODO: check access
-
             if ($action->actionType->model == 'component') {
                 $components = $action->components;
                 $statements = $components->flatMap(function ($component) {
@@ -662,8 +664,40 @@ class AxiosController extends Controller
         } else {
             $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
         }
-
         $plans = Plan::all()->sortBy('sort_order');
+        // statistics
+        $statistics = [
+            'statements' => [
+                'interview' => [
+                    'statements' => [],
+                    'class' => 'progress progress-bar-success',
+                    'title' => Plan::where('id',1)->first()->{'name_'.$locale},
+                    'count' => 0,
+                ],
+                'test' => [
+                    'statements' => [],
+                    'class' => 'progress progress-bar-success',
+                    'title' => Plan::where('id',2)->first()->{'name_'.$locale},
+                    'count' => 0,
+                ],
+                'webform' => [
+                    'statements' => [],
+                    'class' => 'progress progress-bar-success',
+                    'title' => Plan::where('id',3)->first()->{'name_'.$locale},
+                    'count' => 0,
+                ],
+                'check' => [
+                    'statements' => [],
+                    'class' => 'progress progress-bar-success',
+                    'title' => Plan::where('id',5)->first()->{'name_'.$locale},
+                    'count' => 0,
+                ],
+            ],
+            'unplanned' => [
+                'statements' => [],
+                'count' => 0
+            ]
+        ];
         foreach ($statements as $statement) {
             $op = $statement->component->organisationPeriod($org);
             $statement->component->makeVisible(['organisation_period']);
@@ -693,10 +727,39 @@ class AxiosController extends Controller
                     }
                 }
             }
+            if (isset($statement->plan['id'])) {
+                switch ($statement->plan->id) {
+                    case 1:
+                        $statistics['statements']['interview']['statements'][] = $statement;
+                        $statistics['statements']['interview']['count'] += 1;
+                        break;
+                    case 2:
+                        $statistics['statements']['test']['statements'][] = $statement;
+                        $statistics['statements']['test']['count'] += 1;
+                        break;
+                    case 3:
+                        $statistics['statements']['webform']['statements'][] = $statement;
+                        $statistics['statements']['webform']['count'] += 1;
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        $statistics['statements']['check']['statements'][] = $statement;
+                        $statistics['statements']['check']['count'] += 1;
+                        break;
+                    default:
+                        $statistics['unplanned']['statements'][] = $statement;
+                        $statistics['unplanned']['count'] += 1;
+                        break;
+                }
+            } else {
+                $statistics['unplanned']['statements'][] = $statement;
+                $statistics['unplanned']['count'] += 1;
+            }
         };
         App::setlocale($locale);
         $messages = Lang::get('messages');
-        $r = ['statements' => $statements, 'messages' => $messages];
+        $r = ['statements' => $statements, 'messages' => $messages, 'statistics' => $statistics];
         $r = collect($r);
         return $r;
     }

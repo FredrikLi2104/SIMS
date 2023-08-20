@@ -126,6 +126,139 @@ class OrganisationController extends Controller
     }
 
     /**
+     * undocumented function summary
+     *
+     * Undocumented function long description
+     *
+     * @param Type $var Description
+     * @return type
+     * @throws conditon
+     **/
+    public function exportCSV($locale, Action $action = null)
+    {
+        $org = Organisation::find(session('selected_org')['id']);
+
+        // unify the fetched statements of all types
+
+        if ($action) {
+            //TODO: check access
+            if ($action->actionType->model == 'component') {
+                $components = $action->components;
+                $statements = $components->flatMap(function ($component) {
+                    return $component->statements->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
+                });
+            } elseif ($action->actionType->model == 'statement') {
+                $statements = $action->statements->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
+            }
+        } else {
+            $statements = Statement::all()->load('component')->makeVisible(['component', 'deed', 'implementation', 'guide', 'plan', 'review', 'subcode']);
+        }
+        $plans = Plan::all()->sortBy('sort_order');
+        // statistics
+        $statistics = [
+            'statements' => [
+                'interview' => [
+                    'statements' => [],
+                    'class' => 'progress progress-bar-success',
+                    'title' => Plan::where('id', 1)->first()->{'name_' . $locale},
+                    'count' => 0,
+                ],
+                'test' => [
+                    'statements' => [],
+                    'class' => 'progress progress-bar-success',
+                    'title' => Plan::where('id', 2)->first()->{'name_' . $locale},
+                    'count' => 0,
+                ],
+                'webform' => [
+                    'statements' => [],
+                    'class' => 'progress progress-bar-success',
+                    'title' => Plan::where('id', 3)->first()->{'name_' . $locale},
+                    'count' => 0,
+                ],
+                'check' => [
+                    'statements' => [],
+                    'class' => 'progress progress-bar-success',
+                    'title' => Plan::where('id', 5)->first()->{'name_' . $locale},
+                    'count' => 0,
+                ],
+            ],
+            'unplanned' => [
+                'statements' => [],
+                'count' => 0
+            ]
+        ];
+        foreach ($statements as $statement) {
+            $op = $statement->component->organisationPeriod($org);
+            $statement->component->makeVisible(['organisation_period']);
+            $statement->component->organisation_period = $op;
+            //$statement->plan = null;
+            $statement->implementation = null;
+            $op = $statement->organisationPlan($org);
+            if ($op) {
+                //$statement->plan = $op->plan;
+                $statement->implementation = $op->implementation;
+            }
+            $statement->deed = $statement->organisationDeed($org);
+            $statement->review = $statement->organisationReview($org);
+            $statementReviewPlan = $statement->reviewPlan();
+            if ($statementReviewPlan) {
+                $usersIds = $org->users->pluck('id');
+                $r = DB::table('auditor_statement')->whereIn('user_id', $usersIds)->where('statement_id', $statement->id)->get()->first();
+                $statement->guide = $r?->guide;
+            } else {
+                $statement->guide = '';
+            }
+            $statement->plan = ['name_en' => '', 'name_se' => ''];
+            foreach ($plans as $plan) {
+                if ($statementReviewPlan) {
+                    if ($statementReviewPlan->id == $plan->id) {
+                        $statement->plan = $plan;
+                    }
+                }
+            }
+        };
+        $r = ['statements' => $statements];
+        $r = collect($r);
+        //return $r;
+        //return $r;
+        $fileName = 'Export' . $org->name . '.csv';
+        $headers = array(
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        );
+        $columns = array('component', 'code', 'component_name_en', 'component_name_se', 'content_en', 'content_se', 'desc_en', 'desc_se', 'guide_en', 'guide_se', 'implementation', 'value', 'comment', 'review', 'plan');
+        $callback = function () use ($statements, $columns, $locale) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($statements as $statement) {
+                $row['component']  = $statement->component?->code;
+                $row['code']    = $statement->code;
+                $row['component_name_en']    = $statement->component?->name_en;
+                $row['component_name_se']  = $statement->component?->name_se;
+                $row['content_en']  = $statement->content_en;
+                $row['content_se']  = $statement->content_se;
+                $row['desc_en']  = $statement->desc_en;
+                $row['desc_se']  = $statement->desc_se;
+                $row['guide_en']  = $statement->guide_en;
+                $row['guide_se']  = $statement->guide_se;
+                $row['implementation'] = $statement->deed?->implementation;
+                $row['value'] = $statement->deed?->value;
+                $row['comment'] = $statement->deed?->comment;
+                $row['review'] = $statement->review?->review;
+                $row['plan'] = $statement->plan['name_' . $locale];
+                fputcsv($file, array($row['component'], $row['code'], $row['component_name_en'], $row['component_name_se'], $row['content_en'], $row['content_se'], $row['desc_en'], $row['desc_se'], $row['guide_en'], $row['guide_se'], $row['implementation'], $row['value'], $row['comment'], $row['review'], $row['plan']));
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Show the organisation review page
      *
      * For organisation auditors show the review table
@@ -144,6 +277,7 @@ class OrganisationController extends Controller
         $plans = Plan::all()->sortBy('id');
         $org = Organisation::where('id', session()->get('selected_org')['id'])->first();
         $auditorStatements = $org->auditorStatements($action);
+        //dd($auditorStatements);
         return view('models.organisations.review', compact('auditorStatements', 'reviewStatuses', 'actionId', 'plans'));
     }
 

@@ -12,8 +12,8 @@
                         </div>
                         <div class="card-body text-center">
                             <h4>{{ plans[0]["name_" + locale] }}</h4>
-                            <p class="text-body mt-1 mb-0" style="height: 7.2rem">{{ plans[0]["desc_" + locale] }}</p>
-                            <button class="btn btn-primary mt-1" @click="showInterview">{{ collection?.messages?.show }}</button>
+                            <p class="text-body mt-1 mb-0" style="height: 9rem">{{ plans[0]["desc_" + locale] }}</p>
+                            <button class="btn btn-primary mt-1" @click="showInterview" disabled>{{ collection?.messages?.show }}</button>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                         </div>
                         <div class="card-body text-center">
                             <h4>{{ plans[1]["name_" + locale] }}</h4>
-                            <p class="text-body mt-1 mb-0" style="height: 7.2rem">{{ plans[1]["desc_" + locale] }}</p>
+                            <p class="text-body mt-1 mb-0" style="height: 9rem">{{ plans[1]["desc_" + locale] }}</p>
                             <button class="btn btn-primary mt-1" disabled>{{ collection?.messages?.show }}</button>
                         </div>
                     </div>
@@ -42,18 +42,21 @@
                             </div>
                             <hr />
                             <div class="row avg-sessions pt-50">
-                                <div v-for="(plan, planId) in auditorStatements.planned" :key="planId" class="col-6 mb-2">
+                                <div v-for="(stat) in collection?.statistics?.statements" :key="stat"  class="col-6 mb-2">
                                     <div class="progresss-wrapper mb-2" style="height: 14px">
-                                        <div class="mb-1">{{ plans[planId - 1]["name_" + locale] }}: {{ plan["thisCount"] }} / {{ plan["totalCount"] }}</div>
-                                        <div :class="plan['class']" style="height: 12px">
-                                            <div class="progress-bar" role="progressbar" :aria-valuenow="plan['percentage']" aria-valuemin="100" aria-valuemax="100" showValue="true" :style="`width: ${plan['percentage']}%`">{{ plan["percentage"] }}%</div>
+                                        <div class="mb-1">{{ stat['title'] }}: {{stat['count']}}</div>
+                                        <div :class="stat['class']" style="height: 12px">
+                                            <div class="progress-bar" role="progressbar" :aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" showValue="true" :style="`width: 100%`">{{ '100' }}%</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-6 mb-2">
                                     <div class="progresss-wrapper mb-2" style="height: 6px">
-                                        <div>{{ collection?.messages?.unplanned }}: {{ 45 }}</div>
+                                        <div>{{ collection?.messages?.unplanned }}: {{ collection?.statistics?.unplanned?.count}}</div>
                                     </div>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="btn btn-primary mt-1" @click="csvExport()">{{ collection?.messages?.export }}</button>
                                 </div>
                             </div>
                         </div>
@@ -644,12 +647,18 @@ export default {
                 },
             });
         },
+        csvExport() {
+            var thisComponent = this;
+            window.open('/'+thisComponent.locale+'/organisations/export/csv/'+thisComponent.actionId, '_blank');
+
+           // window.location.assign();
+        },
         draw() {
             var thisComponent = this;
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    //console.log(response.data);
+                    console.log(response.data);
                     thisComponent.collection = response.data;
                     thisComponent.$nextTick(() => {
                         thisComponent.taskCompletionChart();

@@ -132,6 +132,7 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('/knowledge', [OrganisationController::class, 'knowledge'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.knowledge');
     Route::resource('kpis', KpiController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/links', LinkController::class)->middleware('auth')->middleware('can:moderator');
+    Route::get('organisations/export/csv/{action?}', [OrganisationController::class, 'exportCSV'])->middleware('can:auditor')->name('organisations.export.csv');
     Route::get('organisations/kpis', [OrganisationController::class, 'kpisIndex'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.kpis');
     Route::resource('organisations', OrganisationController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('/outcomes', OutcomeController::class)->middleware('auth')->middleware('can:moderator');
