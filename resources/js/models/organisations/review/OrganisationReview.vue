@@ -42,17 +42,17 @@
                             </div>
                             <hr />
                             <div class="row avg-sessions pt-50">
-                                <div v-for="(stat) in collection?.statistics?.statements" :key="stat"  class="col-6 mb-2">
+                                <div v-for="stat in collection?.statistics?.statements" :key="stat" class="col-6 mb-2">
                                     <div class="progresss-wrapper mb-2" style="height: 14px">
-                                        <div class="mb-1">{{ stat['title'] }}: {{stat['count']}}</div>
+                                        <div class="mb-1">{{ stat["title"] }}: {{ stat["count"] }}</div>
                                         <div :class="stat['class']" style="height: 12px">
-                                            <div class="progress-bar" role="progressbar" :aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" showValue="true" :style="`width: 100%`">{{ '100' }}%</div>
+                                            <div class="progress-bar" role="progressbar" :aria-valuenow="100" aria-valuemin="100" aria-valuemax="100" showValue="true" :style="`width: 100%`">{{ "100" }}%</div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-6 mb-2">
                                     <div class="progresss-wrapper mb-2" style="height: 6px">
-                                        <div>{{ collection?.messages?.unplanned }}: {{ collection?.statistics?.unplanned?.count}}</div>
+                                        <div>{{ collection?.messages?.unplanned }}: {{ collection?.statistics?.unplanned?.count }}</div>
                                     </div>
                                 </div>
                                 <div class="col-6 mb-2">
@@ -263,7 +263,7 @@
                                                         <textarea class="form-control" :id="`interviewReviewText${interviewExpanded.id}_${statement.id}`" :name="`interviewReviewText${interviewExpanded.id}_${statement.id}`" rows="4"></textarea>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <button type="button" class="btn btn-success w-25 me-2" @click="reviewUpdate('accept', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id )">{{ collection?.messages?.accept }}</button>
+                                                        <button type="button" class="btn btn-success w-25 me-2" @click="reviewUpdate('accept', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">{{ collection?.messages?.accept }}</button>
                                                         <button type="button" class="btn btn-danger w-25" @click="reviewUpdate('reject', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">{{ collection?.messages?.reject }}</button>
                                                     </div>
                                                     <p>{{ collection?.messages?.lastUpdated }}: {{ statement.latestDeed?.lastUpdated }}, {{ collection?.messages?.by }}: {{ statement.latestDeed?.user }}</p>
@@ -649,9 +649,9 @@ export default {
         },
         csvExport() {
             var thisComponent = this;
-            window.open('/'+thisComponent.locale+'/organisations/export/csv/'+thisComponent.actionId, '_blank');
+            window.open("/" + thisComponent.locale + "/organisations/export/csv/" + thisComponent.actionId, "_blank");
 
-           // window.location.assign();
+            // window.location.assign();
         },
         draw() {
             var thisComponent = this;
@@ -872,12 +872,12 @@ export default {
                 })
                 .then(function (response) {
                     console.log(response.data);
-                        toastr["success"]("👋 Updated!.", "Success", {
-                            closeButton: true,
-                            tapToDismiss: false,
-                            progressBar: true,
-                            rtl: false,
-                        });
+                    toastr["success"]("👋 Updated!.", "Success", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        progressBar: true,
+                        rtl: false,
+                    });
                 })
                 .catch(function (error) {
                     console.log(error);

@@ -249,8 +249,14 @@ class OrganisationController extends Controller
                 $row['comment'] = $statement->deed?->comment;
                 $row['review'] = $statement->review?->review;
                 $row['plan'] = $statement->plan['name_' . $locale];
+                // post processing for 696 (csv issue on import, clear characters)
+                foreach ($row as $key => $val) {
+                    $row[$key] = str_replace(["\r", "\n"], '', $val);
+                }
                 fputcsv($file, array($row['component'], $row['code'], $row['component_name_en'], $row['component_name_se'], $row['content_en'], $row['content_se'], $row['desc_en'], $row['desc_se'], $row['guide_en'], $row['guide_se'], $row['implementation'], $row['value'], $row['comment'], $row['review'], $row['plan']));
             }
+
+
 
             fclose($file);
         };
