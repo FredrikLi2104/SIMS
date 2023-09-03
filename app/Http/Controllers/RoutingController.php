@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\App;
 class RoutingController extends Controller
 {
     public function component() {
-        return view('content.extensions.ext-component-sliders');
+        //return view('content.extensions.ext-component-sliders');
+        return view('content.pages.page-faq');
     }
     //
     public function countriesSeed()

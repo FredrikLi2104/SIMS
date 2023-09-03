@@ -61,7 +61,7 @@ class InterviewController extends Controller
                         ->where('organisation_id', $organisationId)
                         ->first();
                     if ($review) {
-                        $review->review_status_id = 4; // Updating review status
+                        $review->review_status_id = 5; // Updating review status
                         $review->save(); // Save the update
                     } else {
                         // Create a new review with status id of 4
@@ -69,12 +69,13 @@ class InterviewController extends Controller
                             'organisation_id' => $organisationId,
                             'statement_id' => $statementId,
                             'user_id' => $userId,
-                            'review_status_id' => 4,
+                            'review_status_id' => 5,
                             'review' => __('messages.pendingInterview'),
                         ]);
                     }
                 }
                 // send email
+                /*
                 $userEmail = User::where('id', $data['user_id'])->first();
                 $userEmail = $userEmail->email;
                 if ($userEmail == null) {
@@ -89,6 +90,7 @@ class InterviewController extends Controller
                     $statements[] = $details->{'content_' . $data['locale']};
                 }
                 Mail::to($userEmail)->send(new InterviewStored($user, $creator, $statements, $data['agenda']));
+                */
             });
         } catch (\Throwable $th) {
             throw $th;

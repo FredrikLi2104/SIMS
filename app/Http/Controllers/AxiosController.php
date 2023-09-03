@@ -671,25 +671,26 @@ class AxiosController extends Controller
                 'interview' => [
                     'statements' => [],
                     'class' => 'progress progress-bar-success',
-                    'title' => Plan::where('id',1)->first()->{'name_'.$locale},
+                    'title' => Plan::where('id', 1)->first()->{'name_' . $locale},
                     'count' => 0,
+                    'interviews' => [],
                 ],
                 'test' => [
                     'statements' => [],
                     'class' => 'progress progress-bar-success',
-                    'title' => Plan::where('id',2)->first()->{'name_'.$locale},
+                    'title' => Plan::where('id', 2)->first()->{'name_' . $locale},
                     'count' => 0,
                 ],
                 'webform' => [
                     'statements' => [],
                     'class' => 'progress progress-bar-success',
-                    'title' => Plan::where('id',3)->first()->{'name_'.$locale},
+                    'title' => Plan::where('id', 3)->first()->{'name_' . $locale},
                     'count' => 0,
                 ],
                 'check' => [
                     'statements' => [],
                     'class' => 'progress progress-bar-success',
-                    'title' => Plan::where('id',5)->first()->{'name_'.$locale},
+                    'title' => Plan::where('id', 5)->first()->{'name_' . $locale},
                     'count' => 0,
                 ],
             ],
@@ -729,10 +730,57 @@ class AxiosController extends Controller
             }
             if (isset($statement->plan['id'])) {
                 switch ($statement->plan->id) {
+                        // case interview
                     case 1:
                         $statistics['statements']['interview']['statements'][] = $statement;
                         $statistics['statements']['interview']['count'] += 1;
                         break;
+                        /*
+                        // get all the interviews of this organisation
+                        $orgInterviews = Interview::where('organisation_id', $org->id)->get();
+                        if ($orgInterviews->count() > 0) {
+                            // loop all interviews of this organisation
+                            foreach ($orgInterviews as $orgInterview) {
+                                // for interview 1,2,3..etc find the first record of this statement in the interview (note that a statement can belong to one interview only)
+                                $needle = DB::table('interview_statement')->where('interview_id', $orgInterview->id)->where('statement_id', $statement->id)->first();
+                                // if this looped interview has this statement
+                                if ($needle) {
+                                    // loop the statistics return object interviews
+                                    $found = false;
+                                    foreach ($statistics['statements']['interview']['interviews'] as $in => $inter) {
+                                        // check if this interview has already been seeded
+                                        if ($inter['id'] == $orgInterview->id) {
+                                            $found = true;
+                                            // make sure the statement is not already in this interview
+                                            if(isset($statistics['statements']['interview']['interviews'][$in]['statements'])) {
+                                                $exists = false;
+                                                foreach($statistics['statements']['interview']['interviews'][$in]['statements'] as $st) {
+                                                    if($st['id'] == $statement->id) {
+                                                        $exists = true;
+                                                    }
+                                                }
+                                                if(!$exists) {
+                                                    $statistics['statements']['interview']['interviews'][$in]['statements'][] = $statement;
+                                                    $found = true; 
+                                                }
+                                            } else {
+                                                $statistics['statements']['interview']['interviews'][$in]['statements'][] = $statement;
+                                                $found = true;  
+                                            }
+                                            break;
+                                            
+                                        }
+                                    }
+                                    // if we have not seeded this interview at all
+                                    if (!$found) {
+                                        $interview = $orgInterview;
+                                        $interview['statements'][] = $statement;
+                                        $statistics['statements']['interview']['interviews'][] = $interview;
+                                    }
+                                }
+                            }
+                        }
+*/
                     case 2:
                         $statistics['statements']['test']['statements'][] = $statement;
                         $statistics['statements']['test']['count'] += 1;
@@ -757,6 +805,25 @@ class AxiosController extends Controller
                 $statistics['unplanned']['count'] += 1;
             }
         };
+        // interviews
+        // find all interviews by the organisation
+        $orgInterviews = Interview::where('organisation_id', $org->id)->with('statements')->get();
+        $statistics['statements']['interview']['interviews'] = $orgInterviews;
+        $available = $statistics['statements']['interview']['statements'];
+        foreach($orgInterviews as $orgInterview) {
+            foreach($orgInterview->statements as $st) {
+                foreach ($available as $inde=>$stx) {
+                    if($stx['id'] == $st['id']) {
+                        unset($available[$inde]);
+                    }
+                }
+            }
+        }
+        $x = [];
+        foreach($available as $av) {
+            $x[] = $av;
+        }
+        $statistics['statements']['interview']['statements'] = $x;
         App::setlocale($locale);
         $messages = Lang::get('messages');
         $r = ['statements' => $statements, 'messages' => $messages, 'statistics' => $statistics];

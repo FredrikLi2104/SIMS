@@ -46,6 +46,7 @@ mix
     .sass('resources/scss/base/pages/authentication.scss', 'public/css/base/pages/authentication.css', {sassOptions})
     .sass('resources/scss/base/pages/dashboard-ecommerce.scss', 'public/css/base/pages/dashboard-ecommerce.css', {sassOptions})
     .sass('resources/scss/base/pages/app-invoice-list.scss', 'public/css/base/pages/app-invoice-list.css', {sassOptions})
+    .sass('resources/scss/base/pages/page-faq.scss', 'public/css/base/pages/page-faq.css', {sassOptions})
     .sass('resources/scss/base/plugins/charts/chart-apex.scss', 'public/css/base/plugins/charts/chart-apex.css', {sassOptions})
     .sass('resources/scss/base/plugins/forms/form-file-uploader.scss', 'public/css/base/plugins/forms/file-uploader.css', {sassOptions})
     .sass('resources/scss/base/plugins/forms/form-quill-editor.scss', 'public/css/base/plugins/forms/form-quill-editor.css', {sassOptions})

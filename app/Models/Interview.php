@@ -9,11 +9,15 @@ class Interview extends Model
 {
     use HasFactory;
     public $timestamps = true;
-    protected $fillable = ['agenda', 'user_id', 'creator_id'];
+    protected $fillable = ['agenda', 'interviewee', 'creator_id', 'organisation_id'];
     
 
     public function statements() {
         return $this->belongsToMany(Statement::class);
+    }
+
+    public function organisation() {
+        return $this->belongsTo(Organisation::class);
     }
 
 }

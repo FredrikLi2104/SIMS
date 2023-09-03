@@ -26,8 +26,9 @@ class InterviewStoreRequest extends FormRequest
         return [
             //
             'agenda' => ['required'],
-            'user_id' => ['required', 'exists:users,id'],
-            'statements.*' => ['required', 'exists:statements,id']
+            'interviewee' => ['required'],
+            'statements.*' => ['required', 'exists:statements,id'],
+            'organisation_id' => ['required', 'exists:organisations,id']
         ];
     }
 }
