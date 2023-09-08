@@ -59,7 +59,7 @@
                     -->
                             <button type="button" class="btn btn-primary" @click="interviewCreate">{{ collection?.messages?.create }}</button>
                         </div>
-                        <div class="col-6" style="flex: 0 0 50%; min-width: 50%">
+                        <div class="col-6 scrollable-container" style="flex: 0 0 50%; min-width: 50%">
                             <!-- Existing Interviews-->
                             <div class="row scrollable-container mb-1">
                                 <div class="col-4">

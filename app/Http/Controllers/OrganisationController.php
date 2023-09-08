@@ -229,7 +229,7 @@ class OrganisationController extends Controller
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         );
-        $columns = array('component', 'code', 'component_name_en', 'component_name_se', 'content_en', 'content_se', 'desc_en', 'desc_se', 'guide_en', 'guide_se', 'implementation', 'value', 'comment', 'review', 'plan');
+        $columns = array('component', 'code', 'component_name_en', 'component_name_se', 'content_en', 'content_se', 'desc_en', 'desc_se', 'guide_en', 'guide_se', 'implementation_en', 'implementation_se', 'value', 'comment', 'review', 'plan');
         $callback = function () use ($statements, $columns, $locale) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
@@ -244,7 +244,8 @@ class OrganisationController extends Controller
                 $row['desc_se']  = $statement->desc_se;
                 $row['guide_en']  = $statement->guide_en;
                 $row['guide_se']  = $statement->guide_se;
-                $row['implementation'] = $statement->deed?->implementation;
+                $row['implementation_en'] = $statement->implementation_en;
+                $row['implementation_se'] = $statement->implementation_se;
                 $row['value'] = $statement->deed?->value;
                 $row['comment'] = $statement->deed?->comment;
                 $row['review'] = $statement->review?->review;
@@ -253,7 +254,7 @@ class OrganisationController extends Controller
                 foreach ($row as $key => $val) {
                     $row[$key] = str_replace(["\r", "\n"], '', $val);
                 }
-                fputcsv($file, array($row['component'], $row['code'], $row['component_name_en'], $row['component_name_se'], $row['content_en'], $row['content_se'], $row['desc_en'], $row['desc_se'], $row['guide_en'], $row['guide_se'], $row['implementation'], $row['value'], $row['comment'], $row['review'], $row['plan']));
+                fputcsv($file, array($row['component'], $row['code'], $row['component_name_en'], $row['component_name_se'], $row['content_en'], $row['content_se'], $row['desc_en'], $row['desc_se'], $row['guide_en'], $row['guide_se'], $row['implementation_en'], $row['implementation_se'], $row['value'], $row['comment'], $row['review'], $row['plan']));
             }
 
 
