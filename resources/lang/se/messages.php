@@ -155,6 +155,7 @@ return [
     'period' => 'Period',
     'periods' => 'Perioder',
     'periodsCreate' => 'Skapa en period',
+    'periodsCreateOptional' => 'Skapa en period ',
     'phone' => 'Telefon',
     'plan' => 'Plan',
     'planningReport' => 'Rapport Planering',
