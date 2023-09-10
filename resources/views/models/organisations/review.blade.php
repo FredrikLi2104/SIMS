@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-sliders.css')) }}">
     <link rel="stylesheet" href="{{ asset(mix('css/base/core/colors/palette-noui.css')) }}">
+    <link rel="stylesheet" href="{{ asset(mix('css/base/pages/app-ecommerce.css')) }}">
+
     <style>
         body {
             overflow-x: hidden;

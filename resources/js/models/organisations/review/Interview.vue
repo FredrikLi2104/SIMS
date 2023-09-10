@@ -7,20 +7,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="interviewHide"></button>
                 </div>
                 <div class="modal-body">
-                    <p>{{ collection?.messages.interview }}</p>
-                    <div class="col-12 mb-1 mb-lg-0 text-center">
-                        <!-- button group checkbox -->
-                        <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-                            <input type="checkbox" class="btn-check" id="btncheck1" :checked="interviewActive == 'prepare' ? true : false" autocomplete="off" @click="interviewActive = 'prepare'" />
-                            <label class="btn btn-primary" for="btncheck1">{{ collection?.messages?.interviewPrepare }}</label>
-                            <input type="checkbox" class="btn-check" id="btncheck2" :checked="interviewActive == 'conduct' ? true : false" autocomplete="off" @click="interviewActiveSet('conduct')" disabled />
-                            <label class="btn btn-primary" for="btncheck2">{{ collection?.messages?.interviewConduct }}</label>
-                        </div>
+                    <div v-if="conductReady" class="avatar bg-light-success rounded full-width mb-1">
+                        <p class="text-center full-width mt-0 mb-0 py-2">Ready to Conduct</p>
                     </div>
+                    <p>{{ collection?.messages.interview }}</p>
                 </div>
-                <!--<div class="modal-footer justify-content-start">-->
                 <div class="px-2 py-1">
-                    <div class="row" v-if="interviewActive == 'prepare'">
+                    <div class="row">
+                        <!-- Input Details-->
                         <div class="col-6" style="flex: 0 0 50%; min-width: 50%">
                             <div class="mb-1">
                                 <label class="form-label" for="user">
@@ -40,59 +34,13 @@
                                         <p class="align-self-start">{{ createStatement["content_" + locale].substr(0, 48) + "..." }}</p>
                                         <span class="align-self-end p-2 justify-center" @click="onCreateRemove(createStatement.id)" style="cursor: pointer">x</span>
                                     </div>
-                                    <!-- Content that can be dragged into the container -->
                                 </div>
                                 <div class="invalid-feedback">{{ interviewCreateErrors.statements?.message }}</div>
                             </div>
-                            <!--
-                            <div class="mb-1" id="statementsContainer">
-                                
-                                <label class="form-label" for="interviewStatementsSelect">{{ collection?.messages?.statements }}</label>
-                                <select :class="`form-select ${interviewCreateErrors.statements ? 'is-invalid' : ''}`" id="interviewStatementsSelect" multiple="multiple" disabled style="height: 250px">
-                                    <option v-for="interviewStatementSelected in interviewStatementsSelected" :key="interviewStatementSelected" :value="interviewStatementSelected.id">
-                                        {{ interviewStatementSelected["content_" + locale].substr(0, 36) }}
-                                    </option>
-                                </select>
-                                <div class="invalid-feedback">{{ interviewCreateErrors.statements?.message }}</div>
-                            
+                            <button type="button" class="btn btn-primary" @click="interviewCreate" :disabled="conductReady">{{ collection?.messages?.create }}</button>
                         </div>
-                    -->
-                            <button type="button" class="btn btn-primary" @click="interviewCreate">{{ collection?.messages?.create }}</button>
-                        </div>
-                        <div class="col-6 scrollable-container" style="flex: 0 0 50%; min-width: 50%">
-                            <!-- Existing Interviews-->
-                            <div class="row scrollable-container mb-1">
-                                <div class="col-4">
-                                    <div class="faq-navigation d-flex justify-content-between flex-column mb-2 mb-md-0">
-                                        <!-- pill tabs navigation -->
-                                        <ul class="nav nav-pills nav-left flex-column" role="tablist">
-                                            <!-- payment -->
-                                            <li v-for="int in collection?.statistics?.statements?.interview?.interviews" :key="int" class="nav-item">
-                                                <a :class="`nav-link ${existingActive.id == int.id ? 'active' : ''}`" aria-expanded="true" :id="`existingInterview${int.id}`" role="tab" @click="existingSetActive(int.id)">
-                                                    <span class="fw-bold">{{ collection?.messages?.interview + "-" + int.id }}</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-8">
-                                    <!-- pill tabs tab content -->
-                                    <div class="tab-content">
-                                        <!-- payment panel -->
-                                        <div role="tabpanel" class="tab-pane active" id="faq-payment" aria-labelledby="payment" aria-expanded="true">
-                                            <!-- icon and header -->
-                                            <!-- frequent answer and question  collapse  -->
-                                            <div v-for="eStatement in existingActive.statements" :key="eStatement" class="accordion accordion-margin mt-2">
-                                                <div class="card accordion-item">
-                                                    <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" data-bs-target="#faq-payment-one" aria-expanded="false" disabled>{{ eStatement['content_'+locale] }}</button>
-                                                    </h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Available Statements-->
+                        <div class="col-6" style="flex: 0 0 50%; min-width: 50%">
                             <div class="row accordion accordion-margin mt-2" id="interviewStatements">
                                 <div v-for="interviewStatement in interviewStatements" :key="interviewStatement" class="card accordion-item" :draggable="true" @dragstart="dragEmit(interviewStatement.id)">
                                     <div class="row">
@@ -106,7 +54,7 @@
                                             {{ interviewStatement["content_" + locale] }}
                                         </button>
                                     </h2>
-                                    
+
                                     <div :id="`interviewStatement${interviewStatement?.id}`" class="collapse accordion-collapse" :aria-labelledby="`interviewStatementHeader${interviewStatement?.id}`" data-bs-parent="interviewStatements">
                                         <div class="accordion-body">
                                             {{ interviewStatement["desc_" + locale] }}
@@ -116,94 +64,57 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" v-if="interviewActive == 'conduct'">
-                        <div class="col-6">
-                            <!--- Interviews Table-->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">{{ collection?.messages?.tables }}</h4>
-                                </div>
-                                <div class="table">
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>{{ collection?.messages?.creator }}</th>
-                                                <th>{{ collection?.messages?.interviewee }}</th>
-                                                <th class="text-center">{{ collection?.messages?.actions }}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="inter in interviewStatements.interviews" :key="inter">
-                                                <td>
-                                                    <span class="fw-bold">{{ inter.id }}</span>
-                                                </td>
-                                                <td>
-                                                    {{ inter.creator }}
-                                                </td>
-                                                <td>
-                                                    {{ inter.interviewee }}
-                                                </td>
-                                                <td class="text-center">
-                                                    <button type="button" :class="`btn btn-relief-${inter.id == interviewExpanded.id ? 'warning' : 'dark'}`" @click="interviewConductedSet(inter.id)">
-                                                        {{ inter.id == interviewExpanded.id ? collection?.messages?.expanded : collection?.messages?.expand }}
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                    <!-- Existing Interviews-->
+                    <div class="row mt-2">
+                        <div class="modal-body">
+                            <p>{{ collection?.messages.interviews }}</p>
                         </div>
+                        <!-- Interview Pills-->
                         <div class="col-6">
-                            <!-- Agenda Display -->
+                            <ul class="nav nav-pills mb-2">
+                                <li class="nav-item" v-for="interview in interviews" :key="interview" @click="existingSetActive(interview.id)">
+                                    <a :class="`nav-link ${existingActive.id == interview.id ? 'active' : ''}`">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        <span class="fw-bold">{{ collection?.messages?.interview }} {{ interview.id }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Interview Card-->
+                        <div class="col-6" v-if="existingActive.agenda != null">
                             <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">{{ collection?.messages?.agenda }}</h4>
+                                <div class="card-header border-bottom">
+                                    <h4 class="card-title">{{ collection?.messages?.interview }} {{ collection?.messages?.details }}</h4>
                                 </div>
-                                <div class="card-body">
-                                    <div class="border p-3 rounded">
-                                        {{ interviewExpanded?.agenda }}
+                                <div class="card-body py-2 my-25">
+                                    <!-- Interview Details-->
+                                    <div class="row">
+                                        <p>
+                                            <strong>{{ collection?.messages?.agenda }}: </strong>{{ existingActive.agenda }}
+                                        </p>
+                                        <p>
+                                            <strong>{{ collection?.messages?.interviewee }}: </strong>{{ existingActive.interviewee }}
+                                        </p>
                                     </div>
-                                </div>
-                            </div>
-                            <!-- Accordion for Interview Statements -->
-                            <div class="accordion" :id="`interviewStatementsAccordion${interviewExpanded.id}`">
-                                <div v-for="statement in interviewExpanded.statements" :key="statement" class="card accordion-item">
-                                    <h2 class="accordion-header" :id="`interviewStatementHeader${statement.id}`">
-                                        <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" :data-bs-target="`#interviewStatement${statement.id}`" aria-expanded="false" :aria-controls="`interviewStatement${statement.id}`">
-                                            {{ statement["content_" + locale] }}
-                                        </button>
-                                    </h2>
-                                    <div :id="`interviewStatement${statement.id}`" class="collapse accordion-collapse" :aria-labelledby="`interviewStatementHeader${statement.id}`" :data-bs-parent="`#interviewStatementsAccordion${interviewExpanded.id}`">
-                                        <div class="accordion-body">
-                                            {{ statement["desc_" + locale] }}
-                                        </div>
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h4 class="text-uppercase">{{ collection?.messages?.value }}</h4>
-                                            </div>
-                                            <div class="card-body">
-                                                <div :id="`interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`" class="mt-1 mb-3"></div>
-                                                <div class="mb-3">
-                                                    <label for="interviewReviewText{{ interviewExpanded.id }}_{{ statement.id }}" class="form-label">{{ collection?.messages?.review }}</label>
-                                                    <textarea class="form-control" :id="`interviewReviewText${interviewExpanded.id}_${statement.id}`" :name="`interviewReviewText${interviewExpanded.id}_${statement.id}`" rows="4"></textarea>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <button type="button" class="btn btn-success w-25 me-2" @click="reviewUpdate('accept', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">
-                                                        {{ collection?.messages?.accept }}
-                                                    </button>
-                                                    <button type="button" class="btn btn-danger w-25" @click="reviewUpdate('reject', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">
-                                                        {{ collection?.messages?.reject }}
-                                                    </button>
-                                                </div>
-                                                <p>{{ collection?.messages?.lastUpdated }}: {{ statement.latestDeed?.lastUpdated }}, {{ collection?.messages?.by }}: {{ statement.latestDeed?.user }}</p>
-                                                <p>{{ collection?.messages?.comment }}: {{ statement.latestDeed?.comment }}</p>
-                                                <p>{{ collection?.messages?.latestReview }}, {{ statement.latestReview?.user }}, {{ statement.latestReview?.lastUpdated }}: {{ statement.latestReview?.review }}</p>
-                                                <p :class="`text-${statement.latestReview?.class}`">{{ statement.latestReview?.review_status }}</p>
-                                            </div>
-                                        </div>
+                                    <!-- Interview Statements-->
+                                    <p>
+                                        <strong>{{ collection?.messages?.statements }}</strong>
+                                    </p>
+                                    <div class="card mb-4">
+                                        <ul class="list-group list-group-flush">
+                                            <li v-for="statement in existingActive.statements" :key="statement" class="list-group-item d-flex align-items-between" style="display: flex; justify-content: space-between; align-items: center">
+                                                <p>{{ statement["content_" + locale].substring(0, 48) + "..." }}</p>
+                                                <button type="button" class="btn btn-danger remove-wishlist" @click="removeFromActive(statement.id)">
+                                                    <span>{{ collection?.messages?.remove }}</span>
+                                                </button>
+                                            </li>
+                                        </ul>
                                     </div>
+                                    <button class="btn btn-primary mt-1 me-1" @click="interviewUpdate('update')">{{ collection?.messages?.saveChanges }}</button>
+                                    <button class="btn btn-outline-danger mt-1" @click="interviewUpdate('delete')">{{ collection?.messages?.delete }} {{ collection?.messages?.interview }}</button>
                                 </div>
                             </div>
                         </div>
@@ -219,7 +130,9 @@ export default {
     props: ["actionId", "collection", "locale", "org"],
     data() {
         return {
+            conductReady: false,
             dragId: null,
+            interviews: [],
             interviewActive: "prepare",
             interviewCreateErrors: {
                 agenda: null,
@@ -236,7 +149,10 @@ export default {
             interviewStatementsSelected: [],
             existingActive: {
                 id: null,
-            }
+                agenda: null,
+                interviewee: null,
+                statements: [],
+            },
         };
     },
     methods: {
@@ -255,55 +171,17 @@ export default {
             thisComponent.interviewStatements = modifiedStatements;
             thisComponent.toCreate.push(dragged[0]);
         },
-        interviewActiveSet(t) {
-            var thisComponent = this;
-            this.interviewActive = t;
-            this.$nextTick(() => {
-                thisComponent.$nextTick(() => {
-                    // create sliders for mounted interview statements
-                    let slider = null;
-                    thisComponent.interviewExpanded.statements.forEach((s) => {
-                        slider = document.getElementById(`interviewStatementValueSlider${thisComponent.interviewExpanded.id}_${s.id}`);
-                        console.log(slider);
-                        noUiSlider.create(slider, {
-                            start: s.latestDeed.value,
-                            step: 1,
-                            range: {
-                                min: 1,
-                                max: 5,
-                            },
-                            tooltips: true,
-                            direction: "ltr",
-                            pips: {
-                                mode: "steps",
-                                stepped: false,
-                                density: 1,
-                            },
-                        });
-                    });
-                });
-            });
-        },
-        interviewConductedSet(interviewId) {
-            var thisComponent = this;
-            // axios call to refresh
-            axios
-                .get(`/${this.locale}/axios/organisations/${this.org}/review/action/${this.actionId}/interview`)
-                .then(function (response) {
-                    console.log(response.data);
-                    thisComponent.interviewStatements = response.data;
-                    thisComponent.$nextTick(() => {
-                        let theInter = thisComponent.interviewStatements.interviews.filter((i) => {
-                            return i.id == interviewId;
-                        });
-                        thisComponent.interviewExpanded = theInter[0];
-                        // build sliders again
-                        thisComponent.slidersRebuild();
-                    });
-                })
-                .catch(function (error) {
-                    console.log(error.response);
-                });
+        interviewClear() {
+            this.interviewCreateErrors = {
+                agenda: null,
+                user: null,
+                statements: null,
+            };
+            // empty state
+            document.getElementById("interviewCreateUser").value = null;
+            document.getElementById("agenda").value = null;
+            this.interviewStatementsSelected = [];
+            this.toCreate = [];
         },
         interviewCreate() {
             var thisComponent = this;
@@ -371,8 +249,10 @@ export default {
                     .post(`/${this.locale}/interviews/`, load)
                     .then(function (response) {
                         Swal.close();
-                        thisComponent.interviewHide();
+                        //thisComponent.interviewHide();
+                        thisComponent.rebuild();
                         thisComponent.$nextTick(() => {
+                            thisComponent.interviewClear();
                             Swal.fire({
                                 title: "Success!",
                                 text: "Interview created!",
@@ -425,6 +305,72 @@ export default {
                 $("#interviewModal").modal("hide");
             });
         },
+        interviewUpdate(type) {
+            //console.log(this.existingActive);
+            var thisComponent = this;
+            let load;
+            if (type == "update") {
+                load = this.existingActive;
+            }
+            if (type == "delete") {
+                load = this.existingActive;
+                load.statements = [];
+            }
+            if (this.existingActive.id != null) {
+                Swal.fire({
+                    title: "Info!",
+                    text: `${thisComponent.collection?.messages?.working} ...`,
+                    icon: "info",
+                    showConfirmButton: false,
+                    customClass: {
+                        confirmButton: "btn btn-primary",
+                    },
+                    buttonsStyling: false,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+                axios
+                    .post(`/${this.locale}/axios/interviews/${this.existingActive.id}/update`, load)
+                    .then(function (response) {
+                        Swal.close();
+                        thisComponent.rebuild();
+                        thisComponent.$nextTick(() => {
+                            thisComponent.interviewClear();
+                            Swal.fire({
+                                title: "Success!",
+                                text: "Operation Completed!",
+                                icon: "success",
+                                customClass: {
+                                    confirmButton: "btn btn-primary",
+                                },
+                                buttonsStyling: false,
+                            });
+                            return;
+                        });
+
+                        console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        thisComponent.rebuild();
+                        console.log(error.response);
+                        thisComponent.$nextTick(() => {
+                            Swal.fire({
+                                title: error,
+                                text: error.response?.data?.message,
+                                icon: "error",
+                                customClass: {
+                                    confirmButton: "btn btn-primary",
+                                },
+                                buttonsStyling: false,
+                            });
+                            return;
+                        });
+                    });
+            }
+        },
         interviewStatementAdd(statement) {
             let exists = this.interviewStatementsSelected.filter((is) => {
                 return is.id == statement.id;
@@ -465,20 +411,26 @@ export default {
             this.interviewStatements = is;
         },
         existingSetActive(intId) {
-            let int = this.collection?.statistics.statements.interview.interviews.filter(i => {
+            let int = this.collection?.statistics.statements.interview.interviews.filter((i) => {
                 return i.id == intId;
             });
             int = int[0];
             this.existingActive = int;
         },
-        showInterview() {
+        interviewPrepare() {
             var thisComponent = this;
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    console.log(response.data);
+                    //console.log(response.data);
                     thisComponent.interviewStatements = response.data.statistics?.statements?.interview?.statements;
-                    if(response.data.statistics?.statements?.interview?.interviews.length > 0) {
+                    if (thisComponent.interviewStatements.length == 0) {
+                        thisComponent.conductReady = true;
+                    } else {
+                        thisComponent.conductReady = false;
+                    }
+                    if (response.data.statistics?.statements?.interview?.interviews.length > 0) {
+                        thisComponent.interviews = response.data.statistics.statements.interview.interviews;
                         thisComponent.existingActive = response.data.statistics.statements.interview.interviews[0];
                     }
                 })
@@ -508,6 +460,45 @@ export default {
                 });
                 */
             $("#interviewModal").modal("show");
+        },
+        rebuild() {
+            var thisComponent = this;
+            axios
+                .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
+                .then(function (response) {
+                    //console.log(response.data);
+                    thisComponent.interviewStatements = response.data.statistics?.statements?.interview?.statements;
+                    if (thisComponent.interviewStatements.length == 0) {
+                        thisComponent.conductReady = true;
+                    } else {
+                        thisComponent.conductReady = false;
+                    }
+                    if (response.data.statistics?.statements?.interview?.interviews.length > 0) {
+                        //console.log(thisComponent.existingActive);
+                        thisComponent.$nextTick(() => {
+                            thisComponent.existingActive = response.data.statistics.statements.interview.interviews[0];
+                            thisComponent.$forceUpdate();
+                            thisComponent.interviews = response.data.statistics.statements.interview.interviews;
+                        });
+                    } else {
+                        thisComponent.interviews = [];
+                        thisComponent.existingActive = {
+                            id: null,
+                            agenda: null,
+                            interviewee: null,
+                            statements: [],
+                        };
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                });
+        },
+        removeFromActive(id) {
+            this.existingActive.statements = this.existingActive.statements.filter((s) => {
+                return s.id != id;
+            });
         },
     },
 };

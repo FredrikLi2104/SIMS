@@ -13,7 +13,8 @@
                         <div class="card-body text-center">
                             <h4>{{ plans[0]["name_" + locale] }}</h4>
                             <p class="text-body mt-1 mb-0" style="height: 9rem">{{ plans[0]["desc_" + locale] }}</p>
-                            <button class="btn btn-primary mt-1" @click="showInterview" enabled>{{ collection?.messages?.show }}</button>
+                            <button class="btn btn-primary mt-1 mx-1" @click="interviewPrepare" enabled>{{ collection?.messages?.prepare }}</button>
+                            <button class="btn btn-primary mt-1" disabled>{{ collection?.messages?.conduct }}</button>
                         </div>
                     </div>
                 </div>
@@ -530,8 +531,8 @@ export default {
                     });
                 });
         },
-        showInterview() {
-            this.$refs.interviewComponent.showInterview();
+        interviewPrepare() {
+            this.$refs.interviewComponent.interviewPrepare();
 
         },
         slidersRebuild() {

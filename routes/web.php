@@ -64,6 +64,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('features/tasks/{year?}', [AxiosController::class, 'featuresTasks'])->middleware('can:super-auditor')->name('axios.features.tasks');
     Route::get('features/tasks-years', [AxiosController::class, 'featuresTasksYears'])->middleware('can:super-auditor')->name('axios.features.tasks-years');
     Route::get('kpis', [AxiosController::class, 'kpis'])->middleware('can:moderator')->name('axios.kpis.index');
+    Route::post('interviews/{interview}/update', [AxiosController::class, 'interviewUpdate'])->middleware('can:auditor')->name('axios.interviews.update');
     Route::get('links', [AxiosController::class, 'links'])->middleware('can:moderator')->name('axios.links.index');
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');
     Route::get('organisations/change/{organisation}', [AxiosController::class, 'organisationsChange'])->middleware('can:all')->name('axios.organisations.change');
@@ -166,4 +167,7 @@ Route::prefix('services')->middleware('auth')->group(function () {
 /* Vuexy - to preview components */
 Route::prefix('vuexy')->group(function() {
     Route::get('component', [RoutingController::class, 'component'])->name('vuexy.component');
+    Route::get('modal', [RoutingController::class, 'modal'])->name('vuexy.modal');
+    Route::get('todo', [RoutingController::class, 'todo'])->name('vuexy.todo');
+    Route::get('accountsettings', [RoutingController::class, 'accountsettings'])->name('vuexy.accountsettings');
 });
