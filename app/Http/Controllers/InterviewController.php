@@ -64,7 +64,7 @@ class InterviewController extends Controller
                         $review->review_status_id = 5; // Updating review status
                         $review->save(); // Save the update
                     } else {
-                        // Create a new review with status id of 4
+                        // Create a new review with status id of 5 (Pending Review)
                         Review::create([
                             'organisation_id' => $organisationId,
                             'statement_id' => $statementId,

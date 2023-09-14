@@ -8,7 +8,7 @@
                 </div>
                 <div class="modal-body">
                     <div v-if="conductReady" class="avatar bg-light-success rounded full-width mb-1">
-                        <p class="text-center full-width mt-0 mb-0 py-2">Ready to Conduct</p>
+                        <p class="text-center full-width mt-0 mb-0 py-2">{{ collection?.messages?.readyToConduct }}</p>
                     </div>
                     <p>{{ collection?.messages.interview }}</p>
                 </div>
@@ -31,7 +31,8 @@
                             <div class="scrollable-container mb-1" @dragover.prevent @drop="dragReceive">
                                 <div :class="`inner-content ${interviewCreateErrors.statements ? 'is-invalid' : ''}`">
                                     <div v-for="createStatement in toCreate" :key="createStatement" class="d-flex justify-content-between align-items-center" style="background: rgba(115, 103, 240, 0.12) !important; color: #7367f0 !important; border: none">
-                                        <p class="align-self-start">{{ createStatement["content_" + locale].substr(0, 48) + "..." }}</p>
+                                        <p class="align-self-start">{{ createStatement["content_" + locale].substr(0, 48) +
+                                            "..." }}</p>
                                         <span class="align-self-end p-2 justify-center" @click="onCreateRemove(createStatement.id)" style="cursor: pointer">x</span>
                                     </div>
                                 </div>
@@ -46,7 +47,7 @@
                                     <div class="row">
                                         <div class="col-8"></div>
                                         <div class="col-4 d-flex justify-content-end align-items-center">
-                                            <span :class="`badge rounded-pill badge-glow bg-${interviewStatement.class}`" style="height: 1.5rem">{{ interviewStatement.reviewStatus }}</span>
+                                            <span :class="`badge rounded-pill badge-glow bg-${interviewStatement.latestReview?.class}`" style="height: 1.5rem">{{ interviewStatement.latestReview?.review_status }}</span>
                                         </div>
                                     </div>
                                     <h2 class="accordion-header" :id="`interviewStatementHeader${interviewStatement?.id}`">
@@ -78,7 +79,8 @@
                                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                             <circle cx="12" cy="7" r="4"></circle>
                                         </svg>
-                                        <span class="fw-bold">{{ collection?.messages?.interview }} {{ interview.id }}</span>
+                                        <span class="fw-bold">{{ collection?.messages?.interview }} {{ interview.id
+                                        }}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -87,7 +89,8 @@
                         <div class="col-6" v-if="existingActive.agenda != null">
                             <div class="card">
                                 <div class="card-header border-bottom">
-                                    <h4 class="card-title">{{ collection?.messages?.interview }} {{ collection?.messages?.details }}</h4>
+                                    <h4 class="card-title">{{ collection?.messages?.interview }} {{
+                                        collection?.messages?.details }}</h4>
                                 </div>
                                 <div class="card-body py-2 my-25">
                                     <!-- Interview Details-->
@@ -96,7 +99,8 @@
                                             <strong>{{ collection?.messages?.agenda }}: </strong>{{ existingActive.agenda }}
                                         </p>
                                         <p>
-                                            <strong>{{ collection?.messages?.interviewee }}: </strong>{{ existingActive.interviewee }}
+                                            <strong>{{ collection?.messages?.interviewee }}: </strong>{{
+                                                existingActive.interviewee }}
                                         </p>
                                     </div>
                                     <!-- Interview Statements-->
@@ -113,8 +117,10 @@
                                             </li>
                                         </ul>
                                     </div>
-                                    <button class="btn btn-primary mt-1 me-1" @click="interviewUpdate('update')">{{ collection?.messages?.saveChanges }}</button>
-                                    <button class="btn btn-outline-danger mt-1" @click="interviewUpdate('delete')">{{ collection?.messages?.delete }} {{ collection?.messages?.interview }}</button>
+                                    <button class="btn btn-primary mt-1 me-1" @click="interviewUpdate('update')">{{
+                                        collection?.messages?.saveChanges }}</button>
+                                    <button class="btn btn-outline-danger mt-1" @click="interviewUpdate('delete')">{{
+                                        collection?.messages?.delete }} {{ collection?.messages?.interview }}</button>
                                 </div>
                             </div>
                         </div>
@@ -288,6 +294,7 @@ export default {
             console.log(e);
         },
         interviewHide() {
+            var thisComponent = this;
             this.interviewActive = "prepare";
             // clear all errors
             this.interviewCreateErrors = {
@@ -303,6 +310,8 @@ export default {
             this.interviewStatementsSelected = [];
             this.$nextTick(() => {
                 $("#interviewModal").modal("hide");
+                // rebuild parent
+                thisComponent.$parent.rebuild();
             });
         },
         interviewUpdate(type) {
@@ -411,9 +420,10 @@ export default {
             this.interviewStatements = is;
         },
         existingSetActive(intId) {
-            let int = this.collection?.statistics.statements.interview.interviews.filter((i) => {
+            let int = this.interviews.filter((i) => {
                 return i.id == intId;
             });
+            console.log(int);
             int = int[0];
             this.existingActive = int;
         },
@@ -422,7 +432,7 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    //console.log(response.data);
+                    console.log(response.data);
                     thisComponent.interviewStatements = response.data.statistics?.statements?.interview?.statements;
                     if (thisComponent.interviewStatements.length == 0) {
                         thisComponent.conductReady = true;
@@ -466,7 +476,9 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
+                    thisComponent.interviews = response.data.statistics.statements.interview.interviews;
                     //console.log(response.data);
+                    //thisComponent.collection = response.data;
                     thisComponent.interviewStatements = response.data.statistics?.statements?.interview?.statements;
                     if (thisComponent.interviewStatements.length == 0) {
                         thisComponent.conductReady = true;
@@ -501,11 +513,15 @@ export default {
             });
         },
     },
+    mounted() {
+        this.interviews = this.collection?.statistics.statements.interview.interviews;
+    }
 };
 </script>
 <style>
 .scrollable-container {
-    height: 300px; /* Set the desired scrollable height */
+    height: 300px;
+    /* Set the desired scrollable height */
     border: 1px solid #ccc;
     overflow: auto;
 }

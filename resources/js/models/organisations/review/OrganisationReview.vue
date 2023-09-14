@@ -14,7 +14,8 @@
                             <h4>{{ plans[0]["name_" + locale] }}</h4>
                             <p class="text-body mt-1 mb-0" style="height: 9rem">{{ plans[0]["desc_" + locale] }}</p>
                             <button class="btn btn-primary mt-1 mx-1" @click="interviewPrepare" enabled>{{ collection?.messages?.prepare }}</button>
-                            <button class="btn btn-primary mt-1" disabled>{{ collection?.messages?.conduct }}</button>
+                            <button class="btn btn-primary mt-1" :disabled="conductNotReady" @click="interviewConduct">{{ collection?.messages?.conduct }}</button>
+                            <p v-if="conductNotReady" class="mt-1 list-group-item list-group-item-info">{{ collection?.messages?.prepareAllInterviewStatementsToConduct }}</p>
                         </div>
                     </div>
                 </div>
@@ -120,7 +121,9 @@
         <!-- Modals -->
         <!-- Interview -->
         <Interview :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="interviewComponent"></Interview>
-        <!-- XX -->
+        <!-- Interview Conduct -->
+        <InterviewConduct :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="interviewConductComponent"></InterviewConduct>
+        <!-- Statement View Modal -->
         <div class="modal fade text-start modal-primary" id="statementViewModal" tabindex="-1" aria-labelledby="statementViewLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-extra-wide">
                 <div class="modal-content">
@@ -219,10 +222,16 @@
 </template>
 <script>
 import Interview from "./Interview.vue";
+import InterviewConduct from "./InterviewConduct.vue"
 import Swal from "sweetalert2";
 export default {
-    components: { Interview },
+    components: { Interview, InterviewConduct },
     props: ["auditorStatements", "locale", "org", "plans", "reviewStatuses", "actionId"],
+    computed: {
+        conductNotReady() {
+            return this.collection?.statistics?.statements?.interview?.statements?.length != 0;
+        }
+    },
     data() {
         return {
             dataTable: null,
@@ -254,6 +263,9 @@ export default {
             `;
             document.getElementById("dataTable").innerHTML = header;
             var dataSource = thisComponent.collection.statements;
+            if(this.dataTable) {
+                this.dataTable.destroy();
+            }
             thisComponent.dataTable = $(".invoice-list-table").DataTable({
                 data: dataSource,
                 createdRow: function (row, data, dataIndex) {
@@ -482,8 +494,9 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    console.log(response.data);
+                    //console.log(response.data);
                     thisComponent.collection = response.data;
+                    //console.log(thisComponent.collection?.statistics?.statements?.interview?.statements?.length);
                     thisComponent.$nextTick(() => {
                         thisComponent.taskCompletionChart();
                         thisComponent.buildTable();
@@ -494,7 +507,12 @@ export default {
                     console.log(error.response);
                 });
         },
-
+        interviewConduct() {
+            this.$refs.interviewConductComponent.interviewConduct();
+        },
+        rebuild() {
+            this.draw();
+        },
         reviewUpdate(kind, statementId, inputName, sli, deedId) {
             let reviewStatusId = 2;
             if (kind == "accept") {

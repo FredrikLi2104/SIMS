@@ -677,6 +677,51 @@ class AxiosController extends Controller
      **/
     public function organisationsReview($locale, Action $action = null)
     {
+        function latestReview($statement, $org, $locale)
+        {
+            $latestReview = Review::where('statement_id', $statement->id)
+                ->where('organisation_id', $org->id)
+                ->latest('updated_at')
+                ->first();
+            if ($latestReview) {
+                $reviewStatusClass = null;
+                switch ($latestReview->review_status_id) {
+                    case 1:
+                        $reviewStatusClass = 'warning';
+                        break;
+                    case 2:
+                        $reviewStatusClass = 'success';
+                        break;
+                    case 3:
+                        $reviewStatusClass = 'danger';
+                        break;
+                    case 4:
+                        $reviewStatusClass = 'info';
+                        break;
+                    case 5:
+                        $reviewStatusClass = 'primary';
+                        break;
+                    default:
+                        $reviewStatusClass = 'secondary';
+                        break;
+                }
+                $latestReviewFormatted = [
+                    "user" => $latestReview->user->name,
+                    "review_status" => ReviewStatus::find($latestReview->review_status_id)->{'name_' . $locale}, // Assuming ReviewStatus model exists
+                    'class' => $reviewStatusClass,
+                    "lastUpdated" => $latestReview->updated_at->format('Y-m-d H:i:s')
+                ];
+                $latestReview = $latestReviewFormatted;
+            } else {
+                $latestReview = [
+                    'user' => __('messages.notFound'),
+                    "review_status" => __('messages.notFound'),
+                    'class' => 'secondary',
+                    "lastUpdated" => Carbon::now()->format('Y-m-d H:i:s')
+                ];
+            }
+            return $latestReview;
+        };
         $org = Organisation::find(session('selected_org')['id']);
 
         // unify the fetched statements of all types
@@ -764,7 +809,11 @@ class AxiosController extends Controller
                 switch ($statement->plan->id) {
                         // case interview
                     case 1:
+                        $statement->latestReview = latestReview($statement, $org, $locale);
+                        $statement->makeVisible(['latestReview']);
                         $statistics['statements']['interview']['statements'][] = $statement;
+                        // inject statement latest review status for pill
+
                         $statistics['statements']['interview']['count'] += 1;
                         break;
                     case 2:
@@ -797,6 +846,87 @@ class AxiosController extends Controller
         $statistics['statements']['interview']['interviews'] = $orgInterviews;
         $available = $statistics['statements']['interview']['statements'];
         foreach ($orgInterviews as $orgInterview) {
+            // inject creator
+            $orgInterview->creator = User::where('id', $orgInterview->creator_id)->first();
+            // inject latest deed (for value review on conduct)
+            $orgInterview->statements->transform(function ($statement) use ($orgInterview, $locale) {
+                // Retrieve the latest deed associated with the statement
+                $latestDeed = Deed::where('statement_id', $statement->id)
+                    ->latest('updated_at')
+                    ->first();
+                // Add the latest deed as an attribute to the statement
+                // if deed
+                $statement->makeVisible(['latestDeed']);
+                if ($latestDeed) {
+                    $latestDeedFormatted = [
+                        "value" => $latestDeed->value,
+                        "comment" => $latestDeed->comment,
+                        "user" => User::find($latestDeed->user_id)->name,
+                        "lastUpdated" => $latestDeed->updated_at->format('Y-m-d H:i:s'),
+                        "id" => $latestDeed->id,
+                    ];
+                    $latestDeed = $latestDeedFormatted;
+                } else {
+                    $latestDeed = [
+                        "value" => 5,
+                        "comment" => "No deed found",
+                        "user" => "None",
+                        "lastUpdated" => Carbon::now()->format('Y-m-d H:i:s'),
+                        "id" => null,
+                    ];
+                }
+                $statement->latestDeed = $latestDeed;
+                // Retrieve the latest review associated with the statement and the same organization ID as the user
+                $latestReview = Review::where('statement_id', $statement->id)
+                    ->where('organisation_id', User::find($orgInterview->creator_id)->organisation->id)
+                    ->latest('updated_at')
+                    ->first();
+                if ($latestReview) {
+                    $reviewStatusClass = null;
+                    switch ($latestReview->review_status_id) {
+                        case 1:
+                            $reviewStatusClass = 'warning';
+                            break;
+                        case 2:
+                            $reviewStatusClass = 'success';
+                            break;
+                        case 3:
+                            $reviewStatusClass = 'danger';
+                            break;
+                        case 4:
+                            $reviewStatusClass = 'info';
+                            break;
+                        case 5:
+                            $reviewStatusClass = 'primary';
+                            break;
+                        default:
+                            $reviewStatusClass = 'secondary';
+                            break;
+                    }
+                    $latestReviewFormatted = [
+                        "user" => $latestReview->user->name,
+                        "review_status" => ReviewStatus::find($latestReview->review_status_id)->{'name_' . $locale}, // Assuming ReviewStatus model exists
+                        'class' => $reviewStatusClass,
+                        "lastUpdated" => $latestReview->updated_at->format('Y-m-d H:i:s'),
+                        "review" => $latestReview->review,
+                    ];
+                    $latestReview = $latestReviewFormatted;
+                } else {
+                    $latestReview = [
+                        'user' => __('messages.notFound'),
+                        "review_status" => __('messages.notFound'),
+                        'class' => 'secondary',
+                        "lastUpdated" => Carbon::now()->format('Y-m-d H:i:s'),
+                        "review" => '',
+                    ];
+                }
+                $statement->latestReview = $latestReview;
+
+                // Make latestDeed and latestReview visible
+                $statement->makeVisible(['latestDeed', 'latestReview']);
+
+                return $statement;
+            });
             foreach ($orgInterview->statements as $st) {
                 $st->content_en = $st->subcode . '-' . $st->content_en;
                 $st->content_se = $st->subcode . '-' . $st->content_se;
