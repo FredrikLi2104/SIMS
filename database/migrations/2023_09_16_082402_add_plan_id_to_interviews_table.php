@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Plan;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -14,10 +15,12 @@ return new class extends Migration
      */
     public function up()
     {
-        //
-         //
-         DB::table('interview_statement')->delete();
-         DB::table('interviews')->delete();
+        Schema::table('interviews', function (Blueprint $table) {
+            //
+            DB::table('interview_statement')->delete();
+            DB::table('interviews')->delete();
+            $table->foreignIdFor(Plan::class)->after('organisation_id')->constrained();
+        });
     }
 
     /**
@@ -27,6 +30,8 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('interviews', function (Blueprint $table) {
+            //
+        });
     }
 };

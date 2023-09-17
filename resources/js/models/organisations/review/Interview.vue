@@ -219,6 +219,7 @@ export default {
                 locale: thisComponent.locale,
                 interviewee: null,
                 organisation_id: null,
+                plan_id: 1
             };
             // make sure there is an agenda
             load.agenda = document.getElementById("agenda").value;

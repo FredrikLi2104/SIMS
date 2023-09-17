@@ -761,6 +761,7 @@ class AxiosController extends Controller
                     'class' => 'progress progress-bar-success',
                     'title' => Plan::where('id', 3)->first()->{'name_' . $locale},
                     'count' => 0,
+                    'webforms' => [],
                 ],
                 'check' => [
                     'statements' => [],
@@ -772,7 +773,8 @@ class AxiosController extends Controller
             'unplanned' => [
                 'statements' => [],
                 'count' => 0
-            ]
+            ],
+            'users' => $org->usersOnly(),
         ];
         foreach ($statements as $statement) {
             $statement->content_en = $statement->subcode . '-' . $statement->content_en;
@@ -821,6 +823,8 @@ class AxiosController extends Controller
                         $statistics['statements']['test']['count'] += 1;
                         break;
                     case 3:
+                        $statement->latestReview = latestReview($statement, $org, $locale);
+                        $statement->makeVisible(['latestReview']);
                         $statistics['statements']['webform']['statements'][] = $statement;
                         $statistics['statements']['webform']['count'] += 1;
                         break;
@@ -843,9 +847,21 @@ class AxiosController extends Controller
         // interviews
         // find all interviews by the organisation
         $orgInterviews = Interview::where('organisation_id', $org->id)->with('statements')->get();
-        $statistics['statements']['interview']['interviews'] = $orgInterviews;
+
+        //$statistics['statements']['interview']['interviews'] = $orgInterviews;
         $available = $statistics['statements']['interview']['statements'];
         foreach ($orgInterviews as $orgInterview) {
+            // Separate interviews based on plan id
+            switch ($orgInterview->plan_id) {
+                // interview
+                case 1:
+                    $statistics['statements']['interview']['interviews'][] = $orgInterview;
+                    break;
+                // webform    
+                case 3:
+                    $statistics['statements']['webform']['webforms'][] = $orgInterview;
+                    break;
+            }
             // inject creator
             $orgInterview->creator = User::where('id', $orgInterview->creator_id)->first();
             // inject latest deed (for value review on conduct)

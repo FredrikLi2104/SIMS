@@ -49,6 +49,6 @@
     <script src="{{ asset(mix('vendors/js/extensions/nouislider.min.js')) }}"></script>
 @endsection
 @section('page-script')
-    <script src="{{ asset(mix('js/scripts/forms/form-select2.js')) }}"></script>
+    <!-- <script src="{{ asset(mix('js/scripts/forms/form-select2.js')) }}"></script> -->
     <script src="{{ asset(mix('js/models/organisations/review/app.js')) }}"></script>
 @endsection

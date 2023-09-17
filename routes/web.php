@@ -170,4 +170,5 @@ Route::prefix('vuexy')->group(function() {
     Route::get('modal', [RoutingController::class, 'modal'])->name('vuexy.modal');
     Route::get('todo', [RoutingController::class, 'todo'])->name('vuexy.todo');
     Route::get('accountsettings', [RoutingController::class, 'accountsettings'])->name('vuexy.accountsettings');
+    Route::get('select2', [RoutingController::class, 'selecttwo'])->name('vuexy.select2');
 });

@@ -208,6 +208,11 @@ class Organisation extends Model
         return $this->hasMany(User::class);
     }
 
+    public function usersOnly()
+    {
+        return DB::table('users')->where('organisation_id', $this->id)->where('role', 'user')->get();
+    }
+
     public function deedsYears()
     {
         $years = [];

@@ -45,9 +45,27 @@ class InterviewController extends Controller
     public function store(InterviewStoreRequest $request)
     {
         //
+        // force statements check
         $data = $request->all();
+        if(count($data['statements']) == 0) {
+            return response('At least one statement is required!', 500);
+        }
+        // set reviewStatusId for review update\
+        $rsi = 5;
+        switch ($data['plan_id']) {
+            // interview
+            case 1:
+                $rsi = 5;
+                break;
+            // webform
+            case 3:
+                $rsi = 4;
+            default:
+                $rsi = 5;
+                break;
+        }
         try {
-            DB::transaction(function () use ($data) {
+            DB::transaction(function () use ($data, $rsi) {
                 $data['creator_id'] = auth()->user()->id;
                 $interview = Interview::create($data);
                 $interview->statements()->attach($data['statements']);
@@ -61,7 +79,8 @@ class InterviewController extends Controller
                         ->where('organisation_id', $organisationId)
                         ->first();
                     if ($review) {
-                        $review->review_status_id = 5; // Updating review status
+                            $review->review_status_id = $rsi;
+                         // Updating review status
                         $review->save(); // Save the update
                     } else {
                         // Create a new review with status id of 5 (Pending Review)
@@ -69,7 +88,7 @@ class InterviewController extends Controller
                             'organisation_id' => $organisationId,
                             'statement_id' => $statementId,
                             'user_id' => $userId,
-                            'review_status_id' => 5,
+                            'review_status_id' => $rsi,
                             'review' => __('messages.pendingInterview'),
                         ]);
                     }

@@ -10,6 +10,7 @@
                                 <polygon points="12 15 17 21 7 21 12 15"></polygon>
                             </svg>
                         </div>
+                        <!-- Interview Card-->
                         <div class="card-body text-center">
                             <h4>{{ plans[0]["name_" + locale] }}</h4>
                             <p class="text-body mt-1 mb-0" style="height: 9rem">{{ plans[0]["desc_" + locale] }}</p>
@@ -27,6 +28,7 @@
                                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                             </svg>
                         </div>
+                        <!-- Test Card-->
                         <div class="card-body text-center">
                             <h4>{{ plans[1]["name_" + locale] }}</h4>
                             <p class="text-body mt-1 mb-0" style="height: 9rem">{{ plans[1]["desc_" + locale] }}</p>
@@ -34,6 +36,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- Statistics -->
                 <div class="col-md-4 col-12">
                     <div class="card">
                         <div class="card-body">
@@ -75,10 +78,13 @@
                                 <polyline points="10 9 9 9 8 9"></polyline>
                             </svg>
                         </div>
+                        <!-- Webform Card-->
                         <div class="card-body text-center">
                             <h4>{{ plans[2]["name_" + locale] }}</h4>
                             <p class="text-body mt-1 mb-0" style="height: 10rem">{{ plans[2]["desc_" + locale] }}</p>
-                            <button class="btn btn-primary mt-1" disabled>{{ collection?.messages?.show }}</button>
+                            <button class="btn btn-primary mt-1 mx-1" @click="webformPrepare" enabled>{{ collection?.messages?.prepare }}</button>
+                            <button class="btn btn-primary mt-1" :disabled="webformNotReady" @click="webformPrepare">{{ collection?.messages?.conduct }}</button>
+                            <p v-if="webformNotReady" class="mt-1 list-group-item list-group-item-info">{{ collection?.messages?.prepareAllStatementsToConduct }}</p>
                         </div>
                     </div>
                 </div>
@@ -107,6 +113,59 @@
                                 <div class="col-12 d-flex justify-content-center">
                                     <div id="taskCompletionChart"></div>
                                 </div>
+                                <label class="form-label" for="select2-basic">Basic</label>
+                                <select class="select2 form-select" id="select2-basic">
+                                    <option value="AK">Alaska</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="CA">California</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="WY">Wyoming</option>
+                                    <option value="AL">Alabama</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WV">West Virginia</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -123,6 +182,8 @@
         <Interview :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="interviewComponent"></Interview>
         <!-- Interview Conduct -->
         <InterviewConduct :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="interviewConductComponent"></InterviewConduct>
+        <!-- Webform -->
+        <WebformPrepare :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="webformPrepare"></WebformPrepare>
         <!-- Statement View Modal -->
         <div class="modal fade text-start modal-primary" id="statementViewModal" tabindex="-1" aria-labelledby="statementViewLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-extra-wide">
@@ -223,13 +284,17 @@
 <script>
 import Interview from "./Interview.vue";
 import InterviewConduct from "./InterviewConduct.vue"
+import WebformPrepare from "./WebformPrepare.vue"
 import Swal from "sweetalert2";
 export default {
-    components: { Interview, InterviewConduct },
+    components: { Interview, InterviewConduct, WebformPrepare },
     props: ["auditorStatements", "locale", "org", "plans", "reviewStatuses", "actionId"],
     computed: {
         conductNotReady() {
             return this.collection?.statistics?.statements?.interview?.statements?.length != 0;
+        },
+        webformNotReady() {
+            return true;
         }
     },
     data() {
@@ -263,7 +328,7 @@ export default {
             `;
             document.getElementById("dataTable").innerHTML = header;
             var dataSource = thisComponent.collection.statements;
-            if(this.dataTable) {
+            if (this.dataTable) {
                 this.dataTable.destroy();
             }
             thisComponent.dataTable = $(".invoice-list-table").DataTable({
@@ -479,7 +544,7 @@ export default {
                         window.thisComponent.scrollPos = 500;
                     }
                     */
-                    $(".select2").select2();
+                    //$(".select2").select2();
                 },
             });
         },
@@ -494,7 +559,7 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    //console.log(response.data);
+                    console.log(response.data);
                     thisComponent.collection = response.data;
                     //console.log(thisComponent.collection?.statistics?.statements?.interview?.statements?.length);
                     thisComponent.$nextTick(() => {
@@ -552,32 +617,6 @@ export default {
         interviewPrepare() {
             this.$refs.interviewComponent.interviewPrepare();
 
-        },
-        slidersRebuild() {
-            var thisComponent = this;
-            thisComponent.$nextTick(() => {
-                // create sliders for mounted interview statements
-                let slider = null;
-                thisComponent.interviewExpanded.statements.forEach((s) => {
-                    slider = document.getElementById(`interviewStatementValueSlider${thisComponent.interviewExpanded.id}_${s.id}`);
-                    //console.log(slider);
-                    noUiSlider.create(slider, {
-                        start: s.latestDeed.value,
-                        step: 1,
-                        range: {
-                            min: 1,
-                            max: 5,
-                        },
-                        tooltips: true,
-                        direction: "ltr",
-                        pips: {
-                            mode: "steps",
-                            stepped: false,
-                            density: 1,
-                        },
-                    });
-                });
-            });
         },
         statementReviewButtonEnable(id, reviewStatusId) {
             if (reviewStatusId !== null) {
@@ -708,6 +747,11 @@ export default {
             };
             supportTrackerChart = new ApexCharts(supportTrackerChart, supportTrackerChartOptions);
             supportTrackerChart.render();
+        },
+        webformConduct() {
+        },
+        webformPrepare() {
+            this.$refs.webformPrepare.webformPrepare();
         },
     },
     mounted() {
