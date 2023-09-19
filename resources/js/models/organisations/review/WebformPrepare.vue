@@ -57,7 +57,21 @@
                             </div>
                         </div>
                     </div>
-
+                    <!-- Existing and Notify -->
+                    <div class="row mt-2">
+                        <div class="modal-body">
+                            <p>{{ collection?.messages.notify }}</p>
+                        </div>
+                        <!-- Interview Pills-->
+                        <div class="col-6">
+                            <div class="mb-1">
+                                    <label class="form-label" for="emailReview">{{ collection?.messages?.preview }}</label>
+                                    <textarea class="form-control" id="emailReview" rows="3" placeholder="xx"></textarea>
+                                </div>
+                        </div>
+                        <!-- Interview Card-->
+                        
+                    </div>
                 </div>
             </div>
         </div>
@@ -74,7 +88,7 @@ export default {
             conductReady: false,
             dragId: null,
             users: [],
-        }
+        };
     },
     methods: {
         addedStatementRemove(id) {
@@ -127,18 +141,18 @@ export default {
                 },
             });
             let load = {
-                agenda: 'webform',
+                agenda: "webform",
                 user: null,
                 statements: [],
                 locale: thisComponent.locale,
                 interviewee: null,
                 organisation_id: null,
-                plan_id: 3
+                plan_id: 3,
             };
             // user
-            load.interviewee = document.getElementById('webformUserSelect').value;
+            load.interviewee = document.getElementById("webformUserSelect").value;
             // statements
-            this.addedStatements.forEach(s => {
+            this.addedStatements.forEach((s) => {
                 load.statements.push(s.id);
             });
             //org
@@ -169,7 +183,7 @@ export default {
                     thisComponent.$nextTick(() => {
                         Swal.fire({
                             title: error,
-                            text: `${(error.response?.data?.message ? error.response.data.message : '')+(error.response?.data)}`,
+                            text: `${(error.response?.data?.message ? error.response.data.message : "") + error.response?.data}`,
                             icon: "error",
                             customClass: {
                                 confirmButton: "btn btn-primary",
@@ -206,7 +220,7 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                   // console.log(response.data);
+                    // console.log(response.data);
                     thisComponent.users = response.data.statistics?.users;
                     thisComponent.availableStatements = response.data.statistics?.statements?.webform?.statements;
                     //$('.select2').select2();
@@ -229,9 +243,7 @@ export default {
                 });
             $("#webformPrepareModal").modal("show");
         },
-        webformPrepareHide() {
-
-        }
-    }
-}
+        webformPrepareHide() {},
+    },
+};
 </script>
