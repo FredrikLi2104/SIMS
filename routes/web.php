@@ -171,4 +171,5 @@ Route::prefix('vuexy')->group(function() {
     Route::get('todo', [RoutingController::class, 'todo'])->name('vuexy.todo');
     Route::get('accountsettings', [RoutingController::class, 'accountsettings'])->name('vuexy.accountsettings');
     Route::get('select2', [RoutingController::class, 'selecttwo'])->name('vuexy.select2');
+    Route::get('table', [RoutingController::class, 'table'])->name('vuexy.table');
 });

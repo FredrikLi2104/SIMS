@@ -58,19 +58,56 @@
                         </div>
                     </div>
                     <!-- Existing and Notify -->
-                    <div class="row mt-2">
+                    <div class="row mt-2" v-if="webforms.length > 0">
                         <div class="modal-body">
                             <p>{{ collection?.messages.notify }}</p>
                         </div>
-                        <!-- Interview Pills-->
+                        <!-- Preview Text -->
                         <div class="col-6">
                             <div class="mb-1">
-                                    <label class="form-label" for="emailReview">{{ collection?.messages?.preview }}</label>
-                                    <textarea class="form-control" id="emailReview" rows="3" placeholder="xx"></textarea>
-                                </div>
+                                <label class="form-label" for="emailReview">{{ collection?.messages?.preview }}</label>
+                                <textarea class="form-control" id="emailReview" rows="6" placeholder="" style="white-space: pre-line !important;">{{ collection?.messages?.webformPreview }}</textarea>
+                            </div>
                         </div>
-                        <!-- Interview Card-->
-                        
+                        <!-- Table -->
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">{{ collection?.messages?.webforms }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">
+                                        {{ collection?.messages?.existing }} {{ collection?.messages?.webforms }}
+                                    </p>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ collection?.messages?.interviewee }}</th>
+                                                <th>{{ collection?.messages?.statements }}</th>
+                                                <th>{{ collection?.messages?.status }}</th>
+                                                <th>{{ collection?.messages?.actions }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="webform in webforms">
+                                                <td>
+                                                    <span class="fw-bold">{{ webform.interviewee?.name }}</span>
+                                                </td>
+                                                <td>{{ webform.statements?.length }}</td>
+                                                <td><span :class="`badge rounded-pill badge-light-${webformStatus(webform)['class']} me-1`">{{ webformStatus(webform)['text'] }} ({{ webform.emails }})</span></td>
+                                                <td>
+                                                    <button class="btn btn-primary">{{ collection?.messages?.resend }}</button>
+                                                    <button class="btn btn-danger" style="margin-left: 5px !important;" @click="webformDelete(webform.id)">{{ collection?.messages?.delete }}</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -87,6 +124,7 @@ export default {
             addedStatements: [],
             conductReady: false,
             dragId: null,
+            webforms: [],
             users: [],
         };
     },
@@ -201,6 +239,7 @@ export default {
                 .then(function (response) {
                     thisComponent.users = response.data.statistics?.users;
                     thisComponent.availableStatements = response.data.statistics?.statements?.webform?.statements;
+                    thisComponent.webforms = response.data.statistics?.statements?.webform?.webforms;
                     if (thisComponent.availableStatements.length == 0) {
                         thisComponent.conductReady = true;
                     } else {
@@ -215,14 +254,79 @@ export default {
                     console.log(error.response);
                 });
         },
+        webformDelete(id) {
+            var thisComponent = this;
+            Swal.fire({
+                title: "Info!",
+                text: `${thisComponent.collection?.messages?.working} ...`,
+                icon: "info",
+                showConfirmButton: false,
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+            let load = {
+                id: id,
+                type: 'delete',
+                statements: []
+
+            };
+            axios
+                .post(`/${this.locale}/axios/interviews/${id}/update`, load)
+                .then(function (response) {
+                    Swal.close();
+                    thisComponent.rebuild();
+                    thisComponent.$nextTick(() => {
+                        //thisComponent.interviewClear();
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Operation Completed!",
+                            icon: "success",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                            },
+                            buttonsStyling: false,
+                        });
+                        thisComponent.rebuild();
+                    });
+
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    thisComponent.rebuild();
+                    console.log(error.response);
+                    thisComponent.$nextTick(() => {
+                        Swal.fire({
+                            title: error,
+                            text: error.response?.data?.message,
+                            icon: "error",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                            },
+                            buttonsStyling: false,
+                        });
+                        return;
+                    });
+                });
+        },
         webformPrepare() {
+            this.rebuild();
+            /*
             var thisComponent = this;
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    // console.log(response.data);
+                    console.log(response.data);
                     thisComponent.users = response.data.statistics?.users;
                     thisComponent.availableStatements = response.data.statistics?.statements?.webform?.statements;
+                    thisComponent.webforms = response.data.statistics?.statements?.webform?.webforms;
+
                     //$('.select2').select2();
                     /*
                     thisComponent.interviewStatements = response.data.statistics?.statements?.interview?.statements;
@@ -235,15 +339,35 @@ export default {
                         thisComponent.interviews = response.data.statistics.statements.interview.interviews;
                         thisComponent.existingActive = response.data.statistics.statements.interview.interviews[0];
                     }
-                    */
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    console.log(error.response);
-                });
-            $("#webformPrepareModal").modal("show");
+                    
+                })*/
+            /*
+            .catch(function (error) {
+                console.log(error);
+                console.log(error.response);
+            });
+            */
+            this.$nextTick(() => {
+                $("#webformPrepareModal").modal("show");
+            })
+
         },
-        webformPrepareHide() {},
+        webformPrepareHide() { },
+        webformStatus(w) {
+            var thisComponent = this;
+            let r = {
+                class: '',
+                text: ''
+            };
+            if (parseInt(w.emails) > 0) {
+                r.class = 'success';
+                r.text = thisComponent.collection?.messages?.sent;
+            } else {
+                r.class = 'danger';
+                r.text = thisComponent.collection?.messages?.unsent;
+            }
+            return r;
+        }
     },
 };
 </script>

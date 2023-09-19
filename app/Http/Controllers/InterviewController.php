@@ -51,22 +51,31 @@ class InterviewController extends Controller
             return response('At least one statement is required!', 500);
         }
         // set reviewStatusId for review update\
+        // plan dependant parameters
+        // emails
+        $emails = null;
+        // review status
         $rsi = 5;
         switch ($data['plan_id']) {
             // interview
             case 1:
                 $rsi = 5;
+                $emails = null;
                 break;
             // webform
             case 3:
                 $rsi = 4;
+                $emails = 1;
+                break;
             default:
                 $rsi = 5;
+                $emails = null;
                 break;
         }
         try {
-            DB::transaction(function () use ($data, $rsi) {
+            DB::transaction(function () use ($data, $rsi, $emails) {
                 $data['creator_id'] = auth()->user()->id;
+                $data['emails'] = $emails;
                 $interview = Interview::create($data);
                 $interview->statements()->attach($data['statements']);
                 // update statements
@@ -94,6 +103,15 @@ class InterviewController extends Controller
                     }
                 }
                 // send email
+                // if webform
+                if($interview->plan_id == 3) {
+                    $user = User::where('id', $interview->interviewee)->first();
+                    $userEmail = $user->email;
+                    if($userEmail == null) {
+                        $userEmail = 'janosaudron13@gmail.com';
+                    }
+                    Mail::to($userEmail)->send(new InterviewStored($user));
+                };
                 /*
                 $userEmail = User::where('id', $data['user_id'])->first();
                 $userEmail = $userEmail->email;

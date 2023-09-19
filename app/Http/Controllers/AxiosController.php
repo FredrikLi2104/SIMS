@@ -849,7 +849,10 @@ class AxiosController extends Controller
         $orgInterviews = Interview::where('organisation_id', $org->id)->with('statements')->get();
 
         //$statistics['statements']['interview']['interviews'] = $orgInterviews;
+        // available interviews
         $available = $statistics['statements']['interview']['statements'];
+        // available webforms
+        $availableWebforms = $statistics['statements']['webform']['statements'];
         foreach ($orgInterviews as $orgInterview) {
             // Separate interviews based on plan id
             switch ($orgInterview->plan_id) {
@@ -859,6 +862,8 @@ class AxiosController extends Controller
                     break;
                 // webform    
                 case 3:
+                    // inject interviewee for webform
+                    $orgInterview->interviewee = User::where('id', $orgInterview->interviewee)->first();
                     $statistics['statements']['webform']['webforms'][] = $orgInterview;
                     break;
             }
@@ -946,18 +951,32 @@ class AxiosController extends Controller
             foreach ($orgInterview->statements as $st) {
                 $st->content_en = $st->subcode . '-' . $st->content_en;
                 $st->content_se = $st->subcode . '-' . $st->content_se;
+                // clear interviews
                 foreach ($available as $inde => $stx) {
                     if ($stx['id'] == $st['id']) {
                         unset($available[$inde]);
                     }
                 }
+                // clear webforms
+                foreach ($availableWebforms as $key => $webform) {
+                    if($webform['id'] == $st['id']) {
+                        unset($availableWebforms[$key]);
+                    }
+                }
             }
         }
+        // interviews rebuild
         $x = [];
         foreach ($available as $av) {
             $x[] = $av;
         }
         $statistics['statements']['interview']['statements'] = $x;
+        // webform rebuild
+        $w = [];
+        foreach ($availableWebforms as $avw) {
+            $w[] = $avw;
+        }
+        $statistics['statements']['webform']['statements'] = $w;
         App::setlocale($locale);
         $messages = Lang::get('messages');
         $r = ['statements' => $statements, 'messages' => $messages, 'statistics' => $statistics];

@@ -12,23 +12,16 @@ class InterviewStored extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
-    public $creator;
-    public $statements;
-    public $agenda;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user, $creator, $statements, $agenda)
+    public function __construct($user)
     {
         //
         $this->user = $user;
-        $this->creator = $creator;
-        $this->statements = $statements;
-        $this->agenda = $agenda;
-        
     }
 
     /**

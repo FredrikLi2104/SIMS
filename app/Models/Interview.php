@@ -9,7 +9,7 @@ class Interview extends Model
 {
     use HasFactory;
     public $timestamps = true;
-    protected $fillable = ['agenda', 'interviewee', 'creator_id', 'organisation_id', 'plan_id'];
+    protected $fillable = ['agenda', 'interviewee', 'creator_id', 'organisation_id', 'plan_id', 'emails'];
     
 
     public function statements() {

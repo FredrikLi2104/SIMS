@@ -23,6 +23,9 @@ class RoutingController extends Controller
     public function selecttwo() {
         return view('content.forms.form-elements.form-select');
     }
+    public function table() {
+        return view('content.table.table-bootstrap.table-bootstrap');
+    }
     public function todo() {
         //return view('content.extensions.ext-component-sliders');
         return view('content.apps.todo.app-todo');
