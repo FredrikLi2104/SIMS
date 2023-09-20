@@ -1,5 +1,6 @@
+{{--
 @component('mail::message')
-    #@lang('messages.interview') @lang('messages.created')
+    @lang('messages.interview') @lang('messages.created')
     @lang('messages.yourOrganisationUser') {{ $creator->name }} @lang('messages.hasCreatedAnInterviewForYou')<br>
     @lang('messages.agenda'):<br>
     {{ $agenda }}<br>
@@ -16,6 +17,17 @@
         @lang('messages.login')
     @endcomponent
 
+    @lang('messages.greetings'),<br>
+    {{ config('app.name') }}
+@endcomponent
+--}}
+@component('mail::message')
+    @lang('messages.dear') {{ $user->name }}:<br>
+    {{ $body }}
+    <br>
+    @component('mail::button', ['url' => '#', 'color' => 'primary'])
+        @lang('messages.tasks')
+    @endcomponent
     @lang('messages.greetings'),<br>
     {{ config('app.name') }}
 @endcomponent

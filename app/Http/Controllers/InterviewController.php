@@ -107,10 +107,11 @@ class InterviewController extends Controller
                 if($interview->plan_id == 3) {
                     $user = User::where('id', $interview->interviewee)->first();
                     $userEmail = $user->email;
-                    if($userEmail == null) {
-                        $userEmail = 'janosaudron13@gmail.com';
+                    if ($userEmail == null) {
+                        $userEmail = 'fredrik@itsakerhetsbolaget.se';
                     }
-                    Mail::to($userEmail)->send(new InterviewStored($user));
+                    $body = __('messages.webformPreview');
+                    Mail::to($userEmail)->send(new InterviewStored($user, $body));
                 };
                 /*
                 $userEmail = User::where('id', $data['user_id'])->first();

@@ -66,7 +66,7 @@
                         <div class="col-6">
                             <div class="mb-1">
                                 <label class="form-label" for="emailReview">{{ collection?.messages?.preview }}</label>
-                                <textarea class="form-control" id="emailReview" rows="6" placeholder="" style="white-space: pre-line !important;">{{ collection?.messages?.webformPreview }}</textarea>
+                                <textarea class="form-control" id="emailReview" rows="12" placeholder="" style="white-space: pre-line !important;">{{ collection?.messages?.webformPreview }}</textarea>
                             </div>
                         </div>
                         <!-- Table -->
@@ -98,12 +98,16 @@
                                                 <td>{{ webform.statements?.length }}</td>
                                                 <td><span :class="`badge rounded-pill badge-light-${webformStatus(webform)['class']} me-1`">{{ webformStatus(webform)['text'] }} ({{ webform.emails }})</span></td>
                                                 <td>
-                                                    <button class="btn btn-primary">{{ collection?.messages?.resend }}</button>
+                                                    <button class="btn btn-primary" @click="webformResend(webform.id)">{{ collection?.messages?.resend }}</button>
                                                     <button class="btn btn-danger" style="margin-left: 5px !important;" @click="webformDelete(webform.id)">{{ collection?.messages?.delete }}</button>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                    
+                                </div>
+                                <div class="d-flex align-items-end justify-content-center mt-2">
+                                <button class="btn btn-primary" @click="webformResend('all')">{{ collection?.messages?.resendAll }}</button>
                                 </div>
                             </div>
                         </div>
@@ -353,6 +357,74 @@ export default {
 
         },
         webformPrepareHide() { },
+        webformResend(id) {
+            var thisComponent = this;
+            Swal.fire({
+                title: "Info!",
+                text: `${thisComponent.collection?.messages?.working} ...`,
+                icon: "info",
+                showConfirmButton: false,
+                customClass: {
+                    confirmButton: "btn btn-primary",
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+            let body = document.getElementById('emailReview').value;
+            let ids = [];
+            if(id == 'all') {
+                thisComponent.webforms.forEach(w => {
+                    ids.push(w.id);
+                });
+            } else {
+                ids = [id];
+            }
+            let load = {
+                ids: ids,
+                body: body
+            };
+            axios
+                .post(`/${this.locale}/axios/interviews/resend`, load)
+                .then(function (response) {
+                    console.log(response.data);
+                    Swal.close();
+                    thisComponent.rebuild();
+                    thisComponent.$nextTick(() => {
+                        //thisComponent.interviewClear();
+                        Swal.fire({
+                            title: "Success!",
+                            text: "Operation Completed!",
+                            icon: "success",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                            },
+                            buttonsStyling: false,
+                        });
+                        thisComponent.rebuild();
+                    });
+                    
+                })
+                .catch(function (error) {
+                    //thisComponent.rebuild();
+                    console.log(error.response);
+                    thisComponent.$nextTick(() => {
+                        Swal.fire({
+                            title: error,
+                            text: error.response?.data?.message,
+                            icon: "error",
+                            customClass: {
+                                confirmButton: "btn btn-primary",
+                            },
+                            buttonsStyling: false,
+                        });
+                        return;
+                    });
+                });
+        },
         webformStatus(w) {
             var thisComponent = this;
             let r = {

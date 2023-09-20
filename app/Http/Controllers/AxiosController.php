@@ -12,6 +12,7 @@ use App\Http\Requests\OrganisationsStatementsPlansUpdateRequest;
 use App\Http\Requests\OrganisationsStatementsReviewsUpdateRequest;
 use App\Http\Requests\RiskCommentStoreRequest;
 use App\Http\Requests\SanctionFileUploadRequest;
+use App\Mail\InterviewStored;
 use App\Models\Action;
 use App\Models\ActionType;
 use App\Models\Component;
@@ -50,6 +51,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class AxiosController extends Controller
@@ -165,6 +167,40 @@ class AxiosController extends Controller
             ->get()
             ->pluck('year')
             ->all();
+    }
+    /**
+     * Resend emails to a +1 interviewees
+     *
+     * Undocumented function long description
+     *
+     * @param Type $var Description
+     * @return type
+     * @throws conditon
+     **/
+    public function interviewsResend($locale, Request $request)
+    {
+        $data = $request->all();
+        // webform assume by default
+        $interviews = Interview::whereIn('id', $data['ids'])->get();
+        foreach ($interviews as $interview) {
+            $user = User::where('id', $interview->interviewee)->first();
+            $body = $data['body'];
+            $email = $user->email;
+            if ($email == null) {
+                $email = 'fredrik@itsakerhetsbolaget.se';
+            }
+            //$email = 'janosaudron13@gmail.com';
+            try {
+                Mail::to($email)->send(new InterviewStored($user, $body));
+                $count = intval($interview->emails);
+                $count += 1;
+                $interview->emails = $count;
+                $interview->save();
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+        }
+        return response('success', 200);
     }
     /**
      * Update interview
@@ -856,11 +892,11 @@ class AxiosController extends Controller
         foreach ($orgInterviews as $orgInterview) {
             // Separate interviews based on plan id
             switch ($orgInterview->plan_id) {
-                // interview
+                    // interview
                 case 1:
                     $statistics['statements']['interview']['interviews'][] = $orgInterview;
                     break;
-                // webform    
+                    // webform    
                 case 3:
                     // inject interviewee for webform
                     $orgInterview->interviewee = User::where('id', $orgInterview->interviewee)->first();
@@ -959,7 +995,7 @@ class AxiosController extends Controller
                 }
                 // clear webforms
                 foreach ($availableWebforms as $key => $webform) {
-                    if($webform['id'] == $st['id']) {
+                    if ($webform['id'] == $st['id']) {
                         unset($availableWebforms[$key]);
                     }
                 }

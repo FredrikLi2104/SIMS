@@ -64,6 +64,7 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('features/tasks/{year?}', [AxiosController::class, 'featuresTasks'])->middleware('can:super-auditor')->name('axios.features.tasks');
     Route::get('features/tasks-years', [AxiosController::class, 'featuresTasksYears'])->middleware('can:super-auditor')->name('axios.features.tasks-years');
     Route::get('kpis', [AxiosController::class, 'kpis'])->middleware('can:moderator')->name('axios.kpis.index');
+    Route::post('interviews/resend', [AxiosController::class, 'interviewsResend'])->middleware('can:auditor')->name('axios.interviews.resend');
     Route::post('interviews/{interview}/update', [AxiosController::class, 'interviewUpdate'])->middleware('can:auditor')->name('axios.interviews.update');
     Route::get('links', [AxiosController::class, 'links'])->middleware('can:moderator')->name('axios.links.index');
     Route::get('messages', [AxiosController::class, 'messages'])->middleware('can:all')->name('axios.messages');

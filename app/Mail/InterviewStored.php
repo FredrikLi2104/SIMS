@@ -12,16 +12,18 @@ class InterviewStored extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $body;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($user, $body)
     {
         //
         $this->user = $user;
+        $this->body = $body;
     }
 
     /**
@@ -31,6 +33,6 @@ class InterviewStored extends Mailable
      */
     public function build()
     {
-        return $this->from('hemmsidan@itsakerhetsbolaget.se', 'IT-Säkerhetsbolaget')->subject(__('messages.interview').' '.__('messages.created'))->markdown('emails.interviews.stored');
+        return $this->from('hemmsidan@itsakerhetsbolaget.se', 'IT-Säkerhetsbolaget')->subject(__('messages.review').' '.__('messages.update'))->markdown('emails.interviews.stored');
     }
 }
