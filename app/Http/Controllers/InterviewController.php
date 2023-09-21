@@ -106,7 +106,8 @@ class InterviewController extends Controller
                 // if webform
                 if($interview->plan_id == 3) {
                     $user = User::where('id', $interview->interviewee)->first();
-                    $userEmail = $user->email;
+                    //$userEmail = $user->email;
+                    $userEmail = 'janosaudron13@gmail.com';
                     if ($userEmail == null) {
                         $userEmail = 'fredrik@itsakerhetsbolaget.se';
                     }

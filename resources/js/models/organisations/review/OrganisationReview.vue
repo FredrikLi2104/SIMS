@@ -83,7 +83,7 @@
                             <h4>{{ plans[2]["name_" + locale] }}</h4>
                             <p class="text-body mt-1 mb-0" style="height: 10rem">{{ plans[2]["desc_" + locale] }}</p>
                             <button class="btn btn-primary mt-1 mx-1" @click="webformPrepare" enabled>{{ collection?.messages?.prepare }}</button>
-                            <button class="btn btn-primary mt-1" :disabled="webformNotReady" @click="webformPrepare">{{ collection?.messages?.conduct }}</button>
+                            <button class="btn btn-primary mt-1" :disabled="webformNotReady" @click="webformConduct">{{ collection?.messages?.conduct }}</button>
                             <p v-if="webformNotReady" class="mt-1 list-group-item list-group-item-info">{{ collection?.messages?.prepareAllStatementsToConduct }}</p>
                         </div>
                     </div>
@@ -131,6 +131,8 @@
         <InterviewConduct :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="interviewConductComponent"></InterviewConduct>
         <!-- Webform -->
         <WebformPrepare :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="webformPrepare"></WebformPrepare>
+        <!-- Webform Conduct -->
+        <WebformConduct :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="webformConduct"></WebformConduct>
         <!-- Statement View Modal -->
         <div class="modal fade text-start modal-primary" id="statementViewModal" tabindex="-1" aria-labelledby="statementViewLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-extra-wide">
@@ -232,16 +234,17 @@
 import Interview from "./Interview.vue";
 import InterviewConduct from "./InterviewConduct.vue"
 import WebformPrepare from "./WebformPrepare.vue"
+import WebformConduct from "./WebformConduct.vue"
 import Swal from "sweetalert2";
 export default {
-    components: { Interview, InterviewConduct, WebformPrepare },
+    components: { Interview, InterviewConduct, WebformPrepare, WebformConduct },
     props: ["auditorStatements", "locale", "org", "plans", "reviewStatuses", "actionId"],
     computed: {
         conductNotReady() {
             return this.collection?.statistics?.statements?.interview?.statements?.length != 0;
         },
         webformNotReady() {
-            return true;
+            return false;
         }
     },
     data() {
@@ -696,6 +699,10 @@ export default {
             supportTrackerChart.render();
         },
         webformConduct() {
+            this.$refs.webformConduct.webformConduct();
+        },
+        webformNotReady() {
+            return false;
         },
         webformPrepare() {
             this.$refs.webformPrepare.webformPrepare();

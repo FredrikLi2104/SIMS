@@ -96,6 +96,7 @@ return [
     'index' => 'Index',
     'interview' => 'Interview',
     'interviewee' => 'Interviewee',
+    'interviews' => 'Interviews',
     'interviewConduct' => 'Conduct Interview',
     'interviewPrepare' => 'Prepare Interview',
     'inEnglish' => 'in English',

@@ -16,6 +16,10 @@ class RoutingController extends Controller
         //return view('content.extensions.ext-component-sliders');
         return view('content.pages.page-faq');
     }
+    public function list() {
+        //return view('content.extensions.ext-component-sliders');
+        return view('content.components.component-list-group');
+    }
     public function modal() {
         //return view('content.extensions.ext-component-sliders');
         return view('content.components.component-modals');

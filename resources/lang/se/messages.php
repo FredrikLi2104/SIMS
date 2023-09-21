@@ -96,6 +96,7 @@ return [
     'index' => 'Index',
     'interview' => 'Intervju',
     'interviewee' => 'Intervjuad',
+    'interviews' => 'Intervjuer',
     'interviewConduct' => 'Genomföra Intervju',
     'interviewPrepare' => 'Förbereda Intervju',
     'inEnglish' => 'på engelska',

@@ -168,6 +168,7 @@ Route::prefix('services')->middleware('auth')->group(function () {
 /* Vuexy - to preview components */
 Route::prefix('vuexy')->group(function() {
     Route::get('component', [RoutingController::class, 'component'])->name('vuexy.component');
+    Route::get('list', [RoutingController::class, 'list'])->name('vuexy.list');
     Route::get('modal', [RoutingController::class, 'modal'])->name('vuexy.modal');
     Route::get('todo', [RoutingController::class, 'todo'])->name('vuexy.todo');
     Route::get('accountsettings', [RoutingController::class, 'accountsettings'])->name('vuexy.accountsettings');
