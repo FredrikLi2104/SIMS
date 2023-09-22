@@ -911,7 +911,7 @@ class AxiosController extends Controller
             // inject creator
             $orgInterview->creator = User::where('id', $orgInterview->creator_id)->first();
             // inject latest deed (for value review on conduct)
-            $orgInterview->statements->transform(function ($statement) use ($orgInterview, $locale, $statistics) {
+            $orgInterview->statements->transform(function ($statement) use ($orgInterview, $locale, $statistics, $org) {
                 // Retrieve the latest deed associated with the statement
                 $latestDeed = Deed::where('statement_id', $statement->id)
                     ->latest('updated_at')
@@ -939,8 +939,14 @@ class AxiosController extends Controller
                 }
                 $statement->latestDeed = $latestDeed;
                 // Retrieve the latest review associated with the statement and the same organization ID as the user
+                /*
                 $latestReview = Review::where('statement_id', $statement->id)
                     ->where('organisation_id', User::find($orgInterview->creator_id)->organisation->id)
+                    ->latest('updated_at')
+                    ->first();
+                    */
+                $latestReview = Review::where('statement_id', $statement->id)
+                    ->where('organisation_id', $org->id)
                     ->latest('updated_at')
                     ->first();
                 if ($latestReview) {
@@ -993,7 +999,7 @@ class AxiosController extends Controller
                 if ($orgInterview->plan_id == 3) {
                     // find comp
                     $orgComponent = $statement->component;
-                    $c = ['id' => $orgComponent->id, 'text' => $orgComponent->code.'-'.$orgComponent['name_'.$locale], 'st' => [$st]];
+                    $c = ['id' => $orgComponent->id, 'text' => $orgComponent->code . '-' . $orgComponent['name_' . $locale], 'st' => [$st]];
                     // does it exist?
                     $indx = -1;
                     foreach ($webformComponents as $ind => $wfc) {
