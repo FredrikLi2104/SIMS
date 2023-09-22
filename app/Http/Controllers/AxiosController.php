@@ -798,6 +798,7 @@ class AxiosController extends Controller
                     'title' => Plan::where('id', 3)->first()->{'name_' . $locale},
                     'count' => 0,
                     'webforms' => [],
+                    'components' => [],
                 ],
                 'check' => [
                     'statements' => [],
@@ -858,6 +859,7 @@ class AxiosController extends Controller
                         $statistics['statements']['test']['statements'][] = $statement;
                         $statistics['statements']['test']['count'] += 1;
                         break;
+                        // case webform    
                     case 3:
                         $statement->latestReview = latestReview($statement, $org, $locale);
                         $statement->makeVisible(['latestReview']);
@@ -889,6 +891,9 @@ class AxiosController extends Controller
         $available = $statistics['statements']['interview']['statements'];
         // available webforms
         $availableWebforms = $statistics['statements']['webform']['statements'];
+        // components
+        // webform components
+        $webformComponents = [];
         foreach ($orgInterviews as $orgInterview) {
             // Separate interviews based on plan id
             switch ($orgInterview->plan_id) {
@@ -906,7 +911,7 @@ class AxiosController extends Controller
             // inject creator
             $orgInterview->creator = User::where('id', $orgInterview->creator_id)->first();
             // inject latest deed (for value review on conduct)
-            $orgInterview->statements->transform(function ($statement) use ($orgInterview, $locale) {
+            $orgInterview->statements->transform(function ($statement) use ($orgInterview, $locale, $statistics) {
                 // Retrieve the latest deed associated with the statement
                 $latestDeed = Deed::where('statement_id', $statement->id)
                     ->latest('updated_at')
@@ -978,13 +983,33 @@ class AxiosController extends Controller
                     ];
                 }
                 $statement->latestReview = $latestReview;
-
                 // Make latestDeed and latestReview visible
                 $statement->makeVisible(['latestDeed', 'latestReview']);
-
                 return $statement;
             });
+            // webform component statements
             foreach ($orgInterview->statements as $st) {
+                // component grouping for webform
+                if ($orgInterview->plan_id == 3) {
+                    // find comp
+                    $orgComponent = $statement->component;
+                    $c = ['id' => $orgComponent->id, 'text' => $orgComponent->code.'-'.$orgComponent['name_'.$locale], 'st' => [$st]];
+                    // does it exist?
+                    $indx = -1;
+                    foreach ($webformComponents as $ind => $wfc) {
+                        if ($wfc['id'] == $orgComponent->id) {
+                            $indx = $ind;
+                            break;
+                        }
+                    }
+                    if ($indx == -1) {
+                        // does not exist, write new
+                        $webformComponents[] = $c;
+                    } else {
+                        // else
+                        $webformComponents[$indx]['st'][] = $st;
+                    }
+                }
                 $st->content_en = $st->subcode . '-' . $st->content_en;
                 $st->content_se = $st->subcode . '-' . $st->content_se;
                 // clear interviews
@@ -1012,6 +1037,10 @@ class AxiosController extends Controller
         foreach ($availableWebforms as $avw) {
             $w[] = $avw;
         }
+        // components
+        // sort by id
+        $webformComponents = collect($webformComponents);
+        $statistics['statements']['webform']['components'] = $webformComponents;
         $statistics['statements']['webform']['statements'] = $w;
         App::setlocale($locale);
         $messages = Lang::get('messages');
@@ -1552,7 +1581,7 @@ class AxiosController extends Controller
                 ]);
                 $review->save();
             } else {
-                Review::create($data)->with;
+                Review::create($data);
             }
             // update deed
             if ($data['deed_id']) {
