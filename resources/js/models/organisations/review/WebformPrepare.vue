@@ -356,7 +356,13 @@ export default {
             })
 
         },
-        webformPrepareHide() { },
+        webformPrepareHide() { 
+            this.$nextTick(() => {
+                $("#webformPrepareModal").modal("hide");
+                // rebuild parent
+                thisComponent.$parent.rebuild();
+            });
+        },
         webformResend(id) {
             var thisComponent = this;
             Swal.fire({

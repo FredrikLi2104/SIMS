@@ -47,7 +47,7 @@ class InterviewController extends Controller
         //
         // force statements check
         $data = $request->all();
-        if(count($data['statements']) == 0) {
+        if (count($data['statements']) == 0) {
             return response('At least one statement is required!', 500);
         }
         // set reviewStatusId for review update\
@@ -57,12 +57,12 @@ class InterviewController extends Controller
         // review status
         $rsi = 5;
         switch ($data['plan_id']) {
-            // interview
+                // interview
             case 1:
                 $rsi = 5;
                 $emails = null;
                 break;
-            // webform
+                // webform
             case 3:
                 $rsi = 4;
                 $emails = 1;
@@ -88,8 +88,8 @@ class InterviewController extends Controller
                         ->where('organisation_id', $organisationId)
                         ->first();
                     if ($review) {
-                            $review->review_status_id = $rsi;
-                         // Updating review status
+                        $review->review_status_id = $rsi;
+                        // Updating review status
                         $review->save(); // Save the update
                     } else {
                         // Create a new review with status id of 5 (Pending Review)
@@ -104,12 +104,16 @@ class InterviewController extends Controller
                 }
                 // send email
                 // if webform
-                if($interview->plan_id == 3) {
+                if ($interview->plan_id == 3) {
                     $user = User::where('id', $interview->interviewee)->first();
-                    //$userEmail = $user->email;
-                    $userEmail = 'janosaudron13@gmail.com';
-                    if ($userEmail == null) {
-                        $userEmail = 'fredrik@itsakerhetsbolaget.se';
+                    if (env('APP_ENV') == 'local') {
+                        $userEmail = 'janosaudron13@gmail.com';
+                    }
+                    if (env('APP_ENV') == 'production') {
+                        $userEmail = $user->email;
+                        if ($userEmail == null) {
+                            $userEmail = 'fredrik@itsakerhetsbolaget.se';
+                        }
                     }
                     $body = __('messages.webformPreview');
                     Mail::to($userEmail)->send(new InterviewStored($user, $body));
