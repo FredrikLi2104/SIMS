@@ -16,6 +16,7 @@ use App\Models\ReviewStatus;
 use App\Models\Sni;
 use App\Models\Statement;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -229,40 +230,85 @@ class OrganisationController extends Controller
             "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
             "Expires"             => "0"
         );
-        $columns = array('component', 'code', 'component_name_en', 'component_name_se', 'content_en', 'content_se', 'desc_en', 'desc_se', 'guide_en', 'guide_se', 'implementation_en', 'implementation_se', 'value', 'comment', 'review', 'plan');
-        $callback = function () use ($statements, $columns, $locale) {
-            $file = fopen('php://output', 'w');
-            fputcsv($file, $columns);
-            foreach ($statements as $statement) {
-                $row['component']  = $statement->component?->code;
-                $row['code']    = $statement->code;
-                $row['component_name_en']    = $statement->component?->name_en;
-                $row['component_name_se']  = $statement->component?->name_se;
-                $row['content_en']  = $statement->content_en;
-                $row['content_se']  = $statement->content_se;
-                $row['desc_en']  = $statement->desc_en;
-                $row['desc_se']  = $statement->desc_se;
-                $row['guide_en']  = $statement->guide_en;
-                $row['guide_se']  = $statement->guide_se;
-                $row['implementation_en'] = $statement->implementation_en;
-                $row['implementation_se'] = $statement->implementation_se;
-                $row['value'] = $statement->deed?->value;
-                $row['comment'] = $statement->deed?->comment;
-                $row['review'] = $statement->review?->review;
-                $row['plan'] = $statement->plan['name_' . $locale];
-                // post processing for 696 (csv issue on import, clear characters)
-                foreach ($row as $key => $val) {
-                    $row[$key] = str_replace(["\r", "\n"], '', $val);
+        $columns = array('ITSB_Statement', 'ITSB_Component_EN', 'ITSB_Component_SE', 'ITSB_Content_EN', 'ITSB_Content_SE', 'ITSB_Desc_EN', 'ITSB_Desc_SE', 'ITSB_For_User_Implementation_Example_EN', 'ITSB_For_User_Implementation_Example_SE', 'ITSB_For_Auditor_How_to_Review_EN', 'ITSB_For_Auditor_How_to_Review_SE', 'User_Statement_Implementation', 'User_Statement_Responsibility', 'User_Deed_Value', 'User_Deed_Comment', 'Auditor_Plan_How_to_Review', 'Auditor_Review', 'Auditor_Review_Plan', 'Auditor_Review_Result');
+        try {
+            $callback = function () use ($statements, $columns, $locale, $org) {
+                $file = fopen('php://output', 'w');
+                fputcsv($file, $columns);
+                foreach ($statements as $statement) {
+                    $row['ITSB_Statement'] = $statement->subcode;
+                    $row['ITSB_Component_EN'] = $statement->component?->name_en;
+                    $row['ITSB_Component_SE'] = $statement->component?->name_se;
+                    $row['ITSB_Content_EN'] = $statement->content_en;
+                    $row['ITSB_Content_SE'] = $statement->content_se;
+                    $row['ITSB_Desc_EN'] = $statement->desc_en;
+                    $row['ITSB_Desc_SE'] = $statement->desc_se;
+                    $row['ITSB_For_User_Implementation_Example_EN'] = $statement->implementation_en;
+                    $row['ITSB_For_User_Implementation_Example_SE'] = $statement->implementation_se;
+                    $row['ITSB_For_Auditor_How_to_Review_EN'] = $statement->guide_en;
+                    $row['ITSB_For_Auditor_How_to_Review_SE'] = $statement->guide_se;
+                    $orgst = DB::table('organisation_statement')->where('organisation_id', $org->id)->where('statement_id', $statement->id)->first();
+                    if ($orgst) {
+                        $imp = $orgst->implementation;
+                        $resp = $orgst->responsibility;
+                    } else {
+                        $imp = 'Not Found';
+                        $resp = 'Not Found';
+                    }
+                    $row['User_Statement_Implementation'] = $imp;
+                    $row['User_Statement_Responsibility'] = $resp;
+                    $row['User_Deed_Value'] = $statement->deed?->value;
+                    $row['User_Deed_Comment'] = $statement->deed?->comment;
+                    $orgUsers = $org->users->pluck('id');
+                    $orgAudStat = DB::table('auditor_statement')->whereIn('user_id', $orgUsers)->get();
+                    $orgAudStat = $orgAudStat->filter(function ($r) use ($statement) {
+                        return $r->statement_id == $statement->id;
+                    });
+                    if ($orgAudStat->count() > 0) {
+                        $aphr = $orgAudStat->first();
+                        $aphr = $aphr->guide;
+                    } else {
+                        $aphr = 'Not Found';
+                    }
+                    $row['Auditor_Plan_How_to_Review'] = $aphr;
+                    $row['Auditor_Review'] = $statement->review?->review;
+                    $row['Auditor_Review_Plan'] = $statement->plan['name_'.$locale];
+                    $row['Auditor_Review_Result'] = $statement->review?->reviewStatus['name_'.$locale];
+                    
+                    /*
+                    $row['component']  = $statement->component?->code;
+                    $row['code']    = $statement->code;
+                    $row['component_name_en']    = $statement->component?->name_en;
+                    $row['component_name_se']  = $statement->component?->name_se;
+                    $row['content_en']  = $statement->content_en;
+                    $row['content_se']  = $statement->content_se;
+                    $row['desc_en']  = $statement->desc_en;
+                    $row['desc_se']  = $statement->desc_se;
+                    $row['guide_en']  = $statement->guide_en;
+                    $row['guide_se']  = $statement->guide_se;
+                    $row['implementation_en'] = $statement->implementation_en;
+                    $row['implementation_se'] = $statement->implementation_se;
+                    $row['value'] = $statement->deed?->value;
+                    $row['comment'] = $statement->deed?->comment;
+                    $row['review'] = $statement->review?->review;
+                    $row['plan'] = $statement->plan['name_' . $locale];
+                    */
+                    // post processing for 696 (csv issue on import, clear characters)
+                    foreach ($row as $key => $val) {
+                        $row[$key] = str_replace(["\r", "\n"], '', $val);
+                    }
+                    fputcsv($file, array($row['ITSB_Statement'], $row['ITSB_Component_EN'], $row['ITSB_Component_SE'], $row['ITSB_Content_EN'], $row['ITSB_Content_SE'], $row['ITSB_Desc_EN'], $row['ITSB_Desc_SE'], $row['ITSB_For_User_Implementation_Example_EN'], $row['ITSB_For_User_Implementation_Example_SE'], $row['ITSB_For_Auditor_How_to_Review_EN'], $row['ITSB_For_Auditor_How_to_Review_SE'], $row['User_Statement_Implementation'], $row['User_Statement_Responsibility'], $row['User_Deed_Value'], $row['User_Deed_Comment'], $row['Auditor_Plan_How_to_Review'], $row['Auditor_Review'], $row['Auditor_Review_Plan'], $row['Auditor_Review_Result']));
                 }
-                fputcsv($file, array($row['component'], $row['code'], $row['component_name_en'], $row['component_name_se'], $row['content_en'], $row['content_se'], $row['desc_en'], $row['desc_se'], $row['guide_en'], $row['guide_se'], $row['implementation_en'], $row['implementation_se'], $row['value'], $row['comment'], $row['review'], $row['plan']));
-            }
 
 
 
-            fclose($file);
-        };
+                fclose($file);
+            };
 
-        return response()->stream($callback, 200, $headers);
+            return response()->stream($callback, 200, $headers);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
