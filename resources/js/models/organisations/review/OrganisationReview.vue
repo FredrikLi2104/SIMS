@@ -244,7 +244,7 @@ export default {
             return this.collection?.statistics?.statements?.interview?.statements?.length != 0;
         },
         webformNotReady() {
-            return false;
+            return this.collection?.statistics?.statements?.webform?.statements?.length != 0;
         }
     },
     data() {
@@ -509,7 +509,7 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    console.log(response.data);
+                    //console.log(response.data);
                     thisComponent.collection = response.data;
                     //console.log(thisComponent.collection?.statistics?.statements?.interview?.statements?.length);
                     thisComponent.$nextTick(() => {
@@ -524,6 +524,9 @@ export default {
         },
         interviewConduct() {
             this.$refs.interviewConductComponent.interviewConduct();
+        },
+        interviewPrepare() {
+            this.$refs.interviewComponent.interviewPrepare();
         },
         rebuild() {
             this.draw();
@@ -563,10 +566,6 @@ export default {
                         rtl: false,
                     });
                 });
-        },
-        interviewPrepare() {
-            this.$refs.interviewComponent.interviewPrepare();
-
         },
         statementReviewButtonEnable(id, reviewStatusId) {
             if (reviewStatusId !== null) {

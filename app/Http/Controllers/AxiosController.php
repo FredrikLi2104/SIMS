@@ -185,11 +185,15 @@ class AxiosController extends Controller
         foreach ($interviews as $interview) {
             $user = User::where('id', $interview->interviewee)->first();
             $body = $data['body'];
-            $email = $user->email;
-            if ($email == null) {
-                $email = 'fredrik@itsakerhetsbolaget.se';
+            if (env('APP_ENV' == 'local')) {
+                $email = 'janosaudron13@gmail.com';
             }
-            //$email = 'janosaudron13@gmail.com';
+            if (env('APP_ENV' == 'production')) {
+                $email = $user->email;
+                if ($email == null) {
+                    $email = 'fredrik@itsakerhetsbolaget.se';
+                }
+            }
             try {
                 Mail::to($email)->send(new InterviewStored($user, $body));
                 $count = intval($interview->emails);
@@ -212,7 +216,7 @@ class AxiosController extends Controller
      **/
     public function interviewUpdate($locale, Request $request)
     {
-        $interview = Interview::where('id', $request['id'])->first()->with('statements')->get()->first();
+        $interview = Interview::where('id', $request['id'])->first();
         // if statements are 0
         if (count($request['statements']) == 0) {
             // clear all statements
@@ -224,7 +228,7 @@ class AxiosController extends Controller
             }
         } else {
             // sync
-            $statements = collect($request['statements'])->pluck('id');
+            $statements = collect($request['statements'])->pluck('id')->toArray();
             try {
                 $interview->statements()->sync($statements);
             } catch (\Throwable $th) {
@@ -998,7 +1002,7 @@ class AxiosController extends Controller
                 // component grouping for webform
                 if ($orgInterview->plan_id == 3) {
                     // find comp
-                    $orgComponent = $statement->component;
+                    $orgComponent = $st->component;
                     $c = ['id' => $orgComponent->id, 'text' => $orgComponent->code . '-' . $orgComponent['name_' . $locale], 'st' => [$st]];
                     // does it exist?
                     $indx = -1;

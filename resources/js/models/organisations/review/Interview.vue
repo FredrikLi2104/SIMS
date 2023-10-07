@@ -316,6 +316,7 @@ export default {
             });
         },
         interviewUpdate(type) {
+            //console.log(type);
             //console.log(this.existingActive);
             var thisComponent = this;
             let load;
@@ -342,6 +343,7 @@ export default {
                         Swal.showLoading();
                     },
                 });
+                console.log(load);
                 axios
                     .post(`/${this.locale}/axios/interviews/${this.existingActive.id}/update`, load)
                     .then(function (response) {
@@ -433,7 +435,7 @@ export default {
             axios
                 .get("/" + thisComponent.locale + "/axios/organisations/review/" + thisComponent.actionId, {})
                 .then(function (response) {
-                    console.log(response.data);
+                    //console.log(response.data);
                     thisComponent.interviewStatements = response.data.statistics?.statements?.interview?.statements;
                     if (thisComponent.interviewStatements.length == 0) {
                         thisComponent.conductReady = true;
