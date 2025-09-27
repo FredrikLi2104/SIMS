@@ -42,11 +42,12 @@ class InterviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    
     public function store(InterviewStoreRequest $request)
     {
         //
         // force statements check
-        $data = $request->all();
+        $data = $request->all(); // Hämtar all data från requesten (från model/interview.php protected fillable)
         if (count($data['statements']) == 0) {
             return response('At least one statement is required!', 500);
         }
@@ -74,9 +75,12 @@ class InterviewController extends Controller
         }
         try {
             DB::transaction(function () use ($data, $rsi, $emails) {
+                //Sätter skaparen av interview (aka vilken auditor)
                 $data['creator_id'] = auth()->user()->id;
                 $data['emails'] = $emails;
+                //Skapar interviewrad i databasen
                 $interview = Interview::create($data);
+                //Lägger till alla statements till interview i interview_statement
                 $interview->statements()->attach($data['statements']);
                 // update statements
                 // Get the organization ID and user ID of the authenticated user
@@ -87,10 +91,12 @@ class InterviewController extends Controller
                     $review = Review::where('statement_id', $statementId)
                         ->where('organisation_id', $organisationId)
                         ->first();
+                    //Om det finns en review, sätt status till aktuell ( pending)
                     if ($review) {
                         $review->review_status_id = $rsi;
                         // Updating review status
                         $review->save(); // Save the update
+                    //Annars skapa en ny review Status
                     } else {
                         // Create a new review with status id of 5 (Pending Review)
                         Review::create([
