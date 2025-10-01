@@ -1432,6 +1432,7 @@
         },
         {
             "name": "laravel/framework",
+<<<<<<< HEAD
             "version": "v9.52.21",
             "source": {
                 "type": "git",
@@ -1442,6 +1443,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/6055d9594c9da265ddbf1e27e7dd8f09624568bc",
                 "reference": "6055d9594c9da265ddbf1e27e7dd8f09624568bc",
+=======
+            "version": "v9.52.20",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/framework.git",
+                "reference": "2bb6835af73fcf0d1d0bfb84af71cef236cb8609"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/2bb6835af73fcf0d1d0bfb84af71cef236cb8609",
+                "reference": "2bb6835af73fcf0d1d0bfb84af71cef236cb8609",
+>>>>>>> 124ec46 (Lagt till funktionalitet till Review statements interview block)
                 "shasum": ""
             },
             "require": {
@@ -1626,7 +1639,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
+<<<<<<< HEAD
             "time": "2025-09-30T14:57:50+00:00"
+=======
+            "time": "2025-01-31T10:09:38+00:00"
+>>>>>>> 124ec46 (Lagt till funktionalitet till Review statements interview block)
         },
         {
             "name": "laravel/sanctum",

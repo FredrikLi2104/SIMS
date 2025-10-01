@@ -1,1 +1,149 @@
-$((function(){"use strict";var t=$(".validate-form"),e=$("#account-upload-img"),n=$("#account-upload"),c=$(".uploadedAvatar"),a=$("#account-reset"),o=$(".account-number-mask"),i=$(".account-zip-code"),r=$(".select2"),u=document.querySelector("#formAccountDeactivation"),s=u.querySelector(".deactivate-account");if(c){var l=c.attr("src");n.on("change",(function(t){var n=new FileReader,c=t.target.files;n.onload=function(){e&&e.attr("src",n.result)},n.readAsDataURL(c[0])})),a.on("click",(function(){c.attr("src",l)}))}t.length&&t.each((function(){var t=$(this);t.validate({rules:{firstName:{required:!0},lastName:{required:!0},accountActivation:{required:!0}}}),t.on("submit",(function(t){t.preventDefault()}))})),u&&$(document).on("click","#accountActivation",(function(){1==d.checked?s.removeAttribute("disabled"):s.setAttribute("disabled","disabled")}));var d=document.querySelector("#accountActivation");s&&(s.onclick=function(){1==d.checked&&Swal.fire({text:"Are you sure you would like to deactivate your account?",icon:"warning",showCancelButton:!0,confirmButtonText:"Yes",customClass:{confirmButton:"btn btn-primary",cancelButton:"btn btn-outline-danger ms-2"},buttonsStyling:!1}).then((function(t){t.value?Swal.fire({icon:"success",title:"Deleted!",text:"Your file has been deleted.",customClass:{confirmButton:"btn btn-success"}}):t.dismiss===Swal.DismissReason.cancel&&Swal.fire({title:"Cancelled",text:"Deactivation Cancelled!!",icon:"error",customClass:{confirmButton:"btn btn-success"}})}))}),o.length&&o.each((function(){new Cleave($(this),{phone:!0,phoneRegionCode:"US"})})),i.length&&i.each((function(){new Cleave($(this),{delimiter:"",numeral:!0})})),r.length&&r.each((function(){var t=$(this);t.wrap('<div class="position-relative"></div>'),t.select2({dropdownParent:t.parent()})}))}));
+/******/ (() => { // webpackBootstrap
+var __webpack_exports__ = {};
+/*!*********************************************************************!*\
+  !*** ./resources/js/scripts/pages/page-account-settings-account.js ***!
+  \*********************************************************************/
+$(function () {
+  'use strict';
+
+  // variables
+  var form = $('.validate-form'),
+    accountUploadImg = $('#account-upload-img'),
+    accountUploadBtn = $('#account-upload'),
+    accountUserImage = $('.uploadedAvatar'),
+    accountResetBtn = $('#account-reset'),
+    accountNumberMask = $('.account-number-mask'),
+    accountZipCode = $('.account-zip-code'),
+    select2 = $('.select2'),
+    deactivateAcc = document.querySelector('#formAccountDeactivation'),
+    deactivateButton = deactivateAcc.querySelector('.deactivate-account');
+
+  // Update user photo on click of button
+
+  if (accountUserImage) {
+    var resetImage = accountUserImage.attr('src');
+    accountUploadBtn.on('change', function (e) {
+      var reader = new FileReader(),
+        files = e.target.files;
+      reader.onload = function () {
+        if (accountUploadImg) {
+          accountUploadImg.attr('src', reader.result);
+        }
+      };
+      reader.readAsDataURL(files[0]);
+    });
+    accountResetBtn.on('click', function () {
+      accountUserImage.attr('src', resetImage);
+    });
+  }
+
+  // jQuery Validation for all forms
+  // --------------------------------------------------------------------
+  if (form.length) {
+    form.each(function () {
+      var $this = $(this);
+      $this.validate({
+        rules: {
+          firstName: {
+            required: true
+          },
+          lastName: {
+            required: true
+          },
+          accountActivation: {
+            required: true
+          }
+        }
+      });
+      $this.on('submit', function (e) {
+        e.preventDefault();
+      });
+    });
+  }
+
+  // disabled submit button on checkbox unselect
+  if (deactivateAcc) {
+    $(document).on('click', '#accountActivation', function () {
+      if (accountActivation.checked == true) {
+        deactivateButton.removeAttribute('disabled');
+      } else {
+        deactivateButton.setAttribute('disabled', 'disabled');
+      }
+    });
+  }
+
+  // Deactivate account alert
+  var accountActivation = document.querySelector('#accountActivation');
+
+  // Alert With Functional Confirm Button
+  if (deactivateButton) {
+    deactivateButton.onclick = function () {
+      if (accountActivation.checked == true) {
+        Swal.fire({
+          text: 'Are you sure you would like to deactivate your account?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-outline-danger ms-2'
+          },
+          buttonsStyling: false
+        }).then(function (result) {
+          if (result.value) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: 'Your file has been deleted.',
+              customClass: {
+                confirmButton: 'btn btn-success'
+              }
+            });
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+              title: 'Cancelled',
+              text: 'Deactivation Cancelled!!',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-success'
+              }
+            });
+          }
+        });
+      }
+    };
+  }
+
+  //phone
+  if (accountNumberMask.length) {
+    accountNumberMask.each(function () {
+      new Cleave($(this), {
+        phone: true,
+        phoneRegionCode: 'US'
+      });
+    });
+  }
+
+  //zip code
+  if (accountZipCode.length) {
+    accountZipCode.each(function () {
+      new Cleave($(this), {
+        delimiter: '',
+        numeral: true
+      });
+    });
+  }
+
+  // For all Select2
+  if (select2.length) {
+    select2.each(function () {
+      var $this = $(this);
+      $this.wrap('<div class="position-relative"></div>');
+      $this.select2({
+        dropdownParent: $this.parent()
+      });
+    });
+  }
+});
+/******/ })()
+;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InterviewRequest;
 use App\Http\Requests\InterviewStoreRequest;
 use App\Mail\InterviewStored;
+use App\Mail\InterviewInvitation;
 use App\Models\Interview;
 use App\Models\Review;
 use App\Models\Statement;
@@ -109,6 +110,35 @@ class InterviewController extends Controller
                     }
                 }
                 // send email
+                // if interview (plan_id = 1)
+                if ($interview->plan_id == 1) {
+                    $creator = auth()->user();
+                    $organisation = $creator->organisation;
+                    $locale = app()->getLocale();
+
+                    // Get all statements with their content
+                    $statements = [];
+                    foreach ($data['statements'] as $statementId) {
+                        $statement = Statement::find($statementId);
+                        if ($statement) {
+                            $statements[] = [
+                                'content_' . $locale => $statement->{'content_' . $locale},
+                            ];
+                        }
+                    }
+
+                    // Determine recipient email
+                    $recipientEmail = $interview->interviewee;
+                    if (env('APP_ENV') == 'local') {
+                        $recipientEmail = env('MAIL_TEST_ADDRESS', 'janosaudron13@gmail.com');
+                    }
+
+                    // Send invitation email
+                    Mail::to($recipientEmail)->send(
+                        new InterviewInvitation($interview, $creator, $statements, $locale, $organisation)
+                    );
+                }
+
                 // if webform
                 if ($interview->plan_id == 3) {
                     $user = User::where('id', $interview->interviewee)->first();
@@ -190,5 +220,106 @@ class InterviewController extends Controller
     public function destroy(Interview $interview)
     {
         //
+    }
+
+    /**
+     * Update the status of an interview.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:planned,in_progress,completed,cancelled',
+        ]);
+
+        $interview = Interview::findOrFail($id);
+        $interview->status = $request->status;
+
+        // Auto-set conducted_date when marking as completed
+        if ($request->status === Interview::STATUS_COMPLETED && !$interview->conducted_date) {
+            $interview->conducted_date = now();
+        }
+
+        $interview->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.statusUpdated'),
+            'interview' => $interview
+        ]);
+    }
+
+    /**
+     * Upload a file attachment to an interview.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadFile(Request $request, $id)
+    {
+        $request->validate([
+            'file' => 'required|file|max:10240', // 10MB max
+        ]);
+
+        try {
+            $interview = Interview::findOrFail($id);
+            $file = $request->file('file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('interviews', $filename, 'public');
+
+            // Get existing attachments or initialize empty array
+            $attachments = $interview->attachments ? json_decode($interview->attachments, true) : [];
+
+            // Add new attachment
+            $attachments[] = [
+                'filename' => $file->getClientOriginalName(),
+                'path' => $path,
+                'uploaded_at' => now()->toDateTimeString(),
+                'uploaded_by' => auth()->user()->id
+            ];
+
+            // Save attachments as JSON
+            $interview->attachments = json_encode($attachments);
+            $interview->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => __('messages.fileUploaded'),
+                'attachments' => $attachments
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.fileUploadFailed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Update interview notes.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateNotes(Request $request, $id)
+    {
+        $request->validate([
+            'notes' => 'nullable|string',
+        ]);
+
+        $interview = Interview::findOrFail($id);
+        $interview->notes = $request->notes;
+        $interview->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => __('messages.notesSaved'),
+            'interview' => $interview
+        ]);
     }
 }

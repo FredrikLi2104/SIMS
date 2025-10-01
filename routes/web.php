@@ -128,6 +128,9 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::post('/features/tasks/update', [FeatureController::class, 'updateTasks'])->middleware('auth')->middleware('can:super-auditor')->name('features.tasks.update');
     Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
+    Route::post('/interviews/{id}/status', [InterviewController::class, 'updateStatus'])->middleware('auth')->middleware('can:auditor')->name('interviews.status.update');
+    Route::post('/interviews/{id}/upload', [InterviewController::class, 'uploadFile'])->middleware('auth')->middleware('can:auditor')->name('interviews.upload');
+    Route::post('/interviews/{id}/notes', [InterviewController::class, 'updateNotes'])->middleware('auth')->middleware('can:auditor')->name('interviews.notes.update');
     Route::resource('/interviews', InterviewController::class)->middleware('auth')->middleware('can:auditor');
     Route::resource('/issue_categories', IssueCategoryController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('components', ComponentController::class)->middleware('auth')->middleware('can:moderator');

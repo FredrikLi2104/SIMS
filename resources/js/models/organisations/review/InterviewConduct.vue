@@ -20,6 +20,7 @@
                                             <th>ID</th>
                                             <th>{{ collection?.messages?.creator }}</th>
                                             <th>{{ collection?.messages?.interviewee }}</th>
+                                            <th>{{ collection?.messages?.status }}</th>
                                             <th class="text-center">{{ collection?.messages?.actions }}</th>
                                         </tr>
                                     </thead>
@@ -33,6 +34,9 @@
                                             </td>
                                             <td>
                                                 {{ interview.interviewee }}
+                                            </td>
+                                            <td>
+                                                {{ getStatusLabel(interview.status) }}
                                             </td>
                                             <td class="text-center">
                                                 <button type="button" :class="`btn btn-relief-${interview.id == interviewExpanded.id ? 'warning' : 'dark'}`" @click="interviewExpandedSet(interview.id)">
@@ -52,8 +56,52 @@
                                 <h4 class="card-title">{{ collection?.messages?.agenda }}</h4>
                             </div>
                             <div class="card-body">
-                                <div class="border p-3 rounded">
+                                <div class="border p-3 rounded mb-3">
                                     {{ interviewExpanded?.agenda }}
+                                </div>
+
+                                <!-- Status Management -->
+                                <div class="mb-3">
+                                    <h5>{{ collection?.messages?.updateStatus }}</h5>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-secondary" :class="{ 'active': interviewExpanded?.status === 'planned' }" @click="updateInterviewStatus('planned')">
+                                            {{ collection?.messages?.planned }}
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary" :class="{ 'active': interviewExpanded?.status === 'in_progress' }" @click="updateInterviewStatus('in_progress')">
+                                            {{ collection?.messages?.inProgress }}
+                                        </button>
+                                        <button type="button" class="btn btn-outline-success" :class="{ 'active': interviewExpanded?.status === 'completed' }" @click="updateInterviewStatus('completed')">
+                                            {{ collection?.messages?.completed }}
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger" :class="{ 'active': interviewExpanded?.status === 'cancelled' }" @click="updateInterviewStatus('cancelled')">
+                                            {{ collection?.messages?.cancelled }}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Notes Section -->
+                                <div class="mb-3">
+                                    <label for="interviewNotes" class="form-label">{{ collection?.messages?.notes }}</label>
+                                    <textarea class="form-control" id="interviewNotes" v-model="interviewNotes" rows="4" :placeholder="collection?.messages?.addNotesHere"></textarea>
+                                    <button type="button" class="btn btn-primary mt-2" @click="saveNotes">{{ collection?.messages?.saveNotes }}</button>
+                                </div>
+
+                                <!-- File Upload Section -->
+                                <div class="mb-3">
+                                    <label for="interviewFile" class="form-label">{{ collection?.messages?.uploadFile }}</label>
+                                    <input type="file" class="form-control" id="interviewFile" ref="fileInput" @change="handleFileUpload">
+                                    <button type="button" class="btn btn-info mt-2" @click="uploadFile" :disabled="!selectedFile">{{ collection?.messages?.upload }}</button>
+                                </div>
+
+                                <!-- Attachments List -->
+                                <div v-if="getAttachments().length > 0" class="mb-3">
+                                    <h5>{{ collection?.messages?.attachments }}</h5>
+                                    <ul class="list-group">
+                                        <li v-for="(attachment, index) in getAttachments()" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>{{ attachment.filename }}</span>
+                                            <a :href="getAttachmentUrl(attachment.path)" target="_blank" class="btn btn-sm btn-outline-primary">{{ collection?.messages?.download }}</a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -124,7 +172,9 @@ export default {
         return {
             interviews: [],
             interviewExpanded: {},
-            interviewStatements: [] // ?
+            interviewStatements: [], // ?
+            interviewNotes: '',
+            selectedFile: null
         }
     },
     methods: {
@@ -183,11 +233,129 @@ export default {
             i = i[0];
             if (i) {
                 this.interviewExpanded = i;
+                this.interviewNotes = i.notes || '';
                 this.$nextTick(() => {
                     thisComponent.interviewExpandedBuildSliders();
                 })
             };
 
+        },
+        getStatusColor(status) {
+            const colors = {
+                'planned': 'secondary',
+                'in_progress': 'primary',
+                'completed': 'success',
+                'cancelled': 'danger'
+            };
+            return colors[status] || 'secondary';
+        },
+        getStatusLabel(status) {
+            const labels = {
+                'planned': this.collection?.messages?.planned,
+                'in_progress': this.collection?.messages?.inProgress,
+                'completed': this.collection?.messages?.completed,
+                'cancelled': this.collection?.messages?.cancelled
+            };
+            return labels[status] || status;
+        },
+        updateInterviewStatus(status) {
+            var thisComponent = this;
+            axios
+                .post(`/${this.locale}/interviews/${this.interviewExpanded.id}/status`, {
+                    status: status
+                })
+                .then(function (response) {
+                    thisComponent.interviewExpanded.status = status;
+                    thisComponent.rebuild();
+                    toastr["success"]("👋 " + thisComponent.collection?.messages?.statusUpdated, "Success", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        progressBar: true,
+                        rtl: false,
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                    toastr["error"](`👋 ${error.response?.data?.message || 'Error'}`, "Error!", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                    });
+                });
+        },
+        saveNotes() {
+            var thisComponent = this;
+            axios
+                .post(`/${this.locale}/interviews/${this.interviewExpanded.id}/notes`, {
+                    notes: this.interviewNotes
+                })
+                .then(function (response) {
+                    thisComponent.interviewExpanded.notes = thisComponent.interviewNotes;
+                    toastr["success"]("👋 " + thisComponent.collection?.messages?.notesSaved, "Success", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        progressBar: true,
+                        rtl: false,
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                    toastr["error"](`👋 ${error.response?.data?.message || 'Error'}`, "Error!", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                    });
+                });
+        },
+        handleFileUpload(event) {
+            this.selectedFile = event.target.files[0];
+        },
+        uploadFile() {
+            if (!this.selectedFile) return;
+
+            var thisComponent = this;
+            const formData = new FormData();
+            formData.append('file', this.selectedFile);
+
+            axios
+                .post(`/${this.locale}/interviews/${this.interviewExpanded.id}/upload`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(function (response) {
+                    thisComponent.selectedFile = null;
+                    thisComponent.$refs.fileInput.value = '';
+                    thisComponent.rebuild();
+                    toastr["success"]("👋 " + thisComponent.collection?.messages?.fileUploaded, "Success", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        progressBar: true,
+                        rtl: false,
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                    toastr["error"](`👋 ${error.response?.data?.message || 'Error'}`, "Error!", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                    });
+                });
+        },
+        getAttachments() {
+            if (!this.interviewExpanded?.attachments) return [];
+            try {
+                return JSON.parse(this.interviewExpanded.attachments);
+            } catch (e) {
+                return [];
+            }
+        },
+        getAttachmentUrl(path) {
+            return `/storage/${path}`;
         },
         modalHide() {
             this.$parent.rebuild();
