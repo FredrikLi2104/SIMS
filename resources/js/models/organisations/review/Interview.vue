@@ -18,10 +18,11 @@
                         <div class="col-6" style="flex: 0 0 50%; min-width: 50%">
                             <div class="mb-1">
                                 <label class="form-label" for="user">
-                                    {{ collection?.messages?.interviewee }}
+                                    {{ collection?.messages?.interviewee }} {{ collection?.messages?.email }}
                                 </label>
-                                <input :class="`form-control ${interviewCreateErrors.user ? 'is-invalid' : ''}`" id="interviewCreateUser" placeholder="John Smith" />
+                                <input type="email" :class="`form-control ${interviewCreateErrors.user ? 'is-invalid' : ''}`" id="interviewCreateUser" placeholder="john.doe@company.com" />
                                 <div class="invalid-feedback">{{ interviewCreateErrors.user?.message }}</div>
+                                <small class="form-text text-muted">{{ collection?.messages?.enterEmailForCalendarInvitation || 'Enter email address to receive calendar invitation' }}</small>
                             </div>
                             <div class="mb-1">
                                 <label class="form-label" for="agenda">{{ collection?.messages?.agenda }}</label>
@@ -40,54 +41,10 @@
                             </div>
                             <button type="button" class="btn btn-primary" @click="interviewCreate" :disabled="conductReady">{{ collection?.messages?.create }}</button>
                         </div>
-                        <!-- Available Statements-->
+                        <!-- Available Statements & Interview Details-->
                         <div class="col-6" style="flex: 0 0 50%; min-width: 50%">
-                            <div class="row accordion accordion-margin mt-2" id="interviewStatements">
-                                <div v-for="interviewStatement in interviewStatements" :key="interviewStatement" class="card accordion-item" :draggable="true" @dragstart="dragEmit(interviewStatement.id)">
-                                    <div class="row">
-                                        <div class="col-8"></div>
-                                        <div class="col-4 d-flex justify-content-end align-items-center">
-                                            <span :class="`badge rounded-pill badge-glow bg-${interviewStatement.latestReview?.class}`" style="height: 1.5rem">{{ interviewStatement.latestReview?.review_status }}</span>
-                                        </div>
-                                    </div>
-                                    <h2 class="accordion-header" :id="`interviewStatementHeader${interviewStatement?.id}`">
-                                        <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" :data-bs-target="`#interviewStatement${interviewStatement?.id}`" aria-expanded="false" :aria-controls="`interviewStatement${interviewStatement?.id}`">
-                                            {{ interviewStatement["content_" + locale] }}
-                                        </button>
-                                    </h2>
-
-                                    <div :id="`interviewStatement${interviewStatement?.id}`" class="collapse accordion-collapse" :aria-labelledby="`interviewStatementHeader${interviewStatement?.id}`" data-bs-parent="interviewStatements">
-                                        <div class="accordion-body">
-                                            {{ interviewStatement["desc_" + locale] }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Existing Interviews-->
-                    <div class="row mt-2">
-                        <div class="modal-body">
-                            <p>{{ collection?.messages.interviews }}</p>
-                        </div>
-                        <!-- Interview Pills-->
-                        <div class="col-6">
-                            <ul class="nav nav-pills mb-2">
-                                <li class="nav-item" v-for="interview in interviews" :key="interview" @click="existingSetActive(interview.id)">
-                                    <a :class="`nav-link ${existingActive.id == interview.id ? 'active' : ''}`">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
-                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
-                                        <span class="fw-bold">{{ collection?.messages?.interview }} {{ interview.id
-                                        }}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- Interview Card-->
-                        <div class="col-6" v-if="existingActive.agenda != null">
-                            <div class="card">
+                            <!-- Interview Details Card -->
+                            <div class="card mb-2" v-if="existingActive.agenda != null">
                                 <div class="card-header border-bottom">
                                     <h4 class="card-title">{{ collection?.messages?.interview }} {{
                                         collection?.messages?.details }}</h4>
@@ -123,6 +80,49 @@
                                         collection?.messages?.delete }} {{ collection?.messages?.interview }}</button>
                                 </div>
                             </div>
+                            <!-- Available Statements -->
+                            <div class="row accordion accordion-margin mt-2" id="interviewStatements">
+                                <div v-for="interviewStatement in interviewStatements" :key="interviewStatement" class="card accordion-item" :draggable="true" @dragstart="dragEmit(interviewStatement.id)">
+                                    <div class="row">
+                                        <div class="col-8"></div>
+                                        <div class="col-4 d-flex justify-content-end align-items-center">
+                                            <span :class="`badge rounded-pill badge-glow bg-${interviewStatement.latestReview?.class}`" style="height: 1.5rem">{{ interviewStatement.latestReview?.review_status }}</span>
+                                        </div>
+                                    </div>
+                                    <h2 class="accordion-header" :id="`interviewStatementHeader${interviewStatement?.id}`">
+                                        <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" :data-bs-target="`#interviewStatement${interviewStatement?.id}`" aria-expanded="false" :aria-controls="`interviewStatement${interviewStatement?.id}`">
+                                            {{ interviewStatement["content_" + locale] }}
+                                        </button>
+                                    </h2>
+
+                                    <div :id="`interviewStatement${interviewStatement?.id}`" class="collapse accordion-collapse" :aria-labelledby="`interviewStatementHeader${interviewStatement?.id}`" data-bs-parent="interviewStatements">
+                                        <div class="accordion-body">
+                                            {{ interviewStatement["desc_" + locale] }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Existing Interviews-->
+                    <div class="row mt-2">
+                        <div class="modal-body">
+                            <p>{{ collection?.messages.interviews }}</p>
+                        </div>
+                        <!-- Interview Pills-->
+                        <div class="col-12">
+                            <ul class="nav nav-pills mb-2">
+                                <li class="nav-item" v-for="interview in interviews" :key="interview" @click="existingSetActive(interview.id)">
+                                    <a :class="`nav-link ${existingActive.id == interview.id ? 'active' : ''}`">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        <span class="fw-bold">{{ collection?.messages?.interview }} {{ interview.id
+                                        }}</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -231,8 +231,16 @@ export default {
             load.user = document.getElementById("interviewCreateUser").value;
             if (load.user == "" || load.user == null) {
                 this.interviewCreateErrors.user = {
-                    message: "Interviewee is required",
+                    message: "Interviewee email is required",
                 };
+            } else {
+                // Validate email format
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(load.user)) {
+                    this.interviewCreateErrors.user = {
+                        message: "Please enter a valid email address",
+                    };
+                }
             }
             let p = this.toCreate;
             if (p.length == 0) {

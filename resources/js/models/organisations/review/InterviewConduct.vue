@@ -48,6 +48,59 @@
                                 </table>
                             </div>
                         </div>
+                        <!-- Accordion for Interview Statements -->
+                        <div class="accordion mt-3" :id="`interviewStatementsAccordion${interviewExpanded.id}`">
+                            <div v-for="statement in interviewExpanded.statements" :key="statement" class="card accordion-item">
+                                <!-- Statement Latest Review Status -->
+                                <div class="row px-1">
+                                    <div class="col-8"></div>
+                                    <div class="col-4 d-flex justify-content-end align-items-center">
+                                        <span :class="`badge rounded-pill badge-glow bg-${statement.latestReview?.class}`" style="height: 1.5rem">{{ statement.latestReview?.review_status }}</span>
+                                    </div>
+                                </div>
+                                <!-- Accordion Title (Statement Content)-->
+                                <h2 class="accordion-header" :id="`interviewStatementHeader${statement.id}`">
+                                    <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" :data-bs-target="`#interviewStatement${statement.id}`" aria-expanded="false" :aria-controls="`interviewStatement${statement.id}`">
+                                        {{ statement["content_" + locale] }}
+                                    </button>
+                                </h2>
+                                <div :id="`interviewStatement${statement.id}`" class="collapse accordion-collapse" :aria-labelledby="`interviewStatementHeader${statement.id}`" :data-bs-parent="`#interviewStatementsAccordion${interviewExpanded.id}`">
+                                    <!-- Expanded statement desc-->
+                                    <div class="accordion-body">
+                                        {{ statement["desc_" + locale] }}
+                                    </div>
+                                    <!-- Value Card-->
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h4 class="text-uppercase">{{ collection?.messages?.value }}</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div :id="`interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`" class="mt-1 mb-3"></div>
+                                            <div class="mb-3">
+                                                <label for="interviewReviewText{{ interviewExpanded.id }}_{{ statement.id }}" class="form-label">{{ collection?.messages?.review }}</label>
+                                                <textarea class="form-control" :id="`interviewReviewText${interviewExpanded.id}_${statement.id}`" :name="`interviewReviewText${interviewExpanded.id}_${statement.id}`" rows="4"></textarea>
+                                            </div>
+                                            <!-- Value Action Buttons (Accept/Reject)-->
+                                            <div class="mb-3">
+                                                <button type="button" class="btn btn-success w-25 me-2" @click="reviewUpdate('accept', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">
+                                                    {{ collection?.messages?.accept }}
+                                                </button>
+                                                <button type="button" class="btn btn-danger w-25" @click="reviewUpdate('reject', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">
+                                                    {{ collection?.messages?.reject }}
+                                                </button>
+                                            </div>
+                                            <!-- Last Updated -->
+                                            <p>{{ collection?.messages?.lastUpdated }}: {{ statement.latestDeed?.lastUpdated }}, {{ collection?.messages?.by }}: {{ statement.latestDeed?.user }}</p>
+                                            <!-- Last Review Comment -->
+                                            <p>{{ collection?.messages?.comment }}: {{ statement.latestDeed?.comment }}</p>
+                                            <!-- Latest Review Details-->
+                                            <p>{{ collection?.messages?.latestReview }}, {{ statement.latestReview?.user }}, {{ statement.latestReview?.lastUpdated }}: {{ statement.latestReview?.review }}</p>
+                                            <p :class="`text-${statement.latestReview?.class}`">{{ statement.latestReview?.review_status }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- Interview Details -->
                     <div class="col-6">
@@ -99,62 +152,12 @@
                                     <ul class="list-group">
                                         <li v-for="(attachment, index) in getAttachments()" :key="index" class="list-group-item d-flex justify-content-between align-items-center">
                                             <span>{{ attachment.filename }}</span>
-                                            <a :href="getAttachmentUrl(attachment.path)" target="_blank" class="btn btn-sm btn-outline-primary">{{ collection?.messages?.download }}</a>
+                                            <div>
+                                                <a :href="getAttachmentUrl(attachment.path)" target="_blank" class="btn btn-sm btn-outline-primary me-2">{{ collection?.messages?.download }}</a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" @click="deleteAttachment(index)">{{ collection?.messages?.delete }}</button>
+                                            </div>
                                         </li>
                                     </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Accordion for Interview Statements -->
-                        <div class="accordion" :id="`interviewStatementsAccordion${interviewExpanded.id}`">
-                            <div v-for="statement in interviewExpanded.statements" :key="statement" class="card accordion-item">
-                                <!-- Statement Latest Review Status -->
-                                <div class="row px-1">
-                                    <div class="col-8"></div>
-                                    <div class="col-4 d-flex justify-content-end align-items-center">
-                                        <span :class="`badge rounded-pill badge-glow bg-${statement.latestReview?.class}`" style="height: 1.5rem">{{ statement.latestReview?.review_status }}</span>
-                                    </div>
-                                </div>
-                                <!-- Accordion Title (Statement Content)-->
-                                <h2 class="accordion-header" :id="`interviewStatementHeader${statement.id}`">
-                                    <button class="accordion-button collapsed" data-bs-toggle="collapse" role="button" :data-bs-target="`#interviewStatement${statement.id}`" aria-expanded="false" :aria-controls="`interviewStatement${statement.id}`">
-                                        {{ statement["content_" + locale] }}
-                                    </button>
-                                </h2>
-                                <div :id="`interviewStatement${statement.id}`" class="collapse accordion-collapse" :aria-labelledby="`interviewStatementHeader${statement.id}`" :data-bs-parent="`#interviewStatementsAccordion${interviewExpanded.id}`">
-                                    <!-- Expanded statement desc-->
-                                    <div class="accordion-body">
-                                        {{ statement["desc_" + locale] }}
-                                    </div>
-                                    <!-- Value Card-->
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4 class="text-uppercase">{{ collection?.messages?.value }}</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div :id="`interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`" class="mt-1 mb-3"></div>
-                                            <div class="mb-3">
-                                                <label for="interviewReviewText{{ interviewExpanded.id }}_{{ statement.id }}" class="form-label">{{ collection?.messages?.review }}</label>
-                                                <textarea class="form-control" :id="`interviewReviewText${interviewExpanded.id}_${statement.id}`" :name="`interviewReviewText${interviewExpanded.id}_${statement.id}`" rows="4"></textarea>
-                                            </div>
-                                            <!-- Value Action Buttons (Accept/Reject)-->
-                                            <div class="mb-3">
-                                                <button type="button" class="btn btn-success w-25 me-2" @click="reviewUpdate('accept', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">
-                                                    {{ collection?.messages?.accept }}
-                                                </button>
-                                                <button type="button" class="btn btn-danger w-25" @click="reviewUpdate('reject', statement.id, `interviewReviewText${interviewExpanded.id}_${statement.id}`, `interviewStatementValueSlider${interviewExpanded.id}_${statement.id}`, statement.latestDeed?.id)">
-                                                    {{ collection?.messages?.reject }}
-                                                </button>
-                                            </div>
-                                            <!-- Last Updated -->
-                                            <p>{{ collection?.messages?.lastUpdated }}: {{ statement.latestDeed?.lastUpdated }}, {{ collection?.messages?.by }}: {{ statement.latestDeed?.user }}</p>
-                                            <!-- Last Review Comment -->
-                                            <p>{{ collection?.messages?.comment }}: {{ statement.latestDeed?.comment }}</p>
-                                            <!-- Latest Review Details-->
-                                            <p>{{ collection?.messages?.latestReview }}, {{ statement.latestReview?.user }}, {{ statement.latestReview?.lastUpdated }}: {{ statement.latestReview?.review }}</p>
-                                            <p :class="`text-${statement.latestReview?.class}`">{{ statement.latestReview?.review_status }}</p>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -355,7 +358,45 @@ export default {
             }
         },
         getAttachmentUrl(path) {
-            return `/storage/${path}`;
+            // Extract filename from path
+            const filename = path.split('/').pop();
+            return `/${this.locale}/interviews/${this.interviewExpanded.id}/download/${filename}`;
+        },
+        deleteAttachment(index) {
+            var thisComponent = this;
+            const attachments = this.getAttachments();
+            const attachment = attachments[index];
+
+            if (!confirm(`Delete ${attachment.filename}?`)) {
+                return;
+            }
+
+            // Extract filename from path
+            const filename = attachment.path.split('/').pop();
+
+            // URL encode the filename to handle spaces and special characters
+            const encodedFilename = encodeURIComponent(filename);
+
+            axios
+                .delete(`/${this.locale}/interviews/${this.interviewExpanded.id}/delete/${encodedFilename}`)
+                .then(function (response) {
+                    thisComponent.rebuild();
+                    toastr["success"]("👋 " + thisComponent.collection?.messages?.fileDeleted, "Success", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        progressBar: true,
+                        rtl: false,
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    console.log(error.response);
+                    toastr["error"](`👋 ${error.response?.data?.message || 'Error'}`, "Error!", {
+                        closeButton: true,
+                        tapToDismiss: false,
+                        rtl: false,
+                    });
+                });
         },
         modalHide() {
             this.$parent.rebuild();

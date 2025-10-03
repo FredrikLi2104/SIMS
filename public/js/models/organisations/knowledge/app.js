@@ -24048,7 +24048,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _OrganisationKnowledge_vue_vue_type_template_id_e318d594_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrganisationKnowledge.vue?vue&type=template&id=e318d594&scoped=true */ "./resources/js/models/organisations/knowledge/OrganisationKnowledge.vue?vue&type=template&id=e318d594&scoped=true");
 /* harmony import */ var _OrganisationKnowledge_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrganisationKnowledge.vue?vue&type=script&lang=js */ "./resources/js/models/organisations/knowledge/OrganisationKnowledge.vue?vue&type=script&lang=js");
 /* harmony import */ var _OrganisationKnowledge_vue_vue_type_style_index_0_id_e318d594_scoped_true_lang_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./OrganisationKnowledge.vue?vue&type=style&index=0&id=e318d594&scoped=true&lang=css */ "./resources/js/models/organisations/knowledge/OrganisationKnowledge.vue?vue&type=style&index=0&id=e318d594&scoped=true&lang=css");
-/* harmony import */ var C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
@@ -24056,7 +24056,7 @@ __webpack_require__.r(__webpack_exports__);
 ;
 
 
-const __exports__ = /*#__PURE__*/(0,C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_OrganisationKnowledge_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_OrganisationKnowledge_vue_vue_type_template_id_e318d594_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render],['__scopeId',"data-v-e318d594"],['__file',"resources/js/models/organisations/knowledge/OrganisationKnowledge.vue"]])
+const __exports__ = /*#__PURE__*/(0,c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_OrganisationKnowledge_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_OrganisationKnowledge_vue_vue_type_template_id_e318d594_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render],['__scopeId',"data-v-e318d594"],['__file',"resources/js/models/organisations/knowledge/OrganisationKnowledge.vue"]])
 /* hot reload */
 if (false) {}
 

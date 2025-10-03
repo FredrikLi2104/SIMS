@@ -128,9 +128,14 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::post('/features/tasks/update', [FeatureController::class, 'updateTasks'])->middleware('auth')->middleware('can:super-auditor')->name('features.tasks.update');
     Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
-    Route::post('/interviews/{id}/status', [InterviewController::class, 'updateStatus'])->middleware('auth')->middleware('can:auditor')->name('interviews.status.update');
-    Route::post('/interviews/{id}/upload', [InterviewController::class, 'uploadFile'])->middleware('auth')->middleware('can:auditor')->name('interviews.upload');
-    Route::post('/interviews/{id}/notes', [InterviewController::class, 'updateNotes'])->middleware('auth')->middleware('can:auditor')->name('interviews.notes.update');
+    Route::post('/interviews/{interview_id}/status', [InterviewController::class, 'updateStatus'])->middleware('auth')->middleware('can:auditor')->name('interviews.status.update');
+    Route::post('/interviews/{interview_id}/upload', [InterviewController::class, 'uploadFile'])->middleware('auth')->middleware('can:auditor')->name('interviews.upload');
+    Route::get('/interviews/{interview_id}/download/{filename}', [InterviewController::class, 'downloadFile'])->middleware('auth')->middleware('can:auditor')->name('interviews.download');
+    Route::delete('/interviews/{interview_id}/delete/{filename}', [InterviewController::class, 'deleteFile'])->middleware('auth')->middleware('can:auditor')->name('interviews.delete');
+    Route::post('/interviews/{interview_id}/notes', [InterviewController::class, 'updateNotes'])->middleware('auth')->middleware('can:auditor')->name('interviews.notes.update');
+    Route::post('/interviews/{interview_id}/schedule', [InterviewController::class, 'scheduleInterview'])->middleware('auth')->middleware('can:auditor')->name('interviews.schedule');
+    Route::put('/interviews/{interview_id}/schedule', [InterviewController::class, 'updateSchedule'])->middleware('auth')->middleware('can:auditor')->name('interviews.schedule.update');
+    Route::delete('/interviews/{interview_id}/schedule', [InterviewController::class, 'cancelSchedule'])->middleware('auth')->middleware('can:auditor')->name('interviews.schedule.cancel');
     Route::resource('/interviews', InterviewController::class)->middleware('auth')->middleware('can:auditor');
     Route::resource('/issue_categories', IssueCategoryController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('components', ComponentController::class)->middleware('auth')->middleware('can:moderator');
