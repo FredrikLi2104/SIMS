@@ -21945,8 +21945,16 @@ __webpack_require__.r(__webpack_exports__);
       load.user = document.getElementById("interviewCreateUser").value;
       if (load.user == "" || load.user == null) {
         this.interviewCreateErrors.user = {
-          message: "Interviewee is required"
+          message: "Interviewee email is required"
         };
+      } else {
+        // Validate email format
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(load.user)) {
+          this.interviewCreateErrors.user = {
+            message: "Please enter a valid email address"
+          };
+        }
       }
       var p = this.toCreate;
       if (p.length == 0) {
@@ -22429,7 +22437,42 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     getAttachmentUrl: function getAttachmentUrl(path) {
-      return "/storage/".concat(path);
+      // Extract filename from path
+      var filename = path.split('/').pop();
+      return "/".concat(this.locale, "/interviews/").concat(this.interviewExpanded.id, "/download/").concat(filename);
+    },
+    deleteAttachment: function deleteAttachment(index) {
+      var thisComponent = this;
+      var attachments = this.getAttachments();
+      var attachment = attachments[index];
+      if (!confirm("Delete ".concat(attachment.filename, "?"))) {
+        return;
+      }
+
+      // Extract filename from path
+      var filename = attachment.path.split('/').pop();
+
+      // URL encode the filename to handle spaces and special characters
+      var encodedFilename = encodeURIComponent(filename);
+      axios["delete"]("/".concat(this.locale, "/interviews/").concat(this.interviewExpanded.id, "/delete/").concat(encodedFilename)).then(function (response) {
+        var _thisComponent$collec7, _thisComponent$collec8;
+        thisComponent.rebuild();
+        toastr["success"]("👋 " + ((_thisComponent$collec7 = thisComponent.collection) === null || _thisComponent$collec7 === void 0 ? void 0 : (_thisComponent$collec8 = _thisComponent$collec7.messages) === null || _thisComponent$collec8 === void 0 ? void 0 : _thisComponent$collec8.fileDeleted), "Success", {
+          closeButton: true,
+          tapToDismiss: false,
+          progressBar: true,
+          rtl: false
+        });
+      })["catch"](function (error) {
+        var _error$response4, _error$response4$data;
+        console.log(error);
+        console.log(error.response);
+        toastr["error"]("\uD83D\uDC4B ".concat(((_error$response4 = error.response) === null || _error$response4 === void 0 ? void 0 : (_error$response4$data = _error$response4.data) === null || _error$response4$data === void 0 ? void 0 : _error$response4$data.message) || 'Error'), "Error!", {
+          closeButton: true,
+          tapToDismiss: false,
+          rtl: false
+        });
+      });
     },
     modalHide: function modalHide() {
       this.$parent.rebuild();
@@ -22499,10 +22542,10 @@ __webpack_require__.r(__webpack_exports__);
           rtl: false
         });
       })["catch"](function (error) {
-        var _error$response4;
+        var _error$response5;
         console.log(error);
         console.log(error.response);
-        toastr["error"]("\uD83D\uDC4B ".concat((_error$response4 = error.response) === null || _error$response4 === void 0 ? void 0 : _error$response4.data), "Error!", {
+        toastr["error"]("\uD83D\uDC4B ".concat((_error$response5 = error.response) === null || _error$response5 === void 0 ? void 0 : _error$response5.data), "Error!", {
           closeButton: true,
           tapToDismiss: false,
           rtl: false
@@ -23615,64 +23658,90 @@ var _hoisted_14 = {
   "class": "invalid-feedback"
 };
 var _hoisted_15 = {
-  "class": "mb-1"
+  "class": "form-text text-muted"
 };
 var _hoisted_16 = {
+  "class": "mb-1"
+};
+var _hoisted_17 = {
   "class": "form-label",
   "for": "agenda"
 };
-var _hoisted_17 = {
+var _hoisted_18 = {
   "class": "invalid-feedback"
 };
-var _hoisted_18 = {
+var _hoisted_19 = {
   "class": "align-self-start"
 };
-var _hoisted_19 = ["onClick"];
-var _hoisted_20 = {
+var _hoisted_20 = ["onClick"];
+var _hoisted_21 = {
   "class": "invalid-feedback"
 };
-var _hoisted_21 = ["disabled"];
-var _hoisted_22 = {
+var _hoisted_22 = ["disabled"];
+var _hoisted_23 = {
   "class": "col-6",
   style: {
     "flex": "0 0 50%",
     "min-width": "50%"
   }
 };
-var _hoisted_23 = {
+var _hoisted_24 = {
+  key: 0,
+  "class": "card mb-2"
+};
+var _hoisted_25 = {
+  "class": "card-header border-bottom"
+};
+var _hoisted_26 = {
+  "class": "card-title"
+};
+var _hoisted_27 = {
+  "class": "card-body py-2 my-25"
+};
+var _hoisted_28 = {
+  "class": "row"
+};
+var _hoisted_29 = {
+  "class": "card mb-4"
+};
+var _hoisted_30 = {
+  "class": "list-group list-group-flush"
+};
+var _hoisted_31 = ["onClick"];
+var _hoisted_32 = {
   "class": "row accordion accordion-margin mt-2",
   id: "interviewStatements"
 };
-var _hoisted_24 = ["onDragstart"];
-var _hoisted_25 = {
+var _hoisted_33 = ["onDragstart"];
+var _hoisted_34 = {
   "class": "row"
 };
-var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_35 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "col-8"
 }, null, -1 /* HOISTED */);
-var _hoisted_27 = {
+var _hoisted_36 = {
   "class": "col-4 d-flex justify-content-end align-items-center"
 };
-var _hoisted_28 = ["id"];
-var _hoisted_29 = ["data-bs-target", "aria-controls"];
-var _hoisted_30 = ["id", "aria-labelledby"];
-var _hoisted_31 = {
+var _hoisted_37 = ["id"];
+var _hoisted_38 = ["data-bs-target", "aria-controls"];
+var _hoisted_39 = ["id", "aria-labelledby"];
+var _hoisted_40 = {
   "class": "accordion-body"
 };
-var _hoisted_32 = {
+var _hoisted_41 = {
   "class": "row mt-2"
 };
-var _hoisted_33 = {
+var _hoisted_42 = {
   "class": "modal-body"
 };
-var _hoisted_34 = {
-  "class": "col-6"
+var _hoisted_43 = {
+  "class": "col-12"
 };
-var _hoisted_35 = {
+var _hoisted_44 = {
   "class": "nav nav-pills mb-2"
 };
-var _hoisted_36 = ["onClick"];
-var _hoisted_37 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("svg", {
+var _hoisted_45 = ["onClick"];
+var _hoisted_46 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "24",
   height: "24",
@@ -23690,37 +23759,11 @@ var _hoisted_37 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
   cy: "7",
   r: "4"
 })], -1 /* HOISTED */);
-var _hoisted_38 = {
+var _hoisted_47 = {
   "class": "fw-bold"
 };
-var _hoisted_39 = {
-  key: 0,
-  "class": "col-6"
-};
-var _hoisted_40 = {
-  "class": "card"
-};
-var _hoisted_41 = {
-  "class": "card-header border-bottom"
-};
-var _hoisted_42 = {
-  "class": "card-title"
-};
-var _hoisted_43 = {
-  "class": "card-body py-2 my-25"
-};
-var _hoisted_44 = {
-  "class": "row"
-};
-var _hoisted_45 = {
-  "class": "card mb-4"
-};
-var _hoisted_46 = {
-  "class": "list-group list-group-flush"
-};
-var _hoisted_47 = ["onClick"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$props$collection, _$props$collection$me, _$props$collection2, _$props$collection2$m, _$props$collection3, _$props$collection4, _$props$collection4$m, _$data$interviewCreat, _$props$collection5, _$props$collection5$m, _$data$interviewCreat2, _$data$interviewCreat3, _$props$collection6, _$props$collection6$m, _$props$collection7, _$props$collection9, _$props$collection9$m, _$props$collection10, _$props$collection10$, _$props$collection11, _$props$collection11$, _$props$collection12, _$props$collection12$, _$props$collection13, _$props$collection13$, _$props$collection15, _$props$collection15$, _$props$collection16, _$props$collection16$, _$props$collection17, _$props$collection17$;
+  var _$props$collection, _$props$collection$me, _$props$collection2, _$props$collection2$m, _$props$collection3, _$props$collection4, _$props$collection4$m, _$props$collection5, _$props$collection5$m, _$data$interviewCreat, _$props$collection6, _$props$collection6$m, _$props$collection7, _$props$collection7$m, _$data$interviewCreat2, _$data$interviewCreat3, _$props$collection8, _$props$collection8$m, _$props$collection9, _$props$collection9$m, _$props$collection10, _$props$collection10$, _$props$collection11, _$props$collection11$, _$props$collection12, _$props$collection12$, _$props$collection13, _$props$collection13$, _$props$collection15, _$props$collection15$, _$props$collection16, _$props$collection16$, _$props$collection17, _$props$collection17$, _$props$collection18;
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection = $props.collection) === null || _$props$collection === void 0 ? void 0 : (_$props$collection$me = _$props$collection.messages) === null || _$props$collection$me === void 0 ? void 0 : _$props$collection$me.interview), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn-close",
@@ -23729,16 +23772,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[0] || (_cache[0] = function () {
       return $options.interviewHide && $options.interviewHide.apply($options, arguments);
     })
-  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [$data.conductReady ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection2 = $props.collection) === null || _$props$collection2 === void 0 ? void 0 : (_$props$collection2$m = _$props$collection2.messages) === null || _$props$collection2$m === void 0 ? void 0 : _$props$collection2$m.readyToConduct), 1 /* TEXT */)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection3 = $props.collection) === null || _$props$collection3 === void 0 ? void 0 : _$props$collection3.messages.interview), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Input Details"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection4 = $props.collection) === null || _$props$collection4 === void 0 ? void 0 : (_$props$collection4$m = _$props$collection4.messages) === null || _$props$collection4$m === void 0 ? void 0 : _$props$collection4$m.interviewee), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [$data.conductReady ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection2 = $props.collection) === null || _$props$collection2 === void 0 ? void 0 : (_$props$collection2$m = _$props$collection2.messages) === null || _$props$collection2$m === void 0 ? void 0 : _$props$collection2$m.readyToConduct), 1 /* TEXT */)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection3 = $props.collection) === null || _$props$collection3 === void 0 ? void 0 : _$props$collection3.messages.interview), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Input Details"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection4 = $props.collection) === null || _$props$collection4 === void 0 ? void 0 : (_$props$collection4$m = _$props$collection4.messages) === null || _$props$collection4$m === void 0 ? void 0 : _$props$collection4$m.interviewee) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection5 = $props.collection) === null || _$props$collection5 === void 0 ? void 0 : (_$props$collection5$m = _$props$collection5.messages) === null || _$props$collection5$m === void 0 ? void 0 : _$props$collection5$m.email), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    type: "email",
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("form-control ".concat($data.interviewCreateErrors.user ? 'is-invalid' : '')),
     id: "interviewCreateUser",
-    placeholder: "John Smith"
-  }, null, 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$interviewCreat = $data.interviewCreateErrors.user) === null || _$data$interviewCreat === void 0 ? void 0 : _$data$interviewCreat.message), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection5 = $props.collection) === null || _$props$collection5 === void 0 ? void 0 : (_$props$collection5$m = _$props$collection5.messages) === null || _$props$collection5$m === void 0 ? void 0 : _$props$collection5$m.agenda), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
+    placeholder: "john.doe@company.com"
+  }, null, 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$interviewCreat = $data.interviewCreateErrors.user) === null || _$data$interviewCreat === void 0 ? void 0 : _$data$interviewCreat.message), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(((_$props$collection6 = $props.collection) === null || _$props$collection6 === void 0 ? void 0 : (_$props$collection6$m = _$props$collection6.messages) === null || _$props$collection6$m === void 0 ? void 0 : _$props$collection6$m.enterEmailForCalendarInvitation) || 'Enter email address to receive calendar invitation'), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection7 = $props.collection) === null || _$props$collection7 === void 0 ? void 0 : (_$props$collection7$m = _$props$collection7.messages) === null || _$props$collection7$m === void 0 ? void 0 : _$props$collection7$m.agenda), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("form-control ".concat($data.interviewCreateErrors.agenda ? 'is-invalid' : '')),
     id: "agenda",
     rows: "3",
     placeholder: "Interview Agenda..."
-  }, null, 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$interviewCreat2 = $data.interviewCreateErrors.agenda) === null || _$data$interviewCreat2 === void 0 ? void 0 : _$data$interviewCreat2.message), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  }, null, 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$interviewCreat2 = $data.interviewCreateErrors.agenda) === null || _$data$interviewCreat2 === void 0 ? void 0 : _$data$interviewCreat2.message), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "scrollable-container mb-1",
     onDragover: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {}, ["prevent"])),
     onDrop: _cache[2] || (_cache[2] = function () {
@@ -23755,7 +23799,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "color": "#7367f0 !important",
         "border": "none"
       }
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(createStatement["content_" + $props.locale].substr(0, 48) + "..."), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_19, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(createStatement["content_" + $props.locale].substr(0, 48) + "..."), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
       "class": "align-self-end p-2 justify-center",
       onClick: function onClick($event) {
         return $options.onCreateRemove(createStatement.id);
@@ -23763,56 +23807,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       style: {
         "cursor": "pointer"
       }
-    }, "x", 8 /* PROPS */, _hoisted_19)]);
-  }), 128 /* KEYED_FRAGMENT */))], 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$interviewCreat3 = $data.interviewCreateErrors.statements) === null || _$data$interviewCreat3 === void 0 ? void 0 : _$data$interviewCreat3.message), 1 /* TEXT */)], 32 /* HYDRATE_EVENTS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    }, "x", 8 /* PROPS */, _hoisted_20)]);
+  }), 128 /* KEYED_FRAGMENT */))], 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$interviewCreat3 = $data.interviewCreateErrors.statements) === null || _$data$interviewCreat3 === void 0 ? void 0 : _$data$interviewCreat3.message), 1 /* TEXT */)], 32 /* HYDRATE_EVENTS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-primary",
     onClick: _cache[3] || (_cache[3] = function () {
       return $options.interviewCreate && $options.interviewCreate.apply($options, arguments);
     }),
     disabled: $data.conductReady
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection6 = $props.collection) === null || _$props$collection6 === void 0 ? void 0 : (_$props$collection6$m = _$props$collection6.messages) === null || _$props$collection6$m === void 0 ? void 0 : _$props$collection6$m.create), 9 /* TEXT, PROPS */, _hoisted_21)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Available Statements"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.interviewStatements, function (interviewStatement) {
-    var _interviewStatement$l, _interviewStatement$l2;
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-      key: interviewStatement,
-      "class": "card accordion-item",
-      draggable: true,
-      onDragstart: function onDragstart($event) {
-        return $options.dragEmit(interviewStatement.id);
-      }
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [_hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
-      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("badge rounded-pill badge-glow bg-".concat((_interviewStatement$l = interviewStatement.latestReview) === null || _interviewStatement$l === void 0 ? void 0 : _interviewStatement$l["class"])),
-      style: {
-        "height": "1.5rem"
-      }
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_interviewStatement$l2 = interviewStatement.latestReview) === null || _interviewStatement$l2 === void 0 ? void 0 : _interviewStatement$l2.review_status), 3 /* TEXT, CLASS */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
-      "class": "accordion-header",
-      id: "interviewStatementHeader".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id)
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-      "class": "accordion-button collapsed",
-      "data-bs-toggle": "collapse",
-      role: "button",
-      "data-bs-target": "#interviewStatement".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id),
-      "aria-expanded": "false",
-      "aria-controls": "interviewStatement".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id)
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(interviewStatement["content_" + $props.locale]), 9 /* TEXT, PROPS */, _hoisted_29)], 8 /* PROPS */, _hoisted_28), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-      id: "interviewStatement".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id),
-      "class": "collapse accordion-collapse",
-      "aria-labelledby": "interviewStatementHeader".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id),
-      "data-bs-parent": "interviewStatements"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(interviewStatement["desc_" + $props.locale]), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_30)], 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_24);
-  }), 128 /* KEYED_FRAGMENT */))])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Existing Interviews"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_32, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_33, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection7 = $props.collection) === null || _$props$collection7 === void 0 ? void 0 : _$props$collection7.messages.interviews), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Pills"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_35, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.interviews, function (interview) {
-    var _$props$collection8, _$props$collection8$m;
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
-      "class": "nav-item",
-      key: interview,
-      onClick: function onClick($event) {
-        return $options.existingSetActive(interview.id);
-      }
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("nav-link ".concat($data.existingActive.id == interview.id ? 'active' : ''))
-    }, [_hoisted_37, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_38, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection8 = $props.collection) === null || _$props$collection8 === void 0 ? void 0 : (_$props$collection8$m = _$props$collection8.messages) === null || _$props$collection8$m === void 0 ? void 0 : _$props$collection8$m.interview) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(interview.id), 1 /* TEXT */)], 2 /* CLASS */)], 8 /* PROPS */, _hoisted_36);
-  }), 128 /* KEYED_FRAGMENT */))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Card"), $data.existingActive.agenda != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_39, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_42, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection9 = $props.collection) === null || _$props$collection9 === void 0 ? void 0 : (_$props$collection9$m = _$props$collection9.messages) === null || _$props$collection9$m === void 0 ? void 0 : _$props$collection9$m.interview) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection10 = $props.collection) === null || _$props$collection10 === void 0 ? void 0 : (_$props$collection10$ = _$props$collection10.messages) === null || _$props$collection10$ === void 0 ? void 0 : _$props$collection10$.details), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Details"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_44, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection11 = $props.collection) === null || _$props$collection11 === void 0 ? void 0 : (_$props$collection11$ = _$props$collection11.messages) === null || _$props$collection11$ === void 0 ? void 0 : _$props$collection11$.agenda) + ": ", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.existingActive.agenda), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection12 = $props.collection) === null || _$props$collection12 === void 0 ? void 0 : (_$props$collection12$ = _$props$collection12.messages) === null || _$props$collection12$ === void 0 ? void 0 : _$props$collection12$.interviewee) + ": ", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.existingActive.interviewee), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Statements"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection13 = $props.collection) === null || _$props$collection13 === void 0 ? void 0 : (_$props$collection13$ = _$props$collection13.messages) === null || _$props$collection13$ === void 0 ? void 0 : _$props$collection13$.statements), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_45, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_46, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.existingActive.statements, function (statement) {
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection8 = $props.collection) === null || _$props$collection8 === void 0 ? void 0 : (_$props$collection8$m = _$props$collection8.messages) === null || _$props$collection8$m === void 0 ? void 0 : _$props$collection8$m.create), 9 /* TEXT, PROPS */, _hoisted_22)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Available Statements & Interview Details"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Details Card "), $data.existingActive.agenda != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection9 = $props.collection) === null || _$props$collection9 === void 0 ? void 0 : (_$props$collection9$m = _$props$collection9.messages) === null || _$props$collection9$m === void 0 ? void 0 : _$props$collection9$m.interview) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection10 = $props.collection) === null || _$props$collection10 === void 0 ? void 0 : (_$props$collection10$ = _$props$collection10.messages) === null || _$props$collection10$ === void 0 ? void 0 : _$props$collection10$.details), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Details"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection11 = $props.collection) === null || _$props$collection11 === void 0 ? void 0 : (_$props$collection11$ = _$props$collection11.messages) === null || _$props$collection11$ === void 0 ? void 0 : _$props$collection11$.agenda) + ": ", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.existingActive.agenda), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection12 = $props.collection) === null || _$props$collection12 === void 0 ? void 0 : (_$props$collection12$ = _$props$collection12.messages) === null || _$props$collection12$ === void 0 ? void 0 : _$props$collection12$.interviewee) + ": ", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.existingActive.interviewee), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Statements"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection13 = $props.collection) === null || _$props$collection13 === void 0 ? void 0 : (_$props$collection13$ = _$props$collection13.messages) === null || _$props$collection13$ === void 0 ? void 0 : _$props$collection13$.statements), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_30, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.existingActive.statements, function (statement) {
     var _$props$collection14, _$props$collection14$;
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
       key: statement,
@@ -23828,7 +23831,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       onClick: function onClick($event) {
         return $options.removeFromActive(statement.id);
       }
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection14 = $props.collection) === null || _$props$collection14 === void 0 ? void 0 : (_$props$collection14$ = _$props$collection14.messages) === null || _$props$collection14$ === void 0 ? void 0 : _$props$collection14$.remove), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_47)]);
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection14 = $props.collection) === null || _$props$collection14 === void 0 ? void 0 : (_$props$collection14$ = _$props$collection14.messages) === null || _$props$collection14$ === void 0 ? void 0 : _$props$collection14$.remove), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_31)]);
   }), 128 /* KEYED_FRAGMENT */))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn btn-primary mt-1 me-1",
     onClick: _cache[4] || (_cache[4] = function ($event) {
@@ -23839,7 +23842,48 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[5] || (_cache[5] = function ($event) {
       return $options.interviewUpdate('delete');
     })
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection16 = $props.collection) === null || _$props$collection16 === void 0 ? void 0 : (_$props$collection16$ = _$props$collection16.messages) === null || _$props$collection16$ === void 0 ? void 0 : _$props$collection16$["delete"]) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection17 = $props.collection) === null || _$props$collection17 === void 0 ? void 0 : (_$props$collection17$ = _$props$collection17.messages) === null || _$props$collection17$ === void 0 ? void 0 : _$props$collection17$.interview), 1 /* TEXT */)])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])]);
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection16 = $props.collection) === null || _$props$collection16 === void 0 ? void 0 : (_$props$collection16$ = _$props$collection16.messages) === null || _$props$collection16$ === void 0 ? void 0 : _$props$collection16$["delete"]) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection17 = $props.collection) === null || _$props$collection17 === void 0 ? void 0 : (_$props$collection17$ = _$props$collection17.messages) === null || _$props$collection17$ === void 0 ? void 0 : _$props$collection17$.interview), 1 /* TEXT */)])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Available Statements "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_32, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.interviewStatements, function (interviewStatement) {
+    var _interviewStatement$l, _interviewStatement$l2;
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+      key: interviewStatement,
+      "class": "card accordion-item",
+      draggable: true,
+      onDragstart: function onDragstart($event) {
+        return $options.dragEmit(interviewStatement.id);
+      }
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [_hoisted_35, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_36, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("badge rounded-pill badge-glow bg-".concat((_interviewStatement$l = interviewStatement.latestReview) === null || _interviewStatement$l === void 0 ? void 0 : _interviewStatement$l["class"])),
+      style: {
+        "height": "1.5rem"
+      }
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_interviewStatement$l2 = interviewStatement.latestReview) === null || _interviewStatement$l2 === void 0 ? void 0 : _interviewStatement$l2.review_status), 3 /* TEXT, CLASS */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", {
+      "class": "accordion-header",
+      id: "interviewStatementHeader".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id)
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      "class": "accordion-button collapsed",
+      "data-bs-toggle": "collapse",
+      role: "button",
+      "data-bs-target": "#interviewStatement".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id),
+      "aria-expanded": "false",
+      "aria-controls": "interviewStatement".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id)
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(interviewStatement["content_" + $props.locale]), 9 /* TEXT, PROPS */, _hoisted_38)], 8 /* PROPS */, _hoisted_37), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+      id: "interviewStatement".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id),
+      "class": "collapse accordion-collapse",
+      "aria-labelledby": "interviewStatementHeader".concat(interviewStatement === null || interviewStatement === void 0 ? void 0 : interviewStatement.id),
+      "data-bs-parent": "interviewStatements"
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(interviewStatement["desc_" + $props.locale]), 1 /* TEXT */)], 8 /* PROPS */, _hoisted_39)], 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_33);
+  }), 128 /* KEYED_FRAGMENT */))])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Existing Interviews"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection18 = $props.collection) === null || _$props$collection18 === void 0 ? void 0 : _$props$collection18.messages.interviews), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Pills"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_44, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.interviews, function (interview) {
+    var _$props$collection19, _$props$collection19$;
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
+      "class": "nav-item",
+      key: interview,
+      onClick: function onClick($event) {
+        return $options.existingSetActive(interview.id);
+      }
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("nav-link ".concat($data.existingActive.id == interview.id ? 'active' : ''))
+    }, [_hoisted_46, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_47, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection19 = $props.collection) === null || _$props$collection19 === void 0 ? void 0 : (_$props$collection19$ = _$props$collection19.messages) === null || _$props$collection19$ === void 0 ? void 0 : _$props$collection19$.interview) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(interview.id), 1 /* TEXT */)], 2 /* CLASS */)], 8 /* PROPS */, _hoisted_45);
+  }), 128 /* KEYED_FRAGMENT */))])])])])])])]);
 }
 
 /***/ }),
@@ -23908,99 +23952,100 @@ var _hoisted_16 = {
   "class": "text-center"
 };
 var _hoisted_17 = ["onClick"];
-var _hoisted_18 = {
-  "class": "col-6"
-};
+var _hoisted_18 = ["id"];
 var _hoisted_19 = {
+  "class": "row px-1"
+};
+var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "col-8"
+}, null, -1 /* HOISTED */);
+var _hoisted_21 = {
+  "class": "col-4 d-flex justify-content-end align-items-center"
+};
+var _hoisted_22 = ["id"];
+var _hoisted_23 = ["data-bs-target", "aria-controls"];
+var _hoisted_24 = ["id", "aria-labelledby", "data-bs-parent"];
+var _hoisted_25 = {
+  "class": "accordion-body"
+};
+var _hoisted_26 = {
   "class": "card"
 };
-var _hoisted_20 = {
+var _hoisted_27 = {
   "class": "card-header"
 };
-var _hoisted_21 = {
-  "class": "card-title"
+var _hoisted_28 = {
+  "class": "text-uppercase"
 };
-var _hoisted_22 = {
+var _hoisted_29 = {
   "class": "card-body"
 };
-var _hoisted_23 = {
-  "class": "border p-3 rounded mb-3"
-};
-var _hoisted_24 = {
+var _hoisted_30 = ["id"];
+var _hoisted_31 = {
   "class": "mb-3"
 };
-var _hoisted_25 = {
+var _hoisted_32 = {
+  "for": "interviewReviewText{{ interviewExpanded.id }}_{{ statement.id }}",
+  "class": "form-label"
+};
+var _hoisted_33 = ["id", "name"];
+var _hoisted_34 = {
+  "class": "mb-3"
+};
+var _hoisted_35 = ["onClick"];
+var _hoisted_36 = ["onClick"];
+var _hoisted_37 = {
+  "class": "col-6"
+};
+var _hoisted_38 = {
+  "class": "card"
+};
+var _hoisted_39 = {
+  "class": "card-header"
+};
+var _hoisted_40 = {
+  "class": "card-title"
+};
+var _hoisted_41 = {
+  "class": "card-body"
+};
+var _hoisted_42 = {
+  "class": "border p-3 rounded mb-3"
+};
+var _hoisted_43 = {
+  "class": "mb-3"
+};
+var _hoisted_44 = {
   "class": "btn-group",
   role: "group"
 };
-var _hoisted_26 = {
+var _hoisted_45 = {
   "class": "mb-3"
 };
-var _hoisted_27 = {
+var _hoisted_46 = {
   "for": "interviewNotes",
   "class": "form-label"
 };
-var _hoisted_28 = ["placeholder"];
-var _hoisted_29 = {
-  "class": "mb-3"
-};
-var _hoisted_30 = {
-  "for": "interviewFile",
-  "class": "form-label"
-};
-var _hoisted_31 = ["disabled"];
-var _hoisted_32 = {
-  key: 0,
-  "class": "mb-3"
-};
-var _hoisted_33 = {
-  "class": "list-group"
-};
-var _hoisted_34 = ["href"];
-var _hoisted_35 = ["id"];
-var _hoisted_36 = {
-  "class": "row px-1"
-};
-var _hoisted_37 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-  "class": "col-8"
-}, null, -1 /* HOISTED */);
-var _hoisted_38 = {
-  "class": "col-4 d-flex justify-content-end align-items-center"
-};
-var _hoisted_39 = ["id"];
-var _hoisted_40 = ["data-bs-target", "aria-controls"];
-var _hoisted_41 = ["id", "aria-labelledby", "data-bs-parent"];
-var _hoisted_42 = {
-  "class": "accordion-body"
-};
-var _hoisted_43 = {
-  "class": "card"
-};
-var _hoisted_44 = {
-  "class": "card-header"
-};
-var _hoisted_45 = {
-  "class": "text-uppercase"
-};
-var _hoisted_46 = {
-  "class": "card-body"
-};
-var _hoisted_47 = ["id"];
+var _hoisted_47 = ["placeholder"];
 var _hoisted_48 = {
   "class": "mb-3"
 };
 var _hoisted_49 = {
-  "for": "interviewReviewText{{ interviewExpanded.id }}_{{ statement.id }}",
+  "for": "interviewFile",
   "class": "form-label"
 };
-var _hoisted_50 = ["id", "name"];
+var _hoisted_50 = ["disabled"];
 var _hoisted_51 = {
+  key: 0,
   "class": "mb-3"
 };
-var _hoisted_52 = ["onClick"];
-var _hoisted_53 = ["onClick"];
+var _hoisted_52 = {
+  "class": "list-group"
+};
+var _hoisted_53 = ["href"];
+var _hoisted_54 = ["onClick"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _$props$collection, _$props$collection$me, _$props$collection2, _$props$collection2$m, _$props$collection3, _$props$collection3$m, _$props$collection4, _$props$collection4$m, _$props$collection5, _$props$collection5$m, _$props$collection6, _$props$collection6$m, _$props$collection7, _$props$collection7$m, _$props$collection10, _$props$collection10$, _$data$interviewExpan, _$props$collection11, _$props$collection11$, _$data$interviewExpan2, _$props$collection12, _$props$collection12$, _$data$interviewExpan3, _$props$collection13, _$props$collection13$, _$data$interviewExpan4, _$props$collection14, _$props$collection14$, _$data$interviewExpan5, _$props$collection15, _$props$collection15$, _$props$collection16, _$props$collection16$, _$props$collection17, _$props$collection17$, _$props$collection18, _$props$collection18$, _$props$collection19, _$props$collection19$, _$props$collection20, _$props$collection20$, _$props$collection21, _$props$collection21$;
+  var _$props$collection, _$props$collection$me, _$props$collection2, _$props$collection2$m, _$props$collection3, _$props$collection3$m, _$props$collection4, _$props$collection4$m, _$props$collection5, _$props$collection5$m, _$props$collection6, _$props$collection6$m, _$props$collection7, _$props$collection7$m, _$props$collection18, _$props$collection18$, _$data$interviewExpan, _$props$collection19, _$props$collection19$, _$data$interviewExpan2, _$props$collection20, _$props$collection20$, _$data$interviewExpan3, _$props$collection21, _$props$collection21$, _$data$interviewExpan4, _$props$collection22, _$props$collection22$, _$data$interviewExpan5, _$props$collection23, _$props$collection23$, _$props$collection24, _$props$collection24$, _$props$collection25, _$props$collection25$, _$props$collection26, _$props$collection26$, _$props$collection27, _$props$collection27$, _$props$collection28, _$props$collection28$, _$props$collection29, _$props$collection29$;
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection = $props.collection) === null || _$props$collection === void 0 ? void 0 : (_$props$collection$me = _$props$collection.messages) === null || _$props$collection$me === void 0 ? void 0 : _$props$collection$me.interview) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection2 = $props.collection) === null || _$props$collection2 === void 0 ? void 0 : (_$props$collection2$m = _$props$collection2.messages) === null || _$props$collection2$m === void 0 ? void 0 : _$props$collection2$m.conduct), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn-close",
@@ -24020,86 +24065,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $options.interviewExpandedSet(interview.id);
       }
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(interview.id == $data.interviewExpanded.id ? (_$props$collection8 = $props.collection) === null || _$props$collection8 === void 0 ? void 0 : (_$props$collection8$m = _$props$collection8.messages) === null || _$props$collection8$m === void 0 ? void 0 : _$props$collection8$m.expanded : (_$props$collection9 = $props.collection) === null || _$props$collection9 === void 0 ? void 0 : (_$props$collection9$m = _$props$collection9.messages) === null || _$props$collection9$m === void 0 ? void 0 : _$props$collection9$m.expand), 11 /* TEXT, CLASS, PROPS */, _hoisted_17)])]);
-  }), 128 /* KEYED_FRAGMENT */))])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Details "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_21, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection10 = $props.collection) === null || _$props$collection10 === void 0 ? void 0 : (_$props$collection10$ = _$props$collection10.messages) === null || _$props$collection10$ === void 0 ? void 0 : _$props$collection10$.agenda), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$interviewExpan = $data.interviewExpanded) === null || _$data$interviewExpan === void 0 ? void 0 : _$data$interviewExpan.agenda), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Status Management "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection11 = $props.collection) === null || _$props$collection11 === void 0 ? void 0 : (_$props$collection11$ = _$props$collection11.messages) === null || _$props$collection11$ === void 0 ? void 0 : _$props$collection11$.updateStatus), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    type: "button",
-    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn btn-outline-secondary", {
-      'active': ((_$data$interviewExpan2 = $data.interviewExpanded) === null || _$data$interviewExpan2 === void 0 ? void 0 : _$data$interviewExpan2.status) === 'planned'
-    }]),
-    onClick: _cache[1] || (_cache[1] = function ($event) {
-      return $options.updateInterviewStatus('planned');
-    })
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection12 = $props.collection) === null || _$props$collection12 === void 0 ? void 0 : (_$props$collection12$ = _$props$collection12.messages) === null || _$props$collection12$ === void 0 ? void 0 : _$props$collection12$.planned), 3 /* TEXT, CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    type: "button",
-    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn btn-outline-primary", {
-      'active': ((_$data$interviewExpan3 = $data.interviewExpanded) === null || _$data$interviewExpan3 === void 0 ? void 0 : _$data$interviewExpan3.status) === 'in_progress'
-    }]),
-    onClick: _cache[2] || (_cache[2] = function ($event) {
-      return $options.updateInterviewStatus('in_progress');
-    })
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection13 = $props.collection) === null || _$props$collection13 === void 0 ? void 0 : (_$props$collection13$ = _$props$collection13.messages) === null || _$props$collection13$ === void 0 ? void 0 : _$props$collection13$.inProgress), 3 /* TEXT, CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    type: "button",
-    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn btn-outline-success", {
-      'active': ((_$data$interviewExpan4 = $data.interviewExpanded) === null || _$data$interviewExpan4 === void 0 ? void 0 : _$data$interviewExpan4.status) === 'completed'
-    }]),
-    onClick: _cache[3] || (_cache[3] = function ($event) {
-      return $options.updateInterviewStatus('completed');
-    })
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection14 = $props.collection) === null || _$props$collection14 === void 0 ? void 0 : (_$props$collection14$ = _$props$collection14.messages) === null || _$props$collection14$ === void 0 ? void 0 : _$props$collection14$.completed), 3 /* TEXT, CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    type: "button",
-    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn btn-outline-danger", {
-      'active': ((_$data$interviewExpan5 = $data.interviewExpanded) === null || _$data$interviewExpan5 === void 0 ? void 0 : _$data$interviewExpan5.status) === 'cancelled'
-    }]),
-    onClick: _cache[4] || (_cache[4] = function ($event) {
-      return $options.updateInterviewStatus('cancelled');
-    })
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection15 = $props.collection) === null || _$props$collection15 === void 0 ? void 0 : (_$props$collection15$ = _$props$collection15.messages) === null || _$props$collection15$ === void 0 ? void 0 : _$props$collection15$.cancelled), 3 /* TEXT, CLASS */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Notes Section "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_27, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection16 = $props.collection) === null || _$props$collection16 === void 0 ? void 0 : (_$props$collection16$ = _$props$collection16.messages) === null || _$props$collection16$ === void 0 ? void 0 : _$props$collection16$.notes), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
-    "class": "form-control",
-    id: "interviewNotes",
-    "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
-      return $data.interviewNotes = $event;
-    }),
-    rows: "4",
-    placeholder: (_$props$collection17 = $props.collection) === null || _$props$collection17 === void 0 ? void 0 : (_$props$collection17$ = _$props$collection17.messages) === null || _$props$collection17$ === void 0 ? void 0 : _$props$collection17$.addNotesHere
-  }, null, 8 /* PROPS */, _hoisted_28), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.interviewNotes]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    type: "button",
-    "class": "btn btn-primary mt-2",
-    onClick: _cache[6] || (_cache[6] = function () {
-      return $options.saveNotes && $options.saveNotes.apply($options, arguments);
-    })
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection18 = $props.collection) === null || _$props$collection18 === void 0 ? void 0 : (_$props$collection18$ = _$props$collection18.messages) === null || _$props$collection18$ === void 0 ? void 0 : _$props$collection18$.saveNotes), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" File Upload Section "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_30, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection19 = $props.collection) === null || _$props$collection19 === void 0 ? void 0 : (_$props$collection19$ = _$props$collection19.messages) === null || _$props$collection19$ === void 0 ? void 0 : _$props$collection19$.uploadFile), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-    type: "file",
-    "class": "form-control",
-    id: "interviewFile",
-    ref: "fileInput",
-    onChange: _cache[7] || (_cache[7] = function () {
-      return $options.handleFileUpload && $options.handleFileUpload.apply($options, arguments);
-    })
-  }, null, 544 /* HYDRATE_EVENTS, NEED_PATCH */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    type: "button",
-    "class": "btn btn-info mt-2",
-    onClick: _cache[8] || (_cache[8] = function () {
-      return $options.uploadFile && $options.uploadFile.apply($options, arguments);
-    }),
-    disabled: !$data.selectedFile
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection20 = $props.collection) === null || _$props$collection20 === void 0 ? void 0 : (_$props$collection20$ = _$props$collection20.messages) === null || _$props$collection20$ === void 0 ? void 0 : _$props$collection20$.upload), 9 /* TEXT, PROPS */, _hoisted_31)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Attachments List "), $options.getAttachments().length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_32, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection21 = $props.collection) === null || _$props$collection21 === void 0 ? void 0 : (_$props$collection21$ = _$props$collection21.messages) === null || _$props$collection21$ === void 0 ? void 0 : _$props$collection21$.attachments), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_33, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.getAttachments(), function (attachment, index) {
-    var _$props$collection22, _$props$collection22$;
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
-      key: index,
-      "class": "list-group-item d-flex justify-content-between align-items-center"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(attachment.filename), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
-      href: $options.getAttachmentUrl(attachment.path),
-      target: "_blank",
-      "class": "btn btn-sm btn-outline-primary"
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection22 = $props.collection) === null || _$props$collection22 === void 0 ? void 0 : (_$props$collection22$ = _$props$collection22.messages) === null || _$props$collection22$ === void 0 ? void 0 : _$props$collection22$.download), 9 /* TEXT, PROPS */, _hoisted_34)]);
-  }), 128 /* KEYED_FRAGMENT */))])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Accordion for Interview Statements "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-    "class": "accordion",
+  }), 128 /* KEYED_FRAGMENT */))])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Accordion for Interview Statements "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": "accordion mt-3",
     id: "interviewStatementsAccordion".concat($data.interviewExpanded.id)
   }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.interviewExpanded.statements, function (statement) {
-    var _statement$latestRevi, _statement$latestRevi2, _$props$collection23, _$props$collection23$, _$props$collection24, _$props$collection24$, _$props$collection25, _$props$collection25$, _$props$collection26, _$props$collection26$, _$props$collection27, _$props$collection27$, _statement$latestDeed3, _$props$collection28, _$props$collection28$, _statement$latestDeed4, _$props$collection29, _$props$collection29$, _statement$latestDeed5, _$props$collection30, _$props$collection30$, _statement$latestRevi3, _statement$latestRevi4, _statement$latestRevi5, _statement$latestRevi6, _statement$latestRevi7;
+    var _statement$latestRevi, _statement$latestRevi2, _$props$collection10, _$props$collection10$, _$props$collection11, _$props$collection11$, _$props$collection12, _$props$collection12$, _$props$collection13, _$props$collection13$, _$props$collection14, _$props$collection14$, _statement$latestDeed3, _$props$collection15, _$props$collection15$, _statement$latestDeed4, _$props$collection16, _$props$collection16$, _statement$latestDeed5, _$props$collection17, _$props$collection17$, _statement$latestRevi3, _statement$latestRevi4, _statement$latestRevi5, _statement$latestRevi6, _statement$latestRevi7;
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       key: statement,
       "class": "card accordion-item"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Statement Latest Review Status "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_36, [_hoisted_37, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_38, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Statement Latest Review Status "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [_hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("badge rounded-pill badge-glow bg-".concat((_statement$latestRevi = statement.latestReview) === null || _statement$latestRevi === void 0 ? void 0 : _statement$latestRevi["class"])),
       style: {
         "height": "1.5rem"
@@ -24114,37 +24088,114 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "data-bs-target": "#interviewStatement".concat(statement.id),
       "aria-expanded": "false",
       "aria-controls": "interviewStatement".concat(statement.id)
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(statement["content_" + $props.locale]), 9 /* TEXT, PROPS */, _hoisted_40)], 8 /* PROPS */, _hoisted_39), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(statement["content_" + $props.locale]), 9 /* TEXT, PROPS */, _hoisted_23)], 8 /* PROPS */, _hoisted_22), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
       id: "interviewStatement".concat(statement.id),
       "class": "collapse accordion-collapse",
       "aria-labelledby": "interviewStatementHeader".concat(statement.id),
       "data-bs-parent": "#interviewStatementsAccordion".concat($data.interviewExpanded.id)
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Expanded statement desc"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(statement["desc_" + $props.locale]), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Value Card"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_44, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_45, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection23 = $props.collection) === null || _$props$collection23 === void 0 ? void 0 : (_$props$collection23$ = _$props$collection23.messages) === null || _$props$collection23$ === void 0 ? void 0 : _$props$collection23$.value), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_46, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Expanded statement desc"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(statement["desc_" + $props.locale]), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Value Card"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_28, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection10 = $props.collection) === null || _$props$collection10 === void 0 ? void 0 : (_$props$collection10$ = _$props$collection10.messages) === null || _$props$collection10$ === void 0 ? void 0 : _$props$collection10$.value), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
       id: "interviewStatementValueSlider".concat($data.interviewExpanded.id, "_").concat(statement.id),
       "class": "mt-1 mb-3"
-    }, null, 8 /* PROPS */, _hoisted_47), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_48, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_49, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection24 = $props.collection) === null || _$props$collection24 === void 0 ? void 0 : (_$props$collection24$ = _$props$collection24.messages) === null || _$props$collection24$ === void 0 ? void 0 : _$props$collection24$.review), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
+    }, null, 8 /* PROPS */, _hoisted_30), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_32, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection11 = $props.collection) === null || _$props$collection11 === void 0 ? void 0 : (_$props$collection11$ = _$props$collection11.messages) === null || _$props$collection11$ === void 0 ? void 0 : _$props$collection11$.review), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
       "class": "form-control",
       id: "interviewReviewText".concat($data.interviewExpanded.id, "_").concat(statement.id),
       name: "interviewReviewText".concat($data.interviewExpanded.id, "_").concat(statement.id),
       rows: "4"
-    }, null, 8 /* PROPS */, _hoisted_50)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Value Action Buttons (Accept/Reject)"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_51, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    }, null, 8 /* PROPS */, _hoisted_33)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Value Action Buttons (Accept/Reject)"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
       type: "button",
       "class": "btn btn-success w-25 me-2",
       onClick: function onClick($event) {
         var _statement$latestDeed;
         return $options.reviewUpdate('accept', statement.id, "interviewReviewText".concat($data.interviewExpanded.id, "_").concat(statement.id), "interviewStatementValueSlider".concat($data.interviewExpanded.id, "_").concat(statement.id), (_statement$latestDeed = statement.latestDeed) === null || _statement$latestDeed === void 0 ? void 0 : _statement$latestDeed.id);
       }
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection25 = $props.collection) === null || _$props$collection25 === void 0 ? void 0 : (_$props$collection25$ = _$props$collection25.messages) === null || _$props$collection25$ === void 0 ? void 0 : _$props$collection25$.accept), 9 /* TEXT, PROPS */, _hoisted_52), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection12 = $props.collection) === null || _$props$collection12 === void 0 ? void 0 : (_$props$collection12$ = _$props$collection12.messages) === null || _$props$collection12$ === void 0 ? void 0 : _$props$collection12$.accept), 9 /* TEXT, PROPS */, _hoisted_35), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
       type: "button",
       "class": "btn btn-danger w-25",
       onClick: function onClick($event) {
         var _statement$latestDeed2;
         return $options.reviewUpdate('reject', statement.id, "interviewReviewText".concat($data.interviewExpanded.id, "_").concat(statement.id), "interviewStatementValueSlider".concat($data.interviewExpanded.id, "_").concat(statement.id), (_statement$latestDeed2 = statement.latestDeed) === null || _statement$latestDeed2 === void 0 ? void 0 : _statement$latestDeed2.id);
       }
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection26 = $props.collection) === null || _$props$collection26 === void 0 ? void 0 : (_$props$collection26$ = _$props$collection26.messages) === null || _$props$collection26$ === void 0 ? void 0 : _$props$collection26$.reject), 9 /* TEXT, PROPS */, _hoisted_53)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Last Updated "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection27 = $props.collection) === null || _$props$collection27 === void 0 ? void 0 : (_$props$collection27$ = _$props$collection27.messages) === null || _$props$collection27$ === void 0 ? void 0 : _$props$collection27$.lastUpdated) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestDeed3 = statement.latestDeed) === null || _statement$latestDeed3 === void 0 ? void 0 : _statement$latestDeed3.lastUpdated) + ", " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection28 = $props.collection) === null || _$props$collection28 === void 0 ? void 0 : (_$props$collection28$ = _$props$collection28.messages) === null || _$props$collection28$ === void 0 ? void 0 : _$props$collection28$.by) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestDeed4 = statement.latestDeed) === null || _statement$latestDeed4 === void 0 ? void 0 : _statement$latestDeed4.user), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Last Review Comment "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection29 = $props.collection) === null || _$props$collection29 === void 0 ? void 0 : (_$props$collection29$ = _$props$collection29.messages) === null || _$props$collection29$ === void 0 ? void 0 : _$props$collection29$.comment) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestDeed5 = statement.latestDeed) === null || _statement$latestDeed5 === void 0 ? void 0 : _statement$latestDeed5.comment), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Latest Review Details"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection30 = $props.collection) === null || _$props$collection30 === void 0 ? void 0 : (_$props$collection30$ = _$props$collection30.messages) === null || _$props$collection30$ === void 0 ? void 0 : _$props$collection30$.latestReview) + ", " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestRevi3 = statement.latestReview) === null || _statement$latestRevi3 === void 0 ? void 0 : _statement$latestRevi3.user) + ", " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestRevi4 = statement.latestReview) === null || _statement$latestRevi4 === void 0 ? void 0 : _statement$latestRevi4.lastUpdated) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestRevi5 = statement.latestReview) === null || _statement$latestRevi5 === void 0 ? void 0 : _statement$latestRevi5.review), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection13 = $props.collection) === null || _$props$collection13 === void 0 ? void 0 : (_$props$collection13$ = _$props$collection13.messages) === null || _$props$collection13$ === void 0 ? void 0 : _$props$collection13$.reject), 9 /* TEXT, PROPS */, _hoisted_36)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Last Updated "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection14 = $props.collection) === null || _$props$collection14 === void 0 ? void 0 : (_$props$collection14$ = _$props$collection14.messages) === null || _$props$collection14$ === void 0 ? void 0 : _$props$collection14$.lastUpdated) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestDeed3 = statement.latestDeed) === null || _statement$latestDeed3 === void 0 ? void 0 : _statement$latestDeed3.lastUpdated) + ", " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection15 = $props.collection) === null || _$props$collection15 === void 0 ? void 0 : (_$props$collection15$ = _$props$collection15.messages) === null || _$props$collection15$ === void 0 ? void 0 : _$props$collection15$.by) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestDeed4 = statement.latestDeed) === null || _statement$latestDeed4 === void 0 ? void 0 : _statement$latestDeed4.user), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Last Review Comment "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection16 = $props.collection) === null || _$props$collection16 === void 0 ? void 0 : (_$props$collection16$ = _$props$collection16.messages) === null || _$props$collection16$ === void 0 ? void 0 : _$props$collection16$.comment) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestDeed5 = statement.latestDeed) === null || _statement$latestDeed5 === void 0 ? void 0 : _statement$latestDeed5.comment), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Latest Review Details"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection17 = $props.collection) === null || _$props$collection17 === void 0 ? void 0 : (_$props$collection17$ = _$props$collection17.messages) === null || _$props$collection17$ === void 0 ? void 0 : _$props$collection17$.latestReview) + ", " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestRevi3 = statement.latestReview) === null || _statement$latestRevi3 === void 0 ? void 0 : _statement$latestRevi3.user) + ", " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestRevi4 = statement.latestReview) === null || _statement$latestRevi4 === void 0 ? void 0 : _statement$latestRevi4.lastUpdated) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestRevi5 = statement.latestReview) === null || _statement$latestRevi5 === void 0 ? void 0 : _statement$latestRevi5.review), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("text-".concat((_statement$latestRevi6 = statement.latestReview) === null || _statement$latestRevi6 === void 0 ? void 0 : _statement$latestRevi6["class"]))
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestRevi7 = statement.latestReview) === null || _statement$latestRevi7 === void 0 ? void 0 : _statement$latestRevi7.review_status), 3 /* TEXT, CLASS */)])])], 8 /* PROPS */, _hoisted_41)]);
-  }), 128 /* KEYED_FRAGMENT */))], 8 /* PROPS */, _hoisted_35)])])])])]);
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_statement$latestRevi7 = statement.latestReview) === null || _statement$latestRevi7 === void 0 ? void 0 : _statement$latestRevi7.review_status), 3 /* TEXT, CLASS */)])])], 8 /* PROPS */, _hoisted_24)]);
+  }), 128 /* KEYED_FRAGMENT */))], 8 /* PROPS */, _hoisted_18)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Interview Details "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_37, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_38, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_39, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_40, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection18 = $props.collection) === null || _$props$collection18 === void 0 ? void 0 : (_$props$collection18$ = _$props$collection18.messages) === null || _$props$collection18$ === void 0 ? void 0 : _$props$collection18$.agenda), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$data$interviewExpan = $data.interviewExpanded) === null || _$data$interviewExpan === void 0 ? void 0 : _$data$interviewExpan.agenda), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Status Management "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection19 = $props.collection) === null || _$props$collection19 === void 0 ? void 0 : (_$props$collection19$ = _$props$collection19.messages) === null || _$props$collection19$ === void 0 ? void 0 : _$props$collection19$.updateStatus), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_44, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn btn-outline-secondary", {
+      'active': ((_$data$interviewExpan2 = $data.interviewExpanded) === null || _$data$interviewExpan2 === void 0 ? void 0 : _$data$interviewExpan2.status) === 'planned'
+    }]),
+    onClick: _cache[1] || (_cache[1] = function ($event) {
+      return $options.updateInterviewStatus('planned');
+    })
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection20 = $props.collection) === null || _$props$collection20 === void 0 ? void 0 : (_$props$collection20$ = _$props$collection20.messages) === null || _$props$collection20$ === void 0 ? void 0 : _$props$collection20$.planned), 3 /* TEXT, CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn btn-outline-primary", {
+      'active': ((_$data$interviewExpan3 = $data.interviewExpanded) === null || _$data$interviewExpan3 === void 0 ? void 0 : _$data$interviewExpan3.status) === 'in_progress'
+    }]),
+    onClick: _cache[2] || (_cache[2] = function ($event) {
+      return $options.updateInterviewStatus('in_progress');
+    })
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection21 = $props.collection) === null || _$props$collection21 === void 0 ? void 0 : (_$props$collection21$ = _$props$collection21.messages) === null || _$props$collection21$ === void 0 ? void 0 : _$props$collection21$.inProgress), 3 /* TEXT, CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn btn-outline-success", {
+      'active': ((_$data$interviewExpan4 = $data.interviewExpanded) === null || _$data$interviewExpan4 === void 0 ? void 0 : _$data$interviewExpan4.status) === 'completed'
+    }]),
+    onClick: _cache[3] || (_cache[3] = function ($event) {
+      return $options.updateInterviewStatus('completed');
+    })
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection22 = $props.collection) === null || _$props$collection22 === void 0 ? void 0 : (_$props$collection22$ = _$props$collection22.messages) === null || _$props$collection22$ === void 0 ? void 0 : _$props$collection22$.completed), 3 /* TEXT, CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn btn-outline-danger", {
+      'active': ((_$data$interviewExpan5 = $data.interviewExpanded) === null || _$data$interviewExpan5 === void 0 ? void 0 : _$data$interviewExpan5.status) === 'cancelled'
+    }]),
+    onClick: _cache[4] || (_cache[4] = function ($event) {
+      return $options.updateInterviewStatus('cancelled');
+    })
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection23 = $props.collection) === null || _$props$collection23 === void 0 ? void 0 : (_$props$collection23$ = _$props$collection23.messages) === null || _$props$collection23$ === void 0 ? void 0 : _$props$collection23$.cancelled), 3 /* TEXT, CLASS */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Notes Section "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_45, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_46, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection24 = $props.collection) === null || _$props$collection24 === void 0 ? void 0 : (_$props$collection24$ = _$props$collection24.messages) === null || _$props$collection24$ === void 0 ? void 0 : _$props$collection24$.notes), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
+    "class": "form-control",
+    id: "interviewNotes",
+    "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+      return $data.interviewNotes = $event;
+    }),
+    rows: "4",
+    placeholder: (_$props$collection25 = $props.collection) === null || _$props$collection25 === void 0 ? void 0 : (_$props$collection25$ = _$props$collection25.messages) === null || _$props$collection25$ === void 0 ? void 0 : _$props$collection25$.addNotesHere
+  }, null, 8 /* PROPS */, _hoisted_47), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.interviewNotes]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": "btn btn-primary mt-2",
+    onClick: _cache[6] || (_cache[6] = function () {
+      return $options.saveNotes && $options.saveNotes.apply($options, arguments);
+    })
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection26 = $props.collection) === null || _$props$collection26 === void 0 ? void 0 : (_$props$collection26$ = _$props$collection26.messages) === null || _$props$collection26$ === void 0 ? void 0 : _$props$collection26$.saveNotes), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" File Upload Section "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_48, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_49, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection27 = $props.collection) === null || _$props$collection27 === void 0 ? void 0 : (_$props$collection27$ = _$props$collection27.messages) === null || _$props$collection27$ === void 0 ? void 0 : _$props$collection27$.uploadFile), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    type: "file",
+    "class": "form-control",
+    id: "interviewFile",
+    ref: "fileInput",
+    onChange: _cache[7] || (_cache[7] = function () {
+      return $options.handleFileUpload && $options.handleFileUpload.apply($options, arguments);
+    })
+  }, null, 544 /* HYDRATE_EVENTS, NEED_PATCH */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    "class": "btn btn-info mt-2",
+    onClick: _cache[8] || (_cache[8] = function () {
+      return $options.uploadFile && $options.uploadFile.apply($options, arguments);
+    }),
+    disabled: !$data.selectedFile
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection28 = $props.collection) === null || _$props$collection28 === void 0 ? void 0 : (_$props$collection28$ = _$props$collection28.messages) === null || _$props$collection28$ === void 0 ? void 0 : _$props$collection28$.upload), 9 /* TEXT, PROPS */, _hoisted_50)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Attachments List "), $options.getAttachments().length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_51, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection29 = $props.collection) === null || _$props$collection29 === void 0 ? void 0 : (_$props$collection29$ = _$props$collection29.messages) === null || _$props$collection29$ === void 0 ? void 0 : _$props$collection29$.attachments), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_52, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.getAttachments(), function (attachment, index) {
+    var _$props$collection30, _$props$collection30$, _$props$collection31, _$props$collection31$;
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
+      key: index,
+      "class": "list-group-item d-flex justify-content-between align-items-center"
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(attachment.filename), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+      href: $options.getAttachmentUrl(attachment.path),
+      target: "_blank",
+      "class": "btn btn-sm btn-outline-primary me-2"
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection30 = $props.collection) === null || _$props$collection30 === void 0 ? void 0 : (_$props$collection30$ = _$props$collection30.messages) === null || _$props$collection30$ === void 0 ? void 0 : _$props$collection30$.download), 9 /* TEXT, PROPS */, _hoisted_53), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      type: "button",
+      "class": "btn btn-sm btn-outline-danger",
+      onClick: function onClick($event) {
+        return $options.deleteAttachment(index);
+      }
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_$props$collection31 = $props.collection) === null || _$props$collection31 === void 0 ? void 0 : (_$props$collection31$ = _$props$collection31.messages) === null || _$props$collection31$ === void 0 ? void 0 : _$props$collection31$["delete"]), 9 /* TEXT, PROPS */, _hoisted_54)])]);
+  }), 128 /* KEYED_FRAGMENT */))])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])])])])]);
 }
 
 /***/ }),
@@ -29778,7 +29829,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Interview_vue_vue_type_template_id_2b022217__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Interview.vue?vue&type=template&id=2b022217 */ "./resources/js/models/organisations/review/Interview.vue?vue&type=template&id=2b022217");
 /* harmony import */ var _Interview_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Interview.vue?vue&type=script&lang=js */ "./resources/js/models/organisations/review/Interview.vue?vue&type=script&lang=js");
 /* harmony import */ var _Interview_vue_vue_type_style_index_0_id_2b022217_lang_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Interview.vue?vue&type=style&index=0&id=2b022217&lang=css */ "./resources/js/models/organisations/review/Interview.vue?vue&type=style&index=0&id=2b022217&lang=css");
-/* harmony import */ var C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
@@ -29786,7 +29837,7 @@ __webpack_require__.r(__webpack_exports__);
 ;
 
 
-const __exports__ = /*#__PURE__*/(0,C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_Interview_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_Interview_vue_vue_type_template_id_2b022217__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/Interview.vue"]])
+const __exports__ = /*#__PURE__*/(0,c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_Interview_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_Interview_vue_vue_type_template_id_2b022217__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/Interview.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -29808,13 +29859,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _InterviewConduct_vue_vue_type_template_id_08dd9546__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./InterviewConduct.vue?vue&type=template&id=08dd9546 */ "./resources/js/models/organisations/review/InterviewConduct.vue?vue&type=template&id=08dd9546");
 /* harmony import */ var _InterviewConduct_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./InterviewConduct.vue?vue&type=script&lang=js */ "./resources/js/models/organisations/review/InterviewConduct.vue?vue&type=script&lang=js");
-/* harmony import */ var C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
 
 ;
-const __exports__ = /*#__PURE__*/(0,C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_InterviewConduct_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_InterviewConduct_vue_vue_type_template_id_08dd9546__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/InterviewConduct.vue"]])
+const __exports__ = /*#__PURE__*/(0,c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_InterviewConduct_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_InterviewConduct_vue_vue_type_template_id_08dd9546__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/InterviewConduct.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -29836,13 +29887,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _OrganisationReview_vue_vue_type_template_id_171e79ac__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrganisationReview.vue?vue&type=template&id=171e79ac */ "./resources/js/models/organisations/review/OrganisationReview.vue?vue&type=template&id=171e79ac");
 /* harmony import */ var _OrganisationReview_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrganisationReview.vue?vue&type=script&lang=js */ "./resources/js/models/organisations/review/OrganisationReview.vue?vue&type=script&lang=js");
-/* harmony import */ var C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
 
 ;
-const __exports__ = /*#__PURE__*/(0,C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_OrganisationReview_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_OrganisationReview_vue_vue_type_template_id_171e79ac__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/OrganisationReview.vue"]])
+const __exports__ = /*#__PURE__*/(0,c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_OrganisationReview_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_OrganisationReview_vue_vue_type_template_id_171e79ac__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/OrganisationReview.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -29864,13 +29915,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _WebformConduct_vue_vue_type_template_id_16aa0ce6__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WebformConduct.vue?vue&type=template&id=16aa0ce6 */ "./resources/js/models/organisations/review/WebformConduct.vue?vue&type=template&id=16aa0ce6");
 /* harmony import */ var _WebformConduct_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WebformConduct.vue?vue&type=script&lang=js */ "./resources/js/models/organisations/review/WebformConduct.vue?vue&type=script&lang=js");
-/* harmony import */ var C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
 
 ;
-const __exports__ = /*#__PURE__*/(0,C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_WebformConduct_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_WebformConduct_vue_vue_type_template_id_16aa0ce6__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/WebformConduct.vue"]])
+const __exports__ = /*#__PURE__*/(0,c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_WebformConduct_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_WebformConduct_vue_vue_type_template_id_16aa0ce6__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/WebformConduct.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -29892,13 +29943,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _WebformPrepare_vue_vue_type_template_id_22125729__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./WebformPrepare.vue?vue&type=template&id=22125729 */ "./resources/js/models/organisations/review/WebformPrepare.vue?vue&type=template&id=22125729");
 /* harmony import */ var _WebformPrepare_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./WebformPrepare.vue?vue&type=script&lang=js */ "./resources/js/models/organisations/review/WebformPrepare.vue?vue&type=script&lang=js");
-/* harmony import */ var C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
 
 ;
-const __exports__ = /*#__PURE__*/(0,C_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_WebformPrepare_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_WebformPrepare_vue_vue_type_template_id_22125729__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/WebformPrepare.vue"]])
+const __exports__ = /*#__PURE__*/(0,c_xampp_htdocs_backend_gdpr_se_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_WebformPrepare_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_WebformPrepare_vue_vue_type_template_id_22125729__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/models/organisations/review/WebformPrepare.vue"]])
 /* hot reload */
 if (false) {}
 
