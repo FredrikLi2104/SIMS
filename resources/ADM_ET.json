@@ -1,0 +1,50 @@
+[
+    {
+        "Enforcement_id": "0",
+        "Typ": "N\/A"
+    },
+    {
+        "Enforcement_id": "1",
+        "Typ": "Insufficient legal basis for data processing"
+    },
+    {
+        "Enforcement_id": "2",
+        "Typ": "Insufficient technical and organisational measures to ensure information security"
+    },
+    {
+        "Enforcement_id": "3",
+        "Typ": "Non-compliance with general data processing principles"
+    },
+    {
+        "Enforcement_id": "4",
+        "Typ": "Insufficient fulfilment of data subjects rights"
+    },
+    {
+        "Enforcement_id": "6",
+        "Typ": "Insufficient fulfilment of data breach notification obligations"
+    },
+    {
+        "Enforcement_id": "7",
+        "Typ": "Lack of appointment of data protection officer"
+    },
+    {
+        "Enforcement_id": "8",
+        "Typ": "Insufficient cooperation with supervisory authority"
+    },
+    {
+        "Enforcement_id": "9",
+        "Typ": "Insufficient data processing agreement"
+    },
+    {
+        "Enforcement_id": "10",
+        "Typ": "Unknown"
+    },
+    {
+        "Enforcement_id": "11",
+        "Typ": "Insufficient fulfilment of information obligations"
+    },
+    {
+        "Enforcement_id": "12",
+        "Typ": "Insufficient involvement of data protection officer"
+    }
+]
