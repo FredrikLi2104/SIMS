@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/fredd/Documents/GitHub/SIMS_backend/backend.gdpr.se.frli/**)",
+      "Bash(dir .env)",
+      "Bash(copy .env.example .env)",
+      "Bash(cp:*)",
+      "Bash(php artisan:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

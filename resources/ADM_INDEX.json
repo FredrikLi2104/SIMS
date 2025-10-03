@@ -1,0 +1,932 @@
+[
+    {
+        "Index_id": "1",
+        "Ord": "Ai",
+        "Beskrivning": "Sanktioner kopplade till fall med  AI"
+    },
+    {
+        "Index_id": "2",
+        "Ord": "Advokatbyrå",
+        "Beskrivning": "Sanktioner kopplande till branschen"
+    },
+    {
+        "Index_id": "3",
+        "Ord": "Allmänhet",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "4",
+        "Ord": "Anbudsförfarande",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "5",
+        "Ord": "Anmälan",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "6",
+        "Ord": "Anställd",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "7",
+        "Ord": "Ansvarsskyldighet",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "8",
+        "Ord": "Ansökan",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "9",
+        "Ord": "Applikation",
+        "Beskrivning": "Sanktioner har inträffat på grund av intrång i personuppgifter relaterade till missbruk av en (mobil) applikation eller otillräckliga tekniska och säkerhetsåtgärder inom applikationen."
+    },
+    {
+        "Index_id": "10",
+        "Ord": "Autentisering",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "11",
+        "Ord": "Automatisering",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "12",
+        "Ord": "Avtal",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "13",
+        "Ord": "Banksektor",
+        "Beskrivning": "Sanktioner har inträffat på grund av brott mot GDPR inom banksektorn. Brott kan innebära otillräckliga tekniska säkerhetsåtgärder, brist på tillräckligt eller korrekt samtycke."
+    },
+    {
+        "Index_id": "15",
+        "Ord": "Behörigheter",
+        "Beskrivning": "Sanktioner som inträffat på grund av olika behörigheter inte tilldelats korrekt"
+    },
+    {
+        "Index_id": "16",
+        "Ord": "Bevakning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "17",
+        "Ord": "Bild",
+        "Beskrivning": "Fall som rör överträdelser av personuppgifter på grund av otillräckligt skydd eller missbruk av bilder."
+    },
+    {
+        "Index_id": "18",
+        "Ord": "Biometri",
+        "Beskrivning": "Sanktioner kopplade till fall med användning av biometriska hjälpmedel, ansiktsigenkänning och fingeravtryck."
+    },
+    {
+        "Index_id": "20",
+        "Ord": "Bokföringslagen",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "21",
+        "Ord": "Bot",
+        "Beskrivning": "Sanktioner kopplade till chat-botar"
+    },
+    {
+        "Index_id": "22",
+        "Ord": "Brottsdatalag",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "23",
+        "Ord": "Butik",
+        "Beskrivning": "Sanktioner kopplande till bransch t.ex. detaljhandel"
+    },
+    {
+        "Index_id": "24",
+        "Ord": "Catering",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "25",
+        "Ord": "Chat",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "26",
+        "Ord": "Clearview",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "27",
+        "Ord": "Cookies",
+        "Beskrivning": "Sanktioner som avser deponering av kakor före eller utan tillräckligt samtycke."
+    },
+    {
+        "Index_id": "28",
+        "Ord": "Corona",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "29",
+        "Ord": "Cyberattack",
+        "Beskrivning": "Situationer där en antagonist brytit sig in i organisationer, motsvarande ord är Hacking, Antagonist, Dataintrång"
+    },
+    {
+        "Index_id": "30",
+        "Ord": "Databas",
+        "Beskrivning": "Sanktioner kopplade till fall där tekniska brister i organisationens databas."
+    },
+    {
+        "Index_id": "32",
+        "Ord": "Departement",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "33",
+        "Ord": "Dröjsmål",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "34",
+        "Ord": "Drönare",
+        "Beskrivning": "Fall där drönare har används för att övervaka vissa områden\/vägar. "
+    },
+    {
+        "Index_id": "35",
+        "Ord": "E-Post",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "36",
+        "Ord": "Evenemang",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "37",
+        "Ord": "Fackförbund",
+        "Beskrivning": "Sanktioner kopplat till ett fackförbund."
+    },
+    {
+        "Index_id": "39",
+        "Ord": "Faktura",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "40",
+        "Ord": "Fastighet",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "41",
+        "Ord": "Finansbolag",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "42",
+        "Ord": "Flerbostadshus",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "43",
+        "Ord": "Flygbolag",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "44",
+        "Ord": "Formulär",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "45",
+        "Ord": "Fysisk",
+        "Beskrivning": "Felaktig hantering av personuppgifter, t.ex. öppen förvaring vilken riskerar obehörig åtkomst."
+    },
+    {
+        "Index_id": "46",
+        "Ord": "Föreläggande",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "47",
+        "Ord": "Google",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "48",
+        "Ord": "Hacking",
+        "Beskrivning": "Sanktioner som inbegriper hacking, obehörig åtkomst och utnyttjande av datorsystem eller ett privat datanätverk."
+    },
+    {
+        "Index_id": "49",
+        "Ord": "Hemsida",
+        "Beskrivning": "Sanktioner som uppstår på grund av personuppgifter som publiceras eller görs tillgängliga på hemsidan."
+    },
+    {
+        "Index_id": "50",
+        "Ord": "Hotell",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "51",
+        "Ord": "Hälsodata",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "52",
+        "Ord": "Identitetsstöld",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "53",
+        "Ord": "Incident",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "54",
+        "Ord": "Information",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "55",
+        "Ord": "Informationsbrist",
+        "Beskrivning": "Sanktioner där avsaknad eller bristande information...."
+    },
+    {
+        "Index_id": "56",
+        "Ord": "Inhemsk",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "57",
+        "Ord": "Inkasso",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "58",
+        "Ord": "Inspelning",
+        "Beskrivning": "Sanktioner som avser inspelning av samtal utan samtycke. "
+    },
+    {
+        "Index_id": "59",
+        "Ord": "Installation",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "60",
+        "Ord": "IT",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "61",
+        "Ord": "Journal",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "62",
+        "Ord": "Journalistik",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "63",
+        "Ord": "Journalsystem",
+        "Beskrivning": " "
+    },
+    {
+        "Index_id": "64",
+        "Ord": "Kamerabevakning",
+        "Beskrivning": "Sanktioner där kamerabevakning har används utan laglig grund. "
+    },
+    {
+        "Index_id": "65",
+        "Ord": "Kollektivtrafik",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "66",
+        "Ord": "Kommun",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "67",
+        "Ord": "Kommunikation",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "68",
+        "Ord": "Kredit",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "69",
+        "Ord": "Kreditupplysning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "70",
+        "Ord": "Kriminalvården",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "71",
+        "Ord": "Kroppskamera",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "72",
+        "Ord": "Kryptering",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "73",
+        "Ord": "Lagring",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "74",
+        "Ord": "Ljudinspelning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "75",
+        "Ord": "Lss",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "76",
+        "Ord": "Lås",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "77",
+        "Ord": "Låssystem",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "78",
+        "Ord": "Läkare",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "79",
+        "Ord": "Lösenord",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "80",
+        "Ord": "Lösenordsskydd",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "81",
+        "Ord": "Marknadsföring",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "82",
+        "Ord": "Medicin",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "83",
+        "Ord": "Medier",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "84",
+        "Ord": "Minderårig",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "85",
+        "Ord": "Mobil",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "86",
+        "Ord": "Moln",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "87",
+        "Ord": "Molntjänst",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "88",
+        "Ord": "Myndighet",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "89",
+        "Ord": "Nämnd",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "90",
+        "Ord": "Offentlig",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "91",
+        "Ord": "Opt-Out",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "92",
+        "Ord": "Pandemi",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "93",
+        "Ord": "Parkering",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "94",
+        "Ord": "Part",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "95",
+        "Ord": "Pension",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "96",
+        "Ord": "Personnummer",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "97",
+        "Ord": "Personuppgiftsansvarig",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "98",
+        "Ord": "Personuppgiftsbiträde",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "99",
+        "Ord": "Personuppgiftssansvarig",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "100",
+        "Ord": "Platsdata",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "101",
+        "Ord": "Plattform",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "102",
+        "Ord": "Polis",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "103",
+        "Ord": "Politik",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "104",
+        "Ord": "Prenumeration",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "105",
+        "Ord": "Privatperson",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "106",
+        "Ord": "Process",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "107",
+        "Ord": "Profiliering",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "108",
+        "Ord": "Publicering",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "109",
+        "Ord": "Radera",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "110",
+        "Ord": "Radering",
+        "Beskrivning": "Sanktioner kopplade till fall där registrerade har rätt till radering av sina personuppgifter"
+    },
+    {
+        "Index_id": "111",
+        "Ord": "Region",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "112",
+        "Ord": "Register",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "113",
+        "Ord": "Reklam",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "114",
+        "Ord": "Rekrytering",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "115",
+        "Ord": "Rutin",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "116",
+        "Ord": "Samarbetspartners",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "117",
+        "Ord": "Samtal",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "118",
+        "Ord": "Samtycke",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "119",
+        "Ord": "Sjukhus",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "120",
+        "Ord": "Sjukvård",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "121",
+        "Ord": "Skatt",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "122",
+        "Ord": "Skola",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "123",
+        "Ord": "Smartshooling",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "124",
+        "Ord": "Sms",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "125",
+        "Ord": "Sociala medier",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "126",
+        "Ord": "Sport",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "127",
+        "Ord": "Spårning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "128",
+        "Ord": "Student",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "129",
+        "Ord": "Sysselsättning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "130",
+        "Ord": "Säkerhet",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "131",
+        "Ord": "Säkerhetssystem",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "132",
+        "Ord": "Takecare",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "133",
+        "Ord": "Taxi",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "134",
+        "Ord": "Telefon",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "135",
+        "Ord": "Telekommunikation",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "137",
+        "Ord": "Tidning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "138",
+        "Ord": "Tillrättavisning\/reprimand",
+        "Beskrivning": "Utredningar från tillsynsmyndigheter som slutade med tillrättavisning\/reprimand"
+    },
+    {
+        "Index_id": "139",
+        "Ord": "Tredje Part",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "140",
+        "Ord": "Tull",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "141",
+        "Ord": "Universitet",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "142",
+        "Ord": "Utredning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "143",
+        "Ord": "Varning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "144",
+        "Ord": "Villkor",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "145",
+        "Ord": "Webbplats",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "146",
+        "Ord": "Yttrandefrihet",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "147",
+        "Ord": "Åtkomstbegäran",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "148",
+        "Ord": "Åtkomstkontroll",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "149",
+        "Ord": "Övervakning",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "150",
+        "Ord": "Tredjelandsöverföring",
+        "Beskrivning": "Uppgifter som skickas till tredjeland"
+    },
+    {
+        "Index_id": "151",
+        "Ord": "Känsliga personuppgifter",
+        "Beskrivning": "Uppgifter om hälsa, etnisk ursprung, religion och politisk åsikt etc. är exempel på känsliga personuppgifter."
+    },
+    {
+        "Index_id": "152",
+        "Ord": "Sekretess",
+        "Beskrivning": "Personuppgifter vilka är sekretesskyddade."
+    },
+    {
+        "Index_id": "153",
+        "Ord": "Förening",
+        "Beskrivning": "Innefattar bland annat fackförening, bostadsrättsförening och idrottsförening o.s.v."
+    },
+    {
+        "Index_id": "154",
+        "Ord": "Dataskyddsombud",
+        "Beskrivning": "Innefattar rollen som dataskyddsombud och dataskyddsombud gentemot personuppgiftsansvarig."
+    },
+    {
+        "Index_id": "155",
+        "Ord": "Policy",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "156",
+        "Ord": "Systemfel",
+        "Beskrivning": "tekniska error"
+    },
+    {
+        "Index_id": "157",
+        "Ord": "Verifikation",
+        "Beskrivning": "Verifiera identitet"
+    },
+    {
+        "Index_id": "158",
+        "Ord": "Schrems II",
+        "Beskrivning": "Beslut som hänvisar till Schrems II domen"
+    },
+    {
+        "Index_id": "159",
+        "Ord": "Gallring",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "160",
+        "Ord": "Religion",
+        "Beskrivning": "art. 9"
+    },
+    {
+        "Index_id": "161",
+        "Ord": "Förhandssamråd",
+        "Beskrivning": "Art. 36. Den personuppgiftsansvarige ska samråda med tillsynsmyndigheten före behandling om en konsekvensbedömning avseende dataskydd enligt artikel 35 visar att behandlingen skulle leda till en hög risk om inte den personuppgiftsansvarige vidtar åtgärder för att minska risken."
+    },
+    {
+        "Index_id": "162",
+        "Ord": "Rådgivande yttrande",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "163",
+        "Ord": "Förbund",
+        "Beskrivning": "Sanktioner kopplade till olika typer av förbund, t.ex. sport och studier "
+    },
+    {
+        "Index_id": "164",
+        "Ord": "Mailchimp",
+        "Beskrivning": "Nyhetsbrevsverktyg - De tar emot e-postadresser till nyhetsbrevsprenumeranter och som numera kvalificera sig som en \"leverantör av elektroniska kommunikationstjänster\" enligt amerikansk övervakningslagstiftning."
+    },
+    {
+        "Index_id": "165",
+        "Ord": "ID verifiering ",
+        "Beskrivning": "När en registrerad ombeds att verifiera sin identitet"
+    },
+    {
+        "Index_id": "166",
+        "Ord": "Dataintrång",
+        "Beskrivning": null
+    },
+    {
+        "Index_id": "167",
+        "Ord": "Anmälningsskyldighet",
+        "Beskrivning": "Vid en personuppgiftsincident ska den personuppgiftsansvarige utan onödigt dröjsmål och, om så är möjligt, inte senare än 72 timmar efter att ha fått vetskap om den, anmäla personuppgiftsincidenten till den tillsynsmyndighet som är behörig, artikel 33 GDPR"
+    },
+    {
+        "Index_id": "168",
+        "Ord": "Registerutdrag",
+        "Beskrivning": "Registrerad begär ut ett registerutdrag från personuppgiftsansvarig."
+    },
+    {
+        "Index_id": "169",
+        "Ord": "Följsamhet",
+        "Beskrivning": "Samarbete och följsamhet gentemot tillsynsmyndigheten enligt artkel 33 GDPR"
+    },
+    {
+        "Index_id": "170",
+        "Ord": "Nyhetsbrev",
+        "Beskrivning": "Sanktioner om ärenden av nyhetsbrev"
+    },
+    {
+        "Index_id": "171",
+        "Ord": "Privacy notice",
+        "Beskrivning": "Sanktioner om ärenden relaterat till privacy notice"
+    },
+    {
+        "Index_id": "172",
+        "Ord": "Anslagstavla",
+        "Beskrivning": "Sanktioner kopplade till bulletin, ex. kommunens digitala anslagstavla."
+    },
+    {
+        "Index_id": "173",
+        "Ord": "Privatundantaget",
+        "Beskrivning": "Sanktioner och rådgivande yttrande kopplade till privatundantaget enligt artikel 2.2 GDPR"
+    },
+    {
+        "Index_id": "174",
+        "Ord": "Barn",
+        "Beskrivning": "Sanktioner som är kopplade till ärenden med särskilt skyddsvärda uppgifter såsom barn"
+    },
+    {
+        "Index_id": "175",
+        "Ord": "Offentlig handling",
+        "Beskrivning": "Sanktioner kopplade till offentliga handlingar"
+    },
+    {
+        "Index_id": "176",
+        "Ord": "Annan utgång",
+        "Beskrivning": "Ärenden som slutade med en annan utgång än sanktion, reprimand eller avvisning."
+    },
+    {
+        "Index_id": "177",
+        "Ord": "Överklagan",
+        "Beskrivning": "En klagande begärde överklagan till högre instans efter att tillsynsmyndigheten nekat ärendet."
+    },
+    {
+        "Index_id": "178",
+        "Ord": "Dumpning",
+        "Beskrivning": "Sanktionerade kopplade till ärenden där personuppgifter i form av ex. dokument eller journaler dumpats\/kastas i sopor eller annanstans där allmänheten har åtkomst."
+    },
+    {
+        "Index_id": "179",
+        "Ord": "Adress",
+        "Beskrivning": "Sanktioner kopplade till adress ex. adressändring av den registrerade"
+    },
+    {
+        "Index_id": "180",
+        "Ord": "Förvaltning",
+        "Beskrivning": "Sanktioner och reprimand kopplade till förvaltningar"
+    },
+    {
+        "Index_id": "181",
+        "Ord": "Avvisad",
+        "Beskrivning": "Sanktioner\/ärenden som har blivit avvisad\/överträdelse hittades ej"
+    },
+    {
+        "Index_id": "182",
+        "Ord": "Fotografering",
+        "Beskrivning": "Sanktioner kopplade till fotografering"
+    },
+    {
+        "Index_id": "183",
+        "Ord": "Mänskliga brister",
+        "Beskrivning": "Sanktioner kopplade till mänskliga brister och fel"
+    },
+    {
+        "Index_id": "184",
+        "Ord": "Sökmotor",
+        "Beskrivning": "Sanktioner kopplade till sökmotorer"
+    },
+    {
+        "Index_id": "185",
+        "Ord": "Distribuera",
+        "Beskrivning": "Sanktioner kopplade till distribution av personuppgift, ex. delat personuppgifter med annan institution utan laglig grund och\/eller samtycke."
+    },
+    {
+        "Index_id": "186",
+        "Ord": "Anonymisering",
+        "Beskrivning": "Sanktioner kopplade till anonymisering"
+    },
+    {
+        "Index_id": "187",
+        "Ord": "Webbläsare",
+        "Beskrivning": "Sanktioner kopplade till webbläsare och webbläsartillägg"
+    },
+    {
+        "Index_id": "188",
+        "Ord": "Tidsfrist",
+        "Beskrivning": "Sanktioner kopplade till ärenden ex. om att inte kunna tillmötesgå registrerade rättigheter inom tidsfristen."
+    },
+    {
+        "Index_id": "189",
+        "Ord": "USB",
+        "Beskrivning": "Ärenden kopplade till USB"
+    },
+    {
+        "Index_id": "190",
+        "Ord": "Kopia",
+        "Beskrivning": "Ärenden kopplade till \"kopior\" ex. att den registrerade begärt en kopia av sina personuppgifter från den personuppgiftsansvarige."
+    },
+    {
+        "Index_id": "191",
+        "Ord": "Försäkring",
+        "Beskrivning": "Ärenden och tillsyn kopplade till försäkringar och försäkringsbolag"
+    }
+]
