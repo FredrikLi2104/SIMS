@@ -20,6 +20,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,28 +28,60 @@ class OrganisationController extends Controller
 {
     public function insights($locale)
     {
-        $dpas = Dpa::with(['country'])->select(['dpas.id', 'dpas.title', 'dpas.country_id'])
-            ->selectRaw('count(*) AS count')
-            ->join('sanctions', 'dpas.id', '=', 'sanctions.dpa_id')
-            ->groupBy(['dpas.id', 'dpas.title', 'dpas.country_id'])
-            ->orderBy('dpas.title')
-            ->get()
-            ->makeVisible(['count', 'country'])
-            ->makeHidden(['country_id']);
-
-        $dpas = $dpas->map(function ($dpa) {
-            $dpa->title = str_replace('Category:', '', $dpa->title);
-            return $dpa;
+        // Cache DPAs with sanctions count for 1 hour
+        $dpas = Cache::remember('insights_dpas', 3600, function () {
+            return Dpa::with(['country'])
+                ->select(['dpas.id', 'dpas.title', 'dpas.country_id'])
+                ->selectRaw('count(*) AS count')
+                ->join('sanctions', 'dpas.id', '=', 'sanctions.dpa_id')
+                ->groupBy(['dpas.id', 'dpas.title', 'dpas.country_id'])
+                ->orderBy('dpas.title')
+                ->get()
+                ->makeVisible(['count', 'country'])
+                ->makeHidden(['country_id'])
+                ->map(function ($dpa) {
+                    $dpa->title = str_replace('Category:', '', $dpa->title);
+                    return $dpa;
+                });
         });
 
-        $countries = $dpas->pluck('country')->filter()->unique()->sortBy('name')->values();
-        $snis = Sni::select(['id', 'code', 'desc_en', 'desc_se'])->orderBy('code')->get();
-        $outcomes = Outcome::orderBy("desc_$locale")->get();
-        $tags = Tag::orderBy("tag_$locale")->get();
-        $components = Component::all()->sortBy('code', SORT_NATURAL);
-        $statements = Statement::all()->makeVisible(['subcode'])->sortBy('subcode', SORT_NATURAL);
+        // Cache countries for 1 hour
+        $countries = Cache::remember('insights_countries', 3600, function () use ($dpas) {
+            return $dpas->pluck('country')->filter()->unique()->sortBy('name')->values();
+        });
 
-        return view('models.organisations.insights', compact('dpas', 'countries', 'snis', 'outcomes', 'tags', 'components', 'statements'));
+        // Cache SNIs for 1 hour
+        $snis = Cache::remember('insights_snis', 3600, function () {
+            return Sni::select(['id', 'code', 'desc_en', 'desc_se'])
+                ->orderBy('code')
+                ->get();
+        });
+
+        // Cache outcomes for 1 hour (locale-specific)
+        $outcomes = Cache::remember("insights_outcomes_{$locale}", 3600, function () use ($locale) {
+            return Outcome::orderBy("desc_$locale")->get();
+        });
+
+        // Cache tags for 1 hour (locale-specific)
+        $tags = Cache::remember("insights_tags_{$locale}", 3600, function () use ($locale) {
+            return Tag::orderBy("tag_$locale")->get();
+        });
+
+        // Cache components for 1 hour
+        $components = Cache::remember('insights_components', 3600, function () {
+            return Component::all()->sortBy('code', SORT_NATURAL);
+        });
+
+        // Cache statements for 1 hour
+        $statements = Cache::remember('insights_statements', 3600, function () {
+            return Statement::all()
+                ->makeVisible(['subcode'])
+                ->sortBy('subcode', SORT_NATURAL);
+        });
+
+        return view('models.organisations.insights', compact(
+            'dpas', 'countries', 'snis', 'outcomes', 'tags', 'components', 'statements'
+        ));
     }
 
     /**
@@ -472,5 +505,46 @@ class OrganisationController extends Controller
     {
         $statementSubCode = $statement->subcode;
         return view('models.organisations.statement-sanctions', compact('statementSubCode'));
+    }
+
+    /**
+     * Clear insights cache
+     *
+     * Call this method whenever relevant data is updated:
+     * - After importing sanctions
+     * - After updating DPAs, SNIs, outcomes, tags, components, or statements
+     * - Can be called manually or via observer/event listeners
+     *
+     * Example usage:
+     * OrganisationController::clearInsightsCache();
+     */
+    public static function clearInsightsCache()
+    {
+        $locales = ['en', 'sv', 'se']; // Add all your supported locales
+
+        Cache::forget('insights_dpas');
+        Cache::forget('insights_countries');
+        Cache::forget('insights_snis');
+        Cache::forget('insights_components');
+        Cache::forget('insights_statements');
+
+        foreach ($locales as $locale) {
+            Cache::forget("insights_outcomes_{$locale}");
+            Cache::forget("insights_tags_{$locale}");
+        }
+
+        // Also clear sanctions count cache
+        Cache::forget('sanctions_total_count');
+    }
+
+    /**
+     * Force refresh insights cache
+     *
+     * Useful for admin panel or after bulk updates
+     */
+    public function refreshInsightsCache($locale)
+    {
+        self::clearInsightsCache();
+        return $this->insights($locale);
     }
 }
