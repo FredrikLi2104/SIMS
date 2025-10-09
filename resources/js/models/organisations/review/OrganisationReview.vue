@@ -32,7 +32,8 @@
                         <div class="card-body text-center">
                             <h4>{{ plans[1]["name_" + locale] }}</h4>
                             <p class="text-body mt-1 mb-0" style="height: 9rem">{{ plans[1]["desc_" + locale] }}</p>
-                            <button class="btn btn-primary mt-1" disabled>{{ collection?.messages?.show }}</button>
+                            <button class="btn btn-primary mt-1 mx-1" @click="testPrepare" enabled>{{ collection?.messages?.prepare }}</button>
+                            <button class="btn btn-primary mt-1" @click="testConduct">{{ collection?.messages?.conduct }}</button>
                         </div>
                     </div>
                 </div>
@@ -129,6 +130,10 @@
         <Interview :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="interviewComponent"></Interview>
         <!-- Interview Conduct -->
         <InterviewConduct :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="interviewConductComponent"></InterviewConduct>
+        <!-- Test Prepare -->
+        <TestPrepare :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="testPrepare"></TestPrepare>
+        <!-- Test Conduct -->
+        <TestConduct :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="testConduct"></TestConduct>
         <!-- Webform -->
         <WebformPrepare :actionId="actionId" :org="org" :collection="collection" :locale="locale" ref="webformPrepare"></WebformPrepare>
         <!-- Webform Conduct -->
@@ -235,13 +240,17 @@ import Interview from "./Interview.vue";
 import InterviewConduct from "./InterviewConduct.vue"
 import WebformPrepare from "./WebformPrepare.vue"
 import WebformConduct from "./WebformConduct.vue"
+import TestPrepare from "./TestPrepare.vue"
+import TestConduct from "./TestConduct.vue"
 import Swal from "sweetalert2";
 export default {
-    components: { Interview, InterviewConduct, WebformPrepare, WebformConduct },
+    components: { Interview, InterviewConduct, WebformPrepare, WebformConduct, TestPrepare, TestConduct },
     props: ["auditorStatements", "locale", "org", "plans", "reviewStatuses", "actionId"],
     computed: {
         conductNotReady() {
-            return this.collection?.statistics?.statements?.interview?.statements?.length != 0;
+            // Allow conduct if at least one interview exists
+            const interviews = this.collection?.statistics?.statements?.interview?.interviews || [];
+            return interviews.length === 0;
         },
         webformNotReady() {
             return this.collection?.statistics?.statements?.webform?.statements?.length != 0;
@@ -696,6 +705,12 @@ export default {
             };
             supportTrackerChart = new ApexCharts(supportTrackerChart, supportTrackerChartOptions);
             supportTrackerChart.render();
+        },
+        testConduct() {
+            this.$refs.testConduct.testConductShow();
+        },
+        testPrepare() {
+            this.$refs.testPrepare.testPrepareShow();
         },
         webformConduct() {
             this.$refs.webformConduct.webformConduct();

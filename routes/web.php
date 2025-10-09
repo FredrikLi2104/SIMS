@@ -82,6 +82,12 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::post('organisations/plan/auditor/update', [AxiosController::class, 'organisationsPlanAuditorUpdate'])->middleware('can:auditor')->name('axios.organisations.plan.auditor.update');
     Route::get('organisations/review/{action?}', [AxiosController::class, 'organisationsReview'])->middleware('can:auditor')->name('axios.organisations.review');
     Route::get('organisations/{organisation}/review/action/{action}/interview', [AxiosController::class, 'organisationsReviewInterview'])->middleware('can:auditor')->name('axios.organisations.review.interview');
+    Route::get('organisations/review/action/{action}/test', [AxiosController::class, 'organisationsReviewTest'])->middleware('can:auditor')->name('axios.organisations.review.test');
+    Route::post('organisations/test-plans/store', [AxiosController::class, 'storeTestPlan'])->middleware('can:auditor')->name('axios.organisations.test.plans.store');
+    Route::post('organisations/test-conduct/update', [AxiosController::class, 'updateTestConduct'])->middleware('can:auditor')->name('axios.organisations.test.conduct.update');
+    Route::post('organisations/test-attachments/upload', [AxiosController::class, 'uploadTestAttachment'])->middleware('can:auditor')->name('axios.organisations.test.attachments.upload');
+    Route::get('organisations/test-attachments/{statement_id}', [AxiosController::class, 'getTestAttachments'])->middleware('can:auditor')->name('axios.organisations.test.attachments.get');
+    Route::delete('organisations/test-attachments/{attachment_id}', [AxiosController::class, 'deleteTestAttachment'])->middleware('can:auditor')->name('axios.organisations.test.attachments.delete');
     Route::post('organisations/{organisation}/review/conduct-update', [AxiosController::class, 'reviewConductUpdate'])->middleware('can:auditor')->name('axios.review.conduct_update');
     Route::post('organisations/components/periods/update', [AxiosController::class, 'organisationsComponentsPeriodsUpdate'])->middleware('can:user')->name('axios.organisations.components.periods.update');
     Route::get('organisations/risks', [AxiosController::class, 'organisationsRisksIndex'])->middleware('can:auditor-user')->name('axios.organisations.risks.index');
