@@ -32,6 +32,7 @@ use App\Http\Controllers\TaskStatusesController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OnboardingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -105,13 +106,25 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::get('task_statuses', [AxiosController::class, 'taskStatuses'])->middleware('can:moderator')->name('axios.task_statuses.index');
     Route::get('tasks/{year}', [AxiosController::class, 'tasks'])->middleware('can:auditor-user')->name('axios.tasks.index');
     Route::get('tasks_for_wheel/{year}', [AxiosController::class, 'tasksForWheel'])->middleware('can:auditor-user')->name('axios.tasks_for_wheel.index');
-    Route::get('templates', [AxiosController::class, 'templates'])->middleware('can:moderator')->name('axios.templates.index');
-    
+    Route::get('templates', [AxiosController::class, 'templates'])->middleware('can:auditor')->name('axios.templates.index');
+
+    // Onboarding routes
+    Route::get('onboarding/organisations', [OnboardingController::class, 'getOrganisations'])->middleware('can:auditor')->name('axios.onboarding.organisations');
+    Route::get('onboarding/questions', [OnboardingController::class, 'getQuestions'])->middleware('can:auditor')->name('axios.onboarding.questions');
+    Route::post('onboarding/recommendations', [OnboardingController::class, 'getRecommendations'])->middleware('can:auditor')->name('axios.onboarding.recommendations');
+    Route::post('onboarding/organisations/{organisation}/apply-template', [OnboardingController::class, 'applyTemplate'])->middleware('can:auditor')->name('axios.onboarding.apply-template');
+    Route::post('onboarding/complete', [OnboardingController::class, 'completeOnboarding'])->middleware('can:auditor')->name('axios.onboarding.complete');
 });
 
 /* Localized Routes */
 Route::prefix('{locale}')->middleware('locale')->group(function () {
     require __DIR__ . '/auth.php';
+
+    // Onboarding page
+    Route::get('onboarding', function() {
+        return view('onboarding.simple');
+    })->middleware('auth')->middleware('can:auditor')->name('onboarding.index');
+
     Route::resource('action_types', ActionTypeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('configs', ConfigController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('insights', [OrganisationController::class, 'insights'])->middleware('auth')->middleware('can:auditor-user')->name('organisations.insights');
