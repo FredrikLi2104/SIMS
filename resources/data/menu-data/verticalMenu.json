@@ -20,6 +20,15 @@
             ]
         },
         {
+            "name": "onboarding",
+            "auth": "auditor",
+            "icon": "target",
+            "url": "onboarding",
+            "slug": [
+                "onboarding.index"
+            ]
+        },
+        {
             "name": "features",
             "auth": "super-auditor",
             "icon": "star",

@@ -203,6 +203,16 @@ class Organisation extends Model
         return $this->belongsToMany(Statement::class)->withPivot('implementation')->withTimestamps();
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function onboardingTemplate()
+    {
+        return $this->belongsTo(Template::class, 'onboarding_template_id');
+    }
+
     public function users()
     {
         return $this->hasMany(User::class);

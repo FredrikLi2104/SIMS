@@ -242,6 +242,7 @@ return [
     'statistics' => 'Statistics',
     'tasks' => 'Tasks',
     'tasks_create' => 'Task Create',
+    'onboarding' => 'Onboarding',
     'task_statuses' => 'Task Statuses',
     'task_statuses_create' => 'Task Status Create',
     'configs' => 'Configs',

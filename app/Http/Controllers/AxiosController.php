@@ -2457,7 +2457,14 @@ class AxiosController extends Controller
         $org = Organisation::find(session('selected_org')['id']);
         $tasks = Task::with(['taskStatus', 'action.actionType'])
             ->where(function ($query) use ($org) {
-                $query->whereIn('created_by', $org->users->pluck('id'));
+                // If task has organisation_id set, only show for that org
+                // Otherwise, show based on who created it (old logic)
+                $query->where(function ($q) use ($org) {
+                    $q->where('organisation_id', $org->id);
+                })->orWhere(function ($q) use ($org) {
+                    $q->whereNull('organisation_id')
+                      ->whereIn('created_by', $org->users->pluck('id'));
+                });
             })
             ->whereDate('start', '>=', $since)
             ->whereDate('start', '<=', $until)
@@ -2495,7 +2502,14 @@ class AxiosController extends Controller
 
         $tasks = Task::with(['taskStatus', 'action.actionType'])
             ->where(function ($query) use ($org) {
-                $query->whereIn('created_by', $org->users->pluck('id'));
+                // If task has organisation_id set, only show for that org
+                // Otherwise, show based on who created it (old logic)
+                $query->where(function ($q) use ($org) {
+                    $q->where('organisation_id', $org->id);
+                })->orWhere(function ($q) use ($org) {
+                    $q->whereNull('organisation_id')
+                      ->whereIn('created_by', $org->users->pluck('id'));
+                });
             })
             ->where(function ($query) use ($yearStart, $yearEnd) {
                 $query->where(function ($query) use ($yearStart, $yearEnd) {
@@ -2567,7 +2581,39 @@ class AxiosController extends Controller
 
     public function templates($locale)
     {
-        return Template::orderBy("name_$locale")->get();
+        $templates = Template::active()
+            ->with(['templateTasks' => function ($query) {
+                $query->orderBy('sort_order');
+            }])
+            ->orderBy('sort_order')
+            ->orderBy("name_$locale")
+            ->get();
+
+        return $templates->map(function ($template) use ($locale) {
+            return [
+                'id' => $template->id,
+                'name' => $template->{"name_$locale"},
+                'description' => $template->{"desc_$locale"},
+                'summary' => $template->{"summary_$locale"},
+                'organization_type' => $template->organization_type,
+                'organization_size' => $template->organization_size,
+                'requires_existing_gdpr' => $template->requires_existing_gdpr,
+                'estimated_months' => $template->estimated_months,
+                'is_active' => $template->is_active,
+                'task_count' => $template->templateTasks->count(),
+                'tasks' => $template->templateTasks->map(function ($task) use ($locale) {
+                    return [
+                        'id' => $task->id,
+                        'title' => $task->{"title_$locale"},
+                        'description' => $task->{"desc_$locale"},
+                        'offset_days' => $task->offset_days,
+                        'duration_days' => $task->duration_days,
+                        'hours' => $task->hours,
+                        'action_type' => $task->action_type,
+                    ];
+                }),
+            ];
+        });
     }
 
     public function componentSanctionsTable(Request $request, $locale)
