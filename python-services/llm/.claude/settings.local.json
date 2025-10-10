@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:/Users/fredd/.virtualenvs/Structure-From-Motion-main-LXw-syd2/Scripts/python.exe -c \"import sentence_transformers; print(''sentence-transformers installed successfully'')\")",
+      "Bash(C:/Users/fredd/.virtualenvs/Structure-From-Motion-main-LXw-syd2/Scripts/python.exe -m pip install sentence-transformers)",
+      "Bash(C:/Users/fredd/.virtualenvs/Structure-From-Motion-main-LXw-syd2/Scripts/python.exe c:/Users/fredd/Documents/GitHub/modell_test/test.py)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

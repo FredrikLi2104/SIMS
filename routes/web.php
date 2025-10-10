@@ -33,6 +33,7 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -120,6 +121,12 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::post('onboarding/recommendations', [OnboardingController::class, 'getRecommendations'])->middleware('can:auditor')->name('axios.onboarding.recommendations');
     Route::post('onboarding/organisations/{organisation}/apply-template', [OnboardingController::class, 'applyTemplate'])->middleware('can:auditor')->name('axios.onboarding.apply-template');
     Route::post('onboarding/complete', [OnboardingController::class, 'completeOnboarding'])->middleware('can:auditor')->name('axios.onboarding.complete');
+
+    // Chatbot API routes
+    Route::post('chatbot/init', [ChatbotController::class, 'initializeSession'])->name('api.chatbot.init');
+    Route::post('chatbot/message', [ChatbotController::class, 'sendMessage'])->name('api.chatbot.message');
+    Route::get('chatbot/sessions', [ChatbotController::class, 'getSessions'])->middleware('can:moderator')->name('api.chatbot.sessions');
+    Route::get('chatbot/health', [ChatbotController::class, 'healthCheck'])->name('api.chatbot.health');
 });
 
 /* Localized Routes */
