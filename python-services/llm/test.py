@@ -32,7 +32,7 @@ from datetime import datetime
 # ============================================================================
 
 # HuggingFace API token
-api_token = os.getenv("HUGGINGFACE_TOKEN", "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")
+api_token = os.getenv("HUGGINGFACE_TOKEN", "TOKEN_NOT_SET")
 
 # Database configuration (adjust to your database)
 DB_CONFIG = {
