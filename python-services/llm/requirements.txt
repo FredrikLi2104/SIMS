@@ -1,0 +1,12 @@
+langchain
+langchain-huggingface
+langchain-community
+huggingface_hub
+faiss-cpu
+sentence-transformers
+transformers
+torch
+flask
+flask-cors
+psycopg2-binary
+python-dotenv
