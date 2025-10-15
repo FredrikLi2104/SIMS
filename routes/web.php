@@ -35,6 +35,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\OnboardingTemplateController;
 use App\Http\Controllers\TemplateTaskController;
+use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -85,6 +86,12 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::post('organisations/plan/auditor/update', [AxiosController::class, 'organisationsPlanAuditorUpdate'])->middleware('can:auditor')->name('axios.organisations.plan.auditor.update');
     Route::get('organisations/review/{action?}', [AxiosController::class, 'organisationsReview'])->middleware('can:auditor')->name('axios.organisations.review');
     Route::get('organisations/{organisation}/review/action/{action}/interview', [AxiosController::class, 'organisationsReviewInterview'])->middleware('can:auditor')->name('axios.organisations.review.interview');
+    Route::get('organisations/review/action/{action}/test', [AxiosController::class, 'organisationsReviewTest'])->middleware('can:auditor')->name('axios.organisations.review.test');
+    Route::post('organisations/test-plans/store', [AxiosController::class, 'storeTestPlan'])->middleware('can:auditor')->name('axios.organisations.test.plans.store');
+    Route::post('organisations/test-conduct/update', [AxiosController::class, 'updateTestConduct'])->middleware('can:auditor')->name('axios.organisations.test.conduct.update');
+    Route::post('organisations/test-attachments/upload', [AxiosController::class, 'uploadTestAttachment'])->middleware('can:auditor')->name('axios.organisations.test.attachments.upload');
+    Route::get('organisations/test-attachments/{statement_id}', [AxiosController::class, 'getTestAttachments'])->middleware('can:auditor')->name('axios.organisations.test.attachments.get');
+    Route::delete('organisations/test-attachments/{attachment_id}', [AxiosController::class, 'deleteTestAttachment'])->middleware('can:auditor')->name('axios.organisations.test.attachments.delete');
     Route::post('organisations/{organisation}/review/conduct-update', [AxiosController::class, 'reviewConductUpdate'])->middleware('can:auditor')->name('axios.review.conduct_update');
     Route::post('organisations/components/periods/update', [AxiosController::class, 'organisationsComponentsPeriodsUpdate'])->middleware('can:user')->name('axios.organisations.components.periods.update');
     Route::get('organisations/risks', [AxiosController::class, 'organisationsRisksIndex'])->middleware('can:auditor-user')->name('axios.organisations.risks.index');
@@ -116,6 +123,12 @@ Route::prefix('{locale}/axios')->middleware('auth')->group(function () {
     Route::post('onboarding/recommendations', [OnboardingController::class, 'getRecommendations'])->middleware('can:auditor')->name('axios.onboarding.recommendations');
     Route::post('onboarding/organisations/{organisation}/apply-template', [OnboardingController::class, 'applyTemplate'])->middleware('can:auditor')->name('axios.onboarding.apply-template');
     Route::post('onboarding/complete', [OnboardingController::class, 'completeOnboarding'])->middleware('can:auditor')->name('axios.onboarding.complete');
+
+    // Chatbot API routes
+    Route::post('chatbot/init', [ChatbotController::class, 'initializeSession'])->name('api.chatbot.init');
+    Route::post('chatbot/message', [ChatbotController::class, 'sendMessage'])->name('api.chatbot.message');
+    Route::get('chatbot/sessions', [ChatbotController::class, 'getSessions'])->middleware('can:moderator')->name('api.chatbot.sessions');
+    Route::get('chatbot/health', [ChatbotController::class, 'healthCheck'])->name('api.chatbot.health');
 });
 
 /* Localized Routes */
@@ -152,6 +165,14 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::post('/features/tasks/update', [FeatureController::class, 'updateTasks'])->middleware('auth')->middleware('can:super-auditor')->name('features.tasks.update');
     Route::resource('/groups', GroupController::class)->middleware('auth')->middleware('can:moderator');
     Route::get('/home', [RoutingController::class, 'home'])->middleware('auth')->name('home');
+    Route::post('/interviews/{interview_id}/status', [InterviewController::class, 'updateStatus'])->middleware('auth')->middleware('can:auditor')->name('interviews.status.update');
+    Route::post('/interviews/{interview_id}/upload', [InterviewController::class, 'uploadFile'])->middleware('auth')->middleware('can:auditor')->name('interviews.upload');
+    Route::get('/interviews/{interview_id}/download/{filename}', [InterviewController::class, 'downloadFile'])->middleware('auth')->middleware('can:auditor')->name('interviews.download');
+    Route::delete('/interviews/{interview_id}/delete/{filename}', [InterviewController::class, 'deleteFile'])->middleware('auth')->middleware('can:auditor')->name('interviews.delete');
+    Route::post('/interviews/{interview_id}/notes', [InterviewController::class, 'updateNotes'])->middleware('auth')->middleware('can:auditor')->name('interviews.notes.update');
+    Route::post('/interviews/{interview_id}/schedule', [InterviewController::class, 'scheduleInterview'])->middleware('auth')->middleware('can:auditor')->name('interviews.schedule');
+    Route::put('/interviews/{interview_id}/schedule', [InterviewController::class, 'updateSchedule'])->middleware('auth')->middleware('can:auditor')->name('interviews.schedule.update');
+    Route::delete('/interviews/{interview_id}/schedule', [InterviewController::class, 'cancelSchedule'])->middleware('auth')->middleware('can:auditor')->name('interviews.schedule.cancel');
     Route::resource('/interviews', InterviewController::class)->middleware('auth')->middleware('can:auditor');
     Route::resource('/issue_categories', IssueCategoryController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('components', ComponentController::class)->middleware('auth')->middleware('can:moderator');

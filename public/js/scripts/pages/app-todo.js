@@ -1,1 +1,390 @@
-(()=>{"use strict";function t(e){return t="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},t(e)}$((function(){var e,o=$(".task-due-date"),a=$(".sidebar-todo-modal"),s=$("#form-modal-todo"),l=$(".todo-item-favorite"),i=$(".modal-title"),n=$(".add-todo-item"),d=$(".add-task button"),r=$(".update-todo-item"),c=$(".update-btn"),m=$("#task-desc"),p=$("#task-assigned"),h=$("#task-tag"),u=$(".body-content-overlay"),f=$(".menu-toggle"),v=$(".sidebar-toggle"),g=$(".sidebar-left"),w=$(".sidebar-menu-list"),b=$("#todo-search"),k=$(".sort-asc"),C=$(".sort-desc"),y=$(".todo-task-list"),x=$(".todo-task-list-wrapper"),T=$(".list-group-filters"),D=$(".no-results"),S=100,j="rtl"===$("html").attr("data-textdirection"),M="../../../app-assets/";if("laravel"===$("body").attr("data-framework")&&(M=$("body").attr("data-asset-path")),$.app.menu.is_touch_device())w.css("overflow","scroll"),x.css("overflow","scroll");else{if(w.length>0)new PerfectScrollbar(w[0],{theme:"dark"});if(x.length>0)new PerfectScrollbar(x[0],{theme:"dark"})}T.length&&T.find("a").on("click",(function(){T.find("a").hasClass("active")&&T.find("a").removeClass("active"),$(this).addClass("active")}));var q=document.getElementById("todo-task-list");function B(t){return t.id?'<div class="d-flex align-items-center"><img class="d-block rounded-circle me-50" src="'+$(t.element).data("img")+'" height="26" width="26" alt="'+t.text+'"><p class="mb-0">'+t.text+"</p></div>":t.text}if(void 0!==t(q)&&null!==q&&dragula([q],{moves:function(t,e,o){return o.classList.contains("drag-icon")}}),f.length&&f.on("click",(function(t){g.removeClass("show"),u.removeClass("show")})),v.length&&v.on("click",(function(t){t.stopPropagation(),g.toggleClass("show"),u.addClass("show")})),u.length&&u.on("click",(function(t){g.removeClass("show"),u.removeClass("show"),$(a).modal("hide")})),p.length&&(p.wrap('<div class="position-relative"></div>'),p.select2({placeholder:"Unassigned",dropdownParent:p.parent(),templateResult:B,templateSelection:B,escapeMarkup:function(t){return t}})),h.length&&(h.wrap('<div class="position-relative"></div>'),h.select2({placeholder:"Select tag"})),l.length&&$(l).on("click",(function(){$(this).toggleClass("text-warning")})),o.length&&o.flatpickr({dateFormat:"Y-m-d",defaultDate:"today",onReady:function(t,e,o){o.isMobile&&$(o.mobileInput).attr("step",null)}}),m.length)new Quill("#task-desc",{bounds:"#task-desc",modules:{formula:!0,syntax:!0,toolbar:".desc-toolbar"},placeholder:"Write Your Description",theme:"snow"});d.length&&d.on("click",(function(t){n.removeClass("d-none"),c.addClass("d-none"),i.text("Add Task"),g.removeClass("show"),u.removeClass("show"),a.find(".new-todo-item-title").val(""),m.find(".ql-editor")[0].innerHTML=""})),s.length&&(s.validate({ignore:".ql-container *",rules:{todoTitleAdd:{required:!0},"task-assigned":{required:!0},"task-due-date":{required:!0}}}),s.on("submit",(function(t){if(t.preventDefault(),s.valid()){S++;var e=$("#task-assigned").val(),o="",l={"Phill Buffer":M+"images/portrait/small/avatar-s-3.jpg","Chandler Bing":M+"images/portrait/small/avatar-s-1.jpg","Ross Geller":M+"images/portrait/small/avatar-s-4.jpg","Monica Geller":M+"images/portrait/small/avatar-s-6.jpg","Joey Tribbiani":M+"images/portrait/small/avatar-s-2.jpg","Rachel Green":M+"images/portrait/small/avatar-s-11.jpg"},i=$(".sidebar-todo-modal .new-todo-item-title").val(),n=$(".sidebar-todo-modal .task-due-date").val(),d=new Date(n),r=new Intl.DateTimeFormat("en",{month:"short"}).format(d)+" "+new Intl.DateTimeFormat("en",{day:"2-digit"}).format(d),c=$(".task-tag").val(),m={Team:"primary",Low:"success",Medium:"warning",High:"danger",Update:"info"};$.each(c,(function(t,e){o+='<span class="badge rounded-pill badge-light-'+m[e]+' me-50">'+e+"</span>"})),""!=i&&$(y).prepend('<li class="todo-item"><div class="todo-title-wrapper"><div class="todo-title-area">'+feather.icons["more-vertical"].toSvg({class:"drag-icon"})+'<div class="title-wrapper"><div class="form-check"><input type="checkbox" class="form-check-input" id="customCheck'+S+'" /><label class="form-check-label" for="customCheck'+S+'"></label></div><span class="todo-title">'+i+'</span></div></div><div class="todo-item-action"><span class="badge-wrapper me-1">'+o+'</span><small class="text-nowrap text-muted me-1">'+r+'</small><div class="avatar"><img src="'+l[e]+'" alt="'+e+'" height="28" width="28"></div></div></div></li>'),toastr.success("Data Saved","💾 Task Action!",{closeButton:!0,tapToDismiss:!1,rtl:j}),$(a).modal("hide"),u.removeClass("show")}}))),x.on("change",".form-check",(function(t){var e=$(this).find("input");e.prop("checked")?(e.closest(".todo-item").addClass("completed"),toastr.success("Task Completed","Congratulations!! 🎉",{closeButton:!0,tapToDismiss:!1,rtl:j})):e.closest(".todo-item").removeClass("completed")})),x.on("click",".form-check",(function(t){t.stopPropagation()})),$(document).on("click",".todo-task-list-wrapper .todo-item",(function(t){a.modal("show"),n.addClass("d-none"),c.removeClass("d-none"),$(this).hasClass("completed")?i.html('<button type="button" class="btn btn-sm btn-outline-success complete-todo-item waves-effect waves-float waves-light" data-bs-dismiss="modal">Completed</button>'):i.html('<button type="button" class="btn btn-sm btn-outline-secondary complete-todo-item waves-effect waves-float waves-light" data-bs-dismiss="modal">Mark Complete</button>'),h.val("").trigger("change"),$("#task-desc .ql-editor")[0].innerHTML="Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.",e=$(this).find(".todo-title");var o=$(this).find(".todo-title").html();s.find(".new-todo-item-title").val(o)})),r.length&&r.on("click",(function(t){var o=s.valid();if(t.preventDefault(),o){var l=s.find(".new-todo-item-title").val();$(e).text(l),toastr.success("Data Saved","💾 Task Action!",{closeButton:!0,tapToDismiss:!1,rtl:j}),$(a).modal("hide")}})),k.length&&k.on("click",(function(){x.find("li").sort((function(t,e){return $(e).find(".todo-title").text().toUpperCase()<$(t).find(".todo-title").text().toUpperCase()?1:-1})).appendTo(y)})),C.length&&C.on("click",(function(){x.find("li").sort((function(t,e){return $(e).find(".todo-title").text().toUpperCase()>$(t).find(".todo-title").text().toUpperCase()?1:-1})).appendTo(y)})),b.length&&b.on("keyup",(function(){var t=$(this).val().toLowerCase();""!==t?($(".todo-item").filter((function(){$(this).toggle($(this).text().toLowerCase().indexOf(t)>-1)})),0==$(".todo-item:visible").length?$(D).hasClass("show")||$(D).addClass("show"):$(D).removeClass("show")):($(".todo-item").show(),$(D).hasClass("show")&&$(D).removeClass("show"))})),$(window).width()>992&&u.hasClass("show")&&u.removeClass("show")})),$(window).on("resize",(function(){$(window).width()>992&&$(".body-content-overlay").hasClass("show")&&($(".sidebar-left").removeClass("show"),$(".body-content-overlay").removeClass("show"),$(".sidebar-todo-modal").modal("hide"))}))})();
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+var __webpack_exports__ = {};
+/*!************************************************!*\
+  !*** ./resources/js/scripts/pages/app-todo.js ***!
+  \************************************************/
+/*=========================================================================================
+    File Name: app-todo.js
+    Description: app-todo
+    ----------------------------------------------------------------------------------------
+    Item Name: Vuexy  - Vuejs, HTML & Laravel Admin Dashboard Template
+    Author: PIXINVENT
+    Author URL: http://www.themeforest.net/user/pixinvent
+==========================================================================================*/
+
+
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+$(function () {
+  var taskTitle,
+    flatPickr = $('.task-due-date'),
+    newTaskModal = $('.sidebar-todo-modal'),
+    newTaskForm = $('#form-modal-todo'),
+    favoriteStar = $('.todo-item-favorite'),
+    modalTitle = $('.modal-title'),
+    addBtn = $('.add-todo-item'),
+    addTaskBtn = $('.add-task button'),
+    updateTodoItem = $('.update-todo-item'),
+    updateBtns = $('.update-btn'),
+    taskDesc = $('#task-desc'),
+    taskAssignSelect = $('#task-assigned'),
+    taskTag = $('#task-tag'),
+    overlay = $('.body-content-overlay'),
+    menuToggle = $('.menu-toggle'),
+    sidebarToggle = $('.sidebar-toggle'),
+    sidebarLeft = $('.sidebar-left'),
+    sidebarMenuList = $('.sidebar-menu-list'),
+    todoFilter = $('#todo-search'),
+    sortAsc = $('.sort-asc'),
+    sortDesc = $('.sort-desc'),
+    todoTaskList = $('.todo-task-list'),
+    todoTaskListWrapper = $('.todo-task-list-wrapper'),
+    listItemFilter = $('.list-group-filters'),
+    noResults = $('.no-results'),
+    checkboxId = 100,
+    isRtl = $('html').attr('data-textdirection') === 'rtl';
+  var assetPath = '../../../app-assets/';
+  if ($('body').attr('data-framework') === 'laravel') {
+    assetPath = $('body').attr('data-asset-path');
+  }
+
+  // if it is not touch device
+  if (!$.app.menu.is_touch_device()) {
+    if (sidebarMenuList.length > 0) {
+      var sidebarListScrollbar = new PerfectScrollbar(sidebarMenuList[0], {
+        theme: 'dark'
+      });
+    }
+    if (todoTaskListWrapper.length > 0) {
+      var taskListScrollbar = new PerfectScrollbar(todoTaskListWrapper[0], {
+        theme: 'dark'
+      });
+    }
+  }
+  // if it is a touch device
+  else {
+    sidebarMenuList.css('overflow', 'scroll');
+    todoTaskListWrapper.css('overflow', 'scroll');
+  }
+
+  // Add class active on click of sidebar filters list
+  if (listItemFilter.length) {
+    listItemFilter.find('a').on('click', function () {
+      if (listItemFilter.find('a').hasClass('active')) {
+        listItemFilter.find('a').removeClass('active');
+      }
+      $(this).addClass('active');
+    });
+  }
+
+  // Init D'n'D
+  var dndContainer = document.getElementById('todo-task-list');
+  if (_typeof(dndContainer) !== undefined && dndContainer !== null) {
+    dragula([dndContainer], {
+      moves: function moves(el, container, handle) {
+        return handle.classList.contains('drag-icon');
+      }
+    });
+  }
+
+  // Main menu toggle should hide app menu
+  if (menuToggle.length) {
+    menuToggle.on('click', function (e) {
+      sidebarLeft.removeClass('show');
+      overlay.removeClass('show');
+    });
+  }
+
+  // Todo sidebar toggle
+  if (sidebarToggle.length) {
+    sidebarToggle.on('click', function (e) {
+      e.stopPropagation();
+      sidebarLeft.toggleClass('show');
+      overlay.addClass('show');
+    });
+  }
+
+  // On Overlay Click
+  if (overlay.length) {
+    overlay.on('click', function (e) {
+      sidebarLeft.removeClass('show');
+      overlay.removeClass('show');
+      $(newTaskModal).modal('hide');
+    });
+  }
+
+  // Assign task
+  function assignTask(option) {
+    if (!option.id) {
+      return option.text;
+    }
+    var $person = '<div class="d-flex align-items-center">' + '<img class="d-block rounded-circle me-50" src="' + $(option.element).data('img') + '" height="26" width="26" alt="' + option.text + '">' + '<p class="mb-0">' + option.text + '</p></div>';
+    return $person;
+  }
+
+  // Task Assign Select2
+  if (taskAssignSelect.length) {
+    taskAssignSelect.wrap('<div class="position-relative"></div>');
+    taskAssignSelect.select2({
+      placeholder: 'Unassigned',
+      dropdownParent: taskAssignSelect.parent(),
+      templateResult: assignTask,
+      templateSelection: assignTask,
+      escapeMarkup: function escapeMarkup(es) {
+        return es;
+      }
+    });
+  }
+
+  // Task Tags
+  if (taskTag.length) {
+    taskTag.wrap('<div class="position-relative"></div>');
+    taskTag.select2({
+      placeholder: 'Select tag'
+    });
+  }
+
+  // Favorite star click
+  if (favoriteStar.length) {
+    $(favoriteStar).on('click', function () {
+      $(this).toggleClass('text-warning');
+    });
+  }
+
+  // Flat Picker
+  if (flatPickr.length) {
+    flatPickr.flatpickr({
+      dateFormat: 'Y-m-d',
+      defaultDate: 'today',
+      onReady: function onReady(selectedDates, dateStr, instance) {
+        if (instance.isMobile) {
+          $(instance.mobileInput).attr('step', null);
+        }
+      }
+    });
+  }
+
+  // Todo Description Editor
+  if (taskDesc.length) {
+    var todoDescEditor = new Quill('#task-desc', {
+      bounds: '#task-desc',
+      modules: {
+        formula: true,
+        syntax: true,
+        toolbar: '.desc-toolbar'
+      },
+      placeholder: 'Write Your Description',
+      theme: 'snow'
+    });
+  }
+
+  // On add new item button click, clear sidebar-right field fields
+  if (addTaskBtn.length) {
+    addTaskBtn.on('click', function (e) {
+      addBtn.removeClass('d-none');
+      updateBtns.addClass('d-none');
+      modalTitle.text('Add Task');
+      // newTaskModal.modal('show');
+      sidebarLeft.removeClass('show');
+      overlay.removeClass('show');
+      newTaskModal.find('.new-todo-item-title').val('');
+      var quill_editor = taskDesc.find('.ql-editor');
+      quill_editor[0].innerHTML = '';
+    });
+  }
+
+  // Add New ToDo List Item
+
+  // To add new todo form
+  if (newTaskForm.length) {
+    newTaskForm.validate({
+      ignore: '.ql-container *',
+      // ? ignoring quill editor icon click, that was creating console error
+      rules: {
+        todoTitleAdd: {
+          required: true
+        },
+        'task-assigned': {
+          required: true
+        },
+        'task-due-date': {
+          required: true
+        }
+      }
+    });
+    newTaskForm.on('submit', function (e) {
+      e.preventDefault();
+      var isValid = newTaskForm.valid();
+      if (isValid) {
+        checkboxId++;
+        var assignedTo = $('#task-assigned').val(),
+          todoBadge = '',
+          membersImg = {
+            'Phill Buffer': assetPath + 'images/portrait/small/avatar-s-3.jpg',
+            'Chandler Bing': assetPath + 'images/portrait/small/avatar-s-1.jpg',
+            'Ross Geller': assetPath + 'images/portrait/small/avatar-s-4.jpg',
+            'Monica Geller': assetPath + 'images/portrait/small/avatar-s-6.jpg',
+            'Joey Tribbiani': assetPath + 'images/portrait/small/avatar-s-2.jpg',
+            'Rachel Green': assetPath + 'images/portrait/small/avatar-s-11.jpg'
+          };
+        var todoTitle = $('.sidebar-todo-modal .new-todo-item-title').val();
+        var date = $('.sidebar-todo-modal .task-due-date').val(),
+          selectedDate = new Date(date),
+          month = new Intl.DateTimeFormat('en', {
+            month: 'short'
+          }).format(selectedDate),
+          day = new Intl.DateTimeFormat('en', {
+            day: '2-digit'
+          }).format(selectedDate),
+          todoDate = month + ' ' + day;
+
+        // Badge calculation loop
+        var selected = $('.task-tag').val();
+        var badgeColor = {
+          Team: 'primary',
+          Low: 'success',
+          Medium: 'warning',
+          High: 'danger',
+          Update: 'info'
+        };
+        $.each(selected, function (index, value) {
+          todoBadge += '<span class="badge rounded-pill badge-light-' + badgeColor[value] + ' me-50">' + value + '</span>';
+        });
+        // HTML Output
+        if (todoTitle != '') {
+          $(todoTaskList).prepend('<li class="todo-item">' + '<div class="todo-title-wrapper">' + '<div class="todo-title-area">' + feather.icons['more-vertical'].toSvg({
+            "class": 'drag-icon'
+          }) + '<div class="title-wrapper">' + '<div class="form-check">' + '<input type="checkbox" class="form-check-input" id="customCheck' + checkboxId + '" />' + '<label class="form-check-label" for="customCheck' + checkboxId + '"></label>' + '</div>' + '<span class="todo-title">' + todoTitle + '</span>' + '</div>' + '</div>' + '<div class="todo-item-action">' + '<span class="badge-wrapper me-1">' + todoBadge + '</span>' + '<small class="text-nowrap text-muted me-1">' + todoDate + '</small>' + '<div class="avatar">' + '<img src="' + membersImg[assignedTo] + '" alt="' + assignedTo + '" height="28" width="28">' + '</div>' + '</div>' + '</div>' + '</li>');
+        }
+        toastr['success']('Data Saved', '💾 Task Action!', {
+          closeButton: true,
+          tapToDismiss: false,
+          rtl: isRtl
+        });
+        $(newTaskModal).modal('hide');
+        overlay.removeClass('show');
+      }
+    });
+  }
+
+  // Task checkbox change
+  todoTaskListWrapper.on('change', '.form-check', function (event) {
+    var $this = $(this).find('input');
+    if ($this.prop('checked')) {
+      $this.closest('.todo-item').addClass('completed');
+      toastr['success']('Task Completed', 'Congratulations!! 🎉', {
+        closeButton: true,
+        tapToDismiss: false,
+        rtl: isRtl
+      });
+    } else {
+      $this.closest('.todo-item').removeClass('completed');
+    }
+  });
+  todoTaskListWrapper.on('click', '.form-check', function (event) {
+    event.stopPropagation();
+  });
+
+  // To open todo list item modal on click of item
+  $(document).on('click', '.todo-task-list-wrapper .todo-item', function (e) {
+    newTaskModal.modal('show');
+    addBtn.addClass('d-none');
+    updateBtns.removeClass('d-none');
+    if ($(this).hasClass('completed')) {
+      modalTitle.html('<button type="button" class="btn btn-sm btn-outline-success complete-todo-item waves-effect waves-float waves-light" data-bs-dismiss="modal">Completed</button>');
+    } else {
+      modalTitle.html('<button type="button" class="btn btn-sm btn-outline-secondary complete-todo-item waves-effect waves-float waves-light" data-bs-dismiss="modal">Mark Complete</button>');
+    }
+    taskTag.val('').trigger('change');
+    var quill_editor = $('#task-desc .ql-editor'); // ? Dummy data as not connected with API or anything else
+    quill_editor[0].innerHTML = 'Chocolate cake topping bonbon jujubes donut sweet wafer. Marzipan gingerbread powder brownie bear claw. Chocolate bonbon sesame snaps jelly caramels oat cake.';
+    taskTitle = $(this).find('.todo-title');
+    var $title = $(this).find('.todo-title').html();
+
+    // apply all variable values to fields
+    newTaskForm.find('.new-todo-item-title').val($title);
+  });
+
+  // Updating Data Values to Fields
+  if (updateTodoItem.length) {
+    updateTodoItem.on('click', function (e) {
+      var isValid = newTaskForm.valid();
+      e.preventDefault();
+      if (isValid) {
+        var $edit_title = newTaskForm.find('.new-todo-item-title').val();
+        $(taskTitle).text($edit_title);
+        toastr['success']('Data Saved', '💾 Task Action!', {
+          closeButton: true,
+          tapToDismiss: false,
+          rtl: isRtl
+        });
+        $(newTaskModal).modal('hide');
+      }
+    });
+  }
+
+  // Sort Ascending
+  if (sortAsc.length) {
+    sortAsc.on('click', function () {
+      todoTaskListWrapper.find('li').sort(function (a, b) {
+        return $(b).find('.todo-title').text().toUpperCase() < $(a).find('.todo-title').text().toUpperCase() ? 1 : -1;
+      }).appendTo(todoTaskList);
+    });
+  }
+  // Sort Descending
+  if (sortDesc.length) {
+    sortDesc.on('click', function () {
+      todoTaskListWrapper.find('li').sort(function (a, b) {
+        return $(b).find('.todo-title').text().toUpperCase() > $(a).find('.todo-title').text().toUpperCase() ? 1 : -1;
+      }).appendTo(todoTaskList);
+    });
+  }
+
+  // Filter task
+  if (todoFilter.length) {
+    todoFilter.on('keyup', function () {
+      var value = $(this).val().toLowerCase();
+      if (value !== '') {
+        $('.todo-item').filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+        var tbl_row = $('.todo-item:visible').length; //here tbl_test is table name
+
+        //Check if table has row or not
+        if (tbl_row == 0) {
+          if (!$(noResults).hasClass('show')) {
+            $(noResults).addClass('show');
+          }
+        } else {
+          $(noResults).removeClass('show');
+        }
+      } else {
+        // If filter box is empty
+        $('.todo-item').show();
+        if ($(noResults).hasClass('show')) {
+          $(noResults).removeClass('show');
+        }
+      }
+    });
+  }
+
+  // For chat sidebar on small screen
+  if ($(window).width() > 992) {
+    if (overlay.hasClass('show')) {
+      overlay.removeClass('show');
+    }
+  }
+});
+$(window).on('resize', function () {
+  // remove show classes from sidebar and overlay if size is > 992
+  if ($(window).width() > 992) {
+    if ($('.body-content-overlay').hasClass('show')) {
+      $('.sidebar-left').removeClass('show');
+      $('.body-content-overlay').removeClass('show');
+      $('.sidebar-todo-modal').modal('hide');
+    }
+  }
+});
+/******/ })()
+;

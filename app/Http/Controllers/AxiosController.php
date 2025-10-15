@@ -31,6 +31,7 @@ use App\Models\Organisation;
 use App\Models\Period;
 use App\Models\Plan;
 use App\Models\Review;
+use App\Models\ReviewAttachment;
 use App\Models\ReviewStatus;
 use App\Models\Risk;
 use App\Models\RiskComment;
@@ -1233,6 +1234,370 @@ class AxiosController extends Controller
             'interviews' => $interviews,
         ];
     }
+
+    /**
+     * Get test statements and test data for test preparation and conduct
+     */
+    public function organisationsReviewTest($locale, Action $action)
+    {
+        $organisation = Auth::user()->organisation;
+        $usersIds = $organisation->users->pluck('id');
+
+        // Get all actionables for the provided action_id
+        $actionables = DB::table('actionables')
+            ->where('action_id', $action->id)
+            ->get();
+
+        // Extract the statement IDs and component IDs from the actionables
+        $statementIds = $actionables->where('actionable_type', 'App\\Models\\Statement')->pluck('actionable_id');
+        $componentIds = $actionables->where('actionable_type', 'App\\Models\\Component')->pluck('actionable_id');
+
+        // Retrieve the Statement models based on the extracted statement IDs
+        $statements = Statement::whereIn('id', $statementIds)->get();
+
+        // Retrieve additional statements associated with the components
+        $additionalStatements = Statement::whereIn('component_id', $componentIds)->get();
+
+        // Merge the directly associated statements with the additional statements
+        $allStatements = $statements->merge($additionalStatements);
+
+        // Get the statement IDs from the allStatements collection
+        $statementIds = $allStatements->pluck('id');
+
+        // Get all statements that have been marked for testing (plan_id=2) by checking auditor_statement
+        // OR get all statements if we want to show everything (for now, we only show planned ones)
+        $testStatementIds = DB::table('auditor_statement')
+            ->whereIn('user_id', $usersIds)
+            ->where('plan_id', 2)
+            ->whereIn('statement_id', $statementIds)
+            ->pluck('statement_id');
+
+        // Retrieve the Statement models for these test statements
+        $testStatements = Statement::whereIn('id', $testStatementIds)->get();
+
+        // Add test data from auditor_statement table to each statement
+        $testStatements->transform(function ($statement) use ($usersIds, $locale, $organisation) {
+            $testData = DB::table('auditor_statement')
+                ->whereIn('user_id', $usersIds)
+                ->where('statement_id', $statement->id)
+                ->where('plan_id', 2)
+                ->first();
+
+            if ($testData) {
+                $statement->test_plan = $testData->test_plan;
+                $statement->test_method = $testData->test_method;
+                $statement->test_result = $testData->test_result;
+                $statement->test_evidence = $testData->test_evidence;
+                $statement->test_date = $testData->test_date;
+                $statement->test_status = $testData->test_status;
+                $statement->auditor_statement_id = $testData->id;
+            } else {
+                $statement->test_plan = null;
+                $statement->test_method = null;
+                $statement->test_result = null;
+                $statement->test_evidence = null;
+                $statement->test_date = null;
+                $statement->test_status = null;
+                $statement->auditor_statement_id = null;
+            }
+
+            // Get review status if it exists
+            $review = Review::where('statement_id', $statement->id)
+                ->where('organisation_id', $organisation->id)
+                ->first();
+
+            $statement->review_status_id = $review ? $review->review_status_id : null;
+
+            $statement->makeVisible(['test_plan', 'test_method', 'test_result', 'test_evidence', 'test_date', 'test_status', 'auditor_statement_id', 'review_status_id']);
+
+            return $statement;
+        });
+
+        return [
+            'testStatements' => $testStatements,
+        ];
+    }
+
+    /**
+     * Store or update test plan for a statement
+     */
+    public function storeTestPlan(Request $request, $locale)
+    {
+        try {
+            $organisation = Auth::user()->organisation;
+            $usersIds = $organisation->users->pluck('id');
+
+            // Get auditor user ID (prefer auditor role, fallback to current user)
+            $auditor = $organisation->users->where('role', 'auditor')->first();
+            $userId = $auditor ? $auditor->id : Auth::user()->id;
+
+            $validated = $request->validate([
+                'statement_id' => 'required|exists:statements,id',
+                'test_plan' => 'nullable|string',
+                'test_method' => 'nullable|string',
+            ]);
+
+            // Check if an entry already exists for this statement with plan_id=2
+            $existing = DB::table('auditor_statement')
+                ->where('statement_id', $validated['statement_id'])
+                ->whereIn('user_id', $usersIds)
+                ->where('plan_id', 2)
+                ->first();
+
+            if ($existing) {
+                DB::table('auditor_statement')
+                    ->where('id', $existing->id)
+                    ->update([
+                        'test_plan' => $validated['test_plan'],
+                        'test_method' => $validated['test_method'],
+                        'test_status' => 'planned',
+                        'user_id' => $userId,
+                        'updated_at' => Carbon::now(),
+                    ]);
+            } else {
+                DB::table('auditor_statement')->insert([
+                    'statement_id' => $validated['statement_id'],
+                    'plan_id' => 2,
+                    'user_id' => $userId,
+                    'guide' => '',
+                    'test_plan' => $validated['test_plan'],
+                    'test_method' => $validated['test_method'],
+                    'test_status' => 'planned',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            }
+
+            return response()->json([
+                'message' => __('messages.itemUpdatedSuccessfully'),
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
+    }
+
+    /**
+     * Update test conduct (results and evidence)
+     * Also creates/updates a Review entry to integrate with the review system
+     */
+    public function updateTestConduct(Request $request, $locale)
+    {
+        try {
+            $organisation = Auth::user()->organisation;
+            $usersIds = $organisation->users->pluck('id');
+            $userId = Auth::user()->id;
+
+            $validated = $request->validate([
+                'statement_id' => 'required|exists:statements,id',
+                'test_result' => 'nullable|string',
+                'test_evidence' => 'nullable|string',
+                'test_status' => 'nullable|in:planned,in_progress,completed',
+                'review_status_id' => 'nullable|exists:review_statuses,id',
+            ]);
+
+            $existing = DB::table('auditor_statement')
+                ->where('statement_id', $validated['statement_id'])
+                ->whereIn('user_id', $usersIds)
+                ->where('plan_id', 2)
+                ->first();
+
+            if (!$existing) {
+                return response()->json(['message' => 'Test plan not found'], 404);
+            }
+
+            // Update test data in auditor_statement
+            DB::table('auditor_statement')
+                ->where('id', $existing->id)
+                ->update([
+                    'test_result' => $validated['test_result'],
+                    'test_evidence' => $validated['test_evidence'],
+                    'test_status' => $validated['test_status'] ?? 'completed',
+                    'test_date' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+
+            // If review_status_id is provided, create/update a Review
+            if (isset($validated['review_status_id'])) {
+                // Build review comment from test data
+                $reviewComment = "Test genomfört " . Carbon::now()->format('Y-m-d') . ":\n\n";
+                $reviewComment .= "Testmetod: " . ($existing->test_method ?? 'N/A') . "\n";
+                $reviewComment .= "Testplan: " . ($existing->test_plan ?? 'N/A') . "\n\n";
+                $reviewComment .= "Resultat: " . ($validated['test_result'] ?? 'N/A') . "\n";
+                if (!empty($validated['test_evidence'])) {
+                    $reviewComment .= "Bevis: " . $validated['test_evidence'];
+                }
+
+                // Check if a review already exists
+                $existingReview = Review::where('statement_id', $validated['statement_id'])
+                    ->where('organisation_id', $organisation->id)
+                    ->first();
+
+                if ($existingReview) {
+                    // Update existing review
+                    $existingReview->update([
+                        'review_status_id' => $validated['review_status_id'],
+                        'review' => $reviewComment,
+                        'user_id' => $userId,
+                    ]);
+                } else {
+                    // Create new review
+                    Review::create([
+                        'statement_id' => $validated['statement_id'],
+                        'organisation_id' => $organisation->id,
+                        'user_id' => $userId,
+                        'review_status_id' => $validated['review_status_id'],
+                        'review' => $reviewComment,
+                        'accepted' => $validated['review_status_id'] == 2 ? true : false, // For backwards compatibility
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'message' => __('messages.itemUpdatedSuccessfully'),
+                'success' => true
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
+    }
+
+    /**
+     * Upload file attachment for test evidence
+     * POST /axios/organisations/test-attachments/upload
+     */
+    public function uploadTestAttachment(Request $request, $locale)
+    {
+        try {
+            $validated = $request->validate([
+                'file' => 'required|file|max:10240', // Max 10MB
+                'statement_id' => 'required|exists:statements,id',
+                'description' => 'nullable|string|max:500',
+            ]);
+
+            $organisation = Auth::user()->organisation;
+            $file = $request->file('file');
+
+            // Generate unique filename
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '_' . uniqid() . '.' . $extension;
+
+            // Store file in organization-specific folder
+            $path = $file->storeAs(
+                'review_attachments/org_' . $organisation->id . '/statement_' . $validated['statement_id'],
+                $filename,
+                'public'
+            );
+
+            // Create attachment record
+            $attachment = ReviewAttachment::create([
+                'review_id' => null, // Will be linked when Review is created
+                'statement_id' => $validated['statement_id'],
+                'organisation_id' => $organisation->id,
+                'user_id' => Auth::id(),
+                'file_name' => $file->getClientOriginalName(),
+                'file_path' => $path,
+                'file_type' => $file->getMimeType(),
+                'file_size' => $file->getSize(),
+                'description' => $validated['description'] ?? null,
+                'attachment_type' => 'test_evidence',
+            ]);
+
+            return response()->json([
+                'message' => __('messages.fileUploadedSuccessfully'),
+                'attachment' => [
+                    'id' => $attachment->id,
+                    'file_name' => $attachment->file_name,
+                    'file_size_human' => $attachment->file_size_human,
+                    'file_url' => Storage::url($attachment->file_path),
+                    'created_at' => $attachment->created_at,
+                ],
+                'success' => true
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
+    }
+
+    /**
+     * Get attachments for a statement
+     * GET /axios/organisations/test-attachments/{statement_id}
+     */
+    public function getTestAttachments($locale, $statementId)
+    {
+        try {
+            $organisation = Auth::user()->organisation;
+
+            $attachments = ReviewAttachment::where('statement_id', $statementId)
+                ->where('organisation_id', $organisation->id)
+                ->with('user:id,name')
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($attachment) {
+                    return [
+                        'id' => $attachment->id,
+                        'file_name' => $attachment->file_name,
+                        'file_size_human' => $attachment->file_size_human,
+                        'file_url' => Storage::url($attachment->file_path),
+                        'file_type' => $attachment->file_type,
+                        'description' => $attachment->description,
+                        'uploaded_by' => $attachment->user->name,
+                        'created_at' => $attachment->created_at->format('Y-m-d H:i'),
+                    ];
+                });
+
+            return response()->json([
+                'attachments' => $attachments,
+                'success' => true
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete attachment
+     * DELETE /axios/organisations/test-attachments/{attachment_id}
+     */
+    public function deleteTestAttachment($locale, $attachmentId)
+    {
+        try {
+            $organisation = Auth::user()->organisation;
+
+            $attachment = ReviewAttachment::where('id', $attachmentId)
+                ->where('organisation_id', $organisation->id)
+                ->firstOrFail();
+
+            // Delete will automatically remove file from storage (see ReviewAttachment::boot())
+            $attachment->delete();
+
+            return response()->json([
+                'message' => __('messages.fileDeletedSuccessfully'),
+                'success' => true
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage(),
+                'success' => false
+            ], 500);
+        }
+    }
+
     /**
      * Return a collection of all organisation risks along the messages dictionaries
      *

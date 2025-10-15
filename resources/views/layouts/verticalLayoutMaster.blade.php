@@ -58,8 +58,18 @@
     {{-- include footer --}}
     @include('panels/footer')
 
+    {{-- include GDPR chatbot (commented out - using LLM version) --}}
+    {{-- @auth
+        @include('components.gdpr-chatbot')
+    @endauth --}}
+
     {{-- include default scripts --}}
     @include('panels/scripts')
+
+    {{-- include chatbot script (commented out - using LLM version) --}}
+    {{-- @auth
+        <script src="{{ asset('js/gdpr-chatbot.js') }}"></script>
+    @endauth --}}
 
     <script type="text/javascript">
         let x = $('html');
