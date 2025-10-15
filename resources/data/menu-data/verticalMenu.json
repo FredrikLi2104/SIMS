@@ -29,6 +29,17 @@
             ]
         },
         {
+            "name": "onboardingTemplates",
+            "auth": "moderator",
+            "icon": "package",
+            "url": "onboarding-templates",
+            "slug": [
+                "onboarding-templates.index",
+                "onboarding-templates.create",
+                "onboarding-templates.edit"
+            ]
+        },
+        {
             "name": "features",
             "auth": "super-auditor",
             "icon": "star",
