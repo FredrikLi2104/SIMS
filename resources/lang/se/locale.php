@@ -243,6 +243,7 @@ return [
     'tasks' => 'Uppgifter',
     'tasks_create' => 'Uppgifter Skapa',
     'onboarding' => 'Onboarding',
+    'onboardingTemplates' => 'Onboarding-mallar',
     'task_statuses' => 'Uppgiftsstatus',
     'task_statuses_create' => 'Uppgiftsstatus Skapa',
     'configs' => 'Konfigurationer',

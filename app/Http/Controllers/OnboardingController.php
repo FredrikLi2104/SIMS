@@ -24,12 +24,21 @@ class OnboardingController extends Controller
     {
         $user = Auth::user();
 
-        // If user is super admin or auditor, get all organisations
-        // Otherwise get only user's organisation
-        if ($user->role === 'super' || $user->role === 'auditor') {
+        // If user is super admin, get all organisations
+        if ($user->role === 'super') {
             $organisations = Organisation::select('id', 'name')->orderBy('name')->get();
         } else {
-            $organisations = Organisation::where('id', $user->organisation_id)->select('id', 'name')->get();
+            // Get user's organisation and its sub-organisations
+            $userOrg = $user->organisation;
+            $organisations = collect([$userOrg]);
+
+            if ($userOrg->organisations) {
+                $organisations = $organisations->merge($userOrg->organisations);
+            }
+
+            $organisations = $organisations->map(function($org) {
+                return ['id' => $org->id, 'name' => $org->name];
+            })->sortBy('name')->values();
         }
 
         return response()->json([

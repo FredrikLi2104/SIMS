@@ -33,6 +33,8 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\OnboardingTemplateController;
+use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\ChatbotController;
 use Illuminate\Support\Facades\Route;
 
@@ -137,6 +139,15 @@ Route::prefix('{locale}')->middleware('locale')->group(function () {
     Route::get('onboarding', function() {
         return view('onboarding.simple');
     })->middleware('auth')->middleware('can:auditor')->name('onboarding.index');
+
+    // Onboarding Templates management
+    Route::resource('onboarding-templates', OnboardingTemplateController::class)->middleware('auth')->middleware('can:moderator');
+
+    // Template Tasks routes
+    Route::post('onboarding-templates/{template}/tasks', [TemplateTaskController::class, 'store'])
+        ->middleware('auth')->middleware('can:moderator')->name('onboarding-templates.tasks.store');
+    Route::delete('onboarding-templates/{template}/tasks/{task}', [TemplateTaskController::class, 'destroy'])
+        ->middleware('auth')->middleware('can:moderator')->name('onboarding-templates.tasks.destroy');
 
     Route::resource('action_types', ActionTypeController::class)->middleware('auth')->middleware('can:moderator');
     Route::resource('configs', ConfigController::class)->middleware('auth')->middleware('can:moderator');

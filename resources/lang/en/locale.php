@@ -243,6 +243,7 @@ return [
     'tasks' => 'Tasks',
     'tasks_create' => 'Task Create',
     'onboarding' => 'Onboarding',
+    'onboardingTemplates' => 'Onboarding Templates',
     'task_statuses' => 'Task Statuses',
     'task_statuses_create' => 'Task Status Create',
     'configs' => 'Configs',
