@@ -2296,7 +2296,7 @@ class AxiosController extends Controller
         $filterByTag = $request->post('filters')['tag_ids'] ?? null;
         $filterByComponent = $request->post('filters')['component_id'] ?? null;
         $filterByStatement = $request->post('filters')['statement_id'] ?? null;
-        $orderBy = $request->post('order')[0]['column'] ?? null;
+        $orderBy = $request->post('order')[0]['column'] ?? 6; // Default to column 6 (Statement/Value)
         $orderDir = $request->post('order')[0]['dir'] ?? 'asc';
 
         $needle = $request->search['value'];
@@ -2348,21 +2348,41 @@ class AxiosController extends Controller
                 $query->whereRelation('statements', 'statements.id', $filterByStatement);
             });
 
-        // Apply ordering at database level (except for custom deed sorting)
-        if ($orderBy && $orderBy != 6) {
-            // Map column index to actual column name
-            $orderColumns = [
-                0 => 'sanctions.title',
-                1 => 'sanctions.decided_at',
-                2 => 'sanctions.fine',
-                // Add other column mappings as needed
-            ];
+        // Apply ordering at database level
+        // Column mapping matches the DataTable in insights/app.js:
+        // 0: ID, 1: DPA, 2: Date Added, 3: Fine, 4: Title, 5: Party, 6: Statement/Value, 7: Actions
+        $orderColumns = [
+            0 => 'sanctions.id',
+            1 => 'sanctions.dpa_id',
+            2 => 'sanctions.created_at',
+            3 => 'sanctions.fine',
+            4 => 'sanctions.title',
+            5 => 'sanctions.party',
+            // Column 6 is handled with a subquery below
+            // Column 7 (Actions) is not orderable
+        ];
 
-            if (isset($orderColumns[$orderBy])) {
-                $query->orderBy($orderColumns[$orderBy], $orderDir);
-            }
-        } else {
-            $query->orderBy('sanctions.decided_at', 'desc');
+        // For column 6 (Statement/Value), add subqueries to calculate min and avg deed values
+        if ($orderBy == 6) {
+            $query->addSelect([
+                'min_deed_value' => \DB::table('deeds')
+                    ->select('value')
+                    ->join('sanction_statement', 'deeds.statement_id', '=', 'sanction_statement.statement_id')
+                    ->whereColumn('sanction_statement.sanction_id', 'sanctions.id')
+                    ->where('deeds.organisation_id', $org->id)
+                    ->orderBy('value', 'asc')
+                    ->limit(1),
+                'avg_deed_value' => \DB::table('deeds')
+                    ->selectRaw('AVG(value)')
+                    ->join('sanction_statement', 'deeds.statement_id', '=', 'sanction_statement.statement_id')
+                    ->whereColumn('sanction_statement.sanction_id', 'sanctions.id')
+                    ->where('deeds.organisation_id', $org->id)
+            ]);
+
+            // Order by min_deed_value first, then avg_deed_value as tiebreaker, with nulls last
+            $query->orderByRaw("CASE WHEN min_deed_value IS NULL THEN 1 ELSE 0 END, min_deed_value " . $orderDir . ", avg_deed_value " . $orderDir);
+        } elseif (isset($orderColumns[$orderBy])) {
+            $query->orderBy($orderColumns[$orderBy], $orderDir);
         }
 
         // Get total count BEFORE pagination (for DataTables)
@@ -2373,8 +2393,7 @@ class AxiosController extends Controller
         // Clone query for filtered count
         $recordsFiltered = $query->count();
 
-        // Apply pagination at database level
-        $page = ($request->start / $request->length) + 1;
+        // Apply pagination at database level for ALL columns now
         $sanctions = $query->skip($request->start)->take($request->length)->get();
 
         // Process statements and deeds
@@ -2390,29 +2409,6 @@ class AxiosController extends Controller
             })->sortBy('subcode', SORT_NATURAL)->values();
             return $sanction;
         });
-
-        // Handle custom deed sorting if needed (orderBy == 6)
-        if ($orderBy == 6) {
-            $sanctions = $sanctions->sort(function ($a, $b) use ($orderDir) {
-                $aValues = $a->statements->pluck('deed.value')->filter();
-                $bValues = $b->statements->pluck('deed.value')->filter();
-
-                if ($aValues->isNotEmpty() && $bValues->isNotEmpty()) {
-                    $aMin = $aValues->min();
-                    $bMin = $bValues->min();
-
-                    if ($aMin === $bMin) {
-                        $result = $aValues->avg() <=> $bValues->avg();
-                    } else {
-                        $result = $aMin <=> $bMin;
-                    }
-                    return $orderDir == 'asc' ? $result : -$result;
-                }
-
-                if ($aValues->isEmpty() && $bValues->isEmpty()) return 0;
-                return $aValues->isEmpty() ? 1 : -1;
-            })->values();
-        }
 
         // Make visible attributes for response
         $sanctions->each(function ($sanction) {

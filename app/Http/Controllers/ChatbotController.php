@@ -61,7 +61,7 @@ class ChatbotController extends Controller
         ]);
 
         try {
-            $response = Http::timeout(60)->post("{$this->chatbotUrl}/api/chat/message", [
+            $response = Http::timeout(180)->post("{$this->chatbotUrl}/api/chat/message", [
                 'session_id' => $validated['session_id'],
                 'message' => $validated['message']
             ]);

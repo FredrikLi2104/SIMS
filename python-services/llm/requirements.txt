@@ -8,5 +8,5 @@ transformers
 torch
 flask
 flask-cors
-psycopg2-binary
+mysql-connector-python
 python-dotenv
