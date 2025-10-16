@@ -25,7 +25,7 @@ from datetime import datetime
 # ============================================================================
 print(torch.__version__)
 # HuggingFace API token - must be set as environment variable
-api_token = os.getenv("HUGGINGFACE_TOKEN")
+api_token = os.getenv("HUGGINGFACE_TOKEN", "ADD YOUR TOKEN HERE")
 if not api_token:
     raise ValueError("HUGGINGFACE_TOKEN environment variable is required. Please set it before running.")
 
