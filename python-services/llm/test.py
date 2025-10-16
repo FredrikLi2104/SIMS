@@ -3,13 +3,6 @@ GDPR Chatbot with RAG (Retrieval-Augmented Generation)
 Combines organization-specific data with general GDPR knowledge
 """
 
-import sys
-import io
-
-# Fix Windows console encoding for emoji support
-if sys.platform == 'win32':
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 from langchain_huggingface import HuggingFacePipeline
 from langchain_community.vectorstores import FAISS
@@ -24,22 +17,24 @@ from flask_cors import CORS
 import torch
 import os
 from typing import List, Dict
-import psycopg2
+import mysql.connector
 from datetime import datetime
 
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
+print(torch.__version__)
+# HuggingFace API token - must be set as environment variable
+api_token = os.getenv("HUGGINGFACE_TOKEN")
+if not api_token:
+    raise ValueError("HUGGINGFACE_TOKEN environment variable is required. Please set it before running.")
 
-# HuggingFace API token
-api_token = os.getenv("HUGGINGFACE_TOKEN", "TOKEN_NOT_SET")
-
-# Database configuration (adjust to your database)
+# Database configuration (adjusted for MySQL gdpr database)
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "localhost"),
-    "port": os.getenv("DB_PORT", "5432"),
-    "database": os.getenv("DB_NAME", "sims"),
-    "user": os.getenv("DB_USER", "postgres"),
+    "host": os.getenv("DB_HOST", "127.0.0.1"),
+    "port": int(os.getenv("DB_PORT", "3306")),
+    "database": os.getenv("DB_NAME", "gdpr"),
+    "user": os.getenv("DB_USER", "root"),
     "password": os.getenv("DB_PASSWORD", "")
 }
 
@@ -47,30 +42,37 @@ DB_CONFIG = {
 # LLM SETUP
 # ============================================================================
 
-print("🚀 Loading LLM model...")
-model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
+print("Loading LLM model...")
+# Using smaller 2B model instead of 8B for faster inference on 8GB GPU
+# meta-llama/Meta-Llama-3-8B-Instruct is the old one which did not
+# work on setup of 3060 8GB Ti, 16GB RAM, AMD Ryzen 7 8-core 3.60GHz
+model_id = "microsoft/Phi-3-mini-4k-instruct"  
 
 tokenizer = AutoTokenizer.from_pretrained(model_id, token=api_token)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
     token=api_token,
-    torch_dtype=torch.float16,
+    dtype=torch.float16,
     device_map="auto",
-    low_cpu_mem_usage=True
+    low_cpu_mem_usage=True,
+    max_memory={0: "7GB"}  # Limit GPU memory to prevent CPU offloading
 )
 
 pipe = pipeline(
     "text-generation",
     model=model,
     tokenizer=tokenizer,
-    max_new_tokens=512,
+    max_new_tokens=250,  # Max amount of sentences produced in output
     temperature=0.7,
     top_p=0.95,
-    repetition_penalty=1.15
+    repetition_penalty=1.15,
+    do_sample=True,
+    num_beams=1,  # Faster generation with greedy decoding
+    pad_token_id=tokenizer.eos_token_id # Ensure proper stopping
 )
 
 llm = HuggingFacePipeline(pipeline=pipe)
-print("✅ Model loaded successfully!")
+print("Model loaded successfully!")
 
 # ============================================================================
 # GDPR KNOWLEDGE BASE
@@ -149,58 +151,63 @@ GDPR_KNOWLEDGE_BASE = [
 def get_organization_data(organization_id: int) -> List[str]:
     """
     Retrieves organization-specific data from the database.
-    Adjust SQL queries according to your database structure.
+    Adjusted for MySQL gdpr database structure.
     """
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = mysql.connector.connect(**DB_CONFIG)
         cursor = conn.cursor()
 
         documents = []
 
-        # Fetch organization info
+        # Fetch organization info (adjusted for gdpr database schema)
         cursor.execute("""
-            SELECT name, description, industry
-            FROM organizations
+            SELECT name, number, employees, phone, email, website
+            FROM organisations
             WHERE id = %s
         """, (organization_id,))
         org_data = cursor.fetchone()
         if org_data:
-            documents.append(f"Organization: {org_data[0]}. Description: {org_data[1]}. Industry: {org_data[2]}")
+            documents.append(
+                f"Organization: {org_data[0]}. Number: {org_data[1]}. "
+                f"Employees: {org_data[2]}. Contact: {org_data[3]}, {org_data[4]}"
+            )
 
-        # Fetch data protection policies
+        # Fetch organisation statements
         cursor.execute("""
-            SELECT title, content, created_at
-            FROM policies
-            WHERE organization_id = %s
-            ORDER BY created_at DESC
+            SELECT s.name, s.description
+            FROM statements s
+            JOIN organisation_statement os ON s.id = os.statement_id
+            WHERE os.organisation_id = %s
+            LIMIT 20
         """, (organization_id,))
-        for policy in cursor.fetchall():
-            documents.append(f"Policy '{policy[0]}': {policy[1]}")
+        for statement in cursor.fetchall():
+            documents.append(f"Statement '{statement[0]}': {statement[1]}")
 
-        # Fetch incidents
+        # Fetch risks associated with the organization
         cursor.execute("""
-            SELECT incident_type, description, severity, status
-            FROM incidents
-            WHERE organization_id = %s
+            SELECT name, description, probability, impact
+            FROM risks
+            WHERE organisation_id = %s
             ORDER BY created_at DESC
             LIMIT 10
         """, (organization_id,))
-        for incident in cursor.fetchall():
+        for risk in cursor.fetchall():
             documents.append(
-                f"Incident ({incident[0]}): {incident[1]}. "
-                f"Severity: {incident[2]}, Status: {incident[3]}"
+                f"Risk: {risk[0]} - {risk[1]}. "
+                f"Probability: {risk[2]}, Impact: {risk[3]}"
             )
 
-        # Fetch processing activities
+        # Fetch tasks for the organization
         cursor.execute("""
-            SELECT activity_name, purpose, legal_basis, data_categories
-            FROM processing_activities
-            WHERE organization_id = %s
+            SELECT name, description, status
+            FROM tasks
+            WHERE organisation_id = %s
+            ORDER BY created_at DESC
+            LIMIT 10
         """, (organization_id,))
-        for activity in cursor.fetchall():
+        for task in cursor.fetchall():
             documents.append(
-                f"Processing activity '{activity[0]}': Purpose: {activity[1]}, "
-                f"Legal basis: {activity[2]}, Data categories: {activity[3]}"
+                f"Task '{task[0]}': {task[1]}. Status: {task[2]}"
             )
 
         cursor.close()
@@ -209,7 +216,7 @@ def get_organization_data(organization_id: int) -> List[str]:
         return documents
 
     except Exception as e:
-        print(f"❌ Database error: {e}")
+        print(f"Database error: {e}")
         return []
 
 # ============================================================================
@@ -226,19 +233,17 @@ class GDPRChatbot:
         self.qa_chain = None
         self.sessions = {}  # Session-based memory management
 
-        # Custom prompt for GDPR context
-        self.prompt_template = """
-        You are a data protection and GDPR expert helping organizations understand and comply with data protection regulations.
+        # Custom prompt for GDPR context to give the model an identity and thus giving more
+        # focused responses within its specified domain.
+        # Context ensures the model uses RAG-retrieved documents which prevents hallucination
+        # and is crititcal for accuracy in legal/compliance domains.
+        self.prompt_template = """You are a GDPR expert. Answer the question using only the context provided below. Be concise and practical.
 
-        Use the following context to answer the question. The context contains both general GDPR knowledge
-        and organization-specific information.
+        Context:
+        {context}
 
-        If you don't know the answer, say that you don't know. Don't try to make up information.
-        Provide concrete and practical answers with references to relevant GDPR articles when appropriate.
-
-        Context: {context}
-
-        Chat history: {chat_history}
+        Previous conversation:
+        {chat_history}
 
         Question: {question}
 
@@ -246,7 +251,7 @@ class GDPRChatbot:
 
     def initialize_for_organization(self, organization_id: int):
         """Initializes the chatbot with data for a specific organization"""
-        print(f"📚 Loading data for organization {organization_id}...")
+        print(f"Loading data for organization {organization_id}...")
 
         # Combine GDPR knowledge with organization data
         org_documents = get_organization_data(organization_id)
@@ -254,13 +259,13 @@ class GDPRChatbot:
 
         # Create vectorstore
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=500,
+            chunk_size=100,
             chunk_overlap=50
         )
         texts = text_splitter.create_documents(all_documents)
         self.vectorstore = FAISS.from_documents(texts, self.embeddings)
 
-        print(f"✅ Loaded {len(all_documents)} documents!")
+        print(f"Loaded {len(all_documents)} documents!")
 
     def create_session(self, session_id: str, organization_id: int):
         """Creates a new session with memory management"""
@@ -298,10 +303,22 @@ class GDPRChatbot:
             return {"error": "Session not found. Please create a session first."}
 
         chain = self.sessions[session_id]["chain"]
-        result = chain({"question": question})
+        result = chain.invoke({"question": question})
+
+        # Clean up the response - remove the prompt template if it appears in output
+        answer = result["answer"]
+
+        # If the model echoed the prompt, extract only the part after "Answer:"
+        if "Answer:" in answer:
+            # Split by "Answer:" and take the last part (the actual answer)
+            answer = answer.split("Answer:")[-1].strip()
+
+        # Remove any remaining prompt artifacts
+        answer = answer.replace("Context:", "").replace("Question:", "").replace("Previous conversation:", "")
+        answer = answer.strip()
 
         return {
-            "answer": result["answer"],
+            "answer": answer,
             "sources": [doc.page_content[:200] for doc in result.get("source_documents", [])]
         }
 
@@ -377,9 +394,9 @@ def health():
 
 if __name__ == "__main__":
     print("\n" + "="*70)
-    print("🤖 GDPR CHATBOT WITH RAG")
+    print("GDPR CHATBOT WITH RAG")
     print("="*70)
-    print("\n📡 API Endpoints:")
+    print("\nAPI Endpoints:")
     print("  POST /api/chat/init     - Initialize new session")
     print("  POST /api/chat/message  - Send message")
     print("  GET  /api/chat/sessions - List sessions")

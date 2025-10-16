@@ -37,7 +37,7 @@ class AxiosControllerOptimized extends Controller
         $filterByTag = $request->post('filters')['tag_ids'] ?? null;
         $filterByComponent = $request->post('filters')['component_id'] ?? null;
         $filterByStatement = $request->post('filters')['statement_id'] ?? null;
-        $orderBy = $request->post('order')[0]['column'] ?? null;
+        $orderBy = $request->post('order')[0]['column'] ?? 6; // Default to column 6 (Statement/Value)
         $orderDir = $request->post('order')[0]['dir'] ?? 'asc';
 
         $needle = $request->search['value'];
@@ -90,21 +90,29 @@ class AxiosControllerOptimized extends Controller
             });
 
         // Apply ordering at database level (except for custom deed sorting)
-        if ($orderBy && $orderBy != 6) {
+        if ($orderBy != 6) {
             // Map column index to actual column name
+            // Column mapping matches the DataTable in insights/app.js:
+            // 0: ID, 1: DPA, 2: Date Added, 3: Fine, 4: Title, 5: Party, 6: Statement/Value, 7: Actions
             $orderColumns = [
-                0 => 'sanctions.title',
-                1 => 'sanctions.decided_at',
-                2 => 'sanctions.fine',
-                // Add other column mappings as needed
+                0 => 'sanctions.id',
+                1 => 'sanctions.dpa_id',
+                2 => 'sanctions.created_at',
+                3 => 'sanctions.fine',
+                4 => 'sanctions.title',
+                5 => 'sanctions.party',
+                // Column 6 is handled separately (Statement/Value custom sorting)
+                // Column 7 (Actions) is not orderable
             ];
 
             if (isset($orderColumns[$orderBy])) {
                 $query->orderBy($orderColumns[$orderBy], $orderDir);
             }
-        } else {
-            $query->orderBy('sanctions.decided_at', 'desc');
         }
+
+        // For column 6 (Statement/Value) sorting, we need to get ALL results first
+        // because we need to calculate min/avg deed values across statements
+        // So we skip database ordering for column 6
 
         // Get total count BEFORE pagination (for DataTables)
         $recordsTotal = Cache::remember('sanctions_total_count', 300, function () {
@@ -114,9 +122,16 @@ class AxiosControllerOptimized extends Controller
         // Clone query for filtered count
         $recordsFiltered = $query->count();
 
-        // Apply pagination at database level
-        $page = ($request->start / $request->length) + 1;
-        $sanctions = $query->skip($request->start)->take($request->length)->get();
+        // For column 6 (Statement/Value), we need ALL results to sort properly
+        // For other columns, we can paginate at database level
+        if ($orderBy == 6) {
+            // Get ALL filtered results (no pagination yet)
+            $sanctions = $query->get();
+        } else {
+            // Apply pagination at database level for other columns
+            $page = ($request->start / $request->length) + 1;
+            $sanctions = $query->skip($request->start)->take($request->length)->get();
+        }
 
         // Process statements and deeds
         $colors = ['#ea5455', '#ff5f43', '#ff9f43', '#cab707', '#28c76f'];
@@ -153,6 +168,9 @@ class AxiosControllerOptimized extends Controller
                 if ($aValues->isEmpty() && $bValues->isEmpty()) return 0;
                 return $aValues->isEmpty() ? 1 : -1;
             })->values();
+
+            // Now apply pagination AFTER sorting
+            $sanctions = $sanctions->slice($request->start, $request->length)->values();
         }
 
         // Make visible attributes for response

@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(composer install:*)",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Bash(\"C:\\xampp\\mysql\\bin\\mysql.exe\" -u root -h 127.0.0.1 gdpr -e \"SELECT id, name, email, password, role, disabled FROM users WHERE email = ''audit@test.example'';\")"
     ],
     "deny": [],
     "ask": []
